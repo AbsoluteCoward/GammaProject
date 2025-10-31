@@ -2,14 +2,11 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c00yf7b1axcil"
+uid="uid://lnmlg1pechum"
 path.s3tc="res://.godot/imported/Bed_metalrustwhite.jpg-34435818915698c57c6dadb6752f4152.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
-}
-generator_parameters={
-"md5": "3105f8e01ee18027adc9deed0d21f4c5"
 }
 
 [deps]
