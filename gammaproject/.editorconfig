@@ -1,0 +1,48 @@
+# .editorconfig
+[*.cs]  # Apply these rules only to C# files
+
+# === Indentation ===
+indent_style = space        # Use spaces instead of tabs
+indent_size = 4             # Each indentation level is 4 spaces
+
+# === Braces ===
+csharp_prefer_braces = always:warning
+# Always use braces for if/else/for/while/etc. (even one-liners).
+# Example:
+#   if (x) {
+#       DoStuff();
+#   }
+
+# === Spacing ===
+csharp_space_after_keywords_in_control_flow_statements = true
+# Add a space after keywords like "if", "for", "while":
+#   if (x) { ... }
+
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+# No spaces inside method declaration parentheses:
+#   void Foo(int x, int y)
+
+# === Newline rules ===
+csharp_new_line_before_open_brace = none
+# Place "{" on the same line as the statement/declaration (K&R style):
+#   if (x) {
+#       ...
+#   }
+
+csharp_new_line_before_else = false
+# Place "else" on the same line as the closing brace of "if":
+#   } else {
+#       ...
+#   }
+
+csharp_new_line_before_catch = false
+# Same rule for "catch":
+#   } catch (Exception e) {
+#       ...
+#   }
+
+csharp_new_line_before_finally = false
+# Same rule for "finally":
+#   } finally {
+#       ...
+#   }

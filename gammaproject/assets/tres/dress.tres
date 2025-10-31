@@ -1,0 +1,11 @@
+[gd_resource type="CylinderMesh" format=3 uid="uid://ce2ed4w5biweg"]
+
+[resource]
+lightmap_size_hint = Vector2i(17, 14)
+top_radius = 0.2
+bottom_radius = 0.4
+height = 1.0
+radial_segments = 16
+rings = 12
+cap_top = false
+cap_bottom = false

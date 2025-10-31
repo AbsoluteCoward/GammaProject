@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3 uid="uid://bvhp8nrawnejj"]
+
+[ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="1_b2g8u"]
+[ext_resource type="PackedScene" uid="uid://cvgp5f0d7udpo" path="res://scenes/entities/dungeonExit.tscn" id="2_b7bw0"]
+[ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="2_idapr"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_n7flt"]
+
+[sub_resource type="Sky" id="Sky_d6lha"]
+sky_material = SubResource("ProceduralSkyMaterial_n7flt")
+
+[sub_resource type="Environment" id="Environment_pjj6r"]
+background_mode = 2
+sky = SubResource("Sky_d6lha")
+
+[node name="Level" type="Node3D"]
+
+[node name="Environment" type="Node" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, 0.564679, 0.825311, 0, -0.825311, 0.564679, 0, 1.23451, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
+environment = SubResource("Environment_pjj6r")
+
+[node name="Geometry" type="Node" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.252686, 0)
+use_collision = true
+size = Vector3(25, 0.5, 25)
+
+[node name="Entities" type="Node" parent="."]
+
+[node name="Player" parent="Entities" instance=ExtResource("1_b2g8u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.29167, 3.15617, 0)
+
+[node name="PlayerCamera" parent="Entities" instance=ExtResource("2_idapr")]
+transform = Transform3D(1, 0, 0, 0, 0.83528, 0.549825, 0, -0.549825, 0.83528, 0, 3.9183, 6.40695)
+
+[node name="DungeonExit" parent="Entities" instance=ExtResource("2_b7bw0")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.38138, -0.00268555, -8.14227)
+
+[node name="UI" type="Node" parent="."]

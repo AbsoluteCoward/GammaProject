@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cy0ns4wieuc4"]
+
+[node name="PlayerCamera" type="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 0.83528, 0.549825, 0, -0.549825, 0.83528, 0, 0, 0)
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+light_energy = 0.0
