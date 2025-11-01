@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Gamma {
     public partial class Main : Node {
@@ -26,9 +27,18 @@ namespace Gamma {
             switch (prisonSpotlight.node.GlobalPosition.Z) {
                 case < -32f:
                     prisonSpotlight.velocity.Z = Math.Abs(prisonSpotlight.velocity.Z);
+                    GD.Print(prisonSpotlight.velocity.Z);
+                    if (prisonSpotlight.velocity.Z > 10f) {
+                        PlayAudio3D(MetalSlam1, prisonSpotlight.node.GlobalPosition, 1f, 1f, true);
+                    }
+                    PlayAudio3D(MetalSlam, prisonSpotlight.node.GlobalPosition, 0.05f, 0.8f, true);
                     break;
                 case > 52f:
                     prisonSpotlight.velocity.Z = -Math.Abs(prisonSpotlight.velocity.Z);
+                    if (prisonSpotlight.velocity.Z < -10f) {
+                        PlayAudio3D(MetalSlam1, prisonSpotlight.node.GlobalPosition, 1f, 1f, true);
+                    }
+                    PlayAudio3D(MetalSlam, prisonSpotlight.node.GlobalPosition, 0.05f, 0.8f, true);
                     break;
             }
             prisonSpotlight.node.GlobalPosition += prisonSpotlight.velocity * (float)globalDelta;

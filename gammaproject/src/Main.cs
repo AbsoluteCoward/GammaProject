@@ -15,6 +15,9 @@ namespace Gamma {
             public string scenePath;
             public bool shouldChangeScene;
         }
+        public AudioStream MetalSlam = GD.Load<AudioStream>("res://assets/sound/metalslam.wav");
+        public AudioStream MetalSlam1 = GD.Load<AudioStream>("res://assets/sound/metalslam1.wav");
+        public AudioStream Teleport = GD.Load<AudioStream>("res://assets/sound/teleport.mp3");
         public float timeSinceSceneLoad;
         public static bool shouldSpawnMothman = false;
         public static bool outOfTime = false;
@@ -40,6 +43,7 @@ namespace Gamma {
             ),
             new Vector3(3.9579175E-09f, 1.3612776f, 0.02173036f)
         );
+        public const int DEFAULT_AUDIO_POOL_SIZE = 8;
         public void RotateTowards(Vector3 lookDirection, Node3D inputNode, float rotationSpeed) {
             if (lookDirection.LengthSquared() <= ALMOST_ZERO) { return; }
             float targetRotation = (float)Math.Atan2(-lookDirection.X, -lookDirection.Z);
@@ -103,6 +107,7 @@ namespace Gamma {
                 }
                 GD.Print("unknown entity: " + child.Name);
             }
+            Audio3DInitialize(DEFAULT_AUDIO_POOL_SIZE);
         }
         public override void _Ready() {
             GD.Print("Ready");
@@ -129,6 +134,7 @@ namespace Gamma {
                 InitializeScene();
             }
             if (Input.IsActionJustPressed("interact")) {
+                PlayAudio3D(MetalSlam, player.node.GlobalPosition, 1.0f, 1.0f, false);
                 int interactBoxSize = 4;
                 Vector3 interactBoxCenter = player.node.GlobalPosition - (player.node.GlobalTransform.Basis.Z * 2f);
                 Vector3 boundsMin = interactBoxCenter - new Vector3(interactBoxSize / 2, 0, interactBoxSize / 2);
