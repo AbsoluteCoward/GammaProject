@@ -1,0 +1,92 @@
+[gd_scene load_steps=4 format=3 uid="uid://coytvcqlue4h2"]
+
+[ext_resource type="Texture2D" uid="uid://bj8vt5qkb6x5w" path="res://assets/tres/gradient.tres" id="1_t6yfi"]
+[ext_resource type="Texture2D" uid="uid://bekwxfu88fluj" path="res://assets/textures/dialogueportraits/slinkportrait.png" id="2_utthg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t6yfi"]
+bg_color = Color(0, 0, 0, 0.556863)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_detail = 1
+anti_aliasing = false
+
+[node name="DialogueBox" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Gradient" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+texture = ExtResource("1_t6yfi")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CenterContainer"]
+texture_filter = 1
+layout_mode = 2
+texture = ExtResource("2_utthg")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -80.0
+offset_right = 80.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_t6yfi")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = 28.0
+offset_right = -80.0
+offset_bottom = -39.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+
+[node name="NameLabel" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Name"
+horizontal_alignment = 1
+
+[node name="TextLabel" type="Label" parent="VBoxContainer2"]
+texture_filter = 2
+layout_mode = 2
+theme_override_font_sizes/font_size = 9
+text = "lorem ipsum suckem dickum lorem ipsum suckem dickumlorem ipsum suckem dickumlorem ipsum suckem dickum i am losing my mind
+i'm going craaaaaaaaaaaaaaaaaazyyyyyyyyyyyyyyy
+ahhhhhhhhhhhhhhhhhhhhhhhhh
+wowie woeiw wowiewawadoafljk"
+horizontal_alignment = 1
+autowrap_mode = 3
+visible_characters_behavior = 1

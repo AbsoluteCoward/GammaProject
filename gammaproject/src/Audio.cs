@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 namespace Gamma {
     public partial class Main : Node {
@@ -18,15 +19,16 @@ namespace Gamma {
         int soundCount = 0;
         public SoundUI[] soundsui = new SoundUI[2];
         int soundUICount = 0;
-        public void Audio3DInitialize(int inputSize) {
-            for (int i = 0; i < sounds.Length; i++) {
-                if (sounds[i].node != null) {
-                    if (sounds[i].node.GetParent() == entitiesNode) {
-                        entitiesNode.RemoveChild(sounds[i].node);
-                    }
-                    sounds[i].node.QueueFree();
-                }
+        public readonly Dictionary<string, AudioStream> soundCache = new();
+
+        public AudioStream GetOrLoadSound(string path) {
+            if (!soundCache.TryGetValue(path, out var stream)) {
+                stream = GD.Load<AudioStream>(path);
+                soundCache[path] = stream;
             }
+            return stream;
+        }
+        public void Audio3DInitialize(int inputSize) {
             sounds = new Sound3D[inputSize];
             soundCount = 0;
             for (int i = 0; i < inputSize; i++) {
@@ -37,7 +39,7 @@ namespace Gamma {
                 sounds[i].timeRemaining = 0f;
             }
         }
-        
+
         public void Audio3DResize() {
             int newSize = sounds.Length * AUDIO_POOL_GROWTH_FACTOR;
             Array.Resize(ref sounds, newSize);

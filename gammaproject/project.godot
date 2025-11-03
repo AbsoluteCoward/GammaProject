@@ -29,6 +29,7 @@ window/size/window_width_override=1366
 window/size/window_height_override=768
 window/energy_saving/keep_screen_on=false
 window/stretch/mode="viewport"
+window/stretch/aspect="expand"
 window/vsync/vsync_mode=2
 
 [dotnet]

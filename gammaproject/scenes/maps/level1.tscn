@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bvhp8nrawnejj"]
+[gd_scene load_steps=8 format=3 uid="uid://bvhp8nrawnejj"]
 
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="1_b2g8u"]
-[ext_resource type="PackedScene" uid="uid://cvgp5f0d7udpo" path="res://scenes/entities/dungeonExit.tscn" id="2_b7bw0"]
+[ext_resource type="PackedScene" uid="uid://cvgp5f0d7udpo" path="res://scenes/entities/dungeon_exit.tscn" id="2_b7bw0"]
 [ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="2_idapr"]
+[ext_resource type="PackedScene" uid="uid://coytvcqlue4h2" path="res://scenes/UI/dialogue_box.tscn" id="4_4hhfj"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_n7flt"]
 
@@ -52,3 +53,5 @@ transform = Transform3D(1, 0, 0, 0, 0.83528, 0.549825, 0, -0.549825, 0.83528, 0,
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 2.38138, -0.00268555, -8.14227)
 
 [node name="UI" type="Node" parent="."]
+
+[node name="DialogueBox" parent="UI" instance=ExtResource("4_4hhfj")]
