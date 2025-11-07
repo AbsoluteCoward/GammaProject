@@ -5,17 +5,22 @@ namespace Gamma {
         public struct Player {
             public Vector3 wishDirection;
             public CharacterBody3D node;
+            public OmniLight3D teleportLight;
             public AnimationPlayer animationPlayer;
             public AnimationTree animationTree;
             public AnimationNodeStateMachinePlayback animationState;
             public Skeleton3D skeleton;
             public float moveSpeed;
             public float turnAnticipation;
+            public float maxTeleportDistance;
             public int headBoneIndex;
             public int chestBoneIndex;
-            public bool animationCanMove;
+            public bool wasLightActive;
+            public bool canAnimationMove;
             public bool isOnGround;
             public bool shouldBeAsleep;
+            public static float maxDistance = 1000f;
+            public static int meatCount = 0;
         }
         public struct PlayerCamera {
             public Camera3D node;
@@ -34,6 +39,8 @@ namespace Gamma {
             player.wishDirection = Vector3.Zero;
             player.node = inputPlayerNode;
             player.node.FloorSnapLength = 0.8f;
+            player.teleportLight = inputPlayerNode.GetChild<OmniLight3D>(4);
+            player.teleportLight.Visible = false;
             player.animationPlayer = inputPlayerNode.GetChild<Node3D>(2).GetChild<AnimationPlayer>(1);
             player.animationTree = inputPlayerNode.GetChild<AnimationTree>(3);
             player.animationState = (AnimationNodeStateMachinePlayback)player.animationTree.Get("parameters/playback");
@@ -50,6 +57,14 @@ namespace Gamma {
             player.turnAnticipation = 0f;
         }
         public void PlayerUpdate() {
+            if (physicsFramesSinceSceneLoad % (int)GD.RandRange(20f, 100f) == 0) {
+                Vector3 playerPosition = player.node.GlobalPosition;
+                if (playerPosition.X > Player.maxDistance || playerPosition.X < -Player.maxDistance ||
+                    playerPosition.Y > Player.maxDistance || playerPosition.Y < -Player.maxDistance ||
+                    playerPosition.Z > Player.maxDistance || playerPosition.Z < -Player.maxDistance) {
+                    player.node.GlobalPosition = Vector3.Zero;
+                }
+            }
             player.isOnGround = player.node.IsOnFloor();
             Camera3D currentCamera = GetViewport().GetCamera3D();
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
@@ -66,10 +81,23 @@ namespace Gamma {
                 player.animationState.Travel("Idle");
                 player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, 0f, 0.15f);
             }
-            if (Input.IsActionJustPressed("Teleport")) {
+            if (Input.IsActionPressed("Teleport")) {
+                GD.Print("light should be visible");
+                player.teleportLight.Visible = true;
+                player.teleportLight.TopLevel = true;
+                player.teleportLight.GlobalPosition += -player.node.GlobalTransform.Basis.Z.Normalized() * player.moveSpeed * (float)globalDelta * 4;
+                /*
                 player.node.GlobalPosition += player.wishDirection * 5f;
                 player.node.Velocity = player.wishDirection * player.node.Velocity.Length();
-                PlayAudio3D(teleportSFX, player.node.GlobalPosition, 0.1f, 1.0f, false);
+                PlayAudio3D(teleportSFX, player.node.GlobalPosition, 0.01f, 1.0f, false);
+                */
+            } else if (Input.IsActionJustReleased("Teleport")) {
+                PlayAudio3D(teleportSFX, player.teleportLight.GlobalPosition, 0.01f, 1.0f, false);
+                player.node.GlobalPosition = player.teleportLight.GlobalPosition;
+                player.teleportLight.GlobalPosition = player.node.GlobalPosition + Vector3.Up/2 - player.node.Transform.Basis.Z.Normalized();
+                player.teleportLight.GlobalRotation = player.node.GlobalRotation;
+                player.teleportLight.Visible = false;
+                player.teleportLight.TopLevel = false;
             }
             if (!player.isOnGround) {
                 player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;

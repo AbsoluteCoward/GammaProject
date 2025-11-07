@@ -19,14 +19,14 @@ namespace Gamma {
             text = 15 + " uncooked meat",
             textSpeed = 2f,
             lifeTime = 60f,
-            shouldSkipAnimation = true
+            shouldSkipAnimation = false
         };
         public static DialogueData slinkTalkToSelf0 = new DialogueData {
             speakerPortrait = GD.Load<Texture2D>("res://assets/textures/dialogueportraits/slinkportrait.png"),
             speakerName = "Slink",
-            text = (1 + 4) + " wowie",
+            text = "placeholder test",
             onDialogueComplete = new Action<Main>[] {
-                (main) => main.DialogueStart(slinkTalkToSelf1)
+                (Main) => Main.DialogueStart(slinkTalkToSelf1)
             },
             textSpeed = 2f,
             lifeTime = 60f,

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="GammaProject"
-run/main_scene="uid://bvhp8nrawnejj"
+run/main_scene="uid://b0pi1p7vaslco"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -35,6 +35,10 @@ window/vsync/vsync_mode=2
 [dotnet]
 
 project/assembly_name="GammaProject"
+
+[gui]
+
+theme/default_font_hinting=0
 
 [input]
 

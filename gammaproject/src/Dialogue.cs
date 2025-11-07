@@ -9,11 +9,12 @@ namespace Gamma {
             public Label dialogueTextLabel;
             public Label speakerNameLabel;
             public TextureRect portraitTexture;
+            public Panel portraitCoverPanel;
             public TextureRect gradient;
             public Control node;
             public float textSpeed;
             public float lifeTime;
-            public bool shouldSkipAnimation;
+            public float delay;
         }
         public struct DialogueData {
             public Texture2D speakerPortrait;
@@ -32,6 +33,7 @@ namespace Gamma {
             dialogueBox.gradient = inputNode.GetChild<TextureRect>(0);
             dialogueBox.portraitTexture = inputNode.GetChild<CenterContainer>(1).GetChild<TextureRect>(0);
             dialogueBox.portraitTexture.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
+            dialogueBox.portraitCoverPanel = inputNode.GetChild<Panel>(2);
             dialogueBox.speakerNameLabel = inputNode.GetChild<VBoxContainer>(3).GetChild<Label>(0);
             dialogueBox.dialogueTextLabel = inputNode.GetChild<VBoxContainer>(3).GetChild<Label>(1);
         }
@@ -41,6 +43,14 @@ namespace Gamma {
             dialogueBox.dialogueTextLabel.Text = inputDialogue.text;
             dialogueBox.dialogueTextLabel.VisibleCharacters = 0;
             dialogueBox.textSpeed = inputDialogue.textSpeed;
+            dialogueBox.delay = 0f;
+            if (inputDialogue.shouldSkipAnimation) {
+                dialogueBox.node.Modulate = new Color(1f, 1f, 1f, 0.0f);
+                dialogueBox.portraitCoverPanel.Modulate = new Color(1f, 1f, 1f, 0.0f);
+                dialogueBox.portraitTexture.Modulate = new Color(1f, 1f, 1f, 0.0f);
+                dialogueBox.speakerNameLabel.Modulate = new Color(1f, 1f, 1f, 0.0f);
+                dialogueBox.delay = 1.5f;
+            }
             dialogueBox.node.Visible = true;
             if (inputDialogue.onDialogueStart != null) {
                 for (int i = 0; i < inputDialogue.onDialogueStart.Length; i++) {
@@ -67,6 +77,21 @@ namespace Gamma {
         }
         public void DialogueUpdate() {
             if (!dialogueBox.node.Visible) { return; }
+            if (dialogueBox.node.Modulate.A < 1f) {
+                dialogueBox.node.Modulate = new Color(1f, 1f, 1f, dialogueBox.node.Modulate.A + 0.1f);
+            }
+            if (dialogueBox.portraitTexture.Modulate.A < 1f) {
+                dialogueBox.portraitTexture.Modulate = new Color(1f, 1f, 1f, dialogueBox.portraitTexture.Modulate.A + 0.1f);
+                return;
+            }
+            if (dialogueBox.delay > 1f) { dialogueBox.delay -= (float)globalDelta; return; }
+            if (dialogueBox.portraitCoverPanel.Modulate.A < 1f) {
+                dialogueBox.portraitCoverPanel.Modulate = new Color(1f, 1f, 1f, dialogueBox.portraitCoverPanel.Modulate.A + 0.1f);
+            }
+            if (dialogueBox.speakerNameLabel.Modulate.A < 1f) {
+                dialogueBox.speakerNameLabel.Modulate = new Color(1f, 1f, 1f, dialogueBox.speakerNameLabel.Modulate.A + 0.03f);
+                return;
+            }
             if (physicsFramesSinceSceneLoad % 4 == 0) {
                 dialogueBox.dialogueTextLabel.VisibleCharacters += (int)dialogueBox.textSpeed;
             }

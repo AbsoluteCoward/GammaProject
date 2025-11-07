@@ -770,18 +770,8 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7.1, 
 [node name="PrisonDoor5" parent="Entities" instance=ExtResource("7_iyhkt")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7.1, 1.4, 6.5)
 
-[node name="DungeonEntrance" parent="Entities" instance=ExtResource("3_ld8m6")]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -11.9521, 1.3804, -24.8788)
-
-[node name="Player" parent="Entities" instance=ExtResource("1_0dihh")]
-transform = Transform3D(1, 0, 1.06581e-14, 0, 1, 0, -1.06581e-14, 0, 1, -4.26864, 1.46221, -19.7657)
-
-[node name="PlayerCamera" parent="Entities" instance=ExtResource("4_etjn4")]
-transform = Transform3D(1, 0, 0, 0, 0.83528, 0.549825, 0, -0.549825, 0.83528, -4.3, 4.23441, -18.4608)
-size = 27.89
-
 [node name="PrisonSpotlight" type="Node3D" parent="Entities"]
-transform = Transform3D(-4.2222e-08, -0.258819, 0.965926, -1.13133e-08, 0.965926, 0.258819, -1, 0, -4.37114e-08, 0, 5, -22)
+transform = Transform3D(-4.2222e-08, -0.258819, 0.965926, -1.13133e-08, 0.965926, 0.258819, -1, 0, -4.37114e-08, 0, 5, -24)
 
 [node name="PitchPart" type="MeshInstance3D" parent="Entities/PrisonSpotlight"]
 mesh = SubResource("ArrayMesh_rfbsq")
@@ -790,7 +780,6 @@ skeleton = NodePath("")
 [node name="StaticBody3D" type="StaticBody3D" parent="Entities/PrisonSpotlight/PitchPart"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Entities/PrisonSpotlight/PitchPart/StaticBody3D"]
-transform = Transform3D(1, 0, -1.06581e-14, 1.77636e-15, 1, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_iq7f2")
 
 [node name="YawPart" type="MeshInstance3D" parent="Entities/PrisonSpotlight"]
@@ -806,19 +795,38 @@ mesh = SubResource("ArrayMesh_31rrb")
 skeleton = NodePath("")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Entities/PrisonSpotlight"]
-transform = Transform3D(1, 8.88178e-16, -3.55271e-15, 8.88178e-16, 1, 2.98023e-08, 0, -2.98023e-08, 1, 2, 2.2, -1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -1)
+layers = 3
 light_color = Color(1, 0.918333, 0.9, 1)
 light_energy = 6.0
 shadow_enabled = true
-shadow_bias = 0.04
-shadow_normal_bias = 3.015
+shadow_bias = 0.01
+shadow_reverse_cull_face = true
 spot_range = 128.0
 spot_attenuation = 2.0
 spot_angle = 64.0
 spot_angle_attenuation = 0.02
 
+[node name="OmniLight3D" type="OmniLight3D" parent="Entities/PrisonSpotlight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.6, -2)
+light_color = Color(0.69, 0, 0.0114998, 1)
+light_energy = 5.303
+omni_range = 4.0
+omni_attenuation = 2.0
+omni_shadow_mode = 0
+
 [node name="Camera3D" type="Camera3D" parent="Entities/PrisonSpotlight"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, -1)
+
+[node name="DungeonEntrance" parent="Entities" instance=ExtResource("3_ld8m6")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -11.9521, 1.3804, -24.8788)
+
+[node name="Player" parent="Entities" instance=ExtResource("1_0dihh")]
+transform = Transform3D(1, 0, 1.06581e-14, 0, 1, 0, -1.06581e-14, 0, 1, -4.26864, 1.46221, -22.7657)
+
+[node name="PlayerCamera" parent="Entities" instance=ExtResource("4_etjn4")]
+transform = Transform3D(1, 0, 0, 0, 0.83528, 0.549825, 0, -0.549825, 0.83528, -4.3, 4.23441, -21.4608)
+size = 27.89
 
 [node name="UI" type="Node" parent="."]
 

@@ -113,7 +113,6 @@ namespace Gamma {
             globalPhysicsMaterial = new PhysicsMaterial();
             globalPhysicsMaterial.Friction = 0.2f;
             globalPhysicsMaterial.Bounce = 0f;
-            //DialogueDataInitialize();
         }
         public override void _Process(double delta) {
             string currentPlayerAnimationName = player.animationState.GetCurrentNode();
@@ -125,7 +124,7 @@ namespace Gamma {
                     switch (currentFrame) {
                         case 0.33f or 1.54f:
                             if (player.isOnGround) {
-                                PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, (float)GD.Randfn(1f, 0.01f), true);
+                                PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                             }
                             break;
                     }
@@ -136,7 +135,7 @@ namespace Gamma {
             globalDelta = delta;
             timeSinceSceneLoad += (float)delta;
             physicsFramesSinceSceneLoad++;
-            if (!shouldSpawnMothman && timeSinceSceneLoad >= 300f) {
+            if (!shouldSpawnMothman && timeSinceSceneLoad >= 2f) {
                 shouldSpawnMothman = true;
                 GD.Print("Mothman should spawn");
             }
