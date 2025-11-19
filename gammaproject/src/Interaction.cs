@@ -9,7 +9,7 @@ namespace Gamma {
         }
         public void Interact() {
             if (dialogueBox.node.Visible) {
-                if (dialogueBox.dialogueTextLabel.VisibleRatio >= 1f || dialogueBox.dialogueTextLabel.VisibleCharacters >= dialogueBox.dialogueTextLabel.Text.Length) { DialogueEnd(); return;}
+                if (dialogueBox.dialogueTextLabel.VisibleRatio >= 1f || dialogueBox.dialogueTextLabel.VisibleCharacters >= dialogueBox.dialogueTextLabel.Text.Length) { DialogueEnd(); return; }
                 dialogueBox.dialogueTextLabel.VisibleCharacters = dialogueBox.dialogueTextLabel.Text.Length;
                 dialogueBox.node.Modulate = new Color(1f, 1f, 1f, 1.0f);
                 dialogueBox.portraitCoverPanel.Modulate = new Color(1f, 1f, 1f, 1.0f);

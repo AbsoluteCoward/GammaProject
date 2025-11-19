@@ -14,7 +14,13 @@ namespace Gamma {
         public const float ALMOST_ZERO = 0.00001f;
         public const float GRAVITY = 9.81f;
         public static readonly Vector3 VECTOR3_DEFAULT_UPWARD_CAMERA_OFFSET = new Vector3(0, 1.246f, 0);
-        public static readonly Transform3D DEFAULT_SLINK_CHEST_POSE = new Transform3D(new Basis(new Vector3(0.99487317f, 0.0031584306f, 0.10108134f), new Vector3(-0.0003058136f, 0.99960166f, -0.028224066f), new Vector3(-0.10113021f, 0.02804844f, 0.99447775f)), new Vector3(3.9579175E-09f, 1.3612776f, 0.02173036f));
+        public static readonly Transform3D DEFAULT_SLINK_CHEST_POSE = new Transform3D(
+            new Vector3(-1f, 0f, 0f),
+            new Vector3(0f, 1f, 0f),
+            new Vector3(0f, 0f, -1f),
+            new Vector3(-0.0055462457f, 1.320011f, 0.016058354f)
+        );
+
         public AudioStream metalDinkSFX = GD.Load<AudioStream>("res://assets/sound/metalslam.wav");
         public AudioStream metalSlamSFX = GD.Load<AudioStream>("res://assets/sound/metalslam1.wav");
         public AudioStream footStepMetalSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");
@@ -114,27 +120,37 @@ namespace Gamma {
             globalPhysicsMaterial.Friction = 0.2f;
             globalPhysicsMaterial.Bounce = 0f;
         }
-        public override void _Process(double delta) {
-            string currentPlayerAnimationName = player.animationState.GetCurrentNode();
-            float currentFrame = (float)Math.Round(player.animationState.GetCurrentPlayPosition(), 2);
-            switch (currentPlayerAnimationName) {
-                case "Idle":
-                    break;
-                case "Walk":
-                    switch (currentFrame) {
-                        case 0.33f or 1.54f:
-                            if (player.isOnGround) {
-                                PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
-                            }
-                            break;
-                    }
-                    break;
+        private bool HasCrossedFrame(float previousFrame, float currentFrame, float targetFrame) {
+            if (currentFrame < previousFrame) {
+                return targetFrame >= previousFrame || targetFrame <= currentFrame;
             }
+            return previousFrame < targetFrame && targetFrame <= currentFrame;
         }
         public override void _PhysicsProcess(double delta) {
             globalDelta = delta;
             timeSinceSceneLoad += (float)delta;
             physicsFramesSinceSceneLoad++;
+            inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
+            if (GetTree().CurrentScene != previousFrameScene) {
+                isSceneLoaded = false;
+                previousFrameScene = GetTree().CurrentScene;
+                InitializeScene();
+            }
+            string currentPlayerAnimationName = player.animationState.GetCurrentNode();
+            float currentFrame = (float)Math.Round(player.animationState.GetCurrentPlayPosition(), 2);
+                switch (currentPlayerAnimationName) {
+                case "Walk":
+                    if (HasCrossedFrame(player.previousAnimationFrame, currentFrame, 0.33f) ||
+                        HasCrossedFrame(player.previousAnimationFrame, currentFrame, 1.54f)) {
+                        if (player.isOnGround) {
+                            PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, 
+                                Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                        }
+                    }
+                    ApplyWalkLean();
+                    break;
+            }
+            player.previousAnimationFrame = currentFrame;
             if (!shouldSpawnMothman && timeSinceSceneLoad >= 2f) {
                 shouldSpawnMothman = true;
                 GD.Print("Mothman should spawn");
@@ -142,12 +158,6 @@ namespace Gamma {
             if (!outOfTime && timeSinceSceneLoad >= 600f) {
                 outOfTime = true;
                 GD.Print("Out of time");
-            }
-            inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
-            if (GetTree().CurrentScene != previousFrameScene) {
-                isSceneLoaded = false;
-                previousFrameScene = GetTree().CurrentScene;
-                InitializeScene();
             }
             if (Input.IsActionJustPressed("interact")) {
                 Interact();

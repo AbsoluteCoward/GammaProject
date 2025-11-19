@@ -607,7 +607,14 @@ attachments/6/spatial_attachment_path = NodePath("")
 attachments/6/offset = Vector3(0, 0, 0)
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 17.9342, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 17.9342, -13)
+light_color = Color(1, 0.366667, 0, 1)
+light_energy = 10.0
+omni_range = 4096.0
+omni_attenuation = 1.504
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 17.9342, 28)
 light_color = Color(1, 0.366667, 0, 1)
 light_energy = 10.0
 omni_range = 4096.0
