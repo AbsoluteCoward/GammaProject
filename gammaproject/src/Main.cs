@@ -13,7 +13,8 @@ namespace Gamma {
         public const int DEFAULT_AUDIO_POOL_SIZE = 8;
         public const float ALMOST_ZERO = 0.00001f;
         public const float GRAVITY = 9.81f;
-        public static readonly Vector3 VECTOR3_DEFAULT_UPWARD_CAMERA_OFFSET = new Vector3(0, 1.246f, 0);
+        public static readonly Vector3 DEFAULT_UPWARD_CAMERA_OFFSET = new Vector3(0, 1.246f, 0);
+        public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
         public static readonly Transform3D DEFAULT_SLINK_CHEST_POSE = new Transform3D(
             new Vector3(-1f, 0f, 0f),
             new Vector3(0f, 1f, 0f),
@@ -138,12 +139,12 @@ namespace Gamma {
             }
             string currentPlayerAnimationName = player.animationState.GetCurrentNode();
             float currentFrame = (float)Math.Round(player.animationState.GetCurrentPlayPosition(), 2);
-                switch (currentPlayerAnimationName) {
+            switch (currentPlayerAnimationName) {
                 case "Walk":
                     if (HasCrossedFrame(player.previousAnimationFrame, currentFrame, 0.33f) ||
                         HasCrossedFrame(player.previousAnimationFrame, currentFrame, 1.54f)) {
                         if (player.isOnGround) {
-                            PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, 
+                            PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f,
                                 Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                         }
                     }

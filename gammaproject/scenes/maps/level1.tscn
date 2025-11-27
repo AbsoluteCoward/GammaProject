@@ -11,7 +11,8 @@
 [sub_resource type="Environment" id="Environment_aobmw"]
 background_mode = 1
 background_energy_multiplier = 0.0
-ambient_light_energy = 0.0
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
 reflected_light_source = 1
 fog_enabled = true
 fog_light_color = Color(0, 0, 0, 1)

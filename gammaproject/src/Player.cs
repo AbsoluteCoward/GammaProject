@@ -3,10 +3,10 @@ using System;
 namespace Gamma {
     public partial class Main : Node {
         public struct TeleportEntity {
-            public Node3D node;
+            public CharacterBody3D node;
             public SpotLight3D light;
             public RayCast3D topRayCast;
-            public RayCast3D forwardRayCast;
+            public Node3D shadowSlink;
         }
         public struct Player {
             public Vector3 wishDirection;
@@ -45,13 +45,10 @@ namespace Gamma {
         public void PlayerInitialize(CharacterBody3D inputPlayerNode) {
             player.wishDirection = Vector3.Zero;
             player.node = inputPlayerNode;
-            player.node.FloorSnapLength = 0.8f;
-            player.teleportEntity.node = inputPlayerNode.GetChild<Node3D>(4);
-            player.teleportEntity.light = inputPlayerNode.GetChild<Node3D>(4).GetChild<SpotLight3D>(0);
-            player.teleportEntity.light.LightEnergy = 0;
-            player.teleportEntity.topRayCast = inputPlayerNode.GetChild<Node3D>(4).GetChild<RayCast3D>(1);
-            player.teleportEntity.forwardRayCast = inputPlayerNode.GetChild<Node3D>(4).GetChild<RayCast3D>(2);
-            player.teleportEntity.forwardRayCast.CollisionMask = 2;
+            player.teleportEntity.node = inputPlayerNode.GetChild<CharacterBody3D>(4);
+            player.teleportEntity.shadowSlink = player.teleportEntity.node.GetChild<Node3D>(0);
+            player.teleportEntity.light = player.teleportEntity.node.GetChild<SpotLight3D>(1);
+            player.teleportEntity.topRayCast = player.teleportEntity.node.GetChild<RayCast3D>(2);
             player.animationPlayer = inputPlayerNode.GetChild<Node3D>(2).GetChild<AnimationPlayer>(1);
             player.animationTree = inputPlayerNode.GetChild<AnimationTree>(3);
             player.animationState = (AnimationNodeStateMachinePlayback)player.animationTree.Get("parameters/playback");
@@ -61,13 +58,14 @@ namespace Gamma {
                     player.headBoneIndex = i;
                 }
                 if (player.skeleton.GetBoneName(i) == "Abdomen") {
-                    GD.Print("Chest bone index: " + i);
                     player.chestBoneIndex = i;
                 }
             }
             player.moveSpeed = 2.0f;
             player.turnAnticipation = 0f;
             player.previousAnimationFrame = 0f;
+            player.node.FloorSnapLength = 0.8f;
+            player.teleportEntity.light.LightEnergy = 0;
         }
         public void PlayerUpdate() {
             if (physicsFramesSinceSceneLoad % (int)GD.RandRange(20f, 100f) == 0) {
@@ -82,79 +80,94 @@ namespace Gamma {
             Camera3D currentCamera = GetViewport().GetCamera3D();
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
             player.wishDirection = currentCamera.GlobalTransform.Basis.Z.Normalized() * inputDirection.Y + currentCamera.GlobalTransform.Basis.X.Normalized() * inputDirection.X;
-            player.wishDirection = new Vector3(player.wishDirection.X, 0, player.wishDirection.Z).Normalized();
+            player.wishDirection *= Y_FLAT;
             Vector3 rootPosition = player.animationTree.GetRootMotionPosition();
             Vector3 rootVelocity = player.node.Transform.Basis * rootPosition / (float)globalDelta;
-            if (player.wishDirection.Length() > 0.1f && player.isOnGround) {
+            if (Input.IsActionJustPressed("abort")) {
+            }
+            if ((player.wishDirection.Length() > 0.1f || Input.IsActionPressed("Teleport")) && player.isOnGround) {
                 player.animationState.Travel("Walk");
-                float targetAngle = Mathf.Atan2(playerForward.Cross(player.wishDirection).Y, playerForward.Dot(player.wishDirection));
+                Vector3 direction = Input.IsActionPressed("Teleport") ?
+                    -player.node.Transform.Basis.Z.Normalized() :
+                    player.wishDirection;
+                float targetAngle = Mathf.Atan2(playerForward.Cross(direction).Y, playerForward.Dot(direction));
                 player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
-                RotateTowards(player.wishDirection, player.node, 0.2f);
+                RotateTowards(direction, player.node, 0.2f);
             } else {
                 player.animationState.Travel("Idle");
                 player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, 0f, 0.15f);
             }
             if (Input.IsActionPressed("Teleport")) {
-                player.teleportEntity.light.LightEnergy = 8f;
-                player.teleportEntity.node.TopLevel = true;
-                player.teleportEntity.node.GlobalRotation = player.node.GlobalRotation;
-                if (!player.teleportEntity.forwardRayCast.IsColliding()) {
-                    player.teleportEntity.node.GlobalPosition += -player.node.GlobalTransform.Basis.Z.Normalized() * player.moveSpeed * (float)globalDelta * 6;
+                if (Input.IsActionJustPressed("Teleport")) {
+                    TurnShadowsOffOrOn(false);
+                    player.teleportEntity.node.GetChild<Node3D>(0).Visible = true;
+                    player.teleportEntity.node.TopLevel = true;
+                    player.teleportEntity.node.GlobalPosition = player.node.GlobalPosition;
                 }
-
-                if (player.teleportEntity.topRayCast.IsColliding()) {
-                    player.teleportEntity.light.GlobalPosition = player.teleportEntity.topRayCast.GetCollisionPoint() + new Vector3(0, 2f, 0);
-                } else {
-                    player.teleportEntity.light.GlobalPosition = player.teleportEntity.node.GlobalPosition;
+                player.teleportEntity.node.Velocity = player.wishDirection.Length() > 0.1f ?
+                    player.wishDirection * player.moveSpeed * 4f :
+                    -player.teleportEntity.node.Transform.Basis.Z.Normalized() * player.moveSpeed * 4f;
+                player.teleportEntity.light.LightEnergy = 1f;
+                player.wishDirection = -player.node.Transform.Basis.Z.Normalized();
+                RotateTowards((player.teleportEntity.node.Velocity * Y_FLAT).Normalized(), player.teleportEntity.node, 0.4f);
+                bool IsTeleportNodeCloseToCollision = player.teleportEntity.node.GlobalPosition.Y < player.teleportEntity.topRayCast.GetCollisionPoint().Y;
+                bool CanTeleportEntityMoveVertically =
+                    Math.Abs(player.teleportEntity.node.GlobalPosition.Y - player.teleportEntity.topRayCast.GetCollisionPoint().Y) > 0.1f &&
+                    player.teleportEntity.topRayCast.GetCollisionNormal().Dot(Vector3.Up) > 0.7f;
+                if (CanTeleportEntityMoveVertically) { player.teleportEntity.node.GlobalPosition = player.teleportEntity.topRayCast.GetCollisionPoint() + new Vector3(0, 0.1f, 0); }
+                if (player.teleportEntity.topRayCast.IsColliding() && IsTeleportNodeCloseToCollision) {
+                    player.teleportEntity.node.GlobalPosition = player.teleportEntity.topRayCast.GetCollisionPoint() + new Vector3(0, 0.1f, 0);
                 }
-
-                float forwardRayCastYPosition = player.teleportEntity.topRayCast.IsColliding() ?
-                    player.teleportEntity.topRayCast.GetCollisionPoint().Y + 0.2f :
-                    player.teleportEntity.node.GlobalPosition.Y + 0.2f;
-                player.teleportEntity.forwardRayCast.GlobalPosition = new Vector3(
-                    player.teleportEntity.node.GlobalPosition.X,
-                    forwardRayCastYPosition,
-                    player.teleportEntity.node.GlobalPosition.Z
-                );
+                player.teleportEntity.node.MoveAndSlide();
             } else if (Input.IsActionJustReleased("Teleport")) {
+                TurnShadowsOffOrOn(true);
+                player.teleportEntity.node.GetChild<Node3D>(0).Visible = false;
                 PlayAudio3D(teleportSFX, player.teleportEntity.node.GlobalPosition, 0.01f, 1.0f, false);
-                player.node.GlobalPosition = player.teleportEntity.topRayCast.IsColliding() ?
-                    player.teleportEntity.topRayCast.GetCollisionPoint() + new Vector3(0, 0.1f, 0) :
-                    player.teleportEntity.node.GlobalPosition;
-                player.teleportEntity.node.GlobalPosition = player.node.GlobalPosition + player.node.Transform.Basis.Z.Normalized();
-                player.teleportEntity.forwardRayCast.Position = new Vector3(0, 0.1f, 0);
+                player.node.GlobalPosition = player.teleportEntity.node.GlobalPosition;
+                player.teleportEntity.node.GlobalPosition = player.node.GlobalPosition;
                 player.teleportEntity.light.LightEnergy = 0;
                 player.teleportEntity.node.TopLevel = false;
             }
-            if (!player.isOnGround) {
-                player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
-            }
+            if (!player.isOnGround) { player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta; }
             player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
             player.node.MoveAndSlide();
-            GD.Print(player.skeleton.GetBoneGlobalPose(player.chestBoneIndex));
+        }
+        public void TurnShadowsOffOrOn(bool inputDecision) {
+            int whatever = 256;
+            Node[] stack = new Node[whatever];
+            int stackSize = 0;
+            stack[stackSize++] = player.skeleton;
+            while (stackSize > 0) {
+                Node currentNode = stack[--stackSize];
+                if (currentNode.GetType() == typeof(MeshInstance3D)) {
+                    MeshInstance3D mesh = (MeshInstance3D)currentNode;
+                    mesh.CastShadow = inputDecision ? GeometryInstance3D.ShadowCastingSetting.On : GeometryInstance3D.ShadowCastingSetting.Off;
+                }
+                int childCount = currentNode.GetChildCount();
+                for (int i = 0; i < childCount; i++) {
+                    stack[stackSize++] = currentNode.GetChild(i);
+                    if (stackSize >= whatever) {
+                        GD.PrintErr("TurnShadowsOffOrOn: Stack overflow");
+                        return;
+                    }
+                }
+            }
         }
         public void ApplyWalkLean() {
-            if (player.skeleton == null) return;
-
+            if (player.skeleton == null) { return; }
             float chestTurnAmount = 1f;
             float chestRotation = player.turnAnticipation * chestTurnAmount;
-
-            // grab pelvis height
             Transform3D pelvisPose = player.skeleton.GetBoneGlobalPose(1);
             float pelvisY = pelvisPose.Origin.Y;
-
             Transform3D chestPose = DEFAULT_SLINK_CHEST_POSE;
-
             chestPose.Origin = new Vector3(
-                chestPose.Origin.X ,
+                chestPose.Origin.X,
                 chestPose.Origin.Y + (pelvisY - 1.184f),
                 chestPose.Origin.Z
             );
             Vector3 chestRotationAxis = player.skeleton.GetBoneGlobalRest(player.chestBoneIndex).Basis.Y;
-            GD.Print(player.skeleton.GetBoneGlobalRest(player.chestBoneIndex).Basis.Y);
             Quaternion chestTwist = new Quaternion(chestRotationAxis, chestRotation);
             chestPose.Basis = chestPose.Basis * new Basis(chestTwist);
-
             player.skeleton.SetBoneGlobalPose(player.chestBoneIndex, chestPose);
         }
 
@@ -191,7 +204,7 @@ namespace Gamma {
             float cameraAngleRadians = Mathf.DegToRad(inputCamera.angle);
             Vector3 offsetDirection = new Vector3(Mathf.Sin(cameraAngleRadians), 0, Mathf.Cos(cameraAngleRadians));
             inputCamera.WallRayCast.TargetPosition = inputCamera.WallRayCast.ToLocal(inputCamera.WallRayCast.GlobalPosition + (offsetDirection * inputCamera.offsetDistance) + new Vector3(0, inputCamera.offsetHeight, 0));
-            inputCamera.WallRayCast.GlobalPosition = player.node.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild<MeshInstance3D>(0).GlobalPosition + VECTOR3_DEFAULT_UPWARD_CAMERA_OFFSET;
+            inputCamera.WallRayCast.GlobalPosition = player.node.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild<MeshInstance3D>(0).GlobalPosition + DEFAULT_UPWARD_CAMERA_OFFSET;
             inputCamera.node.GlobalPosition = inputCamera.WallRayCast.IsColliding() ?
                 inputCamera.node.GlobalPosition.Lerp(inputCamera.WallRayCast.GetCollisionPoint() + inputCamera.WallRayCast.GetCollisionNormal() * 0.1f, playerCamera.positionLerpSpeed * 2)
                 : inputCamera.node.GlobalPosition.Lerp(inputCamera.WallRayCast.ToGlobal(inputCamera.WallRayCast.TargetPosition), inputCamera.positionLerpSpeed);
