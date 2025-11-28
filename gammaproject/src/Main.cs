@@ -13,6 +13,7 @@ namespace Gamma {
         public const int DEFAULT_AUDIO_POOL_SIZE = 8;
         public const float ALMOST_ZERO = 0.00001f;
         public const float GRAVITY = 9.81f;
+        public static readonly Vector3 TELEPORT_VERTICAL_OFFSET = new Vector3(0, 0.1f, 0);
         public static readonly Vector3 DEFAULT_UPWARD_CAMERA_OFFSET = new Vector3(0, 1.246f, 0);
         public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
         public static readonly Transform3D DEFAULT_SLINK_CHEST_POSE = new Transform3D(
@@ -21,7 +22,15 @@ namespace Gamma {
             new Vector3(0f, 0f, -1f),
             new Vector3(-0.0055462457f, 1.320011f, 0.016058354f)
         );
-
+        public struct SceneState {
+            public Node previousFrameScene;
+            public Node currentScene;
+            public float timeSinceSceneLoad;
+            public int physicsFramesSinceSceneLoad;
+            public string CurrentScenePath;
+            public bool isSceneLoaded;
+        }
+        public SceneState sceneState;
         public AudioStream metalDinkSFX = GD.Load<AudioStream>("res://assets/sound/metalslam.wav");
         public AudioStream metalSlamSFX = GD.Load<AudioStream>("res://assets/sound/metalslam1.wav");
         public AudioStream footStepMetalSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");
@@ -29,20 +38,16 @@ namespace Gamma {
         public Interactable[] interactables;
         public PendingSceneChange pendingSceneChange;
         public DialogueBox dialogueBox;
+        public SubtitleBox subtitleBox;
         public Player player;
         public PlayerCamera playerCamera;
         public PrisonSpotLight prisonSpotlight;
-        public Node previousFrameScene;
         public Node entitiesNode;
         public PhysicsMaterial globalPhysicsMaterial;
         public Vector2 inputDirection;
         public double globalDelta;
-        public float timeSinceSceneLoad;
-        public int physicsFramesSinceSceneLoad;
-        public string CurrentScenePath;
         public bool shouldSpawnMothman = false;
         public bool outOfTime = false;
-        public bool isSceneLoaded;
         public void RotateTowards(Vector3 lookDirection, Node3D inputNode, float rotationSpeed) {
             if (lookDirection.LengthSquared() <= ALMOST_ZERO) { return; }
             float targetRotation = (float)Math.Atan2(-lookDirection.X, -lookDirection.Z);
@@ -65,15 +70,15 @@ namespace Gamma {
         }
         public void ProcessPendingSceneChange() {
             if (!pendingSceneChange.shouldChangeScene) { return; }
-            isSceneLoaded = false;
+            sceneState.isSceneLoaded = false;
             GetTree().ChangeSceneToFile(pendingSceneChange.scenePath);
             pendingSceneChange.shouldChangeScene = false;
             pendingSceneChange.scenePath = "";
         }
         public void InitializeScene() {
             GD.Print("Initializing scene");
-            timeSinceSceneLoad = 0;
-            physicsFramesSinceSceneLoad = 0;
+            sceneState.timeSinceSceneLoad = 0;
+            sceneState.physicsFramesSinceSceneLoad = 0;
             player = new Player();
             playerCamera = new PlayerCamera();
             interactables = new Interactable[DEFAULT_INTERACTABLES_SIZE];
@@ -129,40 +134,23 @@ namespace Gamma {
         }
         public override void _PhysicsProcess(double delta) {
             globalDelta = delta;
-            timeSinceSceneLoad += (float)delta;
-            physicsFramesSinceSceneLoad++;
+            sceneState.timeSinceSceneLoad += (float)delta;
+            sceneState.physicsFramesSinceSceneLoad++;
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
-            if (GetTree().CurrentScene != previousFrameScene) {
-                isSceneLoaded = false;
-                previousFrameScene = GetTree().CurrentScene;
+            if (GetTree().CurrentScene != sceneState.previousFrameScene) {
+                sceneState.isSceneLoaded = false;
+                sceneState.previousFrameScene = GetTree().CurrentScene;
                 InitializeScene();
             }
-            string currentPlayerAnimationName = player.animationState.GetCurrentNode();
-            float currentFrame = (float)Math.Round(player.animationState.GetCurrentPlayPosition(), 2);
-            switch (currentPlayerAnimationName) {
-                case "Walk":
-                    if (HasCrossedFrame(player.previousAnimationFrame, currentFrame, 0.33f) ||
-                        HasCrossedFrame(player.previousAnimationFrame, currentFrame, 1.54f)) {
-                        if (player.isOnGround) {
-                            PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f,
-                                Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
-                        }
-                    }
-                    ApplyWalkLean();
-                    break;
-            }
-            player.previousAnimationFrame = currentFrame;
-            if (!shouldSpawnMothman && timeSinceSceneLoad >= 2f) {
+            if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) {
                 shouldSpawnMothman = true;
                 GD.Print("Mothman should spawn");
             }
-            if (!outOfTime && timeSinceSceneLoad >= 600f) {
+            if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) {
                 outOfTime = true;
                 GD.Print("Out of time");
             }
-            if (Input.IsActionJustPressed("interact")) {
-                Interact();
-            }
+            if (Input.IsActionJustPressed("interact")) { Interact(); }
             PlayerUpdate();
             PlayerCameraUpdate(ref playerCamera);
             DialogueUpdate();

@@ -92,7 +92,7 @@ namespace Gamma {
                 dialogueBox.speakerNameLabel.Modulate = new Color(1f, 1f, 1f, dialogueBox.speakerNameLabel.Modulate.A + 0.03f);
                 return;
             }
-            if (physicsFramesSinceSceneLoad % 4 == 0) {
+            if (sceneState.physicsFramesSinceSceneLoad % 4 == 0) {
                 dialogueBox.dialogueTextLabel.VisibleCharacters += (int)dialogueBox.textSpeed;
             }
             bool isCharacterDoneTalking =

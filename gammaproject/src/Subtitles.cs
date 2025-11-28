@@ -23,5 +23,10 @@ namespace Gamma {
             public float lifeTime;
             public bool shouldFreezePlayer;
         }
+        public void SubtitlesInitialize(Node2D inputSubtitleNode) {
+            subtitleBox.node = inputSubtitleNode;
+            subtitleBox.vboxContainer = subtitleBox.node.GetChild<VBoxContainer>(0);
+            subtitleBox.activeSubtitles = new SubtitleLabel[4];
+        }
     }
 }
