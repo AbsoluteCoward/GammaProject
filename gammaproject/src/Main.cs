@@ -127,9 +127,7 @@ namespace Gamma {
             globalPhysicsMaterial.Bounce = 0f;
         }
         private bool HasCrossedFrame(float previousFrame, float currentFrame, float targetFrame) {
-            if (currentFrame < previousFrame) {
-                return targetFrame >= previousFrame || targetFrame <= currentFrame;
-            }
+            if (currentFrame < previousFrame) { return targetFrame >= previousFrame || targetFrame <= currentFrame; }
             return previousFrame < targetFrame && targetFrame <= currentFrame;
         }
         public override void _PhysicsProcess(double delta) {
@@ -142,14 +140,8 @@ namespace Gamma {
                 sceneState.previousFrameScene = GetTree().CurrentScene;
                 InitializeScene();
             }
-            if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) {
-                shouldSpawnMothman = true;
-                GD.Print("Mothman should spawn");
-            }
-            if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) {
-                outOfTime = true;
-                GD.Print("Out of time");
-            }
+            if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
+            if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
             if (Input.IsActionJustPressed("interact")) { Interact(); }
             PlayerUpdate();
             PlayerCameraUpdate(ref playerCamera);

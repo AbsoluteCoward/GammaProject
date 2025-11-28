@@ -61,10 +61,6 @@ namespace Gamma {
             dialogueBox.lifeTime = inputDialogue.lifeTime;
         }
         public void DialogueEnd() {
-            if (dialogueBox.node == null) {
-                GD.Print("Dialogue box is null");
-                return;
-            }
             dialogueBox.node.Visible = false;
             Action<Main>[] completionActions = dialogueBox.onDialogueComplete;
             dialogueBox.onDialogueComplete = null;
