@@ -131,14 +131,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.4, 0, 10.5)
 
 [node name="UI" type="Node" parent="."]
 
-[node name="DialogueBox" parent="UI" instance=ExtResource("7_e1bjx")]
-metadata/_edit_use_anchors_ = true
-
 [node name="SubtitleBox" type="VBoxContainer" parent="UI"]
 anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
+offset_left = -57.5
+offset_right = 57.5
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 2
@@ -154,3 +153,6 @@ text = "example text 2"
 [node name="Label2" type="Label" parent="UI/SubtitleBox"]
 layout_mode = 2
 text = "example text 3"
+
+[node name="DialogueBox" parent="UI" instance=ExtResource("7_e1bjx")]
+metadata/_edit_use_anchors_ = true

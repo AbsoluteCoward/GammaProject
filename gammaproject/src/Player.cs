@@ -65,14 +65,14 @@ namespace Gamma {
             player.teleportEntity.light.LightEnergy = 0;
             player.hasPlayerModelCopy = false;
         }
-        
+
         public void TurnShadowsOffOrOn(Node3D inputNode, bool inputDecision) {
             int maxStackSize = 256;
             Node[] stack = new Node[maxStackSize];
             int stackSize = 0;
             stack[stackSize++] = inputNode;
-            GeometryInstance3D.ShadowCastingSetting shadowSetting = inputDecision ? 
-                GeometryInstance3D.ShadowCastingSetting.On : 
+            GeometryInstance3D.ShadowCastingSetting shadowSetting = inputDecision ?
+                GeometryInstance3D.ShadowCastingSetting.On :
                 GeometryInstance3D.ShadowCastingSetting.Off;
             while (stackSize > 0) {
                 Node currentNode = stack[--stackSize];
@@ -182,7 +182,7 @@ namespace Gamma {
             player.isOnGround = player.node.IsOnFloor();
             Camera3D currentCamera = GetViewport().GetCamera3D();
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
-            player.wishDirection = (currentCamera.GlobalTransform.Basis.Z.Normalized() * inputDirection.Y + 
+            player.wishDirection = (currentCamera.GlobalTransform.Basis.Z.Normalized() * inputDirection.Y +
                                    currentCamera.GlobalTransform.Basis.X.Normalized() * inputDirection.X)
                                    * Y_FLAT;
             Vector3 rootPosition = player.animationTree.GetRootMotionPosition();
@@ -235,27 +235,28 @@ namespace Gamma {
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }
-            if (Input.IsActionJustPressed("cameraRight")) { inputCamera.targetAngle -= 90f;
-            } else if (Input.IsActionJustPressed("cameraLeft")) { inputCamera.targetAngle += 90f;}
+            if (Input.IsActionJustPressed("cameraRight")) {
+                inputCamera.targetAngle -= 90f;
+            } else if (Input.IsActionJustPressed("cameraLeft")) { inputCamera.targetAngle += 90f; }
             inputCamera.targetAngle = Mathf.PosMod(inputCamera.targetAngle, 360f);
             float angleDifference = Mathf.PosMod(inputCamera.targetAngle - inputCamera.angle + 180f, 360f) - 180f;
             inputCamera.angle += angleDifference * inputCamera.rotationLerpSpeed;
             float cameraAngleRadians = Mathf.DegToRad(inputCamera.angle);
             Vector3 offsetDirection = new Vector3(Mathf.Sin(cameraAngleRadians), 0, Mathf.Cos(cameraAngleRadians));
             inputCamera.WallRayCast.TargetPosition = inputCamera.WallRayCast.ToLocal(
-                inputCamera.WallRayCast.GlobalPosition + 
-                (offsetDirection * inputCamera.offsetDistance) + 
+                inputCamera.WallRayCast.GlobalPosition +
+                (offsetDirection * inputCamera.offsetDistance) +
                 new Vector3(0, inputCamera.offsetHeight, 0)
             );
-            inputCamera.WallRayCast.GlobalPosition = 
-                player.node.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild<MeshInstance3D>(0).GlobalPosition + 
+            inputCamera.WallRayCast.GlobalPosition =
+                player.node.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild<MeshInstance3D>(0).GlobalPosition +
                 DEFAULT_UPWARD_CAMERA_OFFSET;
             inputCamera.node.GlobalPosition = inputCamera.WallRayCast.IsColliding() ?
                 inputCamera.node.GlobalPosition.Lerp(
-                    inputCamera.WallRayCast.GetCollisionPoint() + inputCamera.WallRayCast.GetCollisionNormal() * 0.1f, 
+                    inputCamera.WallRayCast.GetCollisionPoint() + inputCamera.WallRayCast.GetCollisionNormal() * 0.1f,
                     playerCamera.positionLerpSpeed * 2) :
                 inputCamera.node.GlobalPosition.Lerp(
-                    inputCamera.WallRayCast.ToGlobal(inputCamera.WallRayCast.TargetPosition), 
+                    inputCamera.WallRayCast.ToGlobal(inputCamera.WallRayCast.TargetPosition),
                     inputCamera.positionLerpSpeed);
             inputCamera.targetPosition = inputCamera.targetPosition.Lerp(inputCamera.WallRayCast.GlobalPosition, inputCamera.rotationLerpSpeed);
             inputCamera.node.LookAt(inputCamera.targetPosition);

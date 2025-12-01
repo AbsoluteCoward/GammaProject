@@ -13,6 +13,7 @@ namespace Gamma {
         public const int DEFAULT_AUDIO_POOL_SIZE = 8;
         public const float ALMOST_ZERO = 0.00001f;
         public const float GRAVITY = 9.81f;
+        public static readonly Color NULL_COLOR = new Color(0f, 0f, 0f, 0f);
         public static readonly Vector3 TELEPORT_VERTICAL_OFFSET = new Vector3(0, 0.1f, 0);
         public static readonly Vector3 DEFAULT_UPWARD_CAMERA_OFFSET = new Vector3(0, 1.246f, 0);
         public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
@@ -88,26 +89,11 @@ namespace Gamma {
             for (int i = 0; i < entitiesNode.GetChildCount(); i++) {
                 Node3D child = entitiesNode.GetChild<Node3D>(i);
                 GD.Print("entity: " + child.Name);
-                if (child.Name == "Player") {
-                    PlayerInitialize((CharacterBody3D)child);
-                    continue;
-                }
-                if (child.Name == "PlayerCamera") {
-                    PlayerCameraInitialize((Camera3D)child);
-                    continue;
-                }
-                if (child.Name == "DungeonExit") {
-                    InteractablesAdd((Node3D)child, InteractableLookup.ExitDungeon);
-                    continue;
-                }
-                if (child.Name == "DungeonEntrance") {
-                    InteractablesAdd((Node3D)child, InteractableLookup.EnterDungeon);
-                    continue;
-                }
-                if (child.Name == "SlinkSink") {
-                    InteractablesAdd((Node3D)child, InteractableLookup.SlinkSinkDialogueStart);
-                    continue;
-                }
+                if (child.Name == "Player") { PlayerInitialize((CharacterBody3D)child); continue; }
+                if (child.Name == "PlayerCamera") { PlayerCameraInitialize((Camera3D)child); continue; }
+                if (child.Name == "DungeonExit") { InteractablesAdd((Node3D)child, InteractableLookup.ExitDungeon); continue; }
+                if (child.Name == "DungeonEntrance") { InteractablesAdd((Node3D)child, InteractableLookup.EnterDungeon); continue; }
+                if (child.Name == "SlinkSink") { InteractablesAdd((Node3D)child, InteractableLookup.SlinkSinkDialogueStart); continue; }
                 if (child.Name == "PrisonSpotlight") {
                     prisonSpotlight = new PrisonSpotLight();
                     prisonSpotlight.node = child;
@@ -117,6 +103,7 @@ namespace Gamma {
                 GD.Print("unknown entity: " + child.Name);
             }
             DialogueBoxInitialize(GetTree().CurrentScene.GetNode<Node>("UI").GetNode<Control>("DialogueBox"));
+            SubtitlesInitialize(GetTree().CurrentScene.GetNode<Node>("UI").GetNode<VBoxContainer>("SubtitleBox"));
             Audio3DInitialize(DEFAULT_AUDIO_POOL_SIZE);
         }
         public override void _Ready() {
@@ -131,21 +118,22 @@ namespace Gamma {
             return previousFrame < targetFrame && targetFrame <= currentFrame;
         }
         public override void _PhysicsProcess(double delta) {
-            globalDelta = delta;
-            sceneState.timeSinceSceneLoad += (float)delta;
-            sceneState.physicsFramesSinceSceneLoad++;
-            inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             if (GetTree().CurrentScene != sceneState.previousFrameScene) {
                 sceneState.isSceneLoaded = false;
                 sceneState.previousFrameScene = GetTree().CurrentScene;
                 InitializeScene();
             }
+            globalDelta = delta;
+            sceneState.timeSinceSceneLoad += (float)delta;
+            sceneState.physicsFramesSinceSceneLoad++;
+            inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
             if (Input.IsActionJustPressed("interact")) { Interact(); }
             PlayerUpdate();
             PlayerCameraUpdate(ref playerCamera);
             DialogueUpdate();
+            SubtitlesUpdate();
             if (prisonSpotlight.node != null) { PrisonSpotlightUpdate(ref prisonSpotlight); }
             ProcessPendingSceneChange();
         }
