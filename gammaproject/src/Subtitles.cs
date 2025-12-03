@@ -27,16 +27,14 @@ namespace Gamma {
             subtitleBox.node = inputSubtitleNode;
             subtitleBox.activeSubtitles = new SubtitleLabel[3];
             for (int i = 0; i < subtitleBox.node.GetChildCount(); i++) {
-                // link each label node to the corresponding subtitle struct
                 subtitleBox.activeSubtitles[i].dialogueTextLabel = subtitleBox.node.GetChild<Label>(i);
-                subtitleBox.activeSubtitles[i].textColor = NULL_COLOR;
-                subtitleBox.activeSubtitles[i].dialogueTextLabel.Text = "TEST";
+                subtitleBox.activeSubtitles[i].dialogueTextLabel.Text = "";
+                subtitleBox.activeSubtitles[i].dialogueTextLabel.Modulate = NULL_COLOR;
+                subtitleBox.activeSubtitles[i].currentLifeTime = 0;
+                subtitleBox.activeSubtitles[i].totalLifeTime = 0;
                 subtitleBox.activeSubtitles[i].onSubtitleStart = null;
                 subtitleBox.activeSubtitles[i].onSubtitleComplete = null;
-                subtitleBox.activeSubtitles[i].totalLifeTime = 0f;
-                subtitleBox.activeSubtitles[i].currentLifeTime = 0f;
-                subtitleBox.activeSubtitles[i].dialogueTextLabel.Modulate = NULL_COLOR;
-
+                subtitleBox.activeSubtitles[i].textColor = NULL_COLOR;
             }
         }
         public void SubtitlesAdd(SubtitleData inputSubtitle) {
@@ -49,7 +47,6 @@ namespace Gamma {
                 subtitleBox.activeSubtitles[i].totalLifeTime = subtitleBox.activeSubtitles[i + 1].totalLifeTime;
                 subtitleBox.activeSubtitles[i].currentLifeTime = subtitleBox.activeSubtitles[i + 1].currentLifeTime;
             }
-            
             int lastIndex = subtitleBox.activeSubtitles.Length - 1;
             subtitleBox.activeSubtitles[lastIndex].textColor = inputSubtitle.textColor;
             subtitleBox.activeSubtitles[lastIndex].dialogueTextLabel.Text = inputSubtitle.text;
@@ -58,7 +55,7 @@ namespace Gamma {
             subtitleBox.activeSubtitles[lastIndex].onSubtitleStart = inputSubtitle.onSubtitleStart;
             subtitleBox.activeSubtitles[lastIndex].totalLifeTime = inputSubtitle.totalLifeTime;
             subtitleBox.activeSubtitles[lastIndex].currentLifeTime = inputSubtitle.currentLifeTime;
-            
+
             if (subtitleBox.activeSubtitles[lastIndex].onSubtitleStart != null) {
                 for (int j = 0; j < subtitleBox.activeSubtitles[lastIndex].onSubtitleStart.Length; j++) {
                     subtitleBox.activeSubtitles[lastIndex].onSubtitleStart[j](this);
@@ -82,7 +79,7 @@ namespace Gamma {
                             subtitleBox.activeSubtitles[i].onSubtitleComplete[j](this);
                         }
                         GD.Print("Resetting subtitle slot " + i);
-                        subtitleBox.activeSubtitles[i].dialogueTextLabel.Text = "TEST";
+                        subtitleBox.activeSubtitles[i].dialogueTextLabel.Text = "";
                         subtitleBox.activeSubtitles[i].dialogueTextLabel.Modulate = NULL_COLOR;
                         subtitleBox.activeSubtitles[i].currentLifeTime = 0;
                         subtitleBox.activeSubtitles[i].totalLifeTime = 0;
@@ -94,60 +91,60 @@ namespace Gamma {
             }
         }
         public void TestSubtitles() {
-                SubtitleData test1 = new SubtitleData {
-                    text = "Hello, world!",
-                    textColor = Colors.White,
-                    totalLifeTime = 3f,
-                    currentLifeTime = 3f,
-                    onSubtitleStart = new Action<Main>[] {
+            SubtitleData test1 = new SubtitleData {
+                text = "Hello, world!",
+                textColor = Colors.White,
+                totalLifeTime = 3f,
+                currentLifeTime = 3f,
+                onSubtitleStart = new Action<Main>[] {
                         (main) => GD.Print("Test 1 started!")
                     },
-                    onSubtitleComplete = new Action<Main>[] {
+                onSubtitleComplete = new Action<Main>[] {
                         (main) => GD.Print("Test 1 completed!")
                     }
-                };
-                SubtitlesAdd(test1);
-                SubtitleData test2 = new SubtitleData {
-                    text = "Warning: Low health!",
-                    textColor = Colors.Red,
-                    totalLifeTime = 2.5f,
-                    currentLifeTime = 2.5f,
-                    onSubtitleStart = new Action<Main>[] {
+            };
+            SubtitlesAdd(test1);
+            SubtitleData test2 = new SubtitleData {
+                text = "Warning: Low health!",
+                textColor = Colors.Red,
+                totalLifeTime = 2.5f,
+                currentLifeTime = 2.5f,
+                onSubtitleStart = new Action<Main>[] {
                         (main) => GD.Print("Warning subtitle displayed!")
                     }
-                };
-                SubtitlesAdd(test2);
-                SubtitleData test3 = new SubtitleData {
-                    text = "This is a longer subtitle that might wrap to multiple lines in the UI.",
-                    textColor = Colors.Yellow,
-                    totalLifeTime = 5f,
-                    currentLifeTime = 5f,
-                    onSubtitleComplete = new Action<Main>[] {
+            };
+            SubtitlesAdd(test2);
+            SubtitleData test3 = new SubtitleData {
+                text = "This is a longer subtitle that might wrap to multiple lines in the UI.",
+                textColor = Colors.Yellow,
+                totalLifeTime = 5f,
+                currentLifeTime = 5f,
+                onSubtitleComplete = new Action<Main>[] {
                         (main) => GD.Print("Long subtitle finished!"),
                         (main) => GD.Print("Player unfrozen!")
                     }
-                };
-                SubtitlesAdd(test3);
-                SubtitleData test4 = new SubtitleData {
-                    text = "Quick message",
-                    textColor = Colors.Green,
-                    totalLifeTime = 1f,
-                    currentLifeTime = 1f,
-                };
-                SubtitlesAdd(test4);
-                GD.Print("Filling all subtitle slots...");
-                for (int i = 0; i < 5; i++) {
-                    SubtitleData overflowTest = new SubtitleData {
-                        text = $"Overflow test {i + 1}",
-                        textColor = Colors.Cyan,
-                        totalLifeTime = 2f,
-                        currentLifeTime = 2f,
-                        onSubtitleStart = new Action<Main>[] {
+            };
+            SubtitlesAdd(test3);
+            SubtitleData test4 = new SubtitleData {
+                text = "Quick message",
+                textColor = Colors.Green,
+                totalLifeTime = 1f,
+                currentLifeTime = 1f,
+            };
+            SubtitlesAdd(test4);
+            GD.Print("Filling all subtitle slots...");
+            for (int i = 0; i < 5; i++) {
+                SubtitleData overflowTest = new SubtitleData {
+                    text = $"Overflow test {i + 1}",
+                    textColor = Colors.Cyan,
+                    totalLifeTime = 2f,
+                    currentLifeTime = 2f,
+                    onSubtitleStart = new Action<Main>[] {
                             (main) => GD.Print($"Overflow subtitle {i + 1} started")
                         }
-                    };
-                    SubtitlesAdd(overflowTest);
-                }
+                };
+                SubtitlesAdd(overflowTest);
             }
+        }
     }
 }
