@@ -13,7 +13,7 @@ namespace Gamma {
         public const int DEFAULT_AUDIO_POOL_SIZE = 8;
         public const float ALMOST_ZERO = 0.00001f;
         public const float GRAVITY = 9.81f;
-        public static readonly Color NULL_COLOR = new Color(0f, 0f, 0f, 0f);
+        public static readonly Color NULL_COLOR = new Color(1f, 1f, 1f, 1f);
         public static readonly Vector3 TELEPORT_VERTICAL_OFFSET = new Vector3(0, 0.1f, 0);
         public static readonly Vector3 DEFAULT_UPWARD_CAMERA_OFFSET = new Vector3(0, 1.246f, 0);
         public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
@@ -129,6 +129,25 @@ namespace Gamma {
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
+
+            if (Input.IsActionJustPressed("abort")) {
+                Color randomColor = new Color(GD.Randf(), GD.Randf(), GD.Randf(), 1f);
+                SubtitleData test1 = new SubtitleData {
+                    text = "Hello, world!",
+                    textColor = randomColor,
+                    totalLifeTime = 3f,
+                    currentLifeTime = 3f,
+                    onSubtitleStart = new Action<Main>[] {
+                        (main) => GD.Print("Test 1 started!"),
+                        (main) => {player.node.GlobalPosition += new Vector3(0, 5f, 0); GD.Print("Player teleported up!"); }
+                    },
+                    onSubtitleComplete = new Action<Main>[] {
+                        (main) => GD.Print("Test 1 completed!"),
+                        (main) => {player.node.GlobalPosition += new Vector3(0, 5f, 0); GD.Print("Player teleported up!"); }
+                    }
+                };
+                SubtitlesAdd(test1);
+             }
             if (Input.IsActionJustPressed("interact")) { Interact(); }
             PlayerUpdate();
             PlayerCameraUpdate(ref playerCamera);

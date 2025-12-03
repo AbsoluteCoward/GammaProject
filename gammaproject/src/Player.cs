@@ -187,7 +187,7 @@ namespace Gamma {
                                    * Y_FLAT;
             Vector3 rootPosition = player.animationTree.GetRootMotionPosition();
             Vector3 rootVelocity = player.node.Transform.Basis * rootPosition / (float)globalDelta;
-            bool isTeleporting = Input.IsActionPressed("Teleport");
+            bool isTeleporting = Input.IsActionPressed("teleport");
             bool hasMovementInput = player.wishDirection.Length() > 0.1f;
             if ((hasMovementInput || isTeleporting) && player.isOnGround) {
                 player.animationState.Travel("Walk");
@@ -200,7 +200,7 @@ namespace Gamma {
                 player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, 0f, 0.15f);
             }
             if (isTeleporting) {
-                if (Input.IsActionJustPressed("Teleport")) {
+                if (Input.IsActionJustPressed("teleport")) {
                     TurnShadowsOffOrOn(player.skeleton, false);
                     CreatePlayerModelCopy();
                     player.teleportEntity.node.TopLevel = true;
@@ -221,7 +221,7 @@ namespace Gamma {
                     }
                 }
                 player.teleportEntity.node.MoveAndSlide();
-            } else if (Input.IsActionJustReleased("Teleport")) {
+            } else if (Input.IsActionJustReleased("teleport")) {
                 TurnShadowsOffOrOn(player.skeleton, true);
                 RemovePlayerModelCopy();
                 PlayAudio3D(teleportSFX, player.teleportEntity.node.GlobalPosition, 0.01f, 1.0f, false);
