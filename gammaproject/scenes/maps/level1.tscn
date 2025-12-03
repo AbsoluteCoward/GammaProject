@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://bvhp8nrawnejj"]
+[gd_scene load_steps=16 format=4 uid="uid://bvhp8nrawnejj"]
 
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="1_b2g8u"]
 [ext_resource type="Texture2D" uid="uid://bh5sn8ty1cr6j" path="res://assets/textures/fabric-texture-background.jpg" id="2_0et32"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://ci1c1ua8s7ibf" path="res://assets/textures/popcorn.jpg" id="2_ti75c"]
 [ext_resource type="Texture2D" uid="uid://c5dkuvrmtiomo" path="res://assets/textures/Subtle-Grunge-Texture-1-Seamless.jpg" id="3_y3ptb"]
 [ext_resource type="PackedScene" uid="uid://coytvcqlue4h2" path="res://scenes/UI/dialogue_box.tscn" id="4_4hhfj"]
+[ext_resource type="PackedScene" uid="uid://b624rkte3tvyp" path="res://scenes/UI/subtitle_box.tscn" id="7_ti75c"]
 
 [sub_resource type="Environment" id="Environment_aobmw"]
 background_mode = 1
@@ -151,5 +152,7 @@ transform = Transform3D(-4.37114e-08, -0.549825, 0.83528, 0, 0.83528, 0.549825, 
 transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, 19.8814, -0.00268555, 2.85773)
 
 [node name="UI" type="Node" parent="."]
+
+[node name="SubtitleBox" parent="UI" instance=ExtResource("7_ti75c")]
 
 [node name="DialogueBox" parent="UI" instance=ExtResource("4_4hhfj")]

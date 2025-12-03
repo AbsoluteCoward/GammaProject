@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://b624rkte3tvyp"]
+
+[ext_resource type="Theme" uid="uid://bomkalgxvri2f" path="res://assets/tres/texttheme.tres" id="1_8gb4b"]
+
+[node name="SubtitleBox" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 2
+
+[node name="Label0" type="Label" parent="."]
+layout_mode = 2
+theme = ExtResource("1_8gb4b")
+text = "TEST"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Label1" type="Label" parent="."]
+layout_mode = 2
+theme = ExtResource("1_8gb4b")
+text = "TEST"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 2
+theme = ExtResource("1_8gb4b")
+text = "TEST"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3

@@ -1,4 +1,4 @@
-[gd_scene load_steps=76 format=4 uid="uid://dip2qknungsy7"]
+[gd_scene load_steps=77 format=4 uid="uid://dip2qknungsy7"]
 
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="1_0dihh"]
 [ext_resource type="Texture2D" uid="uid://b5d8hcjx5p4v1" path="res://assets/textures/LEATHER.jpg" id="1_ld8m6"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://df4814niimbac" path="res://scenes/entities/slink_sink.tscn" id="6_iyhkt"]
 [ext_resource type="PackedScene" uid="uid://bbxkn1att1lyd" path="res://scenes/entities/prison_door.tscn" id="7_iyhkt"]
 [ext_resource type="PackedScene" uid="uid://coytvcqlue4h2" path="res://scenes/UI/dialogue_box.tscn" id="11_iyhkt"]
+[ext_resource type="PackedScene" uid="uid://b624rkte3tvyp" path="res://scenes/UI/subtitle_box.tscn" id="11_rtfyc"]
 
 [sub_resource type="Environment" id="Environment_6yhfo"]
 background_mode = 1
@@ -836,5 +837,7 @@ transform = Transform3D(1, 0, 0, 0, 0.83528, 0.549825, 0, -0.549825, 0.83528, -4
 size = 27.89
 
 [node name="UI" type="Node" parent="."]
+
+[node name="SubtitleBox" parent="UI" instance=ExtResource("11_rtfyc")]
 
 [node name="DialogueBox" parent="UI" instance=ExtResource("11_iyhkt")]
