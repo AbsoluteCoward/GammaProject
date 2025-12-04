@@ -190,6 +190,9 @@ namespace Gamma {
             bool isTeleporting = Input.IsActionPressed("teleport");
             bool hasMovementInput = player.wishDirection.Length() > 0.1f;
             if ((hasMovementInput || isTeleporting) && player.isOnGround) {
+                if (player.animationState.GetCurrentNode() != "Walk") {
+                    player.previousAnimationFrame = 0f;
+                }
                 player.animationState.Travel("Walk");
                 Vector3 direction = isTeleporting ? playerForward : player.wishDirection;
                 float targetAngle = Mathf.Atan2(playerForward.Cross(direction).Y, playerForward.Dot(direction));
