@@ -4,7 +4,7 @@ using System;
 namespace Gamma {
     public partial class Main : Node {
         public static DialogueData defaultDialogue = new DialogueData {
-            speakerPortrait = GD.Load<Texture2D>("res://assets/textures/missingtexture.png"),
+            speakerPortrait = GD.Load<Texture2D>("res://assets/textures/NA_MISSINGTEXTURE.png"),
             speakerName = "ERROR",
             text = "YOU ARE NOT SUPPOSED TO SEE THIS",
             onDialogueStart = null,

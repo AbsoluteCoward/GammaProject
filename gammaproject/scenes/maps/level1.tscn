@@ -1,11 +1,11 @@
 [gd_scene load_steps=16 format=4 uid="uid://bvhp8nrawnejj"]
 
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="1_b2g8u"]
-[ext_resource type="Texture2D" uid="uid://bh5sn8ty1cr6j" path="res://assets/textures/fabric-texture-background.jpg" id="2_0et32"]
+[ext_resource type="Texture2D" uid="uid://gnyim4vlsb18" path="res://assets/textures/FAB_LINENBEIGE.jpg" id="2_0et32"]
 [ext_resource type="PackedScene" uid="uid://cvgp5f0d7udpo" path="res://scenes/entities/dungeon_exit.tscn" id="2_b7bw0"]
 [ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="2_idapr"]
-[ext_resource type="Texture2D" uid="uid://ci1c1ua8s7ibf" path="res://assets/textures/popcorn.jpg" id="2_ti75c"]
-[ext_resource type="Texture2D" uid="uid://c5dkuvrmtiomo" path="res://assets/textures/Subtle-Grunge-Texture-1-Seamless.jpg" id="3_y3ptb"]
+[ext_resource type="Texture2D" uid="uid://dwx2oo05a0tu1" path="res://assets/textures/WAL_POPCORN.jpg" id="2_ti75c"]
+[ext_resource type="Texture2D" uid="uid://d1rgykn0bn3hq" path="res://assets/textures/MET_ERODEDSCRATCHMETAL_SEAMLESS.jpg" id="3_y3ptb"]
 [ext_resource type="PackedScene" uid="uid://coytvcqlue4h2" path="res://scenes/UI/dialogue_box.tscn" id="4_4hhfj"]
 [ext_resource type="PackedScene" uid="uid://b624rkte3tvyp" path="res://scenes/UI/subtitle_box.tscn" id="7_ti75c"]
 

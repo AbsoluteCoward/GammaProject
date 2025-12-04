@@ -129,7 +129,6 @@ namespace Gamma {
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
-
             if (Input.IsActionJustPressed("abort")) {
                 SubtitleData test3 = new SubtitleData {
                     text = "This is a longer subtitle that might wrap to multiple lines in the UI.",

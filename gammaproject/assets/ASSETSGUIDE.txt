@@ -1,0 +1,64 @@
+TEXTURE NAMING INSTRUCTIONS
+Name each texture using the format
+TYPE_DESCRIPTION[VARIANT]_[SUFFIX]
+TYPE is a 3 letter code chosen strictly by the material category of the texture (not usage in-game).
+DESCRIPTION is a short uppercase name (3–12 characters, no spaces or hyphens) describing what the texture looks like.
+VARIANT is a number like 01, 02, 03 if multiple similar versions exist.
+SUFFIX is optional; use _DIFF for the main diffusebase texture only when there exists other map textures available, otherwise do not have a suffix at all, _TRAN for transparency maps, _MASK for masks, _SPEC for specular maps, or _NORM for normal maps.
+If there is only one file for that texture, you omit the suffix.
+Keep everything ALL CAPS, no spaces, no hyphens, no lowercase.
+
+TYPE CODES 
+WORLD SURFACES
+WAL  (walls  vertical surfaces)
+FLR  (floors)
+CEI  (ceilings)
+GRD  (ground, soil)
+RCK  (rock, cave)
+WOD  (wood)
+MET  (metal)
+STO  (stone, masonry)
+CNK  (concrete)
+GLS  (glass)
+PLS  (plastic)
+ORG  (organic, flesh)
+WTR  (water)
+FAB  (fabric, cloth, canvas)
+RBR  (rubber, latex, silicone)
+VEG  (vegetation, leaves, grass)
+
+
+OBJECTS + PROPS
+PRP  (props, furniture, misc objects)
+
+CHARACTERS
+CHR  (any character, animal, or enemy)
+OBJ  (objects, like entities but not necessarily characters)
+
+EFFECTS + UI
+FX   (effects  particles)
+SPT  (sprites)
+UI   (UI elements)
+ICO  (icons)
+FNT  (fonts)
+
+EXAMPLES
+Example 1
+A metal surface with rust and bolts
+MET_RUSTBOLT01_A
+
+Example 2
+A character’s fur texture (e.g., an orangutan)
+CHR_ORANGUTN_FUR01_A
+
+Example 3
+A stone block wall
+WAL_STONEBLOCK01_A
+
+Example 4
+A chunk of raw meat
+ORG_MEATCHUNK01_A
+
+Example 5
+A smoke particle sprite
+FX_SMOKE01_A

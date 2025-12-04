@@ -1,8 +1,8 @@
 [gd_scene load_steps=12 format=4 uid="uid://cvgp5f0d7udpo"]
 
-[ext_resource type="Texture2D" uid="uid://dq7se88by5snx" path="res://assets/textures/39_old dirty metal texture-seamless.jpg" id="1_x1fop"]
-[ext_resource type="Texture2D" uid="uid://dyryfwhp8c81c" path="res://assets/textures/29_iron metal texture-seamless.jpg" id="2_e8cd0"]
-[ext_resource type="Texture2D" uid="uid://cor6lcgosrc0r" path="res://assets/textures/metal1.jpg" id="3_eyhdg"]
+[ext_resource type="Texture2D" uid="uid://dtxhwhugfombi" path="res://assets/textures/MET_OLDDIRTYMETAL_SEAMLESS.jpg" id="1_x1fop"]
+[ext_resource type="Texture2D" uid="uid://eoo80y33iknv" path="res://assets/textures/MET_DARKIRON.jpg" id="2_e8cd0"]
+[ext_resource type="Texture2D" uid="uid://ctlrgpm8kwnty" path="res://assets/textures/MET_METALWEATHERED01.jpg" id="3_eyhdg"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nmutt"]
 resource_name = "metal2"

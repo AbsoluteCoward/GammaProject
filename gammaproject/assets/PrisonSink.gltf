@@ -90,13 +90,13 @@
 	"images":[
 		{
 			"mimeType":"image/webp",
-			"name":"39251147-grunge-background-old-ceramic-texture",
-			"uri":"textures/39251147-grunge-background-old-ceramic-texture.webp"
+			"name":"STO_CERAMICOLDGRUNGEY",
+			"uri":"textures/STO_CERAMICOLDGRUNGEY.webp"
 		},
 		{
 			"mimeType":"image/jpeg",
-			"name":"39_old dirty metal texture-seamless",
-			"uri":"textures/39_old%20dirty%20metal%20texture-seamless.jpg"
+			"name":"MET_OLDDIRTYMETALGREEN_SEAMLESS",
+			"uri":"textures/MET_OLDDIRTYMETALGREEN_SEAMLESS.jpg"
 		}
 	],
 	"accessors":[

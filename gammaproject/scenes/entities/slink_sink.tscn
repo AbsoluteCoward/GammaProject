@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=4 uid="uid://df4814niimbac"]
 
-[ext_resource type="Texture2D" uid="uid://bwxl2rm82xde5" path="res://assets/textures/39251147-grunge-background-old-ceramic-texture.webp" id="1_3ltcc"]
-[ext_resource type="Texture2D" uid="uid://dq7se88by5snx" path="res://assets/textures/39_old dirty metal texture-seamless.jpg" id="2_xlfi1"]
+[ext_resource type="Texture2D" uid="uid://c8bt0ibhiv75k" path="res://assets/textures/STO_CERAMICOLDGRUNGEY.webp" id="1_3ltcc"]
+[ext_resource type="Texture2D" uid="uid://coptwphd81ru4" path="res://assets/textures/MET_OLDDIRTYMETALGREEN_SEAMLESS.jpg" id="2_xlfi1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q8mvx"]
 resource_name = "Ceramic"

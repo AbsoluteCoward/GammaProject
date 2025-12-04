@@ -1,8 +1,8 @@
 [gd_scene load_steps=16 format=4 uid="uid://bbxkn1att1lyd"]
 
-[ext_resource type="Texture2D" uid="uid://bg5ktbxx5lnu4" path="res://assets/textures/21_eroded scratch metal texture-seamless.jpg" id="1_15fwp"]
-[ext_resource type="Texture2D" uid="uid://d2duci2afqmet" path="res://assets/textures/94_iron industrial perforate metal texture-seamless.png" id="2_18p8y"]
-[ext_resource type="Texture2D" uid="uid://cor6lcgosrc0r" path="res://assets/textures/metal1.jpg" id="3_cgasu"]
+[ext_resource type="Texture2D" uid="uid://d1rgykn0bn3hq" path="res://assets/textures/MET_ERODEDSCRATCHMETAL_SEAMLESS.jpg" id="1_15fwp"]
+[ext_resource type="Texture2D" uid="uid://dwqh1qc7k6tw3" path="res://assets/textures/MET_IRONINDUSTRAILPERFORATEGATE02_SEAMLESS.png" id="2_18p8y"]
+[ext_resource type="Texture2D" uid="uid://ctlrgpm8kwnty" path="res://assets/textures/MET_METALWEATHERED01.jpg" id="3_cgasu"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_15fwp"]
 shading_mode = 0

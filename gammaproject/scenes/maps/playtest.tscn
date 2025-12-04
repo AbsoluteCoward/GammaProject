@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://b0pi1p7vaslco"]
 
-[ext_resource type="Texture2D" uid="uid://bg5ktbxx5lnu4" path="res://assets/textures/21_eroded scratch metal texture-seamless.jpg" id="1_dhkls"]
+[ext_resource type="Texture2D" uid="uid://d1rgykn0bn3hq" path="res://assets/textures/MET_ERODEDSCRATCHMETAL_SEAMLESS.jpg" id="1_dhkls"]
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="4_8d6xy"]
 [ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="5_amgw8"]
 [ext_resource type="PackedScene" uid="uid://qqrivbdx01fj" path="res://scenes/entities/dungeon_entrance.tscn" id="6_gxys6"]
@@ -132,7 +132,7 @@ transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -12.1186
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.4, 0, 10.5)
 
 [node name="Pot" parent="Entities" instance=ExtResource("8_jpqbp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.2, 0, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 4)
 
 [node name="UI" type="Node" parent="."]
 
