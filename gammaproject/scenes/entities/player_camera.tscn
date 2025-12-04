@@ -3,6 +3,7 @@
 [node name="PlayerCamera" type="Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 0.83528, 0.549825, 0, -0.549825, 0.83528, 0, 0, 0)
 current = true
+metadata/Type = "PlayerCamera"
 
 [node name="RayCast3D" type="RayCast3D" parent="."]
 

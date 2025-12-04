@@ -138,6 +138,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_klm4j")
 
 [node name="DungeonExit" type="Node3D"]
+metadata/Type = "DungeonExit"
 
 [node name="Ladder1" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.1, 0)

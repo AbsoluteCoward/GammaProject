@@ -23,10 +23,9 @@ namespace Gamma {
             public float previousAnimationFrame;
             public int chestBoneIndex;
             public bool wasLightActive;
-            public bool canAnimationMove;
             public bool isOnGround;
             public bool shouldBeAsleep;
-            public bool hasPlayerModelCopy;  // Added: Track if copy exists
+            public bool hasPlayerModelCopy;
             public static float maxDistance = 1000f;
             public static int meatCount = 0;
         }
@@ -189,17 +188,25 @@ namespace Gamma {
             Vector3 rootVelocity = player.node.Transform.Basis * rootPosition / (float)globalDelta;
             bool isTeleporting = Input.IsActionPressed("teleport");
             bool hasMovementInput = player.wishDirection.Length() > 0.1f;
+            string targetAnimation = "Idle";
             if ((hasMovementInput || isTeleporting) && player.isOnGround) {
-                if (player.animationState.GetCurrentNode() != "Walk") {
+                targetAnimation = "Walk";
+            }
+            bool shouldChangeAnimation = player.animationState.GetCurrentNode() != targetAnimation;
+            if (shouldChangeAnimation) {
+                if (targetAnimation == "Walk") {
                     player.previousAnimationFrame = 0f;
+                    GD.Print("start walking");
                 }
-                player.animationState.Travel("Walk");
+                player.animationState.Travel(targetAnimation);
+            }
+            // State behavior
+            if (player.animationState.GetCurrentNode() == "Walk") {
                 Vector3 direction = isTeleporting ? playerForward : player.wishDirection;
                 float targetAngle = Mathf.Atan2(playerForward.Cross(direction).Y, playerForward.Dot(direction));
                 player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
                 RotateTowards(direction, player.node, 0.2f);
             } else {
-                player.animationState.Travel("Idle");
                 player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, 0f, 0.15f);
             }
             if (isTeleporting) {
@@ -210,14 +217,16 @@ namespace Gamma {
                     player.teleportEntity.node.GlobalPosition = player.node.GlobalPosition;
                 }
                 Vector3 teleportDirection = hasMovementInput ? player.wishDirection : playerForward;
-                player.teleportEntity.node.Velocity = teleportDirection * player.moveSpeed * 4f;
+                player.teleportEntity.node.Velocity = teleportDirection * player.moveSpeed * TELEPORTENTITY_SPEED_MODIFIER;
                 player.teleportEntity.light.LightEnergy = 1f;
                 player.wishDirection = playerForward;
                 RotateTowards((player.teleportEntity.node.Velocity * Y_FLAT).Normalized(), player.teleportEntity.node, 0.4f);
                 if (player.teleportEntity.topRayCast.IsColliding()) {
                     Vector3 collisionPoint = player.teleportEntity.topRayCast.GetCollisionPoint();
                     float heightDifference = Mathf.Abs(player.teleportEntity.node.GlobalPosition.Y - collisionPoint.Y);
-                    bool canClimbSurface = heightDifference > 0.1f && player.teleportEntity.topRayCast.GetCollisionNormal().Dot(Vector3.Up) > 0.7f;
+                    bool canClimbSurface = 
+                        heightDifference > TELEPORTENTITY_CLIMB_MINIMUM_HEIGHT_DIFFERENCE && 
+                        player.teleportEntity.topRayCast.GetCollisionNormal().Dot(Vector3.Up) > TELEPORTENTITY_CLIMB_SURFACE_NORMAL_THRESHOLD;
                     bool isVerticallyCloseToCollision = player.teleportEntity.node.GlobalPosition.Y < collisionPoint.Y;
                     if (canClimbSurface || isVerticallyCloseToCollision) {
                         player.teleportEntity.node.GlobalPosition = collisionPoint + TELEPORT_VERTICAL_OFFSET;

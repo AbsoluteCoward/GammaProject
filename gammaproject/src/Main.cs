@@ -13,6 +13,9 @@ namespace Gamma {
         public const int DEFAULT_AUDIO_POOL_SIZE = 8;
         public const float ALMOST_ZERO = 0.00001f;
         public const float GRAVITY = 9.81f;
+        public const float TELEPORTENTITY_SPEED_MODIFIER = 4F;
+        public const float TELEPORTENTITY_CLIMB_MINIMUM_HEIGHT_DIFFERENCE = 0.1f;
+        public const float TELEPORTENTITY_CLIMB_SURFACE_NORMAL_THRESHOLD = 0.7f;
         public static readonly Color NULL_COLOR = new Color(0f, 0f, 0f, 0f);
         public static readonly Vector3 TELEPORT_VERTICAL_OFFSET = new Vector3(0, 0.1f, 0);
         public static readonly Vector3 DEFAULT_UPWARD_CAMERA_OFFSET = new Vector3(0, 1.246f, 0);
@@ -86,21 +89,47 @@ namespace Gamma {
             prisonSpotlight = new PrisonSpotLight();
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
             GD.Print("entities children: " + entitiesNode.GetChildCount());
+            int typelessEntityCount = 0;
             for (int i = 0; i < entitiesNode.GetChildCount(); i++) {
                 Node3D child = entitiesNode.GetChild<Node3D>(i);
-                GD.Print("entity: " + child.Name);
-                if (child.Name == "Player") { PlayerInitialize((CharacterBody3D)child); continue; }
-                if (child.Name == "PlayerCamera") { PlayerCameraInitialize((Camera3D)child); continue; }
-                if (child.Name == "DungeonExit") { InteractablesAdd((Node3D)child, InteractableLookup.ExitDungeon); continue; }
-                if (child.Name == "DungeonEntrance") { InteractablesAdd((Node3D)child, InteractableLookup.EnterDungeon); continue; }
-                if (child.Name == "SlinkSink") { InteractablesAdd((Node3D)child, InteractableLookup.SlinkSinkDialogueStart); continue; }
-                if (child.Name == "PrisonSpotlight") {
-                    prisonSpotlight = new PrisonSpotLight();
-                    prisonSpotlight.node = child;
-                    prisonSpotlight.speed = 0.5f;
-                    continue;
+                if (child.HasMeta("Type") == false) {
+                    GD.PrintErr("Entity " + child.Name + " has no type metadata.");
+                    typelessEntityCount++;
+                    continue; 
                 }
-                GD.Print("unknown entity: " + child.Name);
+                string entityType = (string)child.GetMeta("Type");
+                GD.Print("entity: " + child.GetMeta("Type"));
+                switch (entityType) {
+                    case "Player":
+                        PlayerInitialize((CharacterBody3D)child);
+                        break;
+                    case "PlayerCamera":
+                        PlayerCameraInitialize((Camera3D)child);
+                        break;
+                    case "DungeonExit":
+                        InteractablesAdd((Node3D)child, InteractableLookup.ExitDungeon);
+                        break;
+                    case "DungeonEntrance":
+                        InteractablesAdd((Node3D)child, InteractableLookup.EnterDungeon);
+                        break;
+                    case "SlinkSink":
+                        InteractablesAdd((Node3D)child, InteractableLookup.SlinkSinkDialogueStart);
+                        break;
+                    case "PrisonSpotlight":
+                        prisonSpotlight = new PrisonSpotLight();
+                        prisonSpotlight.node = child;
+                        prisonSpotlight.speed = 0.5f;
+                        break;
+                    default:
+                        GD.PrintErr("Unknown entity type: " + entityType + "\n");
+                        break;
+                }
+            }            
+            if (typelessEntityCount > 0) {
+                GD.PushWarning(
+                    $"There were {typelessEntityCount} typeless entities in the scene.\n" + 
+                    "Entity types must be defined using the 'Type' metadata field on each local root node of the entity."
+                );
             }
             DialogueBoxInitialize(GetTree().CurrentScene.GetNode<Node>("UI").GetNode<Control>("DialogueBox"));
             SubtitlesInitialize(GetTree().CurrentScene.GetNode<Node>("UI").GetNode<VBoxContainer>("SubtitleBox"));
@@ -130,17 +159,23 @@ namespace Gamma {
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
             if (Input.IsActionJustPressed("abort")) {
-                SubtitleData test3 = new SubtitleData {
-                    text = "This is a longer subtitle that might wrap to multiple lines in the UI.",
-                    textColor = Colors.Yellow,
-                    totalLifeTime = 5f,
-                    currentLifeTime = 5f,
-                    onSubtitleComplete = new Action<Main>[] {
-                            (main) => GD.Print("Long subtitle finished!"),
-                            (main) => GD.Print("Player unfrozen!")
-                        }
+                string randomText = "";
+                int textLength = (int)GD.RandRange(5, 20);
+                for (int i = 0; i < textLength; i++) {
+                    randomText += (char)GD.RandRange(65, 90); // A-Z
+                }
+                float randomLifetime = (float)GD.RandRange(2f, 10f);
+                SubtitleData RandomSubtitle = new SubtitleData {
+                    text = "Random subtitle " + randomText,
+                    textColor = new Color(
+                        (float)GD.RandRange(0f, 1f),
+                        (float)GD.RandRange(0f, 1f),
+                        (float)GD.RandRange(0f, 1f),
+                        1f),
+                    totalLifeTime = randomLifetime,
+                    currentLifeTime = randomLifetime,
                 };
-                SubtitlesAdd(test3);
+                SubtitlesAdd(RandomSubtitle);
             }
             if (Input.IsActionJustPressed("interact")) { Interact(); }
             PlayerUpdate();

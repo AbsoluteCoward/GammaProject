@@ -78,6 +78,7 @@ shadow_mesh = SubResource("ArrayMesh_pygmj")
 size = Vector3(1, 0.814941, 0.847656)
 
 [node name="SlinkSink" type="Node3D"]
+metadata/Type = "SlinkSink"
 
 [node name="PrisonSink" type="StaticBody3D" parent="."]
 
