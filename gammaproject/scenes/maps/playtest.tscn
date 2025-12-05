@@ -4,10 +4,10 @@
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="4_8d6xy"]
 [ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="5_amgw8"]
 [ext_resource type="PackedScene" uid="uid://qqrivbdx01fj" path="res://scenes/entities/dungeon_entrance.tscn" id="6_gxys6"]
+[ext_resource type="PackedScene" uid="uid://xwhnlvkm6lcs" path="res://scenes/entities/pot01.tscn" id="6_jpqbp"]
 [ext_resource type="PackedScene" uid="uid://cvgp5f0d7udpo" path="res://scenes/entities/dungeon_exit.tscn" id="6_pwt0t"]
 [ext_resource type="PackedScene" uid="uid://coytvcqlue4h2" path="res://scenes/UI/dialogue_box.tscn" id="7_e1bjx"]
 [ext_resource type="PackedScene" uid="uid://b624rkte3tvyp" path="res://scenes/UI/subtitle_box.tscn" id="7_jpqbp"]
-[ext_resource type="PackedScene" uid="uid://dar2hbyf65hji" path="res://assets/Pot.gltf" id="8_jpqbp"]
 
 [sub_resource type="Environment" id="Environment_aobmw"]
 background_mode = 1
@@ -131,7 +131,7 @@ transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -12.1186
 [node name="DungeonEntrance" parent="Entities" instance=ExtResource("6_gxys6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.4, 0, 10.5)
 
-[node name="Pot" parent="Entities" instance=ExtResource("8_jpqbp")]
+[node name="Pot01" parent="Entities" instance=ExtResource("6_jpqbp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 4)
 
 [node name="UI" type="Node" parent="."]

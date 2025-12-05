@@ -4,7 +4,6 @@ using System.ComponentModel;
 
 namespace Gamma {
     public partial class Main : Node {
-        public enum InteractableLookup : byte { ExitDungeon, EnterDungeon, SlinkSinkDialogueStart }
         public struct PendingSceneChange {
             public string scenePath;
             public bool shouldChangeScene;
@@ -114,6 +113,9 @@ namespace Gamma {
                         break;
                     case "SlinkSink":
                         InteractablesAdd((Node3D)child, InteractableLookup.SlinkSinkDialogueStart);
+                        break;
+                    case "Pot":
+                        InteractablesAdd((Node3D)child, InteractableLookup.PotOpen);
                         break;
                     case "PrisonSpotlight":
                         prisonSpotlight = new PrisonSpotLight();

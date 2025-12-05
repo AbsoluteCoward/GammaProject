@@ -3,6 +3,12 @@ using System;
 
 namespace Gamma {
     public partial class Main : Node {
+        public enum InteractableLookup : byte { 
+            ExitDungeon, 
+            EnterDungeon, 
+            SlinkSinkDialogueStart,
+            PotOpen
+        }
         public struct Interactable {
             public Node3D node;
             public InteractableLookup interaction;
@@ -39,6 +45,17 @@ namespace Gamma {
                             return;
                         case InteractableLookup.SlinkSinkDialogueStart:
                             DialogueStart(slinkSinkInteraction);
+                            return;
+                        case InteractableLookup.PotOpen:
+                            interactables[i].node.GetChild<Node3D>(0).GetChild<AnimationPlayer>(2).Play("Open");
+                            SubtitlesAdd(new SubtitleData() {
+                                text = "10 meat inside the pot.",
+                                textColor = Colors.White,
+                                totalLifeTime = 5f,
+                                currentLifeTime = 5f,
+                                onSubtitleStart = null,
+                                onSubtitleComplete = null
+                            });
                             return;
                     }
                 }
