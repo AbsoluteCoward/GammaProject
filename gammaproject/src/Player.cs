@@ -224,8 +224,8 @@ namespace Gamma {
                 if (player.teleportEntity.topRayCast.IsColliding()) {
                     Vector3 collisionPoint = player.teleportEntity.topRayCast.GetCollisionPoint();
                     float heightDifference = Mathf.Abs(player.teleportEntity.node.GlobalPosition.Y - collisionPoint.Y);
-                    bool canClimbSurface = 
-                        heightDifference > TELEPORTENTITY_CLIMB_MINIMUM_HEIGHT_DIFFERENCE && 
+                    bool canClimbSurface =
+                        heightDifference > TELEPORTENTITY_CLIMB_MINIMUM_HEIGHT_DIFFERENCE &&
                         player.teleportEntity.topRayCast.GetCollisionNormal().Dot(Vector3.Up) > TELEPORTENTITY_CLIMB_SURFACE_NORMAL_THRESHOLD;
                     bool isVerticallyCloseToCollision = player.teleportEntity.node.GlobalPosition.Y < collisionPoint.Y;
                     if (canClimbSurface || isVerticallyCloseToCollision) {

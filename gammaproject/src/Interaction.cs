@@ -3,9 +3,9 @@ using System;
 
 namespace Gamma {
     public partial class Main : Node {
-        public enum InteractableLookup : byte { 
-            ExitDungeon, 
-            EnterDungeon, 
+        public enum InteractableLookup : byte {
+            ExitDungeon,
+            EnterDungeon,
             SlinkSinkDialogueStart,
             PotOpen
         }

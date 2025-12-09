@@ -94,7 +94,7 @@ namespace Gamma {
                 if (child.HasMeta("Type") == false) {
                     GD.PrintErr("Entity " + child.Name + " has no type metadata.");
                     typelessEntityCount++;
-                    continue; 
+                    continue;
                 }
                 string entityType = (string)child.GetMeta("Type");
                 GD.Print("entity: " + child.GetMeta("Type"));
@@ -126,10 +126,10 @@ namespace Gamma {
                         GD.PrintErr("Unknown entity type: " + entityType + "\n");
                         break;
                 }
-            }            
+            }
             if (typelessEntityCount > 0) {
                 GD.PushWarning(
-                    $"There were {typelessEntityCount} typeless entities in the scene.\n" + 
+                    $"There were {typelessEntityCount} typeless entities in the scene.\n" +
                     "Entity types must be defined using the 'Type' metadata field on each local root node of the entity."
                 );
             }
