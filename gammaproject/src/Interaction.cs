@@ -4,6 +4,7 @@ using System;
 namespace Gamma {
     public partial class Main : Node {
         public enum InteractableLookup : byte {
+            None,
             ExitDungeon,
             EnterDungeon,
             SlinkSinkDialogueStart,
@@ -35,6 +36,16 @@ namespace Gamma {
                     pos.Z >= interactBoxCenter.Z - halfSize &&
                     pos.Z <= interactBoxCenter.Z + halfSize) {
                     switch (interactables[i].interaction) {
+                        case InteractableLookup.None:
+                            SubtitlesAdd(new SubtitleData() {
+                                text = "\"I will not.\"",
+                                textColor = Colors.DarkRed,
+                                totalLifeTime = 5f,
+                                currentLifeTime = 5f,
+                                onSubtitleStart = null,
+                                onSubtitleComplete = null
+                            });
+                            return;
                         case InteractableLookup.ExitDungeon:
                             GD.Print("Entering level2");
                             ChangeScene("res://scenes/maps/level2.tscn");
@@ -56,6 +67,7 @@ namespace Gamma {
                                 onSubtitleStart = null,
                                 onSubtitleComplete = null
                             });
+                            interactables[i].interaction = InteractableLookup.None;
                             return;
                     }
                 }
