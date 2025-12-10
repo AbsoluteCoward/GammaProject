@@ -22,7 +22,6 @@ namespace Gamma {
             public float maxTeleportDistance;
             public float previousAnimationFrame;
             public int chestBoneIndex;
-            public bool wasLightActive;
             public bool isOnGround;
             public bool shouldBeAsleep;
             public bool hasPlayerModelCopy;
