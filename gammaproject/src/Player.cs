@@ -64,7 +64,6 @@ namespace Gamma {
             player.teleportEntity.light.LightEnergy = 0;
             player.hasPlayerModelCopy = false;
         }
-
         public void TurnShadowsOffOrOn(Node3D inputNode, bool inputDecision) {
             int maxStackSize = 256;
             Node[] stack = new Node[maxStackSize];
@@ -89,7 +88,7 @@ namespace Gamma {
                 }
             }
         }
-        public void ApplyWalkLean() {
+        public void ApplyDynamicBoneTransformations() {
             if (player.skeleton == null) return;
             float chestRotation = player.turnAnticipation;
             Transform3D pelvisPose = player.skeleton.GetBoneGlobalPose(1);
@@ -103,10 +102,6 @@ namespace Gamma {
             Quaternion chestTwist = new Quaternion(chestRotationAxis, chestRotation);
             chestPose.Basis = chestPose.Basis * new Basis(chestTwist);
             player.skeleton.SetBoneGlobalPose(player.chestBoneIndex, chestPose);
-        }
-        public void ResetLean() {
-            if (player.skeleton == null) return;
-            player.skeleton.SetBoneGlobalPose(player.chestBoneIndex, DEFAULT_SLINK_IDLE_CHEST_POSE);
         }
         public void PlayerCameraInitialize(Camera3D inputCamera) {
             playerCamera.node = inputCamera;
@@ -190,7 +185,6 @@ namespace Gamma {
                         PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                     }
                 }
-                ApplyWalkLean();
                 Vector3 direction = isTeleporting ? playerForward : player.wishDirection;
                 float targetAngle = Mathf.Atan2(playerForward.Cross(direction).Y, playerForward.Dot(direction));
                 player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
@@ -205,7 +199,6 @@ namespace Gamma {
             if (shouldChangeAnimation) {
                 GD.Print("changing animation to " + targetAnimation + " from " + player.animationState.GetCurrentNode());
                 player.animationState.Travel(targetAnimation);
-                if (player.animationState.GetCurrentNode() == "Walk") { ResetLean(); }
                 player.previousAnimationFrame = 0f;
             }
             if (isTeleporting) {
@@ -243,6 +236,7 @@ namespace Gamma {
             if (!player.isOnGround) player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
             player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
             player.node.MoveAndSlide();
+            ApplyDynamicBoneTransformations();
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }

@@ -150,7 +150,7 @@ namespace Gamma {
             globalPhysicsMaterial.Friction = 0.2f;
             globalPhysicsMaterial.Bounce = 0f;
         }
-        private bool HasCrossedFrame(float previousFrame, float currentFrame, float targetFrame) {
+        public bool HasCrossedFrame(float previousFrame, float currentFrame, float targetFrame) {
             if (currentFrame < previousFrame) { return targetFrame >= previousFrame || targetFrame <= currentFrame; }
             return previousFrame < targetFrame && targetFrame <= currentFrame;
         }
