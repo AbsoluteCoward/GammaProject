@@ -93,7 +93,7 @@ namespace Gamma {
             if (player.skeleton == null) return;
             float chestRotation = player.turnAnticipation;
             Transform3D pelvisPose = player.skeleton.GetBoneGlobalPose(1);
-            Transform3D chestPose = DEFAULT_SLINK_CHEST_POSE;
+            Transform3D chestPose = DEFAULT_SLINK_WALK_CHEST_POSE;
             chestPose.Origin = new Vector3(
                 chestPose.Origin.X,
                 chestPose.Origin.Y + (pelvisPose.Origin.Y - 1.184f),
@@ -103,6 +103,10 @@ namespace Gamma {
             Quaternion chestTwist = new Quaternion(chestRotationAxis, chestRotation);
             chestPose.Basis = chestPose.Basis * new Basis(chestTwist);
             player.skeleton.SetBoneGlobalPose(player.chestBoneIndex, chestPose);
+        }
+        public void ResetLean() {
+            if (player.skeleton == null) return;
+            player.skeleton.SetBoneGlobalPose(player.chestBoneIndex, DEFAULT_SLINK_IDLE_CHEST_POSE);
         }
         public void PlayerCameraInitialize(Camera3D inputCamera) {
             playerCamera.node = inputCamera;
@@ -166,18 +170,6 @@ namespace Gamma {
                     player.node.GlobalPosition = Vector3.Zero;
                 }
             }
-            float currentFrame = (float)Math.Round(player.animationState.GetCurrentPlayPosition(), 2);
-            if (player.animationState.GetCurrentNode() == "Walk") {
-                if (HasCrossedFrame(player.previousAnimationFrame, currentFrame, 0.33f) ||
-                    HasCrossedFrame(player.previousAnimationFrame, currentFrame, 1.54f)) {
-                    if (player.isOnGround) {
-                        PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f,
-                            Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
-                    }
-                }
-                ApplyWalkLean();
-            }
-            player.previousAnimationFrame = currentFrame;
             player.isOnGround = player.node.IsOnFloor();
             Camera3D currentCamera = GetViewport().GetCamera3D();
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
@@ -188,26 +180,33 @@ namespace Gamma {
             Vector3 rootVelocity = player.node.Transform.Basis * rootPosition / (float)globalDelta;
             bool isTeleporting = Input.IsActionPressed("teleport");
             bool hasMovementInput = player.wishDirection.Length() > 0.1f;
-            string targetAnimation = "Idle";
-            if ((hasMovementInput || isTeleporting) && player.isOnGround) {
-                targetAnimation = "Walk";
-            }
-            bool shouldChangeAnimation = player.animationState.GetCurrentNode() != targetAnimation;
-            if (shouldChangeAnimation) {
-                if (targetAnimation == "Walk") {
-                    player.previousAnimationFrame = 0f;
-                    GD.Print("start walking");
-                }
-                player.animationState.Travel(targetAnimation);
-            }
-            // State behavior
+            if (player.animationState.GetCurrentNode() == "") { return; }
+            float currentAnimationFrame = (float)Math.Round(player.animationState.GetCurrentPlayPosition(), 2);
             if (player.animationState.GetCurrentNode() == "Walk") {
+                if (HasCrossedFrame(player.previousAnimationFrame, currentAnimationFrame, 0.33f) ||
+                    HasCrossedFrame(player.previousAnimationFrame, currentAnimationFrame, 1.54f)) {
+                    if (player.isOnGround) {
+                        GD.Print("Playing footstep sound");
+                        PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                    }
+                }
+                ApplyWalkLean();
                 Vector3 direction = isTeleporting ? playerForward : player.wishDirection;
                 float targetAngle = Mathf.Atan2(playerForward.Cross(direction).Y, playerForward.Dot(direction));
                 player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
                 RotateTowards(direction, player.node, 0.2f);
             } else {
-                player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, 0f, 0.15f);
+                player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, 0f, 0.1f);
+            }
+            player.previousAnimationFrame = currentAnimationFrame;
+            string targetAnimation = "Idle";
+            if ((hasMovementInput || isTeleporting) && player.isOnGround) { targetAnimation = "Walk"; }
+            bool shouldChangeAnimation = player.animationState.GetCurrentNode() != targetAnimation;
+            if (shouldChangeAnimation) {
+                GD.Print("changing animation to " + targetAnimation + " from " + player.animationState.GetCurrentNode());
+                player.animationState.Travel(targetAnimation);
+                if (player.animationState.GetCurrentNode() == "Walk") { ResetLean(); }
+                player.previousAnimationFrame = 0f;
             }
             if (isTeleporting) {
                 if (Input.IsActionJustPressed("teleport")) {

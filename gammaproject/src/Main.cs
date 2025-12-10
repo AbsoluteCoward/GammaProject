@@ -19,11 +19,17 @@ namespace Gamma {
         public static readonly Vector3 TELEPORT_VERTICAL_OFFSET = new Vector3(0, 0.1f, 0);
         public static readonly Vector3 DEFAULT_UPWARD_CAMERA_OFFSET = new Vector3(0, 1.246f, 0);
         public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
-        public static readonly Transform3D DEFAULT_SLINK_CHEST_POSE = new Transform3D(
+        public static readonly Transform3D DEFAULT_SLINK_WALK_CHEST_POSE = new Transform3D(
             new Vector3(-1f, 0f, 0f),
             new Vector3(0f, 1f, 0f),
             new Vector3(0f, 0f, -1f),
             new Vector3(-0.0055462457f, 1.320011f, 0.016058354f)
+        );
+        public static readonly Transform3D DEFAULT_SLINK_IDLE_CHEST_POSE = new Transform3D(
+            new Vector3(-0.9452619f, 1.0294444E-07f, -0.32631275f),
+            new Vector3(0.005352374f, 0.9998655f, -0.015504442f),
+            new Vector3(0.32626888f, -0.016402349f, -0.9451347f),
+            new Vector3(-0.0055462415f, 1.320011f, 0.01605832f)
         );
         public struct SceneState {
             public Node previousFrameScene;
