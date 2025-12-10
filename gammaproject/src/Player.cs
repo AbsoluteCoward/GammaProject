@@ -180,10 +180,7 @@ namespace Gamma {
             if (player.animationState.GetCurrentNode() == "Walk") {
                 if (HasCrossedFrame(player.previousAnimationFrame, currentAnimationFrame, 0.33f) ||
                     HasCrossedFrame(player.previousAnimationFrame, currentAnimationFrame, 1.54f)) {
-                    if (player.isOnGround) {
-                        GD.Print("Playing footstep sound");
-                        PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
-                    }
+                    if (player.isOnGround) { PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true); }
                 }
                 Vector3 direction = isTeleporting ? playerForward : player.wishDirection;
                 float targetAngle = Mathf.Atan2(playerForward.Cross(direction).Y, playerForward.Dot(direction));
