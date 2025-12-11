@@ -51,6 +51,7 @@ namespace Gamma {
             subtitleBox.activeSubtitles[lastIndex].textColor = inputSubtitle.textColor;
             subtitleBox.activeSubtitles[lastIndex].dialogueTextLabel.Text = inputSubtitle.text;
             subtitleBox.activeSubtitles[lastIndex].dialogueTextLabel.Modulate = inputSubtitle.textColor;
+            subtitleBox.activeSubtitles[lastIndex].dialogueTextLabel.VisibleCharacters = 0;
             subtitleBox.activeSubtitles[lastIndex].onSubtitleComplete = inputSubtitle.onSubtitleComplete;
             subtitleBox.activeSubtitles[lastIndex].onSubtitleStart = inputSubtitle.onSubtitleStart;
             subtitleBox.activeSubtitles[lastIndex].totalLifeTime = inputSubtitle.totalLifeTime;
@@ -65,6 +66,9 @@ namespace Gamma {
         public void SubtitlesUpdate() {
             for (int i = 0; i < subtitleBox.activeSubtitles.Length; i++) {
                 if (subtitleBox.activeSubtitles[i].currentLifeTime > 0f) {
+                    if (sceneState.physicsFramesSinceSceneLoad % 4 == 0) {
+                        subtitleBox.activeSubtitles[i].dialogueTextLabel.VisibleCharacters += 1;
+                    }
                     subtitleBox.activeSubtitles[i].currentLifeTime -= (float)globalDelta;
                     subtitleBox.activeSubtitles[i].dialogueTextLabel.Modulate = new Color(
                         subtitleBox.activeSubtitles[i].dialogueTextLabel.Modulate.R,
@@ -81,6 +85,7 @@ namespace Gamma {
                         GD.Print("Resetting subtitle slot " + i);
                         subtitleBox.activeSubtitles[i].dialogueTextLabel.Text = "";
                         subtitleBox.activeSubtitles[i].dialogueTextLabel.Modulate = NULL_COLOR;
+                        subtitleBox.activeSubtitles[i].dialogueTextLabel.VisibleCharacters = 0;
                         subtitleBox.activeSubtitles[i].currentLifeTime = 0;
                         subtitleBox.activeSubtitles[i].totalLifeTime = 0;
                         subtitleBox.activeSubtitles[i].onSubtitleStart = null;

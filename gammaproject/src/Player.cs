@@ -239,7 +239,7 @@ namespace Gamma {
                 int targetIndex = 0;
                 for (int i = 0; i < entitiesNode.GetChildCount() && targetIndex < Player.targets.Length; i++) {
                     Node3D potentialTarget = entitiesNode.GetChild<Node3D>(i);
-                    if (potentialTarget == player.node || potentialTarget == player.teleportEntity.node) {
+                    if (potentialTarget == player.node || potentialTarget == player.teleportEntity.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D)) {
                         continue;
                     }
                     Vector3 toTarget = potentialTarget.GlobalPosition - player.gunBarrel.GlobalPosition;
@@ -256,7 +256,7 @@ namespace Gamma {
                 Vector3 gunPosition = player.gunBarrel.GlobalPosition;
                 PlayAudio3D(shootSFX, gunPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
                 for (int i = 0; i < Player.targets.Length; i++) {
-                    if (Player.targets[i] == null) continue;
+                    if (Player.targets[i] == null) { continue; }
                     GD.Print("Firing at target " + Player.targets[i].Name);
                     Vector3 directionToTarget = (Player.targets[i].GlobalPosition - gunPosition).Normalized();
                     ProjectilesCreate(
@@ -266,9 +266,7 @@ namespace Gamma {
                         15f
                     );
                 }
-                for (int i = 0; i < Player.targets.Length; i++) {
-                    Player.targets[i] = null;
-                }
+                for (int i = 0; i < Player.targets.Length; i++) { Player.targets[i] = null; }
             }
             if (!player.isOnGround) player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
             player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
