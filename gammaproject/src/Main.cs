@@ -44,7 +44,9 @@ namespace Gamma {
         public AudioStream metalSlamSFX = GD.Load<AudioStream>("res://assets/sound/metalslam1.wav");
         public AudioStream footStepMetalSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");
         public AudioStream teleportSFX = GD.Load<AudioStream>("res://assets/sound/teleport.mp3");
+        public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public Interactable[] interactables;
+        public Projectile[] projectiles = new Projectile[16];
         public PendingSceneChange pendingSceneChange;
         public DialogueBox dialogueBox;
         public SubtitleBox subtitleBox;
@@ -186,6 +188,7 @@ namespace Gamma {
                 SubtitlesAdd(RandomSubtitle);
             }
             if (Input.IsActionJustPressed("interact")) { Interact(); }
+            ProjectilesUpdate();
             PlayerUpdate();
             PlayerCameraUpdate(ref playerCamera);
             DialogueUpdate();

@@ -229,6 +229,14 @@ namespace Gamma {
                 player.teleportEntity.light.LightEnergy = 0;
                 player.teleportEntity.node.TopLevel = false;
             }
+            if (Input.IsActionJustPressed("attack")) {
+                ProjectilesCreate(
+                    player.node.GlobalPosition + Vector3.Up,
+                    null,
+                    playerForward,
+                    5f
+                );
+            }
             if (!player.isOnGround) player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
             player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
             player.node.MoveAndSlide();

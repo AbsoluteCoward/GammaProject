@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cm5wj3kb30762"]
+
+[ext_resource type="PackedScene" uid="uid://1fk7ydu74005" path="res://assets/slinkrocket.gltf" id="1_rgp5e"]
+
+[node name="SlinkRocket" type="Node3D"]
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+
+[node name="slinkrocket" parent="." instance=ExtResource("1_rgp5e")]
