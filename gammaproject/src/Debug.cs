@@ -67,7 +67,6 @@ namespace Gamma {
             if (fieldType.Name == "Transform3D") return 48; // 12 floats
             try { return System.Runtime.InteropServices.Marshal.SizeOf(fieldType); } catch { return 8; }
         }
-
         /// <summary>
         /// Categorizes field size for readability.
         /// </summary>
@@ -82,7 +81,6 @@ namespace Gamma {
                 _ => size > 8 ? "large struct" : "unknown"
             };
         }
-
         /// <summary>
         /// Spawns a debug cube at the given position and size, a child of inputTarget. 
         /// This is useful for visualizing positions/objects that you can't otherwise see.

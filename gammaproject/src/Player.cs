@@ -12,6 +12,7 @@ namespace Gamma {
             public TeleportEntity teleportEntity;
             public Vector3 wishDirection;
             public CharacterBody3D node;
+            public Node3D gunBarrel;
             public MeshInstance3D headMesh;
             public AnimationPlayer animationPlayer;
             public AnimationTree animationTree;
@@ -45,7 +46,8 @@ namespace Gamma {
         public void PlayerInitialize(CharacterBody3D inputPlayerNode) {
             player.wishDirection = Vector3.Zero;
             player.node = inputPlayerNode;
-            player.headMesh = player.node.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild<MeshInstance3D>(0);
+            player.gunBarrel = player.node.GetNode<Node3D>("Slink/metarig/Skeleton3D/Gun_2/Gun_2/GunBarrel");
+            player.headMesh = player.node.GetNode<MeshInstance3D>("Slink/metarig/Skeleton3D/Head/Head");
             player.teleportEntity.node = inputPlayerNode.GetChild<CharacterBody3D>(4);
             player.teleportEntity.light = player.teleportEntity.node.GetChild<SpotLight3D>(0);
             player.teleportEntity.topRayCast = player.teleportEntity.node.GetChild<RayCast3D>(1);
@@ -230,13 +232,44 @@ namespace Gamma {
                 player.teleportEntity.light.LightEnergy = 0;
                 player.teleportEntity.node.TopLevel = false;
             }
-            if (Input.IsActionJustPressed("attack")) {
-                ProjectilesCreate(
-                    player.node.GlobalPosition + Vector3.Up + playerForward * 4f,
-                    interactables[0].node,
-                    playerForward,
-                    15f
-                );
+            if (Input.IsActionPressed("attack")) {
+                for (int i = 0; i < Player.targets.Length; i++) {
+                    Player.targets[i] = null;
+                }
+                int targetIndex = 0;
+                for (int i = 0; i < entitiesNode.GetChildCount() && targetIndex < Player.targets.Length; i++) {
+                    Node3D potentialTarget = entitiesNode.GetChild<Node3D>(i);
+                    if (potentialTarget == player.node || potentialTarget == player.teleportEntity.node) {
+                        continue;
+                    }
+                    
+                    Vector3 toTarget = potentialTarget.GlobalPosition - player.gunBarrel.GlobalPosition;
+                    Vector3 toTargetFlat = (toTarget * Y_FLAT).Normalized();
+                    float dotProduct = playerForward.Dot(toTargetFlat);
+                    float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
+                    float angleInDegrees = Mathf.RadToDeg(angleToTarget);
+
+                    if (angleInDegrees <= TARGETTING_ANGLE) {
+                        Player.targets[targetIndex] = potentialTarget;
+                        targetIndex++;
+                    }
+                }
+            } else if (Input.IsActionJustReleased("attack")) {
+                Vector3 gunPosition = player.gunBarrel.GlobalPosition;
+                for (int i = 0; i < Player.targets.Length; i++) {
+                    if (Player.targets[i] == null) continue;
+                    GD.Print("Firing at target " + Player.targets[i].Name);
+                    Vector3 directionToTarget = (Player.targets[i].GlobalPosition - gunPosition).Normalized();
+                    ProjectilesCreate(
+                        gunPosition,
+                        Player.targets[i],
+                        directionToTarget,
+                        15f
+                    );
+                }
+                for (int i = 0; i < Player.targets.Length; i++) {
+                    Player.targets[i] = null;
+                }
             }
             if (!player.isOnGround) player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
             player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
