@@ -13,6 +13,7 @@ namespace Gamma {
         public const float ALMOST_ZERO = 0.00001f;
         public const float GRAVITY = 9.81f;
         public const float MAX_PROJECTILE_DISTANCE = 1000f;
+        public const float MAX_PROJECTILE_LIFETIME = 10f;
         public const float TARGETTING_ANGLE = 30f;
         public const float TELEPORTENTITY_SPEED_MODIFIER = 4F;
         public const float TELEPORTENTITY_CLIMB_MINIMUM_HEIGHT_DIFFERENCE = 0.1f;
@@ -46,9 +47,11 @@ namespace Gamma {
         public AudioStream metalSlamSFX = GD.Load<AudioStream>("res://assets/sound/metalslam1.wav");
         public AudioStream footStepMetalSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");
         public AudioStream teleportSFX = GD.Load<AudioStream>("res://assets/sound/teleport.mp3");
+        public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public Interactable[] interactables;
         public Projectile[] projectiles = new Projectile[16];
+        public Explosion[] explosions = new Explosion[16];
         public PendingSceneChange pendingSceneChange;
         public DialogueBox dialogueBox;
         public SubtitleBox subtitleBox;
@@ -171,8 +174,9 @@ namespace Gamma {
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
             if (Input.IsActionJustPressed("abort")) {
+                SpawnExplosion(player.node.GlobalPosition, 0f);
                 string randomText = "";
-                int textLength = (int)GD.RandRange(5, 20);
+                int textLength = GD.RandRange(5, 20);
                 for (int i = 0; i < textLength; i++) {
                     randomText += (char)GD.RandRange(65, 90);
                 }
@@ -195,6 +199,7 @@ namespace Gamma {
             PlayerCameraUpdate(ref playerCamera);
             DialogueUpdate();
             SubtitlesUpdate();
+            UpdateExplosions();
             if (prisonSpotlight.node != null) { PrisonSpotlightUpdate(ref prisonSpotlight); }
             ProcessPendingSceneChange();
         }

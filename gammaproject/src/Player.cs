@@ -242,7 +242,7 @@ namespace Gamma {
                     if (potentialTarget == player.node || potentialTarget == player.teleportEntity.node) {
                         continue;
                     }
-                    
+
                     Vector3 toTarget = potentialTarget.GlobalPosition - player.gunBarrel.GlobalPosition;
                     Vector3 toTargetFlat = (toTarget * Y_FLAT).Normalized();
                     float dotProduct = playerForward.Dot(toTargetFlat);
