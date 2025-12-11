@@ -9,10 +9,10 @@ namespace Gamma {
             public Node3D teleportShadowMesh;
         }
         public struct Player {
+            public TeleportEntity teleportEntity;
             public Vector3 wishDirection;
             public CharacterBody3D node;
             public MeshInstance3D headMesh;
-            public TeleportEntity teleportEntity;
             public AnimationPlayer animationPlayer;
             public AnimationTree animationTree;
             public AnimationNodeStateMachinePlayback animationState;
@@ -25,14 +25,15 @@ namespace Gamma {
             public bool isOnGround;
             public bool shouldBeAsleep;
             public bool hasPlayerModelCopy;
+            public static Node3D[] targets = new Node3D[16];
             public static float maxDistance = 1000f;
             public static int meatCount = 0;
         }
         public struct PlayerCamera {
+            public Vector3 targetPosition;
             public Camera3D node;
             public RayCast3D WallRayCast;
             public SpotLight3D SpotLight;
-            public Vector3 targetPosition;
             public float offsetDistance;
             public float offsetHeight;
             public float targetAngle;

@@ -1,5 +1,9 @@
 using Godot;
 using System;
+using System.Reflection;
+using System.Text;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Gamma {
     public partial class Main : Node {

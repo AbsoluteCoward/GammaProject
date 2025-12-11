@@ -8,6 +8,7 @@ namespace Gamma {
             public RayCast3D collisionRaycast;
             public Vector3 positionLastFrame;
             public float speed;
+            public float timeAlive;
         }
         public void ProjectilesCreate(Vector3 inputStartPosition, Node3D inputTarget, Vector3 inputDirection, float inputSpeed) {
             int index = -1;
@@ -28,6 +29,7 @@ namespace Gamma {
             rocket.targetNode = inputTarget;
             rocket.positionLastFrame = inputStartPosition;
             rocket.speed = inputSpeed;
+            rocket.timeAlive = 0f;
             rocket.node.LookAtFromPosition(inputStartPosition, inputStartPosition + inputDirection, Vector3.Up);
             rocket.collisionRaycast.TopLevel = true;
             rocket.collisionRaycast.GlobalPosition = inputStartPosition;
@@ -39,12 +41,17 @@ namespace Gamma {
             for (int i = 0; i < projectiles.Length; i++) {
                 if (projectiles[i].node == null) { continue; }
                 Projectile rocket = projectiles[i];
+                GD.Print(rocket.timeAlive);
                 Vector3 currentDirection = -rocket.node.GlobalTransform.Basis.Z;
                 if (rocket.targetNode != null && IsInstanceValid(rocket.targetNode)) {
                     Vector3 directionToTarget = ((rocket.targetNode.GlobalPosition + Vector3.Up) - rocket.node.GlobalPosition).Normalized();
                     float angleToTarget = currentDirection.AngleTo(directionToTarget);
                     if (angleToTarget > 0.001f) {
                         float maxRotationThisFrame = 2f * (float)globalDelta;
+                        if (rocket.timeAlive > 1f) {
+                            maxRotationThisFrame *= rocket.timeAlive;
+                            GD.Print("Increasing rocket turning speed to " + maxRotationThisFrame + " radians/frame after " + rocket.timeAlive + " seconds alive");
+                        }
                         float rotationAmount = Mathf.Min(angleToTarget, maxRotationThisFrame);
                         float randomOffsetIntensity = 1f;
                         Vector3 randomOffset = Vector3.Zero;
@@ -74,6 +81,7 @@ namespace Gamma {
                 rocket.collisionRaycast.TargetPosition = rocket.collisionRaycast.ToLocal(rocket.node.GlobalPosition);
                 rocket.collisionRaycast.ForceRaycastUpdate();
                 rocket.positionLastFrame = rocket.node.GlobalPosition;
+                rocket.timeAlive += (float)globalDelta;
                 if (rocket.collisionRaycast.IsColliding() || isProjectileTooFar(rocket.node.GlobalPosition)) {
                     GD.Print("Projectile at index " + i + " destroyed at position " + rocket.node.GlobalPosition);
                     if (rocket.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(rocket.node); }

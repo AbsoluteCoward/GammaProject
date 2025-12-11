@@ -173,7 +173,7 @@ namespace Gamma {
                 string randomText = "";
                 int textLength = (int)GD.RandRange(5, 20);
                 for (int i = 0; i < textLength; i++) {
-                    randomText += (char)GD.RandRange(65, 90); // A-Z
+                    randomText += (char)GD.RandRange(65, 90);
                 }
                 float randomLifetime = (float)GD.RandRange(2f, 10f);
                 SubtitleData RandomSubtitle = new SubtitleData {
