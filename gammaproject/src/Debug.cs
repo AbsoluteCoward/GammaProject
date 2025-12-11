@@ -15,5 +15,32 @@ namespace Gamma {
             inputTarget.AddChild(cube);
             cube.GlobalPosition = inputPosition;
         }
+
+        /// <summary>
+        /// Draws a debug line in 3D space from startPosition to endPosition, a child of inputTarget.
+        /// This is useful for visualizing directions, raycasts, or connections between objects.
+        /// example
+        /// </summary>
+        public static void DebugDrawLine(Vector3 startPosition, Vector3 endPosition, float thickness, Node inputTarget, Color? color = null) {
+            MeshInstance3D line = new MeshInstance3D();
+            line.TopLevel = true;
+            Vector3 direction = endPosition - startPosition;
+            float length = direction.Length();
+            CylinderMesh cylinder = new CylinderMesh();
+            cylinder.TopRadius = thickness;
+            cylinder.BottomRadius = thickness;
+            cylinder.Height = length;
+            line.Mesh = cylinder;
+            StandardMaterial3D material = new StandardMaterial3D();
+            material.AlbedoColor = color ?? Colors.Red;
+            material.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
+            line.MaterialOverride = material;
+            inputTarget.AddChild(line);
+            line.GlobalPosition = (startPosition + endPosition) / 2;
+            if (length > 0.0001f) {
+                line.LookAt(endPosition, Vector3.Up);
+                line.RotateObjectLocal(Vector3.Right, Mathf.Pi / 2);
+            }
+        }
     }
 }

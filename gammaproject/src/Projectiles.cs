@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Reflection;
 namespace Gamma {
     public partial class Main : Node {
         public struct Projectile {
@@ -8,7 +7,6 @@ namespace Gamma {
             public Node3D targetNode;
             public RayCast3D collisionRaycast;
             public Vector3 positionLastFrame;
-            public Vector3 direction;
             public float speed;
         }
         public void ProjectilesCreate(Vector3 inputStartPosition, Node3D inputTarget, Vector3 inputDirection, float inputSpeed) {
@@ -28,8 +26,7 @@ namespace Gamma {
             entitiesNode.AddChild(rocket.node);
             rocket.collisionRaycast = (RayCast3D)rocket.node.GetChild(0);
             rocket.targetNode = inputTarget;
-            rocket.positionLastFrame = inputStartPosition + rocket.node.GlobalTransform.Basis.Z;
-            rocket.direction = inputDirection;
+            rocket.positionLastFrame = inputStartPosition;
             rocket.speed = inputSpeed;
             rocket.node.LookAtFromPosition(inputStartPosition, inputStartPosition + inputDirection, Vector3.Up);
             rocket.collisionRaycast.TopLevel = true;
@@ -42,11 +39,43 @@ namespace Gamma {
             for (int i = 0; i < projectiles.Length; i++) {
                 if (projectiles[i].node == null) { continue; }
                 Projectile rocket = projectiles[i];
-                Vector3 movementThisFrame = rocket.direction.Normalized() * rocket.speed * (float)globalDelta;
-                rocket.node.GlobalPosition += movementThisFrame;
-                rocket.collisionRaycast.GlobalPosition = rocket.node.GlobalPosition;
+                Vector3 currentDirection = -rocket.node.GlobalTransform.Basis.Z;
+                if (rocket.targetNode != null && IsInstanceValid(rocket.targetNode)) {
+                    Vector3 directionToTarget = ((rocket.targetNode.GlobalPosition + Vector3.Up) - rocket.node.GlobalPosition).Normalized();
+                    float angleToTarget = currentDirection.AngleTo(directionToTarget);
+                    if (angleToTarget > 0.001f) {
+                        float maxRotationThisFrame = 2f * (float)globalDelta;
+                        float rotationAmount = Mathf.Min(angleToTarget, maxRotationThisFrame);
+                        float randomOffsetIntensity = 1f;
+                        Vector3 randomOffset = Vector3.Zero;
+                        if (GD.Randf() < 0.5f) {
+                            randomOffset = new Vector3(
+                                (float)GD.RandRange(-randomOffsetIntensity, randomOffsetIntensity),
+                                (float)GD.RandRange(-randomOffsetIntensity, randomOffsetIntensity),
+                                (float)GD.RandRange(-randomOffsetIntensity, randomOffsetIntensity)
+                            ).Normalized();
+                        }
+                        directionToTarget += randomOffset;
+                        Vector3 rotationAxis = currentDirection.Cross(directionToTarget).Normalized();
+                        if (rotationAxis.LengthSquared() < 0.001f) {
+                            rotationAxis = Vector3.Up;
+                        }
+                        Basis rotationBasis = new Basis(rotationAxis, rotationAmount);
+                        rocket.node.GlobalTransform = new Transform3D(
+                            rotationBasis * rocket.node.GlobalTransform.Basis,
+                            rocket.node.GlobalPosition
+                        );
+                        currentDirection = -rocket.node.GlobalTransform.Basis.Z;
+                    }
+                }
+                currentDirection = -rocket.node.GlobalTransform.Basis.Z;
+                rocket.node.GlobalPosition += currentDirection * rocket.speed * (float)globalDelta;
+                rocket.collisionRaycast.GlobalPosition = rocket.positionLastFrame;
+                rocket.collisionRaycast.TargetPosition = rocket.collisionRaycast.ToLocal(rocket.node.GlobalPosition);
                 rocket.collisionRaycast.ForceRaycastUpdate();
+                rocket.positionLastFrame = rocket.node.GlobalPosition;
                 if (rocket.collisionRaycast.IsColliding() || isProjectileTooFar(rocket.node.GlobalPosition)) {
+                    GD.Print("Projectile at index " + i + " destroyed at position " + rocket.node.GlobalPosition);
                     if (rocket.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(rocket.node); }
                     rocket.node.QueueFree();
                     projectiles[i].node = null;

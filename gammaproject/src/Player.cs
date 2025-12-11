@@ -231,10 +231,10 @@ namespace Gamma {
             }
             if (Input.IsActionJustPressed("attack")) {
                 ProjectilesCreate(
-                    player.node.GlobalPosition + Vector3.Up,
-                    null,
+                    player.node.GlobalPosition + Vector3.Up + playerForward * 4f,
+                    interactables[0].node,
                     playerForward,
-                    5f
+                    15f
                 );
             }
             if (!player.isOnGround) player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
