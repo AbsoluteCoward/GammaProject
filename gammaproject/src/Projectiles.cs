@@ -11,6 +11,7 @@ namespace Gamma {
             public float timeAlive;
         }
         public struct Explosion {
+            public Vector3 randomRotation;
             public MeshInstance3D node;
             public float timeAlive;
         }
@@ -121,6 +122,11 @@ namespace Gamma {
             StandardMaterial3D explosionMaterial = new StandardMaterial3D();
             explosionMaterial.AlbedoTexture = efxFire01;
             entitiesNode.AddChild(explosion.node);
+            explosion.randomRotation = new Vector3(
+                (float)GD.RandRange(-1f, 1f),
+                (float)GD.RandRange(-1f, 1f),
+                (float)GD.RandRange(-1f, 1f)
+            );
             explosion.node.Mesh = explosionMesh;
             explosion.node.MaterialOverride = explosionMaterial;
             explosion.node.GlobalPosition = inputPosition;
@@ -134,6 +140,7 @@ namespace Gamma {
                 explosion.timeAlive += (float)globalDelta;
                 float scaleAmount = 2f + explosion.timeAlive * 6f;
                 explosion.node.Scale = new Vector3(scaleAmount, scaleAmount, scaleAmount);
+                explosion.node.Rotation += explosion.randomRotation * 2 * (float)globalDelta;
                 float maxLifetime = 2f;
                 if (explosion.timeAlive >= maxLifetime || explosion.node.Scale.X >= 6f) {
                     if (explosion.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(explosion.node); }

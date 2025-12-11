@@ -242,13 +242,11 @@ namespace Gamma {
                     if (potentialTarget == player.node || potentialTarget == player.teleportEntity.node) {
                         continue;
                     }
-
                     Vector3 toTarget = potentialTarget.GlobalPosition - player.gunBarrel.GlobalPosition;
                     Vector3 toTargetFlat = (toTarget * Y_FLAT).Normalized();
                     float dotProduct = playerForward.Dot(toTargetFlat);
                     float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
                     float angleInDegrees = Mathf.RadToDeg(angleToTarget);
-
                     if (angleInDegrees <= TARGETTING_ANGLE) {
                         Player.targets[targetIndex] = potentialTarget;
                         targetIndex++;
@@ -256,6 +254,7 @@ namespace Gamma {
                 }
             } else if (Input.IsActionJustReleased("attack")) {
                 Vector3 gunPosition = player.gunBarrel.GlobalPosition;
+                PlayAudio3D(shootSFX, gunPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
                 for (int i = 0; i < Player.targets.Length; i++) {
                     if (Player.targets[i] == null) continue;
                     GD.Print("Firing at target " + Player.targets[i].Name);
