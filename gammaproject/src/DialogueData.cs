@@ -11,14 +11,12 @@ namespace Gamma {
             onDialogueComplete = null,
             shouldSkipAnimation = true,
             textSpeed = 1f,
-            lifeTime = 60f
         };
         public static DialogueData slinkTalkToSelf1 = new DialogueData {
             speakerPortrait = GD.Load<Texture2D>("res://assets/textures/dialogueportraits/slinkportrait.png"),
             speakerName = "Slink",
             text = 15 + " uncooked meat",
             textSpeed = 2f,
-            lifeTime = 60f,
             shouldSkipAnimation = false
         };
         public static DialogueData slinkTalkToSelf0 = new DialogueData {
@@ -29,7 +27,6 @@ namespace Gamma {
                 (Main) => Main.DialogueStart(slinkTalkToSelf1)
             },
             textSpeed = 2f,
-            lifeTime = 60f,
             shouldSkipAnimation = true
         };
         public static DialogueData slinkSinkInteraction = new DialogueData {
@@ -40,7 +37,6 @@ namespace Gamma {
             onDialogueComplete = null,
             shouldSkipAnimation = true,
             textSpeed = 2f,
-            lifeTime = 60f
         };
     }
 }

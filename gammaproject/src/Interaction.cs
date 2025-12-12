@@ -24,7 +24,6 @@ namespace Gamma {
                 dialogueBox.speakerNameLabel.Modulate = new Color(1f, 1f, 1f, 1.0f);
                 return;
             }
-            PlayAudio3D(metalDinkSFX, player.node.GlobalPosition, 0.1f, 1.0f, false);
             int interactBoxSize = 2;
             Vector3 interactBoxCenter = player.node.GlobalPosition - (player.node.GlobalTransform.Basis.Z * interactBoxSize / 2f);
             float halfSize = interactBoxSize / 2f;

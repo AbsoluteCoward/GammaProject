@@ -194,10 +194,10 @@ namespace Gamma {
                 };
                 SubtitlesAdd(RandomSubtitle);
             }
-            if (Input.IsActionJustPressed("interact")) { Interact(); }
             ProjectilesUpdate();
             PlayerUpdate();
             PlayerCameraUpdate(ref playerCamera);
+            if (Input.IsActionJustPressed("interact")) { Interact(); }
             DialogueUpdate();
             SubtitlesUpdate();
             UpdateExplosions();

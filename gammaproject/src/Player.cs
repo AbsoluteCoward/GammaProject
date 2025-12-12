@@ -194,6 +194,7 @@ namespace Gamma {
             player.previousAnimationFrame = currentAnimationFrame;
             string targetAnimation = "Idle";
             if ((hasMovementInput || isTeleporting) && player.isOnGround) { targetAnimation = "Walk"; }
+            if (!player.isOnGround) { targetAnimation = "Fall"; }
             bool shouldChangeAnimation = player.animationState.GetCurrentNode() != targetAnimation;
             if (shouldChangeAnimation) {
                 GD.Print("changing animation to " + targetAnimation + " from " + player.animationState.GetCurrentNode());
@@ -233,15 +234,12 @@ namespace Gamma {
                 player.teleportEntity.node.TopLevel = false;
             }
             if (Input.IsActionPressed("attack")) {
-                for (int i = 0; i < Player.targets.Length; i++) {
-                    Player.targets[i] = null;
-                }
+                for (int i = 0; i < Player.targets.Length; i++) { Player.targets[i] = null; }
                 int targetIndex = 0;
                 for (int i = 0; i < entitiesNode.GetChildCount() && targetIndex < Player.targets.Length; i++) {
                     Node3D potentialTarget = entitiesNode.GetChild<Node3D>(i);
-                    if (potentialTarget == player.node || potentialTarget == player.teleportEntity.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D)) {
-                        continue;
-                    }
+                    bool isTargetInvalid = potentialTarget == player.node || potentialTarget == player.teleportEntity.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D);
+                    if (isTargetInvalid) { continue; }
                     Vector3 toTarget = potentialTarget.GlobalPosition - player.gunBarrel.GlobalPosition;
                     Vector3 toTargetFlat = (toTarget * Y_FLAT).Normalized();
                     float dotProduct = playerForward.Dot(toTargetFlat);
@@ -268,7 +266,9 @@ namespace Gamma {
                 }
                 for (int i = 0; i < Player.targets.Length; i++) { Player.targets[i] = null; }
             }
-            if (!player.isOnGround) player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
+            if (!player.isOnGround) {
+                player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
+            }
             player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
             player.node.MoveAndSlide();
             ApplyDynamicBoneTransformations();

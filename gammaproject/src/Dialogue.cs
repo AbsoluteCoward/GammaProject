@@ -13,7 +13,6 @@ namespace Gamma {
             public TextureRect gradient;
             public Control node;
             public float textSpeed;
-            public float lifeTime;
             public float delay;
         }
         public struct DialogueData {
@@ -23,7 +22,6 @@ namespace Gamma {
             public Action<Main>[] onDialogueStart;
             public Action<Main>[] onDialogueComplete;
             public float textSpeed;
-            public float lifeTime;
             public bool shouldSkipAnimation;
             public bool shouldFreezePlayer;
         }
@@ -58,7 +56,6 @@ namespace Gamma {
                 }
             }
             dialogueBox.onDialogueComplete = inputDialogue.onDialogueComplete;
-            dialogueBox.lifeTime = inputDialogue.lifeTime;
         }
         public void DialogueEnd() {
             dialogueBox.node.Visible = false;
@@ -80,7 +77,9 @@ namespace Gamma {
                 dialogueBox.portraitTexture.Modulate = new Color(1f, 1f, 1f, dialogueBox.portraitTexture.Modulate.A + 0.1f);
                 return;
             }
-            if (dialogueBox.delay > 1f) { dialogueBox.delay -= (float)globalDelta; return; }
+            if (dialogueBox.delay > 1f) { 
+                dialogueBox.delay -= (float)globalDelta; 
+                return; }
             if (dialogueBox.portraitCoverPanel.Modulate.A < 1f) {
                 dialogueBox.portraitCoverPanel.Modulate = new Color(1f, 1f, 1f, dialogueBox.portraitCoverPanel.Modulate.A + 0.1f);
             }
@@ -94,8 +93,10 @@ namespace Gamma {
             bool isCharacterDoneTalking =
                 dialogueBox.dialogueTextLabel.VisibleCharacters >= dialogueBox.dialogueTextLabel.Text.Length ||
                 dialogueBox.dialogueTextLabel.VisibleRatio >= 1f;
-            if (isCharacterDoneTalking) { dialogueBox.lifeTime--; }
-            if (dialogueBox.lifeTime <= 0) { DialogueEnd(); }
+            GD.Print($"isCharacterDoneTalking: {isCharacterDoneTalking}");
+            if (Input.IsActionJustPressed("interact") && isCharacterDoneTalking) {
+                DialogueEnd();
+            }
         }
     }
 }
