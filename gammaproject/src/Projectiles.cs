@@ -47,7 +47,7 @@ namespace Gamma {
                 if (projectiles[i].node == null) { continue; }
                 Projectile rocket = projectiles[i];
                 Vector3 currentDirection = -rocket.node.GlobalTransform.Basis.Z;
-                if (rocket.targetNode != null && IsInstanceValid(rocket.targetNode)) {
+                if (rocket.targetNode != null && IsInstanceValid(rocket.targetNode) && rocket.targetNode.IsInsideTree()) {
                     Vector3 directionToTarget = ((rocket.targetNode.GlobalPosition + Vector3.Up) - rocket.node.GlobalPosition).Normalized();
                     float angleToTarget = currentDirection.AngleTo(directionToTarget);
                     if (angleToTarget > 0.001f) {
@@ -77,14 +77,19 @@ namespace Gamma {
                     }
                 }
                 currentDirection = -rocket.node.GlobalTransform.Basis.Z;
-                rocket.node.GlobalPosition += currentDirection * rocket.speed * (float)globalDelta;
-                rocket.collisionRaycast.GlobalPosition = rocket.positionLastFrame;
-                rocket.collisionRaycast.TargetPosition = rocket.collisionRaycast.ToLocal(rocket.node.GlobalPosition);
+                Vector3 newPos = rocket.node.GlobalPosition + currentDirection * rocket.speed * (float)globalDelta;
+                rocket.node.TopLevel = true;
+                rocket.node.GlobalPosition = newPos;
+                rocket.collisionRaycast.GlobalPosition = rocket.positionLastFrame != Vector3.Zero
+                    ? rocket.positionLastFrame
+                    : rocket.node.GlobalPosition;
+                rocket.collisionRaycast.TargetPosition = rocket.collisionRaycast.ToLocal(newPos);
+                rocket.collisionRaycast.TargetPosition *= 2f;
                 rocket.collisionRaycast.ForceRaycastUpdate();
                 rocket.positionLastFrame = rocket.node.GlobalPosition;
                 rocket.timeAlive += (float)globalDelta;
                 if (rocket.collisionRaycast.IsColliding() || isProjectileTooFar(rocket.node.GlobalPosition) || rocket.timeAlive > MAX_PROJECTILE_LIFETIME) {
-                    SpawnExplosion(rocket.node.GlobalPosition, GD.Randf());
+                    SpawnExplosion(rocket.node.GlobalPosition, Mathf.Min(GD.Randf(), 0.8f));
                     if (rocket.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(rocket.node); }
                     rocket.node.QueueFree();
                     projectiles[i].node = null;

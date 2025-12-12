@@ -56,7 +56,6 @@ namespace Gamma {
             subtitleBox.activeSubtitles[lastIndex].onSubtitleStart = inputSubtitle.onSubtitleStart;
             subtitleBox.activeSubtitles[lastIndex].totalLifeTime = inputSubtitle.totalLifeTime;
             subtitleBox.activeSubtitles[lastIndex].currentLifeTime = inputSubtitle.currentLifeTime;
-
             if (subtitleBox.activeSubtitles[lastIndex].onSubtitleStart != null) {
                 for (int j = 0; j < subtitleBox.activeSubtitles[lastIndex].onSubtitleStart.Length; j++) {
                     subtitleBox.activeSubtitles[lastIndex].onSubtitleStart[j](this);
