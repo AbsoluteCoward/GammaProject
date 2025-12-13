@@ -46,7 +46,7 @@ namespace Gamma {
         public void PlayerInitialize(CharacterBody3D inputPlayerNode) {
             player.wishDirection = Vector3.Zero;
             player.node = inputPlayerNode;
-            player.gunBarrel = player.node.GetNode<Node3D>("Slink/metarig/Skeleton3D/Gun_2/Gun_2/GunBarrel");
+            player.gunBarrel = player.node.GetNode<MeshInstance3D>("Slink/metarig/Skeleton3D/Gun_2/Gun_2");
             player.headMesh = player.node.GetNode<MeshInstance3D>("Slink/metarig/Skeleton3D/Head/Head");
             player.teleportEntity.node = inputPlayerNode.GetChild<CharacterBody3D>(4);
             player.teleportEntity.light = player.teleportEntity.node.GetChild<SpotLight3D>(0);
@@ -59,6 +59,7 @@ namespace Gamma {
                 string boneName = player.skeleton.GetBoneName(i);
                 if (boneName == "Abdomen") { player.chestBoneIndex = i; }
             }
+            if (player.chestBoneIndex == -1) { GD.PrintErr("Couldn't find chest bone!"); }
             player.moveSpeed = 2.0f;
             player.turnAnticipation = 0f;
             player.previousAnimationFrame = 0f;
@@ -91,7 +92,7 @@ namespace Gamma {
             }
         }
         public void ApplyDynamicBoneTransformations() {
-            if (player.skeleton == null) return;
+            if (player.skeleton == null) { return; }
             float chestRotation = player.turnAnticipation;
             Transform3D pelvisPose = player.skeleton.GetBoneGlobalPose(1);
             Transform3D chestPose = DEFAULT_SLINK_WALK_CHEST_POSE;
@@ -175,11 +176,18 @@ namespace Gamma {
                                    * Y_FLAT;
             Vector3 rootPosition = player.animationTree.GetRootMotionPosition();
             Vector3 rootVelocity = player.node.Transform.Basis * rootPosition / (float)globalDelta;
+            string targetAnimation = player.animationState.GetCurrentNode();
             bool isTeleporting = Input.IsActionPressed("teleport");
             bool hasMovementInput = player.wishDirection.Length() > 0.1f;
             if (player.animationState.GetCurrentNode() == "") { return; }
             float currentAnimationFrame = (float)Math.Round(player.animationState.GetCurrentPlayPosition(), 2);
+            if (player.animationState.GetCurrentNode() == "Idle") {
+                if (hasMovementInput || isTeleporting) { targetAnimation = "Walk"; }
+                if (!player.isOnGround) { targetAnimation = "Fall"; }
+            }
             if (player.animationState.GetCurrentNode() == "Walk") {
+                if (!hasMovementInput && !isTeleporting) { targetAnimation = "Idle"; }
+                if (!player.isOnGround) { targetAnimation = "Fall"; }
                 if (HasCrossedFrame(player.previousAnimationFrame, currentAnimationFrame, 0.33f) ||
                     HasCrossedFrame(player.previousAnimationFrame, currentAnimationFrame, 1.54f)) {
                     if (player.isOnGround) { PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true); }
@@ -191,10 +199,15 @@ namespace Gamma {
             } else {
                 player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, 0f, 0.1f);
             }
+            if (player.animationState.GetCurrentNode() == "Fall") {
+                if (player.isOnGround) { targetAnimation = "FallToIdle"; }
+            }
+            if (player.animationState.GetCurrentNode() == "FallToIdle") {
+                if (HasCrossedFrame(player.previousAnimationFrame, currentAnimationFrame, 0.22f)) {
+                    if (player.isOnGround) { PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true); }
+                }
+            }
             player.previousAnimationFrame = currentAnimationFrame;
-            string targetAnimation = "Idle";
-            if ((hasMovementInput || isTeleporting) && player.isOnGround) { targetAnimation = "Walk"; }
-            if (!player.isOnGround) { targetAnimation = "Fall"; }
             bool shouldChangeAnimation = player.animationState.GetCurrentNode() != targetAnimation;
             if (shouldChangeAnimation) {
                 GD.Print("changing animation to " + targetAnimation + " from " + player.animationState.GetCurrentNode());
@@ -218,6 +231,7 @@ namespace Gamma {
                     float heightDifference = Mathf.Abs(player.teleportEntity.node.GlobalPosition.Y - collisionPoint.Y);
                     bool canClimbSurface =
                         heightDifference > TELEPORTENTITY_CLIMB_MINIMUM_HEIGHT_DIFFERENCE &&
+                        heightDifference < TELEPORTENTITY_CLIMB_MAXIMUM_HEIGHT_DIFFERENCE &&
                         player.teleportEntity.topRayCast.GetCollisionNormal().Dot(Vector3.Up) > TELEPORTENTITY_CLIMB_SURFACE_NORMAL_THRESHOLD;
                     bool isVerticallyCloseToCollision = player.teleportEntity.node.GlobalPosition.Y < collisionPoint.Y;
                     if (canClimbSurface || isVerticallyCloseToCollision) {
@@ -266,9 +280,7 @@ namespace Gamma {
                 }
                 for (int i = 0; i < Player.targets.Length; i++) { Player.targets[i] = null; }
             }
-            if (!player.isOnGround) {
-                player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
-            }
+            if (!player.isOnGround) { player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta; }
             player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
             player.node.MoveAndSlide();
             ApplyDynamicBoneTransformations();
@@ -277,7 +289,9 @@ namespace Gamma {
             if (inputCamera.node == null) { return; }
             if (Input.IsActionJustPressed("cameraRight")) {
                 inputCamera.targetAngle -= 90f;
-            } else if (Input.IsActionJustPressed("cameraLeft")) { inputCamera.targetAngle += 90f; }
+            } else if (Input.IsActionJustPressed("cameraLeft")) {
+                 inputCamera.targetAngle += 90f; 
+            }
             inputCamera.targetAngle = Mathf.PosMod(inputCamera.targetAngle, 360f);
             float angleDifference = Mathf.PosMod(inputCamera.targetAngle - inputCamera.angle + 180f, 360f) - 180f;
             inputCamera.angle += angleDifference * inputCamera.rotationLerpSpeed;

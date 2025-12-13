@@ -17,6 +17,7 @@ namespace Gamma {
         public const float TARGETTING_ANGLE = 30f;
         public const float TELEPORTENTITY_SPEED_MODIFIER = 4F;
         public const float TELEPORTENTITY_CLIMB_MINIMUM_HEIGHT_DIFFERENCE = 0.1f;
+        public const float TELEPORTENTITY_CLIMB_MAXIMUM_HEIGHT_DIFFERENCE = 2f;
         public const float TELEPORTENTITY_CLIMB_SURFACE_NORMAL_THRESHOLD = 0.7f;
         public static readonly Color NULL_COLOR = new Color(0f, 0f, 0f, 0f);
         public static readonly Vector3 TELEPORT_VERTICAL_OFFSET = new Vector3(0, 0.1f, 0);
