@@ -153,8 +153,8 @@ namespace Gamma {
             Audio3DInitialize(DEFAULT_AUDIO_POOL_SIZE);
         }
         public override void _Ready() {
-            GD.Print("Ready");
-            Engine.MaxFps = 240;
+            GD.Print("Game Setup");
+            Engine.MaxFps = 32;
             globalPhysicsMaterial = new PhysicsMaterial();
             globalPhysicsMaterial.Friction = 0.2f;
             globalPhysicsMaterial.Bounce = 0f;
