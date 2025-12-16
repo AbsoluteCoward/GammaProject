@@ -15,6 +15,8 @@ namespace Gamma {
             public InteractableLookup interaction;
         }
         public void Interact() {
+            if (interactInputConsumed) { return; }
+            interactInputConsumed = true;
             if (dialogueBox.node.Visible) {
                 if (dialogueBox.dialogueTextLabel.VisibleRatio >= 1f || dialogueBox.dialogueTextLabel.VisibleCharacters >= dialogueBox.dialogueTextLabel.Text.Length) { DialogueEnd(); return; }
                 dialogueBox.dialogueTextLabel.VisibleCharacters = dialogueBox.dialogueTextLabel.Text.Length;
@@ -46,11 +48,9 @@ namespace Gamma {
                             });
                             return;
                         case InteractableLookup.ExitDungeon:
-                            GD.Print("Entering level2");
                             ChangeScene("res://scenes/maps/level2.tscn");
                             return;
                         case InteractableLookup.EnterDungeon:
-                            GD.Print("Entering level1");
                             ChangeScene("res://scenes/maps/level1.tscn");
                             return;
                         case InteractableLookup.SlinkSinkDialogueStart:

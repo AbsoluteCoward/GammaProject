@@ -203,6 +203,7 @@ namespace Gamma {
             SubtitlesUpdate();
             UpdateExplosions();
             if (prisonSpotlight.node != null) { PrisonSpotlightUpdate(ref prisonSpotlight); }
+            interactInputConsumed = false;
             ProcessPendingSceneChange();
         }
     }

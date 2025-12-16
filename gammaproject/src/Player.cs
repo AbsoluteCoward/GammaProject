@@ -220,7 +220,7 @@ namespace Gamma {
                         isAnimationSameAsPrevious;
                     if (shouldJump) {
                         player.node.Velocity += Vector3.Up * 12f;
-                        player.node.Velocity += player.wishDirection * 1f;
+                        player.node.Velocity += player.wishDirection.Length() > 0.1f ? player.wishDirection * 2f : player.node.Transform.Basis.Z.Normalized() * 2f;
                     }
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
                     break;
@@ -234,8 +234,8 @@ namespace Gamma {
                         if (player.isOnGround) {
                             PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                         }
-                    }
-                    player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.2f);
+                    } 
+                    player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.08f);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, 0f, 0.1f);
                     break;
