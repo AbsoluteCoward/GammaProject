@@ -77,9 +77,10 @@ namespace Gamma {
                 dialogueBox.portraitTexture.Modulate = new Color(1f, 1f, 1f, dialogueBox.portraitTexture.Modulate.A + 0.1f);
                 return;
             }
-            if (dialogueBox.delay > 1f) { 
-                dialogueBox.delay -= (float)globalDelta; 
-                return; }
+            if (dialogueBox.delay > 1f) {
+                dialogueBox.delay -= (float)globalDelta;
+                return;
+            }
             if (dialogueBox.portraitCoverPanel.Modulate.A < 1f) {
                 dialogueBox.portraitCoverPanel.Modulate = new Color(1f, 1f, 1f, dialogueBox.portraitCoverPanel.Modulate.A + 0.1f);
             }

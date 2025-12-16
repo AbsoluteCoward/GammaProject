@@ -58,7 +58,7 @@ namespace Gamma {
             player.animationPlayer.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Physics;
             player.animationState = (AnimationNodeStateMachinePlayback)player.animationTree.Get("parameters/playback");
             player.skeleton = inputPlayerNode.GetChild<Node3D>(2).GetChild<Node3D>(0).GetChild<Skeleton3D>(0);
-            for (int i = 0; i < player.skeleton.GetBoneCount(); i++) { if (player.skeleton.GetBoneName(i) == "Abdomen") { player.chestBoneIndex = i; }}
+            for (int i = 0; i < player.skeleton.GetBoneCount(); i++) { if (player.skeleton.GetBoneName(i) == "Abdomen") { player.chestBoneIndex = i; } }
             if (player.chestBoneIndex == -1) { GD.PrintErr("Couldn't find chest bone!"); }
             player.moveSpeed = 8.0f;
             player.turnAnticipation = 0f;
@@ -172,8 +172,8 @@ namespace Gamma {
             player.isOnGround = player.node.IsOnFloor();
             Camera3D currentCamera = GetViewport().GetCamera3D();
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
-            player.wishDirection = 
-                (currentCamera.GlobalTransform.Basis.Z.Normalized() * inputDirection.Y + currentCamera.GlobalTransform.Basis.X.Normalized() * inputDirection.X) * 
+            player.wishDirection =
+                (currentCamera.GlobalTransform.Basis.Z.Normalized() * inputDirection.Y + currentCamera.GlobalTransform.Basis.X.Normalized() * inputDirection.X) *
                 Y_FLAT;
             Vector3 rootPosition = player.animationTree.GetRootMotionPosition();
             Vector3 rootVelocity = player.node.Transform.Basis * rootPosition;
@@ -198,8 +198,8 @@ namespace Gamma {
                     if (Input.IsActionPressed("action2") && player.wishDirection.Length() < 0.1f) { targetAnimation = "Jump"; }
                     if (HasCrossedPlaybackPosition(player.previousAnimationPlaybackPosition, currentAnimationPlaybackPosition, 0.33f) ||
                         HasCrossedPlaybackPosition(player.previousAnimationPlaybackPosition, currentAnimationPlaybackPosition, 1.54f)) {
-                        if (player.isOnGround) { 
-                            PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true); 
+                        if (player.isOnGround) {
+                            PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                         }
                     }
                     Vector3 direction = isTeleporting ? playerForward : player.wishDirection;
@@ -210,13 +210,13 @@ namespace Gamma {
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
                     break;
                 case "Jump":
-                    bool shouldJump = 
+                    bool shouldJump =
                         HasCrossedPlaybackPosition(
                             inputPreviousPosition: player.previousAnimationPlaybackPosition,
-                            inputCurrentPosition: currentAnimationPlaybackPosition, 
+                            inputCurrentPosition: currentAnimationPlaybackPosition,
                             inputEventPosition: 0.66f
                         ) &&
-                        player.isOnGround && 
+                        player.isOnGround &&
                         isAnimationSameAsPrevious;
                     if (shouldJump) {
                         player.node.Velocity += Vector3.Up * 12f;
@@ -231,8 +231,8 @@ namespace Gamma {
                     break;
                 case "FallToIdle":
                     if (HasCrossedPlaybackPosition(player.previousAnimationPlaybackPosition, currentAnimationPlaybackPosition, 0.22f)) {
-                        if (player.isOnGround) { 
-                            PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true); 
+                        if (player.isOnGround) {
+                            PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                         }
                     }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.2f);
@@ -324,7 +324,7 @@ namespace Gamma {
             if (Input.IsActionJustPressed("cameraRight")) {
                 inputCamera.targetAngle -= 90f;
             } else if (Input.IsActionJustPressed("cameraLeft")) {
-                 inputCamera.targetAngle += 90f; 
+                inputCamera.targetAngle += 90f;
             }
             inputCamera.targetAngle = Mathf.PosMod(inputCamera.targetAngle, 360f);
             float angleDifference = Mathf.PosMod(inputCamera.targetAngle - inputCamera.angle + 180f, 360f) - 180f;
