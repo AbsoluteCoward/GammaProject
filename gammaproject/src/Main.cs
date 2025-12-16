@@ -15,7 +15,7 @@ namespace Gamma {
         public const float MAX_PROJECTILE_DISTANCE = 1000f;
         public const float MAX_PROJECTILE_LIFETIME = 10f;
         public const float TARGETTING_ANGLE = 30f;
-        public const float TELEPORTENTITY_SPEED_MODIFIER = 4F;
+        public const float TELEPORTENTITY_SPEED_MODIFIER = 8.0f;
         public const float TELEPORTENTITY_CLIMB_MINIMUM_HEIGHT_DIFFERENCE = 0.1f;
         public const float TELEPORTENTITY_CLIMB_MAXIMUM_HEIGHT_DIFFERENCE = 2f;
         public const float TELEPORTENTITY_CLIMB_SURFACE_NORMAL_THRESHOLD = 0.7f;
@@ -154,14 +154,14 @@ namespace Gamma {
         }
         public override void _Ready() {
             GD.Print("Game Setup");
-            Engine.MaxFps = 32;
+            Engine.MaxFps = 240;
             globalPhysicsMaterial = new PhysicsMaterial();
             globalPhysicsMaterial.Friction = 0.2f;
             globalPhysicsMaterial.Bounce = 0f;
         }
-        public bool HasCrossedFrame(float previousFrame, float currentFrame, float targetFrame) {
-            if (currentFrame < previousFrame) { return targetFrame >= previousFrame || targetFrame <= currentFrame; }
-            return previousFrame < targetFrame && targetFrame <= currentFrame;
+        bool HasCrossedPlaybackPosition(float inputPreviousPosition, float inputCurrentPosition, float inputEventPosition) {
+            if (inputCurrentPosition >= inputPreviousPosition) return inputPreviousPosition < inputEventPosition && inputEventPosition <= inputCurrentPosition;
+            return inputPreviousPosition < inputEventPosition || inputEventPosition <= inputCurrentPosition;
         }
         public override void _PhysicsProcess(double delta) {
             if (GetTree().CurrentScene != sceneState.previousFrameScene) {
@@ -175,7 +175,7 @@ namespace Gamma {
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
-            if (Input.IsActionJustPressed("abort")) {
+            if (Input.IsActionJustPressed("action3")) {
                 SpawnExplosion(player.node.GlobalPosition, 0f);
                 string randomText = "";
                 int textLength = GD.RandRange(5, 20);

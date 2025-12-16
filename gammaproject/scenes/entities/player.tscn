@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=4 uid="uid://d212u3oup5pn5"]
+[gd_scene load_steps=68 format=4 uid="uid://d212u3oup5pn5"]
 
 [ext_resource type="Texture2D" uid="uid://clfm13i3vny1v" path="res://assets/textures/CHR_SLINK_GOLDHEAD.jpg" id="1_5u6hq"]
 [ext_resource type="Texture2D" uid="uid://dnxq6404btwp7" path="res://assets/textures/CHR_SLINK_GUN.png" id="2_5u6hq"]
@@ -3917,6 +3917,9 @@ animation = &"FallToIdle"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_42nxq"]
 animation = &"Idle"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dnykm"]
+animation = &"Jump"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5u6hq"]
 animation = &"Walk"
 
@@ -3955,19 +3958,28 @@ xfade_time = 0.1
 switch_mode = 2
 advance_mode = 2
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5ki56"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_saib0"]
+advance_condition = &"shouldJump"
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_d4qa6"]
 states/End/position = Vector2(810, 109)
 states/Fall/node = SubResource("AnimationNodeAnimation_d4qa6")
 states/Fall/position = Vector2(551.777, 44)
 states/FallToIdle/node = SubResource("AnimationNodeAnimation_ss7kx")
-states/FallToIdle/position = Vector2(437.777, 3)
+states/FallToIdle/position = Vector2(435.777, 2)
 states/Idle/node = SubResource("AnimationNodeAnimation_42nxq")
 states/Idle/position = Vector2(332, 44)
-states/Start/position = Vector2(232, 44)
+states/Jump/node = SubResource("AnimationNodeAnimation_dnykm")
+states/Jump/position = Vector2(551.777, 148)
+states/Start/position = Vector2(171, 44)
 states/Walk/node = SubResource("AnimationNodeAnimation_5u6hq")
 states/Walk/position = Vector2(332, 148)
-transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_42nxq"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_d4qa6"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_5u6hq"), "Idle", "Fall", SubResource("AnimationNodeStateMachineTransition_ss7kx"), "Walk", "Fall", SubResource("AnimationNodeStateMachineTransition_dnykm"), "Fall", "Walk", SubResource("AnimationNodeStateMachineTransition_c5rqy"), "Fall", "FallToIdle", SubResource("AnimationNodeStateMachineTransition_b6tgf"), "FallToIdle", "Idle", SubResource("AnimationNodeStateMachineTransition_73kkf")]
-graph_offset = Vector2(-116.223, -60.5747)
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_42nxq"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_d4qa6"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_5u6hq"), "Idle", "Fall", SubResource("AnimationNodeStateMachineTransition_ss7kx"), "Walk", "Fall", SubResource("AnimationNodeStateMachineTransition_dnykm"), "Fall", "Walk", SubResource("AnimationNodeStateMachineTransition_c5rqy"), "Fall", "FallToIdle", SubResource("AnimationNodeStateMachineTransition_b6tgf"), "FallToIdle", "Idle", SubResource("AnimationNodeStateMachineTransition_73kkf"), "Jump", "Fall", SubResource("AnimationNodeStateMachineTransition_5ki56"), "Idle", "Jump", SubResource("AnimationNodeStateMachineTransition_saib0")]
+graph_offset = Vector2(-174.223, -50.5747)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5u6hq"]
 radius = 0.1
@@ -4791,6 +4803,7 @@ tree_root = SubResource("AnimationNodeStateMachine_d4qa6")
 anim_player = NodePath("../Slink/AnimationPlayer")
 parameters/conditions/shouldFall = false
 parameters/conditions/shouldIdle = false
+parameters/conditions/shouldJump = false
 parameters/conditions/shouldWalk = false
 
 [node name="TeleportEntity" type="CharacterBody3D" parent="."]
