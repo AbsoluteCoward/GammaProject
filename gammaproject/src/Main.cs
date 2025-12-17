@@ -1,7 +1,5 @@
 using Godot;
 using System;
-using System.ComponentModel;
-
 namespace Gamma {
     public partial class Main : Node {
         public struct PendingSceneChange {
@@ -10,6 +8,9 @@ namespace Gamma {
         }
         public const int DEFAULT_INTERACTABLES_SIZE = 16;
         public const int DEFAULT_AUDIO_POOL_SIZE = 8;
+        public const int DEFAULT_PROJECTILES_SIZE = 16;
+        public const int DEFAULT_EXPLOSIONS_SIZE = 16;
+        public const int DEFAULT_ENEMIES_SIZE = 16;
         public const float ALMOST_ZERO = 0.00001f;
         public const float GRAVITY = 9.81f;
         public const float MAX_PROJECTILE_DISTANCE = 1000f;
@@ -52,17 +53,12 @@ namespace Gamma {
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public Interactable[] interactables;
-        public Projectile[] projectiles = new Projectile[16];
-        public Explosion[] explosions = new Explosion[16];
+        public Projectile[] projectiles;
+        public Explosion[] explosions;
         public PendingSceneChange pendingSceneChange;
-        public DialogueBox dialogueBox;
-        public SubtitleBox subtitleBox;
-        public Player player;
-        public PlayerCamera playerCamera;
         public PrisonSpotLight prisonSpotlight;
         public Node entitiesNode;
         public PhysicsMaterial globalPhysicsMaterial;
-        public Vector2 inputDirection;
         public double globalDelta;
         public bool shouldSpawnMothman = false;
         public bool outOfTime = false;
@@ -70,17 +66,6 @@ namespace Gamma {
             if (lookDirection.LengthSquared() <= ALMOST_ZERO) { return; }
             float targetRotation = (float)Math.Atan2(-lookDirection.X, -lookDirection.Z);
             inputNode.Rotation = new Vector3(inputNode.Rotation.X, Mathf.LerpAngle(inputNode.Rotation.Y, targetRotation, rotationSpeed), inputNode.Rotation.Z);
-        }
-        public void InteractablesAdd(Node3D inputNode, InteractableLookup inputInteraction) {
-            for (int i = 0; i < interactables.Length; i++) {
-                if (interactables[i].node == null) {
-                    interactables[i].node = inputNode;
-                    interactables[i].interaction = inputInteraction;
-                    GD.Print($"Added interactable {inputNode.Name} at index {i}");
-                    return;
-                }
-            }
-            GD.PrintErr("No space to add new interactable!");
         }
         public void ChangeScene(string scenePath) {
             pendingSceneChange.shouldChangeScene = true;
@@ -99,8 +84,10 @@ namespace Gamma {
             sceneState.physicsFramesSinceSceneLoad = 0;
             player = new Player();
             playerCamera = new PlayerCamera();
+            enemies = new Enemy[DEFAULT_ENEMIES_SIZE];
             interactables = new Interactable[DEFAULT_INTERACTABLES_SIZE];
-            prisonSpotlight = new PrisonSpotLight();
+            projectiles = new Projectile[DEFAULT_PROJECTILES_SIZE];
+            explosions = new Explosion[DEFAULT_EXPLOSIONS_SIZE];
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
             GD.Print("entities children: " + entitiesNode.GetChildCount());
             int typelessEntityCount = 0;
@@ -124,16 +111,16 @@ namespace Gamma {
                         PlayerCameraInitialize((Camera3D)child);
                         break;
                     case "DungeonExit":
-                        InteractablesAdd((Node3D)child, InteractableLookup.ExitDungeon);
+                        InteractablesInitialize((Node3D)child, InteractableLookup.ExitDungeon);
                         break;
                     case "DungeonEntrance":
-                        InteractablesAdd((Node3D)child, InteractableLookup.EnterDungeon);
+                        InteractablesInitialize((Node3D)child, InteractableLookup.EnterDungeon);
                         break;
                     case "SlinkSink":
-                        InteractablesAdd((Node3D)child, InteractableLookup.SlinkSinkDialogueStart);
+                        InteractablesInitialize((Node3D)child, InteractableLookup.SlinkSinkDialogueStart);
                         break;
                     case "Pot":
-                        InteractablesAdd((Node3D)child, InteractableLookup.PotOpen);
+                        InteractablesInitialize((Node3D)child, InteractableLookup.PotOpen);
                         break;
                     case "PrisonSpotlight":
                         prisonSpotlight = new PrisonSpotLight();
@@ -156,11 +143,12 @@ namespace Gamma {
             Audio3DInitialize(DEFAULT_AUDIO_POOL_SIZE);
         }
         public override void _Ready() {
-            GD.Print("Game Setup");
+            GD.Print("Setting up game");
             Engine.MaxFps = 240;
             globalPhysicsMaterial = new PhysicsMaterial();
             globalPhysicsMaterial.Friction = 0.2f;
             globalPhysicsMaterial.Bounce = 0f;
+            GD.Print("Setup complete");
         }
         bool HasCrossedPlaybackPosition(float inputPreviousPosition, float inputCurrentPosition, float inputEventPosition) {
             if (inputCurrentPosition >= inputPreviousPosition) return inputPreviousPosition < inputEventPosition && inputEventPosition <= inputCurrentPosition;
@@ -179,7 +167,7 @@ namespace Gamma {
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
             if (Input.IsActionJustPressed("debug")) {
-                SpawnExplosion(player.node.GlobalPosition, 0f);
+                GD.Print(IsStructOptimal<Player>(player));
                 string randomText = "";
                 int textLength = GD.RandRange(5, 20);
                 for (int i = 0; i < textLength; i++) {

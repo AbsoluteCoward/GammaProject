@@ -18,11 +18,11 @@ namespace Gamma {
             public AnimationTree animationTree;
             public AnimationNodeStateMachinePlayback animationState;
             public Skeleton3D skeleton;
+            public string previousAnimationName;
             public float moveSpeed;
             public float turnAnticipation;
             public float maxTeleportDistance;
             public float previousAnimationPlaybackPosition;
-            public string previousAnimationName;
             public int chestBoneIndex;
             public int targetCount;
             public bool isOnGround;
@@ -46,6 +46,8 @@ namespace Gamma {
             public float rotationLerpSpeed;
             public float positionLerpSpeed;
         }
+        public Player player;
+        public PlayerCamera playerCamera;
         public void PlayerInitialize(CharacterBody3D inputPlayerNode) {
             player.wishDirection = Vector3.Zero;
             player.node = inputPlayerNode;
@@ -72,6 +74,7 @@ namespace Gamma {
             player.teleportEntity.light.LightEnergy = 0;
             player.hasPlayerModelCopy = false;
             player.isTeleporting = false;
+            GD.Print("Player Initialized");
         }
         public void ApplyDynamicBoneTransformations() {
             if (player.skeleton == null) { return; }
@@ -105,6 +108,7 @@ namespace Gamma {
             playerCamera.maxLerpDistance = 200f;
             playerCamera.rotationLerpSpeed = 0.6f;
             playerCamera.positionLerpSpeed = 0.1f;
+            GD.Print("Player Camera Initialized");
         }
         public void CreatePlayerModelCopy() {
             if (player.hasPlayerModelCopy) { return; }
@@ -274,7 +278,6 @@ namespace Gamma {
                 player.teleportEntity.light.LightEnergy = 0;
                 player.teleportEntity.node.TopLevel = false;
             }
-            GD.Print(enemies);
             if (Input.IsActionPressed("attack")) {
                 if (Input.IsActionJustPressed("attack")) {
                     for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }

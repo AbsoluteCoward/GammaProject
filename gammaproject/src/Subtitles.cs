@@ -23,6 +23,7 @@ namespace Gamma {
             public float totalLifeTime;
             public float currentLifeTime;
         }
+        public SubtitleBox subtitleBox;
         public void SubtitlesInitialize(VBoxContainer inputSubtitleNode) {
             subtitleBox.node = inputSubtitleNode;
             subtitleBox.activeSubtitles = new SubtitleLabel[3];

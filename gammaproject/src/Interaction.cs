@@ -14,6 +14,17 @@ namespace Gamma {
             public Node3D node;
             public InteractableLookup interaction;
         }
+        public void InteractablesInitialize(Node3D inputNode, InteractableLookup inputInteraction) {
+            for (int i = 0; i < interactables.Length; i++) {
+                if (interactables[i].node == null) {
+                    interactables[i].node = inputNode;
+                    interactables[i].interaction = inputInteraction;
+                    GD.Print($"{inputNode.Name} Initialized at index {i}");
+                    return;
+                }
+            }
+            GD.PrintErr("No space to add new interactable!");
+        }
         public void Interact() {
             if (inputState.interact.isConsumed) { return; }
             inputState.interact.isConsumed = true;

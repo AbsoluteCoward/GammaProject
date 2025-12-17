@@ -12,6 +12,7 @@ namespace Gamma {
             public InputAction action2;
             public InputAction action3;
         }
+        public Vector2 inputDirection;
         public InputState inputState = new InputState();
         public InputMode inputMode = InputMode.Game;
     }

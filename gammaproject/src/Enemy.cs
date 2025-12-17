@@ -5,7 +5,7 @@ namespace Gamma {
             public CharacterBody3D node;
         }
         public const int DEFAULT_ENEMY_CAPACITY = 12;
-        public Enemy[] enemies = new Enemy[DEFAULT_ENEMY_CAPACITY];
+        public Enemy[] enemies;
         public int enemyCount;
         public void EnemyInitialize(CharacterBody3D inputNode) {
             if (enemyCount >= enemies.Length) {
@@ -15,7 +15,7 @@ namespace Gamma {
             int index = enemyCount;
             enemies[index].node = inputNode;
             enemyCount++;
-            GD.Print("Bear Initialized");
+            GD.Print($"{inputNode.Name} Initialized at index {index}");
         }
         public void EnemyRemove(int inputIndex) {
             if (inputIndex < 0 || inputIndex >= enemyCount) {
