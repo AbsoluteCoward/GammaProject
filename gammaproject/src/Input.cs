@@ -5,15 +5,14 @@ namespace Gamma {
             Game,
             Dialogue
         }
+        public struct InputAction { public bool isConsumed; }
         public struct InputState {
-            InputAction action1;
-            InputAction action2;
-            InputAction action3;
+            public InputAction interact;
+            public InputAction action1;
+            public InputAction action2;
+            public InputAction action3;
         }
-        public struct InputAction {
-            bool isConsumed;
-        }
+        public InputState inputState = new InputState();
         public InputMode inputMode = InputMode.Game;
-        public bool interactInputConsumed;
     }
 }

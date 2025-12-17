@@ -8,6 +8,33 @@ using System.Linq;
 namespace Gamma {
     public partial class Main : Node {
         /// <summary>
+        /// Turns off or on shadows for a given node and its children.
+        /// </summary>
+        public void TurnShadowsOffOrOn(Node3D inputNode, bool inputDecision) {
+            int maxStackSize = 256;
+            Node[] stack = new Node[maxStackSize];
+            int stackSize = 0;
+            stack[stackSize++] = inputNode;
+            GeometryInstance3D.ShadowCastingSetting shadowSetting = inputDecision ?
+                GeometryInstance3D.ShadowCastingSetting.On :
+                GeometryInstance3D.ShadowCastingSetting.Off;
+            while (stackSize > 0) {
+                Node currentNode = stack[--stackSize];
+                if (currentNode.GetType() == typeof(MeshInstance3D)) {
+                    MeshInstance3D mesh = (MeshInstance3D)currentNode;
+                    mesh.CastShadow = shadowSetting;
+                }
+                int childCount = currentNode.GetChildCount();
+                for (int i = 0; i < childCount; i++) {
+                    if (stackSize >= maxStackSize) {
+                        GD.PrintErr("TurnShadowsOffOrOn: Stack overflow");
+                        return;
+                    }
+                    stack[stackSize++] = currentNode.GetChild(i);
+                }
+            }
+        }
+        /// <summary>
         /// Analyzes a struct's field layout and determines if fields are optimally ordered for memory alignment.
         /// Fields should be ordered from largest to smallest to minimize padding.
         /// Returns true if optimally ordered, false otherwise, along with suggestions.

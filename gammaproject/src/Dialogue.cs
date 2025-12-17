@@ -95,7 +95,7 @@ namespace Gamma {
                 dialogueBox.dialogueTextLabel.VisibleCharacters >= dialogueBox.dialogueTextLabel.Text.Length ||
                 dialogueBox.dialogueTextLabel.VisibleRatio >= 1f;
             GD.Print($"isCharacterDoneTalking: {isCharacterDoneTalking}");
-            if (Input.IsActionJustPressed("interact") && isCharacterDoneTalking && !interactInputConsumed) {
+            if (Input.IsActionJustPressed("interact") && isCharacterDoneTalking && !inputState.interact.isConsumed) {
                 DialogueEnd();
             }
         }

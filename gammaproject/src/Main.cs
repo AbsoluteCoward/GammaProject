@@ -114,6 +114,9 @@ namespace Gamma {
                 string entityType = (string)child.GetMeta("Type");
                 GD.Print("entity: " + child.GetMeta("Type"));
                 switch (entityType) {
+                    case "Bear":
+                        EnemyInitialize((CharacterBody3D)child);
+                        break;
                     case "Player":
                         PlayerInitialize((CharacterBody3D)child);
                         break;
@@ -175,7 +178,7 @@ namespace Gamma {
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
-            if (Input.IsActionJustPressed("action3")) {
+            if (Input.IsActionJustPressed("debug")) {
                 SpawnExplosion(player.node.GlobalPosition, 0f);
                 string randomText = "";
                 int textLength = GD.RandRange(5, 20);
@@ -189,7 +192,8 @@ namespace Gamma {
                         (float)GD.RandRange(0f, 1f),
                         (float)GD.RandRange(0f, 1f),
                         (float)GD.RandRange(0f, 1f),
-                        1f),
+                        1f
+                    ),
                     totalLifeTime = randomLifetime,
                     currentLifeTime = randomLifetime,
                 };
@@ -203,7 +207,10 @@ namespace Gamma {
             SubtitlesUpdate();
             UpdateExplosions();
             if (prisonSpotlight.node != null) { PrisonSpotlightUpdate(ref prisonSpotlight); }
-            interactInputConsumed = false;
+            inputState.interact.isConsumed = false;
+            inputState.action1.isConsumed = false;
+            inputState.action2.isConsumed = false;
+            inputState.action3.isConsumed = false;
             ProcessPendingSceneChange();
         }
     }

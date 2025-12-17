@@ -27,6 +27,7 @@ namespace Gamma {
             public bool isOnGround;
             public bool shouldBeAsleep;
             public bool hasPlayerModelCopy;
+            public bool isTeleporting;
             public static Node3D[] targets = new Node3D[16];
             public static float maxDistance = 1000f;
             public static int meatCount = 0;
@@ -67,30 +68,7 @@ namespace Gamma {
             player.node.FloorSnapLength = 0.8f;
             player.teleportEntity.light.LightEnergy = 0;
             player.hasPlayerModelCopy = false;
-        }
-        public void TurnShadowsOffOrOn(Node3D inputNode, bool inputDecision) {
-            int maxStackSize = 256;
-            Node[] stack = new Node[maxStackSize];
-            int stackSize = 0;
-            stack[stackSize++] = inputNode;
-            GeometryInstance3D.ShadowCastingSetting shadowSetting = inputDecision ?
-                GeometryInstance3D.ShadowCastingSetting.On :
-                GeometryInstance3D.ShadowCastingSetting.Off;
-            while (stackSize > 0) {
-                Node currentNode = stack[--stackSize];
-                if (currentNode.GetType() == typeof(MeshInstance3D)) {
-                    MeshInstance3D mesh = (MeshInstance3D)currentNode;
-                    mesh.CastShadow = shadowSetting;
-                }
-                int childCount = currentNode.GetChildCount();
-                for (int i = 0; i < childCount; i++) {
-                    if (stackSize >= maxStackSize) {
-                        GD.PrintErr("TurnShadowsOffOrOn: Stack overflow");
-                        return;
-                    }
-                    stack[stackSize++] = currentNode.GetChild(i);
-                }
-            }
+            player.isTeleporting = false;
         }
         public void ApplyDynamicBoneTransformations() {
             if (player.skeleton == null) { return; }
@@ -180,20 +158,30 @@ namespace Gamma {
             rootVelocity *= player.moveSpeed;
             string targetAnimation = player.animationState.GetCurrentNode();
             bool isAnimationSameAsPrevious = player.animationState.GetCurrentNode() == player.previousAnimationName;
-            bool isTeleporting = Input.IsActionPressed("action3");
+            bool action3JustPressed = Input.IsActionJustPressed("action3") && !inputState.action3.isConsumed;
+            bool action3Pressed = Input.IsActionPressed("action3");
+            bool action3JustReleased = Input.IsActionJustReleased("action3");
             bool hasMovementInput = player.wishDirection.Length() > 0.1f;
             if (player.animationState.GetCurrentNode() == "") { return; }
             float currentAnimationPlaybackPosition = player.animationState.GetCurrentPlayPosition();
+            
+            // Determine if action3 should trigger jump or teleport
+            bool isIdleAndStill = player.animationState.GetCurrentNode() == "Idle" && !hasMovementInput;
+            bool shouldStartJump = action3JustPressed && isIdleAndStill;
+            bool shouldStartTeleport = action3JustPressed && !isIdleAndStill;
             switch (player.animationState.GetCurrentNode()) {
                 case "Idle":
-                    if (hasMovementInput || isTeleporting) { targetAnimation = "Walk"; }
+                    if (hasMovementInput) { targetAnimation = "Walk"; }
                     if (!player.isOnGround) { targetAnimation = "Fall"; }
-                    if (Input.IsActionPressed("action2") && player.wishDirection.Length() < 0.1f) { targetAnimation = "Jump"; }
+                    if (shouldStartJump) { 
+                        targetAnimation = "Jump";
+                        inputState.action3.isConsumed = true;
+                    }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.2f);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
                     break;
                 case "Walk":
-                    if (!hasMovementInput && !isTeleporting) { targetAnimation = "Idle"; }
+                    if (!hasMovementInput && !player.isTeleporting) { targetAnimation = "Idle"; }
                     if (!player.isOnGround) { targetAnimation = "Fall"; }
                     if (Input.IsActionPressed("action2") && player.wishDirection.Length() < 0.1f) { targetAnimation = "Jump"; }
                     if (HasCrossedPlaybackPosition(player.previousAnimationPlaybackPosition, currentAnimationPlaybackPosition, 0.33f) ||
@@ -202,7 +190,7 @@ namespace Gamma {
                             PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                         }
                     }
-                    Vector3 direction = isTeleporting ? playerForward : player.wishDirection;
+                    Vector3 direction = player.isTeleporting ? playerForward : player.wishDirection;
                     float targetAngle = Mathf.Atan2(playerForward.Cross(direction).Y, playerForward.Dot(direction));
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
                     RotateTowards(direction, player.node, 0.2f);
@@ -250,13 +238,17 @@ namespace Gamma {
                 player.previousAnimationPlaybackPosition = 0f;
                 player.animationState.Travel(targetAnimation);
             }
-            if (isTeleporting) {
-                if (Input.IsActionJustPressed("action3")) {
-                    TurnShadowsOffOrOn(player.skeleton, false);
-                    CreatePlayerModelCopy();
-                    player.teleportEntity.node.TopLevel = true;
-                    player.teleportEntity.node.GlobalPosition = player.node.GlobalPosition;
-                }
+            
+            // Handle teleportation logic
+            if (shouldStartTeleport) {
+                player.isTeleporting = true;
+                inputState.action3.isConsumed = true;
+                TurnShadowsOffOrOn(player.skeleton, false);
+                CreatePlayerModelCopy();
+                player.teleportEntity.node.TopLevel = true;
+                player.teleportEntity.node.GlobalPosition = player.node.GlobalPosition;
+            }
+            if (player.isTeleporting && action3Pressed) {
                 Vector3 teleportDirection = hasMovementInput ? player.wishDirection : playerForward;
                 player.teleportEntity.node.Velocity = teleportDirection * TELEPORTENTITY_SPEED_MODIFIER;
                 player.teleportEntity.light.LightEnergy = 1f;
@@ -275,7 +267,8 @@ namespace Gamma {
                     }
                 }
                 player.teleportEntity.node.MoveAndSlide();
-            } else if (Input.IsActionJustReleased("action3")) {
+            } else if (player.isTeleporting && action3JustReleased) {
+                player.isTeleporting = false;
                 TurnShadowsOffOrOn(player.skeleton, true);
                 RemovePlayerModelCopy();
                 PlayAudio3D(teleportSFX, player.teleportEntity.node.GlobalPosition, 0.01f, 1.0f, false);
@@ -283,6 +276,7 @@ namespace Gamma {
                 player.teleportEntity.light.LightEnergy = 0;
                 player.teleportEntity.node.TopLevel = false;
             }
+            
             if (Input.IsActionPressed("attack")) {
                 for (int i = 0; i < Player.targets.Length; i++) { Player.targets[i] = null; }
                 int targetIndex = 0;
