@@ -11,6 +11,7 @@ namespace Gamma {
         public const int DEFAULT_PROJECTILES_SIZE = 16;
         public const int DEFAULT_EXPLOSIONS_SIZE = 16;
         public const int DEFAULT_ENEMIES_SIZE = 16;
+        public const int DEFAULT_TARGET_RETICLES_SIZE = 16;
         public const float ALMOST_ZERO = 0.00001f;
         public const float GRAVITY = 9.81f;
         public const float MAX_PROJECTILE_DISTANCE = 1000f;
@@ -138,6 +139,7 @@ namespace Gamma {
                     "Entity types must be defined using the 'Type' metadata field on each local root node of the entity."
                 );
             }
+            TargetReticlesInitialize();
             DialogueBoxInitialize(GetTree().CurrentScene.GetNode<Node>("UI").GetNode<Control>("DialogueBox"));
             SubtitlesInitialize(GetTree().CurrentScene.GetNode<Node>("UI").GetNode<VBoxContainer>("SubtitleBox"));
             Audio3DInitialize(DEFAULT_AUDIO_POOL_SIZE);
@@ -145,6 +147,10 @@ namespace Gamma {
         public override void _Ready() {
             GD.Print("Setting up game");
             Engine.MaxFps = 240;
+            targetReticleMaterial = new StandardMaterial3D();
+            targetReticleMaterial.AlbedoColor = new Color(1, 0, 0);
+            targetReticleMaterial.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
+            targetReticleMaterial.NoDepthTest = true;
             globalPhysicsMaterial = new PhysicsMaterial();
             globalPhysicsMaterial.Friction = 0.2f;
             globalPhysicsMaterial.Bounce = 0f;
@@ -194,6 +200,7 @@ namespace Gamma {
             DialogueUpdate();
             SubtitlesUpdate();
             UpdateExplosions();
+            TargetReticlesUpdate();
             if (prisonSpotlight.node != null) { PrisonSpotlightUpdate(ref prisonSpotlight); }
             inputState.interact.isConsumed = false;
             inputState.action1.isConsumed = false;

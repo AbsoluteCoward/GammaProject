@@ -1,11 +1,18 @@
-[gd_scene load_steps=12 format=3 uid="uid://b0pi1p7vaslco"]
+[gd_scene load_steps=27 format=3 uid="uid://b0pi1p7vaslco"]
 
+[ext_resource type="Texture2D" uid="uid://gnyim4vlsb18" path="res://assets/textures/FAB_LINENBEIGE.jpg" id="1_lau34"]
+[ext_resource type="Texture2D" uid="uid://0e2hnjca4y0y" path="res://assets/textures/MET_IRONINDUSTRAILPERFORATEGATE01_SEAMLESS.jpg" id="2_mfmdp"]
 [ext_resource type="PackedScene" uid="uid://cgbfcwwskitny" path="res://scenes/entities/bear.tscn" id="3_jpqbp"]
+[ext_resource type="Texture2D" uid="uid://cnqt7fuvyqj2o" path="res://assets/textures/STO_ANCIENTBRICK01.png" id="3_tjgyd"]
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="4_8d6xy"]
+[ext_resource type="Texture2D" uid="uid://jah5ygnmea2w" path="res://assets/textures/NA_MISSINGTEXTURE.png" id="4_rrwtf"]
 [ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="5_amgw8"]
+[ext_resource type="Texture2D" uid="uid://3gbdpne82k3c" path="res://assets/textures/WAL_WALKER.jpg" id="5_iwdfl"]
+[ext_resource type="Texture2D" uid="uid://dwqh1qc7k6tw3" path="res://assets/textures/MET_IRONINDUSTRAILPERFORATEGATE02_SEAMLESS.png" id="6_5pg0k"]
 [ext_resource type="PackedScene" uid="uid://qqrivbdx01fj" path="res://scenes/entities/dungeon_entrance.tscn" id="6_gxys6"]
 [ext_resource type="PackedScene" uid="uid://xwhnlvkm6lcs" path="res://scenes/entities/pot01.tscn" id="6_jpqbp"]
 [ext_resource type="PackedScene" uid="uid://cvgp5f0d7udpo" path="res://scenes/entities/dungeon_exit.tscn" id="6_pwt0t"]
+[ext_resource type="Texture2D" uid="uid://brpo7en11np1b" path="res://assets/textures/MET_METALBEDRUSTWHITE.jpg" id="7_6xplv"]
 [ext_resource type="PackedScene" uid="uid://coytvcqlue4h2" path="res://scenes/UI/dialogue_box.tscn" id="7_e1bjx"]
 [ext_resource type="PackedScene" uid="uid://b624rkte3tvyp" path="res://scenes/UI/subtitle_box.tscn" id="7_jpqbp"]
 
@@ -17,18 +24,42 @@ reflected_light_source = 1
 fog_light_color = Color(0, 0, 0, 1)
 fog_density = 0.3
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4vflo"]
+albedo_texture = ExtResource("1_lau34")
+
 [sub_resource type="PlaneMesh" id="PlaneMesh_aypjb"]
 size = Vector2(60, 30)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_jpqbp"]
 data = PackedVector3Array(30, 0, 15, -30, 0, 15, 30, 0, -15, -30, 0, 15, -30, 0, -15, 30, 0, -15)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wel7t"]
+albedo_texture = ExtResource("2_mfmdp")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kqcqs"]
+albedo_texture = ExtResource("3_tjgyd")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vgkut"]
+albedo_texture = ExtResource("3_tjgyd")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1odrk"]
+albedo_texture = ExtResource("4_rrwtf")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ctw14"]
+albedo_texture = ExtResource("5_iwdfl")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qtude"]
+albedo_texture = ExtResource("6_5pg0k")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h1ish"]
+albedo_texture = ExtResource("7_6xplv")
+
 [node name="Level" type="Node3D"]
 
 [node name="Environment" type="Node" parent="."]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
-transform = Transform3D(0.866025, -0.25, 0.433013, -0.5, -0.433013, 0.75, 0, -0.866025, -0.5, 0, 3, 0)
+transform = Transform3D(4.91384e-07, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0.866025, -0.25, 0.433013, 0, 3, 0)
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
@@ -40,6 +71,7 @@ environment = SubResource("Environment_aobmw")
 
 [node name="Cube" type="MeshInstance3D" parent="Geometry/playtest"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 0)
+material_override = SubResource("StandardMaterial3D_4vflo")
 mesh = SubResource("PlaneMesh_aypjb")
 skeleton = NodePath("")
 
@@ -50,41 +82,48 @@ shape = SubResource("ConcavePolygonShape3D_jpqbp")
 
 [node name="CSGBox3D7" type="CSGBox3D" parent="Geometry"]
 transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 14.5, 1.5, 7)
+material_override = SubResource("StandardMaterial3D_wel7t")
 use_collision = true
 collision_layer = 3
 size = Vector3(2, 3, 16)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.5, 12.5)
+material_override = SubResource("StandardMaterial3D_kqcqs")
 use_collision = true
 collision_layer = 3
 size = Vector3(8, 6, 2)
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Geometry"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 4.5, 2.5, 7.5)
+material_override = SubResource("StandardMaterial3D_vgkut")
 use_collision = true
 collision_layer = 3
 size = Vector3(8, 6, 2)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2.5, 4)
+material_override = SubResource("StandardMaterial3D_1odrk")
 use_collision = true
 size = Vector3(1, 6, 1)
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="Geometry"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.5, 2.5, -8.5)
+material_override = SubResource("StandardMaterial3D_ctw14")
 use_collision = true
 collision_layer = 3
 size = Vector3(8, 6, 8)
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="Geometry"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 10.5, 0.5, -8.5)
+material_override = SubResource("StandardMaterial3D_qtude")
 use_collision = true
 collision_layer = 3
 size = Vector3(8, 2, 2)
 
 [node name="CSGBox3D6" type="CSGBox3D" parent="Geometry"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6, 2.5, -9.5)
+material_override = SubResource("StandardMaterial3D_h1ish")
 use_collision = true
 collision_layer = 3
 size = Vector3(7, 2, 2)
