@@ -8,7 +8,12 @@ namespace Gamma {
         public Enemy[] enemies = new Enemy[DEFAULT_ENEMY_CAPACITY];
         public int enemyCount;
         public void EnemyInitialize(CharacterBody3D inputNode) {
-            enemies[0].node = inputNode;
+            if (enemyCount >= enemies.Length) {
+                GD.PrintErr("No space to add new enemy!");
+                return;
+            }
+            int index = enemyCount;
+            enemies[index].node = inputNode;
         }
     }
 }

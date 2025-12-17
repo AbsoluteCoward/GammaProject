@@ -100,6 +100,12 @@ transform = Transform3D(-4.37114e-08, -0.549825, 0.83528, 0, 0.83528, 0.549825, 
 [node name="Bear" parent="Entities" instance=ExtResource("3_jpqbp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, 12)
 
+[node name="Bear2" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, 12)
+
+[node name="Bear3" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 12)
+
 [node name="DungeonExit" parent="Entities" instance=ExtResource("6_pwt0t")]
 transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -12.1186, -0.00268555, -11.1423)
 

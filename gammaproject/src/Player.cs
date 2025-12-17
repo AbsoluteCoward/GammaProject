@@ -280,8 +280,8 @@ namespace Gamma {
             if (Input.IsActionPressed("attack")) {
                 for (int i = 0; i < Player.targets.Length; i++) { Player.targets[i] = null; }
                 int targetIndex = 0;
-                for (int i = 0; i < entitiesNode.GetChildCount() && targetIndex < Player.targets.Length; i++) {
-                    Node3D potentialTarget = entitiesNode.GetChild<Node3D>(i);
+                for (int i = 0; i < enemyCount && targetIndex < Player.targets.Length; i++) {
+                    Node3D potentialTarget = enemies[i].node;
                     bool isTargetInvalid = potentialTarget == player.node || potentialTarget == player.teleportEntity.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D);
                     if (isTargetInvalid) { continue; }
                     Vector3 toTarget = potentialTarget.GlobalPosition - player.gunBarrel.GlobalPosition;
