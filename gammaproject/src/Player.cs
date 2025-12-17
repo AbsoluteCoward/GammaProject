@@ -24,11 +24,12 @@ namespace Gamma {
             public float previousAnimationPlaybackPosition;
             public string previousAnimationName;
             public int chestBoneIndex;
+            public int targetCount;
             public bool isOnGround;
             public bool shouldBeAsleep;
             public bool hasPlayerModelCopy;
             public bool isTeleporting;
-            public static Node3D[] targets = new Node3D[16];
+            public Node3D[] targets;
             public static float maxDistance = 1000f;
             public static int meatCount = 0;
         }
@@ -53,6 +54,8 @@ namespace Gamma {
             player.teleportEntity.node = inputPlayerNode.GetChild<CharacterBody3D>(4);
             player.teleportEntity.light = player.teleportEntity.node.GetChild<SpotLight3D>(0);
             player.teleportEntity.topRayCast = player.teleportEntity.node.GetChild<RayCast3D>(1);
+            player.targets = new Node3D[16];
+            player.targetCount = 0;
             player.animationPlayer = inputPlayerNode.GetChild<Node3D>(2).GetChild<AnimationPlayer>(1);
             player.animationTree = inputPlayerNode.GetChild<AnimationTree>(3);
             player.animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Physics;
@@ -164,8 +167,6 @@ namespace Gamma {
             bool hasMovementInput = player.wishDirection.Length() > 0.1f;
             if (player.animationState.GetCurrentNode() == "") { return; }
             float currentAnimationPlaybackPosition = player.animationState.GetCurrentPlayPosition();
-            
-            // Determine if action3 should trigger jump or teleport
             bool isIdleAndStill = player.animationState.GetCurrentNode() == "Idle" && !hasMovementInput;
             bool shouldStartJump = action3JustPressed && isIdleAndStill;
             bool shouldStartTeleport = action3JustPressed && !isIdleAndStill;
@@ -173,7 +174,7 @@ namespace Gamma {
                 case "Idle":
                     if (hasMovementInput) { targetAnimation = "Walk"; }
                     if (!player.isOnGround) { targetAnimation = "Fall"; }
-                    if (shouldStartJump) { 
+                    if (shouldStartJump) {
                         targetAnimation = "Jump";
                         inputState.action3.isConsumed = true;
                     }
@@ -222,13 +223,12 @@ namespace Gamma {
                         if (player.isOnGround) {
                             PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                         }
-                    } 
+                    }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.08f);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, 0f, 0.1f);
                     break;
             }
-            GD.Print("cur " + currentAnimationPlaybackPosition + " prev " + player.previousAnimationPlaybackPosition);
             player.previousAnimationPlaybackPosition = currentAnimationPlaybackPosition;
             player.previousAnimationName = player.animationState.GetCurrentNode();
             bool shouldChangeAnimation = player.animationState.GetCurrentNode() != targetAnimation;
@@ -238,8 +238,6 @@ namespace Gamma {
                 player.previousAnimationPlaybackPosition = 0f;
                 player.animationState.Travel(targetAnimation);
             }
-            
-            // Handle teleportation logic
             if (shouldStartTeleport) {
                 player.isTeleporting = true;
                 inputState.action3.isConsumed = true;
@@ -276,11 +274,12 @@ namespace Gamma {
                 player.teleportEntity.light.LightEnergy = 0;
                 player.teleportEntity.node.TopLevel = false;
             }
-            
+            GD.Print(enemies);
             if (Input.IsActionPressed("attack")) {
-                for (int i = 0; i < Player.targets.Length; i++) { Player.targets[i] = null; }
-                int targetIndex = 0;
-                for (int i = 0; i < enemyCount && targetIndex < Player.targets.Length; i++) {
+                if (Input.IsActionJustPressed("attack")) {
+                    for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
+                }
+                for (int i = 0; i < enemyCount; i++) {
                     Node3D potentialTarget = enemies[i].node;
                     bool isTargetInvalid = potentialTarget == player.node || potentialTarget == player.teleportEntity.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D);
                     if (isTargetInvalid) { continue; }
@@ -290,25 +289,26 @@ namespace Gamma {
                     float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
                     float angleInDegrees = Mathf.RadToDeg(angleToTarget);
                     if (angleInDegrees <= TARGETTING_ANGLE) {
-                        Player.targets[targetIndex] = potentialTarget;
-                        targetIndex++;
+                        player.targets[player.targetCount] = potentialTarget;
+                        player.targetCount++;
                     }
                 }
             } else if (Input.IsActionJustReleased("attack")) {
                 Vector3 gunPosition = player.gunBarrel.GlobalPosition;
                 PlayAudio3D(shootSFX, gunPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
-                for (int i = 0; i < Player.targets.Length; i++) {
-                    if (Player.targets[i] == null) { continue; }
-                    GD.Print("Firing at target " + Player.targets[i].Name);
-                    Vector3 directionToTarget = (Player.targets[i].GlobalPosition - gunPosition).Normalized();
+                for (int i = 0; i < player.targets.Length; i++) {
+                    if (player.targets[i] == null) { continue; }
+                    GD.Print("Firing at target " + player.targets[i].Name);
+                    Vector3 directionToTarget = (player.targets[i].GlobalPosition - gunPosition).Normalized();
                     ProjectilesCreate(
                         gunPosition,
-                        Player.targets[i],
+                        player.targets[i],
                         directionToTarget,
                         15f
                     );
                 }
-                for (int i = 0; i < Player.targets.Length; i++) { Player.targets[i] = null; }
+                for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
+                player.targetCount = 0;
             }
             player.node.MoveAndSlide();
             ApplyDynamicBoneTransformations();
