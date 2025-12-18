@@ -16,7 +16,7 @@ namespace Gamma {
         public const float GRAVITY = 9.81f;
         public const float MAX_PROJECTILE_DISTANCE = 1000f;
         public const float MAX_PROJECTILE_LIFETIME = 10f;
-        public const float TARGETTING_ANGLE = 30f;
+        public const float TARGETTING_ANGLE = 12f;
         public const float TELEPORTENTITY_SPEED_MODIFIER = 8.0f;
         public const float TELEPORTENTITY_CLIMB_MINIMUM_HEIGHT_DIFFERENCE = 0.1f;
         public const float TELEPORTENTITY_CLIMB_MAXIMUM_HEIGHT_DIFFERENCE = 2f;

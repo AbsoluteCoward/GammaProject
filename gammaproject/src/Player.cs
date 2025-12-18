@@ -101,7 +101,7 @@ namespace Gamma {
             playerCamera.node.Far = 1000.0f;
             playerCamera.SpotLight.SpotRange = 120;
             playerCamera.SpotLight.SpotAngle = 120;
-            playerCamera.SpotLight.LightEnergy = GetTree().CurrentScene.Name == "Prison" ? 0f : 2f;
+            playerCamera.SpotLight.LightEnergy = GetTree().CurrentScene.Name == "Prison" ? 0f : 0.5f;
             playerCamera.offsetDistance = Mathf.Pi;
             playerCamera.offsetHeight = Mathf.Sqrt(5);
             playerCamera.node.Fov = 75;
@@ -281,6 +281,7 @@ namespace Gamma {
             if (Input.IsActionPressed("attack")) {
                 if (Input.IsActionJustPressed("attack")) {
                     for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
+                    player.targetCount = 0;
                 }
                 for (int i = 0; i < enemyCount; i++) {
                     Node3D potentialTarget = enemies[i].node;
@@ -292,8 +293,18 @@ namespace Gamma {
                     float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
                     float angleInDegrees = Mathf.RadToDeg(angleToTarget);
                     if (angleInDegrees <= TARGETTING_ANGLE) {
-                        player.targets[player.targetCount] = potentialTarget;
-                        player.targetCount++;
+                        bool alreadyTargeted = false;
+                        for (int j = 0; j < player.targetCount; j++) {
+                            if (player.targets[j] == potentialTarget) {
+                                alreadyTargeted = true;
+                                break;
+                            }
+                        }
+                        if (!alreadyTargeted && player.targetCount < player.targets.Length) {
+                            player.targets[player.targetCount] = potentialTarget;
+                            targetReticles[player.targetCount].node.Visible = true;
+                            player.targetCount++;
+                        }
                     }
                 }
             } else if (Input.IsActionJustReleased("attack")) {
@@ -302,12 +313,11 @@ namespace Gamma {
                 for (int i = 0; i < player.targets.Length; i++) {
                     if (player.targets[i] == null) { continue; }
                     GD.Print("Firing at target " + player.targets[i].Name);
-                    Vector3 directionToTarget = (player.targets[i].GlobalPosition - gunPosition).Normalized();
                     ProjectilesCreate(
-                        gunPosition,
-                        player.targets[i],
-                        directionToTarget,
-                        15f
+                        inputStartPosition: gunPosition,
+                        inputTarget: player.targets[i],
+                        inputDirection:-player.node.GlobalTransform.Basis.Z,
+                        inputSpeed: 15f
                     );
                 }
                 for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }

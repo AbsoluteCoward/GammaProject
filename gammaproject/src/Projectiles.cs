@@ -93,6 +93,7 @@ namespace Gamma {
                     if (rocket.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(rocket.node); }
                     rocket.node.QueueFree();
                     projectiles[i].node = null;
+
                 } else {
                     projectiles[i] = rocket;
                 }
@@ -119,6 +120,7 @@ namespace Gamma {
             }
             Explosion explosion = new Explosion();
             explosion.node = new MeshInstance3D();
+            explosion.node.CastShadow = GeometryInstance3D.ShadowCastingSetting.Off;
             SphereMesh explosionMesh = new SphereMesh();
             explosionMesh.Rings = 8;
             explosionMesh.RadialSegments = 8;
@@ -126,6 +128,7 @@ namespace Gamma {
             explosionMesh.Height = 2f;
             StandardMaterial3D explosionMaterial = new StandardMaterial3D();
             explosionMaterial.AlbedoTexture = efxFire01;
+            explosionMaterial.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
             entitiesNode.AddChild(explosion.node);
             explosion.randomRotation = new Vector3(
                 (float)GD.RandRange(-1f, 1f),
@@ -146,8 +149,8 @@ namespace Gamma {
                 float scaleAmount = 2f + explosion.timeAlive * 6f;
                 explosion.node.Scale = new Vector3(scaleAmount, scaleAmount, scaleAmount);
                 explosion.node.Rotation += explosion.randomRotation * 2 * (float)globalDelta;
-                float maxLifetime = 2f;
-                if (explosion.timeAlive >= maxLifetime || explosion.node.Scale.X >= 6f) {
+                float maxLifetime = 1f;
+                if (explosion.timeAlive >= maxLifetime) {
                     if (explosion.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(explosion.node); }
                     explosion.node.QueueFree();
                     explosions[i].node = null;

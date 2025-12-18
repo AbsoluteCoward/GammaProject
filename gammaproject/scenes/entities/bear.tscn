@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=4 uid="uid://cgbfcwwskitny"]
+[gd_scene load_steps=8 format=4 uid="uid://cgbfcwwskitny"]
 
 [ext_resource type="Texture2D" uid="uid://bwsnopx8ysjy8" path="res://assets/textures/CHR_BLACKBEAR_FUR.png" id="1_pi8ka"]
 
@@ -75,8 +75,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_xa5l4")
 
-[sub_resource type="BoxMesh" id="BoxMesh_pi8ka"]
-
 [node name="Bear" type="CharacterBody3D"]
 metadata/Type = "Bear"
 
@@ -93,6 +91,3 @@ shape = SubResource("BoxShape3D_filh8")
 [node name="Cube" type="MeshInstance3D" parent="bear"]
 mesh = SubResource("ArrayMesh_ptohb")
 skeleton = NodePath("")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_pi8ka")

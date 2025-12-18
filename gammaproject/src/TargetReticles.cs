@@ -3,7 +3,6 @@ namespace Gamma {
     public partial class Main : Node {
         public struct TargetReticle {
             public MeshInstance3D node;
-            public Node3D targetNode;
         }
         public TargetReticle[] targetReticles;
         public StandardMaterial3D targetReticleMaterial;
@@ -19,8 +18,15 @@ namespace Gamma {
             }
         }
         public void TargetReticlesUpdate() {
-            targetReticles[0].node.Visible = true;
-            targetReticles[0].node.GlobalPosition = player.node.GlobalPosition + Vector3.Up;
+            for (int i = 0; i < targetReticles.Length; i++) {
+                targetReticles[i].node.Visible = false;
+            }
+            for (int i = 0; i < player.targetCount; i++) {
+                targetReticles[i].node.Visible = true;
+                targetReticles[i].node.GlobalPosition = player.targets[i].GlobalPosition;
+                targetReticles[i].node.RotateY(0.1f);
+                targetReticles[i].node.RotateX(0.1f);
+            }
         }
     }
 }
