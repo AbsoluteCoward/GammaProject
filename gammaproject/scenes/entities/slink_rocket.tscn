@@ -7,3 +7,4 @@
 [node name="RayCast3D" type="RayCast3D" parent="."]
 
 [node name="slinkrocket" parent="." instance=ExtResource("1_rgp5e")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)

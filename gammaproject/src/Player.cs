@@ -48,7 +48,9 @@ namespace Gamma {
         }
         public Player player;
         public PlayerCamera playerCamera;
+        public Camera3D currentCamera;
         public void PlayerInitialize(CharacterBody3D inputPlayerNode) {
+            player = new Player();
             player.wishDirection = Vector3.Zero;
             player.node = inputPlayerNode;
             player.gunBarrel = player.node.GetNode<MeshInstance3D>("Slink/metarig/Skeleton3D/Gun_2/Gun_2");
@@ -101,7 +103,7 @@ namespace Gamma {
             playerCamera.node.Far = 1000.0f;
             playerCamera.SpotLight.SpotRange = 120;
             playerCamera.SpotLight.SpotAngle = 120;
-            playerCamera.SpotLight.LightEnergy = GetTree().CurrentScene.Name == "Prison" ? 0f : 0.5f;
+            playerCamera.SpotLight.LightEnergy = GetTree().CurrentScene.Name == "Prison" ? 0f : 0f;
             playerCamera.offsetDistance = Mathf.Pi;
             playerCamera.offsetHeight = Mathf.Sqrt(5);
             playerCamera.node.Fov = 75;
@@ -155,7 +157,6 @@ namespace Gamma {
                 }
             }
             player.isOnGround = player.node.IsOnFloor();
-            Camera3D currentCamera = GetViewport().GetCamera3D();
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
             player.wishDirection =
                 (currentCamera.GlobalTransform.Basis.Z.Normalized() * inputDirection.Y + currentCamera.GlobalTransform.Basis.X.Normalized() * inputDirection.X) *
@@ -316,7 +317,7 @@ namespace Gamma {
                     ProjectilesCreate(
                         inputStartPosition: gunPosition,
                         inputTarget: player.targets[i],
-                        inputDirection:-player.node.GlobalTransform.Basis.Z,
+                        inputDirection: -player.node.GlobalTransform.Basis.Z,
                         inputSpeed: 15f
                     );
                 }
@@ -328,6 +329,7 @@ namespace Gamma {
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }
+            currentCamera = inputCamera.node;
             if (Input.IsActionJustPressed("cameraRight")) {
                 inputCamera.targetAngle -= 90f;
             } else if (Input.IsActionJustPressed("cameraLeft")) {

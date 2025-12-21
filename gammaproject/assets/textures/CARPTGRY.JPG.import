@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b1moivlpbibtt"
-path.s3tc="res://.godot/imported/CNK_ASPHALT01.JPG-64f2020466cf8ad547856c6ff8d4f038.s3tc.ctex"
+uid="uid://4gv02j8j5dlk"
+path.s3tc="res://.godot/imported/CARPTGRY.JPG-993bdc94feaad7f27bb4f5ff6fbfda18.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/CNK_ASPHALT01.JPG"
-dest_files=["res://.godot/imported/CNK_ASPHALT01.JPG-64f2020466cf8ad547856c6ff8d4f038.s3tc.ctex"]
+source_file="res://assets/textures/CARPTGRY.JPG"
+dest_files=["res://.godot/imported/CARPTGRY.JPG-993bdc94feaad7f27bb4f5ff6fbfda18.s3tc.ctex"]
 
 [params]
 

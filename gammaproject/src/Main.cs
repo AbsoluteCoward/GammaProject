@@ -53,12 +53,14 @@ namespace Gamma {
         public AudioStream shootSFX = GD.Load<AudioStream>("res://assets/sound/rocket-launcher-shoot.wav");
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
+        public PackedScene targetReticleScene = GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
         public Interactable[] interactables;
         public Projectile[] projectiles;
         public Explosion[] explosions;
         public PendingSceneChange pendingSceneChange;
         public PrisonSpotLight prisonSpotlight;
         public Node entitiesNode;
+        public Node uiNode;
         public PhysicsMaterial globalPhysicsMaterial;
         public double globalDelta;
         public bool shouldSpawnMothman = false;
@@ -74,10 +76,16 @@ namespace Gamma {
         }
         public void ProcessPendingSceneChange() {
             if (!pendingSceneChange.shouldChangeScene) { return; }
+            GD.Print("Changing scene");
+            ClearScene();
             sceneState.isSceneLoaded = false;
             GetTree().ChangeSceneToFile(pendingSceneChange.scenePath);
             pendingSceneChange.shouldChangeScene = false;
             pendingSceneChange.scenePath = "";
+        }
+        public void ClearScene() {
+            GD.Print("Clearing scene");
+            prisonSpotlight.node = null;
         }
         public void InitializeScene() {
             GD.Print("Initializing scene");
@@ -90,6 +98,7 @@ namespace Gamma {
             projectiles = new Projectile[DEFAULT_PROJECTILES_SIZE];
             explosions = new Explosion[DEFAULT_EXPLOSIONS_SIZE];
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
+            uiNode = GetTree().CurrentScene.GetNode<Node>("UI");
             GD.Print("entities children: " + entitiesNode.GetChildCount());
             int typelessEntityCount = 0;
             for (int i = 0; i < entitiesNode.GetChildCount(); i++) {
@@ -140,13 +149,13 @@ namespace Gamma {
                 );
             }
             TargetReticlesInitialize();
-            DialogueBoxInitialize(GetTree().CurrentScene.GetNode<Node>("UI").GetNode<Control>("DialogueBox"));
-            SubtitlesInitialize(GetTree().CurrentScene.GetNode<Node>("UI").GetNode<VBoxContainer>("SubtitleBox"));
+            DialogueBoxInitialize(uiNode.GetNode<Control>("DialogueBox"));
+            SubtitlesInitialize(uiNode.GetNode<VBoxContainer>("SubtitleBox"));
             Audio3DInitialize(DEFAULT_AUDIO_POOL_SIZE);
         }
         public override void _Ready() {
             GD.Print("Setting up game");
-            Engine.MaxFps = 240;
+            Engine.MaxFps = 999;
             targetReticleMaterial = new StandardMaterial3D();
             targetReticleMaterial.AlbedoColor = new Color(1, 0, 0);
             targetReticleMaterial.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
@@ -194,8 +203,8 @@ namespace Gamma {
                 SubtitlesAdd(RandomSubtitle);
             }
             ProjectilesUpdate();
-            PlayerUpdate();
             PlayerCameraUpdate(ref playerCamera);
+            PlayerUpdate();
             if (Input.IsActionJustPressed("interact")) { Interact(); }
             DialogueUpdate();
             SubtitlesUpdate();
