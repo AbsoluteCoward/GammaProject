@@ -94,6 +94,7 @@ namespace Gamma {
             player = new Player();
             playerCamera = new PlayerCamera();
             enemies = new Enemy[DEFAULT_ENEMIES_SIZE];
+            enemyCount = 0;
             interactables = new Interactable[DEFAULT_INTERACTABLES_SIZE];
             projectiles = new Projectile[DEFAULT_PROJECTILES_SIZE];
             explosions = new Explosion[DEFAULT_EXPLOSIONS_SIZE];
@@ -182,7 +183,6 @@ namespace Gamma {
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
             if (Input.IsActionJustPressed("debug")) {
-                GD.Print(IsStructOptimal<Player>(player));
                 string randomText = "";
                 int textLength = GD.RandRange(5, 20);
                 for (int i = 0; i < textLength; i++) {
