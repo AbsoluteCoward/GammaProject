@@ -120,6 +120,22 @@ environment = SubResource("Environment_0et32")
 
 [node name="Geometry" type="Node" parent="."]
 
+[node name="SpotLight3D" type="SpotLight3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 27.5, 18, 3)
+light_energy = 120.0
+shadow_enabled = true
+spot_range = 26.0
+spot_angle = 35.9686
+spot_angle_attenuation = 1.91902
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 18.5, 7, -21)
+light_energy = 120.0
+shadow_enabled = true
+spot_range = 26.0
+spot_angle = 78.4178
+spot_angle_attenuation = 1.91902
+
 [node name="Dungeon0" type="Node3D" parent="Geometry"]
 
 [node name="Plane" type="MeshInstance3D" parent="Geometry/Dungeon0"]
@@ -146,22 +162,6 @@ transform = Transform3D(-4.37114e-08, -0.549825, 0.83528, 0, 0.83528, 0.549825, 
 
 [node name="DungeonExit" parent="Entities" instance=ExtResource("2_b7bw0")]
 transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, 19.8814, -0.00268555, 2.85773)
-
-[node name="SpotLight3D" type="SpotLight3D" parent="Entities"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 27.5, 18, 3)
-light_energy = 120.0
-shadow_enabled = true
-spot_range = 26.0
-spot_angle = 35.9686
-spot_angle_attenuation = 1.91902
-
-[node name="SpotLight3D2" type="SpotLight3D" parent="Entities"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 18.5, 7, -21)
-light_energy = 120.0
-shadow_enabled = true
-spot_range = 26.0
-spot_angle = 78.4178
-spot_angle_attenuation = 1.91902
 
 [node name="UI" type="Node" parent="."]
 

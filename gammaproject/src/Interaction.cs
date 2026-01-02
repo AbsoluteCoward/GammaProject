@@ -68,6 +68,7 @@ namespace Gamma {
                             DialogueStart(slinkSinkInteraction);
                             return;
                         case InteractableLookup.PotOpen:
+                            if (interactables[i].node.GetChild<Node3D>(0).GetChild<AnimationPlayer>(2).CurrentAnimation == "Open") { goto case InteractableLookup.None; }
                             interactables[i].node.GetChild<Node3D>(0).GetChild<AnimationPlayer>(2).Play("Open");
                             SubtitlesAdd(new SubtitleData() {
                                 text = "10 meat inside the pot.",

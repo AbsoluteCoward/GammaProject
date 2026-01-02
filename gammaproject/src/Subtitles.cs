@@ -66,7 +66,7 @@ namespace Gamma {
         public void SubtitlesUpdate() {
             for (int i = 0; i < subtitleBox.activeSubtitles.Length; i++) {
                 if (subtitleBox.activeSubtitles[i].currentLifeTime > 0f) {
-                    if (sceneState.physicsFramesSinceSceneLoad % 4 == 0) {
+                    if (sceneState.physicsFramesSinceSceneLoad % 2 == 0) {
                         subtitleBox.activeSubtitles[i].dialogueTextLabel.VisibleCharacters += 1;
                     }
                     subtitleBox.activeSubtitles[i].currentLifeTime -= (float)globalDelta;

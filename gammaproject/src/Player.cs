@@ -166,6 +166,7 @@ namespace Gamma {
             player.wishDirection =
                 (currentCamera.GlobalTransform.Basis.Z.Normalized() * inputDirection.Y + currentCamera.GlobalTransform.Basis.X.Normalized() * inputDirection.X) *
                 Y_FLAT;
+            Vector3 airControlDirection = player.wishDirection.Length() > 0.1f ? player.wishDirection : player.node.Velocity.Normalized();
             Vector3 rootPosition = player.animationTree.GetRootMotionPosition();
             Vector3 rootVelocity = player.node.Transform.Basis * rootPosition;
             rootVelocity *= player.moveSpeed;
@@ -222,11 +223,17 @@ namespace Gamma {
                         player.node.Velocity += player.wishDirection.Length() > 0.1f ? player.wishDirection * 2f : player.node.Transform.Basis.Z.Normalized() * 2f;
                     }
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
+                    if (!player.isOnGround) {
+                        player.node.Velocity = new Vector3(
+                            Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.01f),
+                            player.node.Velocity.Y,
+                            Mathf.Lerp(player.node.Velocity.Z, airControlDirection.Z * player.moveSpeed, 0.01f)
+                        ); 
+                    }
                     break;
                 case "Fall":
                     if (player.isOnGround) { targetAnimation = "FallToIdle"; }
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
-                    Vector3 airControlDirection = player.wishDirection.Length() > 0.1f ? player.wishDirection : player.node.Velocity.Normalized();
                     player.node.Velocity = new Vector3(
                         Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.01f),
                         player.node.Velocity.Y,
