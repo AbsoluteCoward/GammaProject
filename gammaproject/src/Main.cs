@@ -6,6 +6,7 @@ namespace Gamma {
             public string scenePath;
             public bool shouldChangeScene;
         }
+        public const int DIALOGUE_PORTRAIT_SIZE = 192;
         public const int DEFAULT_INTERACTABLES_SIZE = 16;
         public const int DEFAULT_AUDIO_POOL_SIZE = 8;
         public const int DEFAULT_PROJECTILES_SIZE = 16;
@@ -59,9 +60,11 @@ namespace Gamma {
         public Explosion[] explosions;
         public PendingSceneChange pendingSceneChange;
         public PrisonSpotLight prisonSpotlight;
+        public WorldEnvironment worldEnvironment;
         public Node entitiesNode;
         public Node uiNode;
         public PhysicsMaterial globalPhysicsMaterial;
+        public float cameraFarSetting = 40;
         public double globalDelta;
         public bool shouldSpawnMothman = false;
         public bool outOfTime = false;
@@ -98,6 +101,7 @@ namespace Gamma {
             interactables = new Interactable[DEFAULT_INTERACTABLES_SIZE];
             projectiles = new Projectile[DEFAULT_PROJECTILES_SIZE];
             explosions = new Explosion[DEFAULT_EXPLOSIONS_SIZE];
+            worldEnvironment = GetTree().CurrentScene.GetNode<WorldEnvironment>("Environment/WorldEnvironment");
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
             uiNode = GetTree().CurrentScene.GetNode<Node>("UI");
             GD.Print("entities children: " + entitiesNode.GetChildCount());

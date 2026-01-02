@@ -78,6 +78,30 @@ namespace Gamma {
             player.isTeleporting = false;
             GD.Print("Player Initialized");
         }
+        public void PlayerCameraInitialize(Camera3D inputCamera) {
+            playerCamera.node = inputCamera;
+            playerCamera.WallRayCast = inputCamera.GetChild<RayCast3D>(0);
+            playerCamera.SpotLight = inputCamera.GetChild<SpotLight3D>(1);
+            playerCamera.WallRayCast.TopLevel = true;
+            playerCamera.WallRayCast.AddException(player.node);
+            playerCamera.WallRayCast.CollisionMask = 2;
+            playerCamera.SpotLight.SpotRange = 120;
+            playerCamera.SpotLight.SpotAngle = 120;
+            playerCamera.SpotLight.LightEnergy = GetTree().CurrentScene.Name == "Prison" ? 0f : 0f;
+            playerCamera.offsetDistance = Mathf.Pi;
+            playerCamera.offsetHeight = Mathf.Sqrt(5);
+            playerCamera.node.Fov = 75;
+            playerCamera.node.Far = cameraFarSetting;
+            worldEnvironment.Environment.FogEnabled = true;
+            worldEnvironment.Environment.FogLightColor = Colors.Black;
+            worldEnvironment.Environment.FogMode = Godot.Environment.FogModeEnum.Depth;
+            worldEnvironment.Environment.FogDepthBegin = cameraFarSetting * 0.8f;
+            worldEnvironment.Environment.FogDepthEnd = cameraFarSetting;
+            playerCamera.maxLerpDistance = 200f;
+            playerCamera.rotationLerpSpeed = 0.6f;
+            playerCamera.positionLerpSpeed = 0.1f;
+            GD.Print("Player Camera Initialized");
+        }
         public void ApplyDynamicBoneTransformations() {
             if (player.skeleton == null) { return; }
             float chestRotation = player.turnAnticipation;
@@ -92,25 +116,6 @@ namespace Gamma {
             Quaternion chestTwist = new Quaternion(chestRotationAxis, chestRotation);
             chestPose.Basis = chestPose.Basis * new Basis(chestTwist);
             player.skeleton.SetBoneGlobalPose(player.chestBoneIndex, chestPose);
-        }
-        public void PlayerCameraInitialize(Camera3D inputCamera) {
-            playerCamera.node = inputCamera;
-            playerCamera.WallRayCast = inputCamera.GetChild<RayCast3D>(0);
-            playerCamera.SpotLight = inputCamera.GetChild<SpotLight3D>(1);
-            playerCamera.WallRayCast.TopLevel = true;
-            playerCamera.WallRayCast.AddException(player.node);
-            playerCamera.WallRayCast.CollisionMask = 2;
-            playerCamera.node.Far = 1000.0f;
-            playerCamera.SpotLight.SpotRange = 120;
-            playerCamera.SpotLight.SpotAngle = 120;
-            playerCamera.SpotLight.LightEnergy = GetTree().CurrentScene.Name == "Prison" ? 0f : 0f;
-            playerCamera.offsetDistance = Mathf.Pi;
-            playerCamera.offsetHeight = Mathf.Sqrt(5);
-            playerCamera.node.Fov = 75;
-            playerCamera.maxLerpDistance = 200f;
-            playerCamera.rotationLerpSpeed = 0.6f;
-            playerCamera.positionLerpSpeed = 0.1f;
-            GD.Print("Player Camera Initialized");
         }
         public void CreatePlayerModelCopy() {
             if (player.hasPlayerModelCopy) { return; }
@@ -221,7 +226,12 @@ namespace Gamma {
                 case "Fall":
                     if (player.isOnGround) { targetAnimation = "FallToIdle"; }
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
-                    player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, 0f, 0.1f);
+                    Vector3 airControlDirection = player.wishDirection.Length() > 0.1f ? player.wishDirection : player.node.Velocity.Normalized();
+                    player.node.Velocity = new Vector3(
+                        Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.01f),
+                        player.node.Velocity.Y,
+                        Mathf.Lerp(player.node.Velocity.Z, airControlDirection.Z * player.moveSpeed, 0.01f)
+                    );
                     break;
                 case "FallToIdle":
                     if (HasCrossedPlaybackPosition(player.previousAnimationPlaybackPosition, currentAnimationPlaybackPosition, 0.22f)) {

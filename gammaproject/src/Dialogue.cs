@@ -8,7 +8,7 @@ namespace Gamma {
             public Action<Main>[] onDialogueStart;
             public Label dialogueTextLabel;
             public Label speakerNameLabel;
-            public TextureRect portraitTexture;
+            public Sprite2D portraitSprite;
             public Panel portraitCoverPanel;
             public TextureRect gradient;
             public Control node;
@@ -30,23 +30,37 @@ namespace Gamma {
             dialogueBox.node = inputNode;
             dialogueBox.node.Visible = false;
             dialogueBox.gradient = inputNode.GetChild<TextureRect>(0);
-            dialogueBox.portraitTexture = inputNode.GetChild<CenterContainer>(1).GetChild<TextureRect>(0);
-            dialogueBox.portraitTexture.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
+            dialogueBox.portraitSprite = inputNode.GetChild<CenterContainer>(1).GetChild<Sprite2D>(0);
+            dialogueBox.portraitSprite.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
             dialogueBox.portraitCoverPanel = inputNode.GetChild<Panel>(2);
-            dialogueBox.speakerNameLabel = inputNode.GetChild<VBoxContainer>(3).GetChild<Label>(0);
-            dialogueBox.dialogueTextLabel = inputNode.GetChild<VBoxContainer>(3).GetChild<Label>(1);
+            dialogueBox.speakerNameLabel = inputNode.GetNode<Label>("NameLabel");
+            dialogueBox.dialogueTextLabel = inputNode.GetNode<Label>("TextLabel");
         }
         public void DialogueStart(DialogueData inputDialogue) {
             dialogueBox.speakerNameLabel.Text = inputDialogue.speakerName;
-            dialogueBox.portraitTexture.Texture = inputDialogue.speakerPortrait;
+            dialogueBox.portraitSprite.Texture = inputDialogue.speakerPortrait;
             dialogueBox.dialogueTextLabel.Text = inputDialogue.text;
             dialogueBox.dialogueTextLabel.VisibleCharacters = 0;
             dialogueBox.textSpeed = inputDialogue.textSpeed;
             dialogueBox.delay = 0f;
+            if (inputDialogue.speakerPortrait != null) {
+                Vector2 textureSize = inputDialogue.speakerPortrait.GetSize();
+                int hFrames = Mathf.Max(1, (int)(textureSize.X / 192));
+                int vFrames = Mathf.Max(1, (int)(textureSize.Y / 192));
+                dialogueBox.portraitSprite.Hframes = hFrames;
+                dialogueBox.portraitSprite.Vframes = vFrames;
+                dialogueBox.portraitSprite.Frame = 0;
+                if (hFrames * vFrames > 1) {
+                    GD.Print($"Sprite sheet detected: {hFrames}x{vFrames} = {hFrames * vFrames} frames");
+                } else {
+                    GD.Print("Single frame portrait detected.");
+                }
+
+            }
             if (inputDialogue.shouldSkipAnimation) {
                 dialogueBox.node.Modulate = new Color(1f, 1f, 1f, 0.0f);
                 dialogueBox.portraitCoverPanel.Modulate = new Color(1f, 1f, 1f, 0.0f);
-                dialogueBox.portraitTexture.Modulate = new Color(1f, 1f, 1f, 0.0f);
+                dialogueBox.portraitSprite.Modulate = new Color(1f, 1f, 1f, 0.0f);
                 dialogueBox.speakerNameLabel.Modulate = new Color(1f, 1f, 1f, 0.0f);
                 dialogueBox.delay = 1.5f;
             }
@@ -71,14 +85,23 @@ namespace Gamma {
         }
         public void DialogueUpdate() {
             if (!dialogueBox.node.Visible) { return; }
+            NoiseTexture2D noiseTexture = (NoiseTexture2D)dialogueBox.gradient.Texture;
+            FastNoiseLite noise = (FastNoiseLite)noiseTexture.Noise;
+            Vector3 offset = noise.Offset;
+            offset.X += 1f;
+            noise.Offset = offset;
             if (dialogueBox.node.Modulate.A < 1f) {
                 dialogueBox.node.Modulate = new Color(1f, 1f, 1f, dialogueBox.node.Modulate.A + 0.1f);
             }
-            if (dialogueBox.portraitTexture.Modulate.A < 1f) {
-                dialogueBox.portraitTexture.Modulate = new Color(1f, 1f, 1f, dialogueBox.portraitTexture.Modulate.A + 0.1f);
+            if (dialogueBox.portraitSprite.Modulate.A < 1f) {
+                dialogueBox.portraitSprite.Modulate = new Color(1f, 1f, 1f, dialogueBox.portraitSprite.Modulate.A + 0.1f);
                 return;
             }
-            if (dialogueBox.delay > 1f) {
+            if (dialogueBox.portraitSprite.Frame < dialogueBox.portraitSprite.Hframes * dialogueBox.portraitSprite.Vframes - 1 && sceneState.physicsFramesSinceSceneLoad % 4 == 0) {
+                dialogueBox.portraitSprite.Frame += 1;
+                return;
+            }
+            if (dialogueBox.delay > 0f) {
                 dialogueBox.delay -= (float)globalDelta;
                 return;
             }

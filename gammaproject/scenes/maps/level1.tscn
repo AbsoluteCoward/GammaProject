@@ -10,14 +10,7 @@
 
 [sub_resource type="Environment" id="Environment_0et32"]
 background_mode = 1
-ambient_light_source = 1
-fog_enabled = true
-fog_mode = 1
-fog_light_color = Color(1, 1, 1, 1)
-fog_light_energy = 16.0
-fog_density = 1.0
-fog_depth_curve = 0.637281
-fog_depth_end = 156.8
+background_energy_multiplier = 0.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0et32"]
 albedo_texture = ExtResource("1_aobmw")
@@ -140,73 +133,35 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/Dungeon0/Plane/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_aobmw")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Geometry"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 28.01, 5, 3.21)
-light_energy = 9.471
-light_specular = 0.0
-shadow_enabled = true
-omni_range = 14.0
-
-[node name="OmniLight3D2" type="OmniLight3D" parent="Geometry"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 23.01, 2, 12.61)
-light_energy = 9.471
-light_specular = 0.0
-shadow_enabled = true
-
-[node name="OmniLight3D3" type="OmniLight3D" parent="Geometry"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 38.41, 2, 10.21)
-light_energy = 9.471
-light_specular = 0.0
-shadow_enabled = true
-
-[node name="OmniLight3D4" type="OmniLight3D" parent="Geometry"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 23.41, 2, -17.99)
-light_energy = 9.471
-light_specular = 0.0
-shadow_enabled = true
-omni_range = 35.0
-
-[node name="OmniLight3D5" type="OmniLight3D" parent="Geometry"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 28.49, 6.1, -33.41)
-light_energy = 16.0
-light_specular = 0.0
-shadow_enabled = true
-omni_range = 35.0
-
-[node name="OmniLight3D6" type="OmniLight3D" parent="Geometry"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 4.69, 3.1, -34.61)
-light_energy = 16.0
-light_specular = 0.0
-shadow_enabled = true
-omni_range = 35.0
-
-[node name="OmniLight3D7" type="OmniLight3D" parent="Geometry"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 33.49, 6.1, -22.61)
-light_energy = 16.0
-light_specular = 0.0
-shadow_enabled = true
-omni_range = 35.0
-
-[node name="OmniLight3D8" type="OmniLight3D" parent="Geometry"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 1.69, 3.1, -22.61)
-light_energy = 16.0
-light_specular = 0.0
-shadow_enabled = true
-omni_range = 35.0
-
 [node name="Entities" type="Node" parent="."]
-
-[node name="Bear" parent="Entities" instance=ExtResource("2_0et32")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0, -1)
 
 [node name="Player" parent="Entities" instance=ExtResource("1_b2g8u")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 0, 2)
+
+[node name="Bear" parent="Entities" instance=ExtResource("2_0et32")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0, -1)
 
 [node name="PlayerCamera" parent="Entities" instance=ExtResource("2_idapr")]
 transform = Transform3D(-4.37114e-08, -0.549825, 0.83528, 0, 0.83528, 0.549825, -1, 2.40336e-08, -3.65112e-08, 33.8, 2.9183, 2.60695)
 
 [node name="DungeonExit" parent="Entities" instance=ExtResource("2_b7bw0")]
 transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, 19.8814, -0.00268555, 2.85773)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Entities"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 27.5, 18, 3)
+light_energy = 120.0
+shadow_enabled = true
+spot_range = 26.0
+spot_angle = 35.9686
+spot_angle_attenuation = 1.91902
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Entities"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 18.5, 7, -21)
+light_energy = 120.0
+shadow_enabled = true
+spot_range = 26.0
+spot_angle = 78.4178
+spot_angle_attenuation = 1.91902
 
 [node name="UI" type="Node" parent="."]
 

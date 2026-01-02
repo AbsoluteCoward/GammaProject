@@ -33,7 +33,7 @@ namespace Gamma {
                 dialogueBox.dialogueTextLabel.VisibleCharacters = dialogueBox.dialogueTextLabel.Text.Length;
                 dialogueBox.node.Modulate = new Color(1f, 1f, 1f, 1.0f);
                 dialogueBox.portraitCoverPanel.Modulate = new Color(1f, 1f, 1f, 1.0f);
-                dialogueBox.portraitTexture.Modulate = new Color(1f, 1f, 1f, 1.0f);
+                dialogueBox.portraitSprite.Modulate = new Color(1f, 1f, 1f, 1.0f);
                 dialogueBox.speakerNameLabel.Modulate = new Color(1f, 1f, 1f, 1.0f);
                 return;
             }

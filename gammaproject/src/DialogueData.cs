@@ -13,16 +13,16 @@ namespace Gamma {
             textSpeed = 1f,
         };
         public static DialogueData slinkTalkToSelf1 = new DialogueData {
-            speakerPortrait = GD.Load<Texture2D>("res://assets/textures/dialogueportraits/slinkportrait.png"),
+            speakerPortrait = GD.Load<Texture2D>("res://assets/textures/dialogueportraits/slinkportrait01.png"),
             speakerName = "Slink",
             text = 15 + " uncooked meat",
             textSpeed = 2f,
             shouldSkipAnimation = false
         };
         public static DialogueData slinkTalkToSelf0 = new DialogueData {
-            speakerPortrait = GD.Load<Texture2D>("res://assets/textures/dialogueportraits/slinkportrait.png"),
+            speakerPortrait = GD.Load<Texture2D>("res://assets/textures/dialogueportraits/spritesheet.png"),
             speakerName = "Slink",
-            text = "placeholder test",
+            text = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
             onDialogueComplete = new Action<Main>[] {
                 (Main) => Main.DialogueStart(slinkTalkToSelf1)
             },
@@ -30,7 +30,7 @@ namespace Gamma {
             shouldSkipAnimation = true
         };
         public static DialogueData slinkSinkInteraction = new DialogueData {
-            speakerPortrait = GD.Load<Texture2D>("res://assets/textures/dialogueportraits/slinkportrait.png"),
+            speakerPortrait = GD.Load<Texture2D>("res://assets/textures/dialogueportraits/slinkportrait01.png"),
             speakerName = "Slink",
             text = "wishy washy wash my hands i wash myy hands in the sink",
             onDialogueStart = null,
