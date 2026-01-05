@@ -64,7 +64,7 @@ namespace Gamma {
         public Node entitiesNode;
         public Node uiNode;
         public PhysicsMaterial globalPhysicsMaterial;
-        public float cameraFarSetting = 40;
+        public float cameraFarSetting = 100;
         public double globalDelta;
         public bool shouldSpawnMothman = false;
         public bool outOfTime = false;
@@ -72,6 +72,10 @@ namespace Gamma {
             if (lookDirection.LengthSquared() <= ALMOST_ZERO) { return; }
             float targetRotation = (float)Math.Atan2(-lookDirection.X, -lookDirection.Z);
             inputNode.Rotation = new Vector3(inputNode.Rotation.X, Mathf.LerpAngle(inputNode.Rotation.Y, targetRotation, rotationSpeed), inputNode.Rotation.Z);
+        }
+        bool HasCrossedPlaybackPosition(float inputPreviousPosition, float inputCurrentPosition, float inputEventPosition) {
+            if (inputCurrentPosition >= inputPreviousPosition) return inputPreviousPosition < inputEventPosition && inputEventPosition <= inputCurrentPosition;
+            return inputPreviousPosition < inputEventPosition || inputEventPosition <= inputCurrentPosition;
         }
         public void ChangeScene(string scenePath) {
             pendingSceneChange.shouldChangeScene = true;
@@ -170,10 +174,6 @@ namespace Gamma {
             globalPhysicsMaterial.Bounce = 0f;
             GD.Print("Setup complete");
         }
-        bool HasCrossedPlaybackPosition(float inputPreviousPosition, float inputCurrentPosition, float inputEventPosition) {
-            if (inputCurrentPosition >= inputPreviousPosition) return inputPreviousPosition < inputEventPosition && inputEventPosition <= inputCurrentPosition;
-            return inputPreviousPosition < inputEventPosition || inputEventPosition <= inputCurrentPosition;
-        }
         public override void _PhysicsProcess(double delta) {
             if (GetTree().CurrentScene != sceneState.previousFrameScene) {
                 sceneState.isSceneLoaded = false;
@@ -209,6 +209,7 @@ namespace Gamma {
             ProjectilesUpdate();
             PlayerCameraUpdate(ref playerCamera);
             PlayerUpdate();
+            EnemyUpdate();
             if (Input.IsActionJustPressed("interact")) { Interact(); }
             DialogueUpdate();
             SubtitlesUpdate();

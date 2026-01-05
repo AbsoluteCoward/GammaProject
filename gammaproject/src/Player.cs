@@ -30,7 +30,7 @@ namespace Gamma {
             public bool hasPlayerModelCopy;
             public bool isTeleporting;
             public Node3D[] targets;
-            public static float maxDistance = 1000f;
+            public static float maxDistance = float.MaxValue;
             public static int meatCount = 0;
         }
         public struct PlayerCamera {
@@ -44,7 +44,6 @@ namespace Gamma {
             public float angle;
             public float maxLerpDistance;
             public float rotationLerpSpeed;
-            public float positionLerpSpeed;
         }
         public Player player;
         public PlayerCamera playerCamera;
@@ -62,8 +61,9 @@ namespace Gamma {
             player.targetCount = 0;
             player.animationPlayer = inputPlayerNode.GetChild<Node3D>(2).GetChild<AnimationPlayer>(1);
             player.animationTree = inputPlayerNode.GetChild<AnimationTree>(3);
-            player.animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Physics;
-            player.animationPlayer.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Physics;
+            player.animationTree.Active = true;
+            player.animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
+            player.animationPlayer.Active = false;
             player.animationState = (AnimationNodeStateMachinePlayback)player.animationTree.Get("parameters/playback");
             player.skeleton = inputPlayerNode.GetChild<Node3D>(2).GetChild<Node3D>(0).GetChild<Skeleton3D>(0);
             for (int i = 0; i < player.skeleton.GetBoneCount(); i++) { if (player.skeleton.GetBoneName(i) == "Abdomen") { player.chestBoneIndex = i; } }
@@ -88,9 +88,9 @@ namespace Gamma {
             playerCamera.SpotLight.SpotRange = 120;
             playerCamera.SpotLight.SpotAngle = 120;
             playerCamera.SpotLight.LightEnergy = GetTree().CurrentScene.Name == "Prison" ? 0f : 0f;
-            playerCamera.offsetDistance = Mathf.Pi;
-            playerCamera.offsetHeight = Mathf.Sqrt(5);
-            playerCamera.node.Fov = 75;
+            playerCamera.offsetDistance = 3;
+            playerCamera.offsetHeight = playerCamera.offsetDistance * 0.5f;
+            playerCamera.node.Fov = 64;
             playerCamera.node.Far = cameraFarSetting;
             worldEnvironment.Environment.FogEnabled = true;
             worldEnvironment.Environment.FogLightColor = Colors.Black;
@@ -98,12 +98,12 @@ namespace Gamma {
             worldEnvironment.Environment.FogDepthBegin = cameraFarSetting * 0.8f;
             worldEnvironment.Environment.FogDepthEnd = cameraFarSetting;
             playerCamera.maxLerpDistance = 200f;
-            playerCamera.rotationLerpSpeed = 0.6f;
-            playerCamera.positionLerpSpeed = 0.1f;
+            playerCamera.rotationLerpSpeed = 0.1f;
             GD.Print("Player Camera Initialized");
         }
         public void ApplyDynamicBoneTransformations() {
             if (player.skeleton == null) { return; }
+            GD.Print([player.turnAnticipation]);
             float chestRotation = player.turnAnticipation;
             Transform3D pelvisPose = player.skeleton.GetBoneGlobalPose(1);
             Transform3D chestPose = DEFAULT_SLINK_WALK_CHEST_POSE;
@@ -153,6 +153,7 @@ namespace Gamma {
             player.hasPlayerModelCopy = false;
         }
         public void PlayerUpdate() {
+            player.animationTree.Advance((float)globalDelta);
             if (sceneState.physicsFramesSinceSceneLoad % (int)GD.RandRange(20f, 100f) == 0) {
                 Vector3 playerPosition = player.node.GlobalPosition;
                 if (Mathf.Abs(playerPosition.X) > Player.maxDistance ||
@@ -191,6 +192,8 @@ namespace Gamma {
                     }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.2f);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
+                    player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, -0.3f, 0.1f); // we do this so the player visually faces forward
+                    ApplyDynamicBoneTransformations();
                     break;
                 case "Walk":
                     if (!hasMovementInput && !player.isTeleporting) { targetAnimation = "Idle"; }
@@ -208,6 +211,7 @@ namespace Gamma {
                     RotateTowards(direction, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
+                    ApplyDynamicBoneTransformations();
                     break;
                 case "Jump":
                     bool shouldJump =
@@ -342,7 +346,6 @@ namespace Gamma {
                 player.targetCount = 0;
             }
             player.node.MoveAndSlide();
-            ApplyDynamicBoneTransformations();
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }
@@ -367,13 +370,9 @@ namespace Gamma {
                 player.node.GlobalPosition +
                 player.skeleton.GetBoneGlobalPose(player.chestBoneIndex).Origin;
             inputCamera.node.GlobalPosition = inputCamera.WallRayCast.IsColliding() ?
-                inputCamera.node.GlobalPosition.Lerp(
-                    inputCamera.WallRayCast.GetCollisionPoint() + inputCamera.WallRayCast.GetCollisionNormal() * 0.1f,
-                    playerCamera.positionLerpSpeed * 2) :
-                inputCamera.node.GlobalPosition.Lerp(
-                    inputCamera.WallRayCast.ToGlobal(inputCamera.WallRayCast.TargetPosition),
-                    inputCamera.positionLerpSpeed);
-            inputCamera.targetPosition = inputCamera.targetPosition.Lerp(inputCamera.WallRayCast.GlobalPosition, inputCamera.rotationLerpSpeed);
+                inputCamera.WallRayCast.GetCollisionPoint() + inputCamera.WallRayCast.GetCollisionNormal() * 0.1f:
+                inputCamera.WallRayCast.ToGlobal(inputCamera.WallRayCast.TargetPosition);
+            inputCamera.targetPosition = inputCamera.WallRayCast.GlobalPosition;
             inputCamera.node.LookAt(inputCamera.targetPosition);
         }
     }

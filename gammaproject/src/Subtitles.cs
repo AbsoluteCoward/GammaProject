@@ -66,8 +66,11 @@ namespace Gamma {
         public void SubtitlesUpdate() {
             for (int i = 0; i < subtitleBox.activeSubtitles.Length; i++) {
                 if (subtitleBox.activeSubtitles[i].currentLifeTime > 0f) {
-                    if (sceneState.physicsFramesSinceSceneLoad % 2 == 0) {
+                    if ((sceneState.physicsFramesSinceSceneLoad & 1) == 0) {
+                        GD.Print("adding character");
                         subtitleBox.activeSubtitles[i].dialogueTextLabel.VisibleCharacters += 1;
+                    } else {
+                        GD.Print("skipping character");
                     }
                     subtitleBox.activeSubtitles[i].currentLifeTime -= (float)globalDelta;
                     subtitleBox.activeSubtitles[i].dialogueTextLabel.Modulate = new Color(

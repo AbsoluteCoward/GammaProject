@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://b0pi1p7vaslco"]
+[gd_scene load_steps=29 format=3 uid="uid://b0pi1p7vaslco"]
 
 [ext_resource type="Texture2D" uid="uid://gnyim4vlsb18" path="res://assets/textures/FAB_LINENBEIGE.jpg" id="1_lau34"]
 [ext_resource type="Texture2D" uid="uid://0e2hnjca4y0y" path="res://assets/textures/MET_IRONINDUSTRAILPERFORATEGATE01_SEAMLESS.jpg" id="2_mfmdp"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://brpo7en11np1b" path="res://assets/textures/MET_METALBEDRUSTWHITE.jpg" id="7_6xplv"]
 [ext_resource type="PackedScene" uid="uid://coytvcqlue4h2" path="res://scenes/UI/dialogue_box.tscn" id="7_e1bjx"]
 [ext_resource type="PackedScene" uid="uid://b624rkte3tvyp" path="res://scenes/UI/subtitle_box.tscn" id="7_jpqbp"]
+[ext_resource type="Texture2D" uid="uid://bwsnopx8ysjy8" path="res://assets/textures/CHR_BLACKBEAR_FUR.png" id="8_mfmdp"]
 
 [sub_resource type="Environment" id="Environment_lau34"]
 background_mode = 1
@@ -56,6 +57,9 @@ albedo_texture = ExtResource("6_5pg0k")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h1ish"]
 albedo_texture = ExtResource("7_6xplv")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tjgyd"]
+albedo_texture = ExtResource("8_mfmdp")
+
 [node name="Level" type="Node3D"]
 
 [node name="Environment" type="Node" parent="."]
@@ -64,18 +68,26 @@ albedo_texture = ExtResource("7_6xplv")
 environment = SubResource("Environment_lau34")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
-transform = Transform3D(0.965926, 1.13133e-08, -0.258819, 0.25, 0.258819, 0.933013, 0.0669873, -0.965926, 0.25, 0, 0, 0)
+transform = Transform3D(0.965926, 2.57067e-08, -0.258819, 0.25, 0.258819, 0.933013, 0.0669873, -0.965926, 0.25, -45, 0, 0)
 light_color = Color(0.262932, 0.262932, 0.262932, 1)
 light_energy = 16.0
 shadow_enabled = true
 sky_mode = 1
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Environment/DirectionalLight3D"]
+transform = Transform3D(1, -7.45058e-09, 0, 0, 1, 1.49012e-08, -1.86265e-09, 0, 1, -1.9498, 4.12252, 0.450651)
+light_color = Color(0.737255, 1, 1, 1)
+light_energy = 1.085
+shadow_enabled = true
+omni_range = 10.0
+omni_attenuation = -1.017
 
 [node name="Geometry" type="Node" parent="."]
 
 [node name="playtest" type="Node3D" parent="Geometry"]
 
 [node name="Cube" type="MeshInstance3D" parent="Geometry/playtest"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, 0)
 material_override = SubResource("StandardMaterial3D_4vflo")
 mesh = SubResource("PlaneMesh_aypjb")
 skeleton = NodePath("")
@@ -85,88 +97,869 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/playtest/Cube/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_jpqbp")
 
+[node name="Cube2" type="MeshInstance3D" parent="Geometry/playtest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 94, 0, 0)
+material_override = SubResource("StandardMaterial3D_4vflo")
+mesh = SubResource("PlaneMesh_aypjb")
+skeleton = NodePath("")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Geometry/playtest/Cube2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/playtest/Cube2/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_jpqbp")
+
+[node name="Cube3" type="MeshInstance3D" parent="Geometry/playtest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 223, 0, 0)
+material_override = SubResource("StandardMaterial3D_4vflo")
+mesh = SubResource("PlaneMesh_aypjb")
+skeleton = NodePath("")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Geometry/playtest/Cube3"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/playtest/Cube3/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_jpqbp")
+
 [node name="CSGBox3D7" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 14.5, 1.5, 7)
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, -30.5, 1.5, 7)
 material_override = SubResource("StandardMaterial3D_wel7t")
 use_collision = true
 collision_layer = 3
 size = Vector3(2, 3, 16)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.5, 12.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.5, 2.5, 12.5)
 material_override = SubResource("StandardMaterial3D_kqcqs")
 use_collision = true
 collision_layer = 3
 size = Vector3(8, 6, 2)
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 4.5, 2.5, 7.5)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -40.5, 2.5, 7.5)
 material_override = SubResource("StandardMaterial3D_vgkut")
 use_collision = true
 collision_layer = 3
 size = Vector3(8, 6, 2)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2.5, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 2.5, 4)
 material_override = SubResource("StandardMaterial3D_1odrk")
 use_collision = true
 size = Vector3(1, 6, 1)
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.5, 2.5, -8.5)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -46.5, 2.5, -8.5)
 material_override = SubResource("StandardMaterial3D_ctw14")
 use_collision = true
 collision_layer = 3
 size = Vector3(8, 6, 8)
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 10.5, 0.5, -8.5)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -34.5, 0.5, -8.5)
 material_override = SubResource("StandardMaterial3D_qtude")
 use_collision = true
 collision_layer = 3
 size = Vector3(8, 2, 2)
 
 [node name="CSGBox3D6" type="CSGBox3D" parent="Geometry"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 6, 2.5, -9.5)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -39, 2.5, -9.5)
 material_override = SubResource("StandardMaterial3D_h1ish")
 use_collision = true
 collision_layer = 3
 size = Vector3(7, 2, 2)
 
+[node name="CSGTorus3D" type="CSGTorus3D" parent="Geometry"]
+transform = Transform3D(-4.2222e-08, -1, 1.13133e-08, 0.965926, -4.37114e-08, -0.258819, 0.258819, 0, 0.965926, -20, 4.2, -15)
+material_override = SubResource("StandardMaterial3D_tjgyd")
+use_collision = true
+inner_radius = 4.0
+outer_radius = 6.0
+sides = 24
+ring_sides = 5
+
 [node name="Entities" type="Node" parent="."]
 
 [node name="Player" parent="Entities" instance=ExtResource("4_8d6xy")]
-transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0)
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, -53.1, 4.2, -2.6)
 
 [node name="PlayerCamera" parent="Entities" instance=ExtResource("5_amgw8")]
-transform = Transform3D(-4.37114e-08, -0.549825, 0.83528, 0, 0.83528, 0.549825, -1, 2.40336e-08, -3.65113e-08, 10.8, 2.9183, 2.60695)
+transform = Transform3D(-4.37114e-08, -0.549825, 0.83528, 0, 0.83528, 0.549825, -1, 2.40336e-08, -3.65113e-08, -34.2, 2.9183, 2.60695)
 
 [node name="Bear" parent="Entities" instance=ExtResource("3_jpqbp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 6, 12)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, -0.5)
 
 [node name="Bear2" parent="Entities" instance=ExtResource("3_jpqbp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 3, 12)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, 1.5)
 
 [node name="Bear3" parent="Entities" instance=ExtResource("3_jpqbp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 12)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, 3.5)
+
+[node name="Bear10" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, 5.5)
+
+[node name="Bear11" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, 7.5)
+
+[node name="Bear7" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, -1.5)
+
+[node name="Bear8" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, 0.5)
+
+[node name="Bear9" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, 2.5)
 
 [node name="Bear4" parent="Entities" instance=ExtResource("3_jpqbp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 6, 6)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, 4.5)
 
 [node name="Bear5" parent="Entities" instance=ExtResource("3_jpqbp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 3, 6)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, 6.5)
 
 [node name="Bear6" parent="Entities" instance=ExtResource("3_jpqbp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 6)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, 8.5)
+
+[node name="Bear47" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, 9.5)
+
+[node name="Bear48" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, 10.5)
+
+[node name="Bear49" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, 11.5)
+
+[node name="Bear50" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, 12.5)
+
+[node name="Bear51" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, 13.5)
+
+[node name="Bear52" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, 14.5)
+
+[node name="Bear12" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -63.5, 15, -0.5)
+
+[node name="Bear13" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -63.5, 15, 1.5)
+
+[node name="Bear14" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -63.5, 15, 3.5)
+
+[node name="Bear15" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -63.5, 15, 5.5)
+
+[node name="Bear16" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -63.5, 15, 7.5)
+
+[node name="Bear17" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -61.5, 15, -1.5)
+
+[node name="Bear23" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, -2.5)
+
+[node name="Bear24" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, -3.5)
+
+[node name="Bear25" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -63.5, 15, -2.5)
+
+[node name="Bear26" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -61.5, 15, -3.5)
+
+[node name="Bear27" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, -4.5)
+
+[node name="Bear28" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, -5.5)
+
+[node name="Bear29" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -63.5, 15, -4.5)
+
+[node name="Bear30" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -61.5, 15, -5.5)
+
+[node name="Bear31" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, -6.5)
+
+[node name="Bear32" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, -7.5)
+
+[node name="Bear33" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -63.5, 15, -6.5)
+
+[node name="Bear34" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -61.5, 15, -7.5)
+
+[node name="Bear35" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, -8.5)
+
+[node name="Bear36" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, -9.5)
+
+[node name="Bear37" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -63.5, 15, -8.5)
+
+[node name="Bear38" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -61.5, 15, -9.5)
+
+[node name="Bear39" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, -10.5)
+
+[node name="Bear40" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, -11.5)
+
+[node name="Bear41" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -63.5, 15, -10.5)
+
+[node name="Bear42" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -61.5, 15, -11.5)
+
+[node name="Bear43" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -59.5, 15, -12.5)
+
+[node name="Bear44" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 15, -13.5)
+
+[node name="Bear45" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -63.5, 15, -12.5)
+
+[node name="Bear46" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -61.5, 15, -13.5)
+
+[node name="Bear18" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -61.5, 15, 0.5)
+
+[node name="Bear19" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -61.5, 15, 2.5)
+
+[node name="Bear20" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -61.5, 15, 4.5)
+
+[node name="Bear21" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -61.5, 15, 6.5)
+
+[node name="Bear22" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -61.5, 15, 8.5)
+
+[node name="Bear53" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, -0.5)
+
+[node name="Bear54" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, 1.5)
+
+[node name="Bear55" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, 3.5)
+
+[node name="Bear56" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, 5.5)
+
+[node name="Bear57" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, 7.5)
+
+[node name="Bear58" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, -1.5)
+
+[node name="Bear59" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, 0.5)
+
+[node name="Bear60" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, 2.5)
+
+[node name="Bear61" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, 4.5)
+
+[node name="Bear62" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, 6.5)
+
+[node name="Bear63" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, 8.5)
+
+[node name="Bear64" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, 9.5)
+
+[node name="Bear65" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, 10.5)
+
+[node name="Bear66" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, 11.5)
+
+[node name="Bear67" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, 12.5)
+
+[node name="Bear68" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, 13.5)
+
+[node name="Bear69" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, 14.5)
+
+[node name="Bear70" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -74.5, 31, -0.5)
+
+[node name="Bear71" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -74.5, 31, 1.5)
+
+[node name="Bear72" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -74.5, 31, 3.5)
+
+[node name="Bear73" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -74.5, 31, 5.5)
+
+[node name="Bear74" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -74.5, 31, 7.5)
+
+[node name="Bear75" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -72.5, 31, -1.5)
+
+[node name="Bear76" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, -2.5)
+
+[node name="Bear77" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, -3.5)
+
+[node name="Bear78" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -74.5, 31, -2.5)
+
+[node name="Bear79" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -72.5, 31, -3.5)
+
+[node name="Bear80" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, -4.5)
+
+[node name="Bear81" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, -5.5)
+
+[node name="Bear82" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -74.5, 31, -4.5)
+
+[node name="Bear83" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -72.5, 31, -5.5)
+
+[node name="Bear84" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, -6.5)
+
+[node name="Bear85" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, -7.5)
+
+[node name="Bear86" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -74.5, 31, -6.5)
+
+[node name="Bear87" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -72.5, 31, -7.5)
+
+[node name="Bear88" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, -8.5)
+
+[node name="Bear89" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, -9.5)
+
+[node name="Bear90" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -74.5, 31, -8.5)
+
+[node name="Bear91" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -72.5, 31, -9.5)
+
+[node name="Bear92" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, -10.5)
+
+[node name="Bear93" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, -11.5)
+
+[node name="Bear94" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -74.5, 31, -10.5)
+
+[node name="Bear95" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -72.5, 31, -11.5)
+
+[node name="Bear96" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -70.5, 31, -12.5)
+
+[node name="Bear97" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -68.5, 31, -13.5)
+
+[node name="Bear98" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -74.5, 31, -12.5)
+
+[node name="Bear99" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -72.5, 31, -13.5)
+
+[node name="Bear100" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -72.5, 31, 0.5)
+
+[node name="Bear101" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -72.5, 31, 2.5)
+
+[node name="Bear102" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -72.5, 31, 4.5)
+
+[node name="Bear103" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -72.5, 31, 6.5)
+
+[node name="Bear104" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -72.5, 31, 8.5)
+
+[node name="Bear105" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, -0.5)
+
+[node name="Bear106" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, 1.5)
+
+[node name="Bear107" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, 3.5)
+
+[node name="Bear108" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, 5.5)
+
+[node name="Bear109" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, 7.5)
+
+[node name="Bear110" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, -1.5)
+
+[node name="Bear111" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, 0.5)
+
+[node name="Bear112" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, 2.5)
+
+[node name="Bear113" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, 4.5)
+
+[node name="Bear114" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, 6.5)
+
+[node name="Bear115" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, 8.5)
+
+[node name="Bear116" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, 9.5)
+
+[node name="Bear117" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, 10.5)
+
+[node name="Bear118" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, 11.5)
+
+[node name="Bear119" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, 12.5)
+
+[node name="Bear120" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, 13.5)
+
+[node name="Bear121" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, 14.5)
+
+[node name="Bear122" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -46.5, 15, -0.5)
+
+[node name="Bear123" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -46.5, 15, 1.5)
+
+[node name="Bear124" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -46.5, 15, 3.5)
+
+[node name="Bear125" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -46.5, 15, 5.5)
+
+[node name="Bear126" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -46.5, 15, 7.5)
+
+[node name="Bear127" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -44.5, 15, -1.5)
+
+[node name="Bear128" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, -2.5)
+
+[node name="Bear129" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, -3.5)
+
+[node name="Bear130" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -46.5, 15, -2.5)
+
+[node name="Bear131" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -44.5, 15, -3.5)
+
+[node name="Bear132" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, -4.5)
+
+[node name="Bear133" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, -5.5)
+
+[node name="Bear134" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -46.5, 15, -4.5)
+
+[node name="Bear135" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -44.5, 15, -5.5)
+
+[node name="Bear136" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, -6.5)
+
+[node name="Bear137" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, -7.5)
+
+[node name="Bear138" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -46.5, 15, -6.5)
+
+[node name="Bear139" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -44.5, 15, -7.5)
+
+[node name="Bear140" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, -8.5)
+
+[node name="Bear141" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, -9.5)
+
+[node name="Bear142" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -46.5, 15, -8.5)
+
+[node name="Bear143" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -44.5, 15, -9.5)
+
+[node name="Bear144" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, -10.5)
+
+[node name="Bear145" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, -11.5)
+
+[node name="Bear146" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -46.5, 15, -10.5)
+
+[node name="Bear147" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -44.5, 15, -11.5)
+
+[node name="Bear148" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -42.5, 15, -12.5)
+
+[node name="Bear149" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -40.5, 15, -13.5)
+
+[node name="Bear150" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -46.5, 15, -12.5)
+
+[node name="Bear151" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -44.5, 15, -13.5)
+
+[node name="Bear152" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -44.5, 15, 0.5)
+
+[node name="Bear153" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -44.5, 15, 2.5)
+
+[node name="Bear154" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -44.5, 15, 4.5)
+
+[node name="Bear155" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -44.5, 15, 6.5)
+
+[node name="Bear156" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -44.5, 15, 8.5)
+
+[node name="Bear157" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, -0.5)
+
+[node name="Bear158" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, 1.5)
+
+[node name="Bear159" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, 3.5)
+
+[node name="Bear160" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, 5.5)
+
+[node name="Bear161" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, 7.5)
+
+[node name="Bear162" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, -1.5)
+
+[node name="Bear163" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, 0.5)
+
+[node name="Bear164" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, 2.5)
+
+[node name="Bear165" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, 4.5)
+
+[node name="Bear166" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, 6.5)
+
+[node name="Bear167" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, 8.5)
+
+[node name="Bear168" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, 9.5)
+
+[node name="Bear169" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, 10.5)
+
+[node name="Bear170" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, 11.5)
+
+[node name="Bear171" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, 12.5)
+
+[node name="Bear172" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, 13.5)
+
+[node name="Bear173" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, 14.5)
+
+[node name="Bear174" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 31, -0.5)
+
+[node name="Bear175" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 31, 1.5)
+
+[node name="Bear176" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 31, 3.5)
+
+[node name="Bear177" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 31, 5.5)
+
+[node name="Bear178" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 31, 7.5)
+
+[node name="Bear179" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -55.5, 31, -1.5)
+
+[node name="Bear180" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, -2.5)
+
+[node name="Bear181" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, -3.5)
+
+[node name="Bear182" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 31, -2.5)
+
+[node name="Bear183" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -55.5, 31, -3.5)
+
+[node name="Bear184" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, -4.5)
+
+[node name="Bear185" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, -5.5)
+
+[node name="Bear186" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 31, -4.5)
+
+[node name="Bear187" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -55.5, 31, -5.5)
+
+[node name="Bear188" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, -6.5)
+
+[node name="Bear189" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, -7.5)
+
+[node name="Bear190" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 31, -6.5)
+
+[node name="Bear191" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -55.5, 31, -7.5)
+
+[node name="Bear192" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, -8.5)
+
+[node name="Bear193" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, -9.5)
+
+[node name="Bear194" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 31, -8.5)
+
+[node name="Bear195" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -55.5, 31, -9.5)
+
+[node name="Bear196" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, -10.5)
+
+[node name="Bear197" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, -11.5)
+
+[node name="Bear198" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 31, -10.5)
+
+[node name="Bear199" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -55.5, 31, -11.5)
+
+[node name="Bear200" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -53.5, 31, -12.5)
+
+[node name="Bear201" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -51.5, 31, -13.5)
+
+[node name="Bear202" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -57.5, 31, -12.5)
+
+[node name="Bear203" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -55.5, 31, -13.5)
+
+[node name="Bear204" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -55.5, 31, 0.5)
+
+[node name="Bear205" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -55.5, 31, 2.5)
+
+[node name="Bear206" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -55.5, 31, 4.5)
+
+[node name="Bear207" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -55.5, 31, 6.5)
+
+[node name="Bear208" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -55.5, 31, 8.5)
+
+[node name="Bear209" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, -0.5)
+
+[node name="Bear210" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, 1.5)
+
+[node name="Bear211" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, 3.5)
+
+[node name="Bear212" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, 5.5)
+
+[node name="Bear213" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, 7.5)
+
+[node name="Bear214" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, -1.5)
+
+[node name="Bear215" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, 0.5)
+
+[node name="Bear216" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, 2.5)
+
+[node name="Bear217" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, 4.5)
+
+[node name="Bear218" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, 6.5)
+
+[node name="Bear219" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, 8.5)
+
+[node name="Bear220" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, 9.5)
+
+[node name="Bear221" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, 10.5)
+
+[node name="Bear222" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, 11.5)
+
+[node name="Bear223" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, 12.5)
+
+[node name="Bear224" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, 13.5)
+
+[node name="Bear225" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, 14.5)
+
+[node name="Bear226" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 15, -0.5)
+
+[node name="Bear227" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 15, 1.5)
+
+[node name="Bear228" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 15, 3.5)
+
+[node name="Bear229" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 15, 5.5)
+
+[node name="Bear230" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 15, 7.5)
+
+[node name="Bear231" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -77.5, 15, -1.5)
+
+[node name="Bear232" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, -2.5)
+
+[node name="Bear233" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, -3.5)
+
+[node name="Bear234" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 15, -2.5)
+
+[node name="Bear235" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -77.5, 15, -3.5)
+
+[node name="Bear236" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, -4.5)
+
+[node name="Bear237" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, -5.5)
+
+[node name="Bear238" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 15, -4.5)
+
+[node name="Bear239" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -77.5, 15, -5.5)
+
+[node name="Bear240" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, -6.5)
+
+[node name="Bear241" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, -7.5)
+
+[node name="Bear242" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 15, -6.5)
+
+[node name="Bear243" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -77.5, 15, -7.5)
+
+[node name="Bear244" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, -8.5)
+
+[node name="Bear245" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, -9.5)
+
+[node name="Bear246" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 15, -8.5)
+
+[node name="Bear247" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -77.5, 15, -9.5)
+
+[node name="Bear248" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, -10.5)
+
+[node name="Bear249" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, -11.5)
+
+[node name="Bear250" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 15, -10.5)
+
+[node name="Bear251" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -77.5, 15, -11.5)
+
+[node name="Bear252" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -75.5, 15, -12.5)
+
+[node name="Bear253" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -73.5, 15, -13.5)
+
+[node name="Bear254" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -79.5, 15, -12.5)
+
+[node name="Bear255" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -77.5, 15, -13.5)
+
+[node name="Bear256" parent="Entities" instance=ExtResource("3_jpqbp")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -77.5, 15, 0.5)
 
 [node name="DungeonExit" parent="Entities" instance=ExtResource("6_pwt0t")]
-transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -12.1186, -0.00268555, -11.1423)
+transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -57.1186, -0.00268555, -11.1423)
 
 [node name="DungeonEntrance" parent="Entities" instance=ExtResource("6_gxys6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.4, 0, 10.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56.4, 0, 10.5)
 
 [node name="Pot01" parent="Entities" instance=ExtResource("6_jpqbp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38, 0, 4)
 
 [node name="UI" type="Node" parent="."]
 
