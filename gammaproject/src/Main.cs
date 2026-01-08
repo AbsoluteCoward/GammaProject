@@ -63,6 +63,7 @@ namespace Gamma {
         public PendingSceneChange pendingSceneChange;
         public PrisonSpotLight prisonSpotlight;
         public WorldEnvironment worldEnvironment;
+        public VideoPlayback videoPlayback;
         public Node entitiesNode;
         public Node uiNode;
         public PhysicsMaterial globalPhysicsMaterial;
@@ -110,6 +111,7 @@ namespace Gamma {
             worldEnvironment = GetTree().CurrentScene.GetNode<WorldEnvironment>("Environment/WorldEnvironment");
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
             uiNode = GetTree().CurrentScene.GetNode<Node>("UI");
+            videoPlayback.node = uiNode.GetNode<VideoStreamPlayer>("VideoStreamPlayer");
             GD.Print("entities children: " + entitiesNode.GetChildCount());
             int typelessEntityCount = 0;
             for (int i = 0; i < entitiesNode.GetChildCount(); i++) {
@@ -165,6 +167,7 @@ namespace Gamma {
             Audio3DInitialize(DEFAULT_AUDIO_POOL_SIZE);
         }
         public override void _Ready() {
+            ProcessMode = ProcessModeEnum.Always;
             GD.Print("Setting up game");
             Engine.MaxFps = 999;
             targetReticleMaterial = new StandardMaterial3D();
@@ -186,9 +189,16 @@ namespace Gamma {
             sceneState.timeSinceSceneLoad += (float)delta;
             sceneState.physicsFramesSinceSceneLoad++;
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
+            UpdateVideo(ref videoPlayback);
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
             if (Input.IsActionJustPressed("debug")) {
+                Video testVideoData = new Video {
+                    videoPath = "res://assets/videos/testvideo.ogv",
+                    onVideoStart = null,
+                    onVideoComplete = null,
+                };
+                StartVideo(videoPlayback, testVideoData);
                 string randomText = "";
                 int textLength = GD.RandRange(5, 20);
                 for (int i = 0; i < textLength; i++) {
