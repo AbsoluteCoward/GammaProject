@@ -70,17 +70,9 @@ environment = SubResource("Environment_lau34")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
 transform = Transform3D(0.965926, 2.57067e-08, -0.258819, 0.25, 0.258819, 0.933013, 0.0669873, -0.965926, 0.25, -45, 0, 0)
 light_color = Color(0.262932, 0.262932, 0.262932, 1)
-light_energy = 16.0
+light_energy = 6.0
 shadow_enabled = true
 sky_mode = 1
-
-[node name="OmniLight3D" type="OmniLight3D" parent="Environment/DirectionalLight3D"]
-transform = Transform3D(1, -7.45058e-09, 0, 0, 1, 1.49012e-08, -1.86265e-09, 0, 1, -1.9498, 4.12252, 0.450651)
-light_color = Color(0.737255, 1, 1, 1)
-light_energy = 1.085
-shadow_enabled = true
-omni_range = 10.0
-omni_attenuation = -1.017
 
 [node name="Geometry" type="Node" parent="."]
 
@@ -179,7 +171,7 @@ ring_sides = 5
 [node name="Entities" type="Node" parent="."]
 
 [node name="Player" parent="Entities" instance=ExtResource("4_8d6xy")]
-transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, -53.1, 4.2, -2.6)
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, -53.1, 0.100001, -2.6)
 
 [node name="PlayerCamera" parent="Entities" instance=ExtResource("5_amgw8")]
 transform = Transform3D(-4.37114e-08, -0.549825, 0.83528, 0, 0.83528, 0.549825, -1, 2.40336e-08, -3.65113e-08, -34.2, 2.9183, 2.60695)

@@ -88,8 +88,8 @@ namespace Gamma {
             playerCamera.SpotLight.SpotRange = 120;
             playerCamera.SpotLight.SpotAngle = 120;
             playerCamera.SpotLight.LightEnergy = GetTree().CurrentScene.Name == "Prison" ? 0f : 0f;
-            playerCamera.offsetDistance = 3;
-            playerCamera.offsetHeight = playerCamera.offsetDistance * 0.5f;
+            playerCamera.offsetDistance = DEFAULT_CAMERA_DISTANCE;
+            playerCamera.offsetHeight = DEFAULT_CAMERA_HEIGHT;
             playerCamera.node.Fov = 64;
             playerCamera.node.Far = cameraFarSetting;
             worldEnvironment.Environment.FogEnabled = true;
@@ -103,7 +103,6 @@ namespace Gamma {
         }
         public void ApplyDynamicBoneTransformations() {
             if (player.skeleton == null) { return; }
-            GD.Print([player.turnAnticipation]);
             float chestRotation = player.turnAnticipation;
             Transform3D pelvisPose = player.skeleton.GetBoneGlobalPose(1);
             Transform3D chestPose = DEFAULT_SLINK_WALK_CHEST_POSE;
@@ -355,24 +354,27 @@ namespace Gamma {
             } else if (Input.IsActionJustPressed("cameraLeft")) {
                 inputCamera.targetAngle += 90f;
             }
+            float targetHeight = DEFAULT_CAMERA_HEIGHT + (player.isOnGround ? 0f : 3f);
+            inputCamera.offsetHeight = Mathf.Lerp(inputCamera.offsetHeight, targetHeight, 0.05f);
+            Vector3 medianPosition = inputCamera.WallRayCast.GlobalPosition.Lerp(player.teleportEntity.node.GlobalPosition, 0.1f);
             inputCamera.targetAngle = Mathf.PosMod(inputCamera.targetAngle, 360f);
             float angleDifference = Mathf.PosMod(inputCamera.targetAngle - inputCamera.angle + 180f, 360f) - 180f;
             inputCamera.angle += angleDifference * inputCamera.rotationLerpSpeed;
             float cameraAngleRadians = Mathf.DegToRad(inputCamera.angle);
             Vector3 offsetDirection = new Vector3(Mathf.Sin(cameraAngleRadians), 0, Mathf.Cos(cameraAngleRadians));
             inputCamera.WallRayCast.TargetPosition = inputCamera.WallRayCast.ToLocal(
-                inputCamera.WallRayCast.GlobalPosition +
+                medianPosition +
                 (offsetDirection * inputCamera.offsetDistance) +
                 new Vector3(0, inputCamera.offsetHeight, 0)
             );
-            inputCamera.WallRayCast.GlobalPosition =
-                //player.node.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild<MeshInstance3D>(0).GlobalPosition +
-                player.node.GlobalPosition +
+            inputCamera.WallRayCast.GlobalPosition = 
+                player.node.GlobalPosition + 
                 player.skeleton.GetBoneGlobalPose(player.chestBoneIndex).Origin;
+            //player.node.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild<MeshInstance3D>(0).GlobalPosition +
             inputCamera.node.GlobalPosition = inputCamera.WallRayCast.IsColliding() ?
                 inputCamera.WallRayCast.GetCollisionPoint() + inputCamera.WallRayCast.GetCollisionNormal() * 0.1f:
                 inputCamera.WallRayCast.ToGlobal(inputCamera.WallRayCast.TargetPosition);
-            inputCamera.targetPosition = inputCamera.WallRayCast.GlobalPosition;
+            inputCamera.targetPosition = medianPosition;
             inputCamera.node.LookAt(inputCamera.targetPosition);
         }
     }
