@@ -144,7 +144,7 @@ namespace Gamma {
             player.hasPlayerModelCopy = true;
         }
         public void RemovePlayerModelCopy() {
-            if (!player.hasPlayerModelCopy) return;
+            if (!player.hasPlayerModelCopy) { return; }
             if (player.teleportEntity.teleportShadowMesh != null) {
                 player.teleportEntity.teleportShadowMesh.QueueFree();
                 player.teleportEntity.teleportShadowMesh = null;
@@ -201,7 +201,7 @@ namespace Gamma {
                     if (HasCrossedPlaybackPosition(player.previousAnimationPlaybackPosition, currentAnimationPlaybackPosition, 0.33f) ||
                         HasCrossedPlaybackPosition(player.previousAnimationPlaybackPosition, currentAnimationPlaybackPosition, 1.54f)) {
                         if (player.isOnGround) {
-                            PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                            StartSound3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                         }
                     }
                     Vector3 direction = player.isTeleporting ? playerForward : player.wishDirection;
@@ -246,7 +246,7 @@ namespace Gamma {
                 case "FallToIdle":
                     if (HasCrossedPlaybackPosition(player.previousAnimationPlaybackPosition, currentAnimationPlaybackPosition, 0.22f)) {
                         if (player.isOnGround) {
-                            PlayAudio3D(footStepMetalSFX, player.node.GlobalPosition, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                            StartSound3D(footStepMetalSFX, player.node.GlobalPosition, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                         }
                     }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.08f);
@@ -294,7 +294,7 @@ namespace Gamma {
                 player.isTeleporting = false;
                 TurnShadowsOffOrOn(player.skeleton, true);
                 RemovePlayerModelCopy();
-                PlayAudio3D(teleportSFX, player.teleportEntity.node.GlobalPosition, 0.01f, 1.0f, false);
+                StartSound3D(teleportSFX, player.teleportEntity.node.GlobalPosition, 0.01f, 1.0f, false);
                 player.node.GlobalPosition = player.teleportEntity.node.GlobalPosition;
                 player.teleportEntity.light.LightEnergy = 0;
                 player.teleportEntity.node.TopLevel = false;
@@ -330,7 +330,7 @@ namespace Gamma {
                 }
             } else if (Input.IsActionJustReleased("attack")) {
                 Vector3 gunPosition = player.gunBarrel.GlobalPosition;
-                PlayAudio3D(shootSFX, gunPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
+                StartSound3D(shootSFX, gunPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
                 for (int i = 0; i < player.targets.Length; i++) {
                     if (player.targets[i] == null) { continue; }
                     GD.Print("Firing at target " + player.targets[i].Name);

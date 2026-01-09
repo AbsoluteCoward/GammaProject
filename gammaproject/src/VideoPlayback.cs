@@ -1,37 +1,39 @@
 using Godot;
 using System;
-using System.Reflection;
 namespace Gamma {
     public partial class Main : Node {
-        public struct VideoPlayback {
+        public struct VideoPlayer {
             public VideoStreamPlayer node;
             public Action<Main>[] onVideoStart;
             public Action<Main>[] onVideoComplete;
         }
-        public struct Video {
+        public struct VideoData {
             public string videoPath;
             public Action<Main>[] onVideoStart;
             public Action<Main>[] onVideoComplete;
         }
-        public void StartVideo(VideoPlayback inputVideo, Video inputVideoData) {
-            inputVideo.node.Stream = GD.Load<VideoStream>(inputVideoData.videoPath);
-            inputVideo.node.Play();
-            if (inputVideo.onVideoStart == null) { return; }
-            for (int i = 0; i < inputVideo.onVideoStart.Length; i++) {
-                inputVideo.onVideoStart[i](this);
+        public void StartVideo(ref VideoPlayer inputVideoPlayer, VideoData inputVideoData) {
+            inputVideoPlayer.node.Stream = GD.Load<VideoStream>(inputVideoData.videoPath);
+            inputVideoPlayer.node.Play();
+            inputVideoPlayer.onVideoStart = inputVideoData.onVideoStart;
+            inputVideoPlayer.onVideoComplete = inputVideoData.onVideoComplete;
+            if (inputVideoPlayer.onVideoStart == null) { return; }
+            GD.Print("Starting " + inputVideoPlayer.onVideoStart.Length + " video start functions");
+            for (int i = 0; i < inputVideoPlayer.onVideoStart.Length; i++) { 
+                inputVideoPlayer.onVideoStart[i](this); 
             }
         }
-        public void UpdateVideo(ref VideoPlayback inputVideo) {
-            if (!inputVideo.node.IsPlaying()) {
-                if (!inputVideo.node.IsPlaying()) {
-                    EndVideo(ref inputVideo);
-                }
+        public void UpdateVideo(ref VideoPlayer inputVideoPlayer) {
+            if (!inputVideoPlayer.node.IsPlaying()) {
+                if (!inputVideoPlayer.node.IsPlaying()) { EndVideo(ref inputVideoPlayer); }
             }
         }
-        public void EndVideo(ref VideoPlayback inputVideo) {
-            inputVideo.node.Stop();
-            if (inputVideo.onVideoComplete == null) { return; }
-            for (int i = 0; i < inputVideo.onVideoComplete.Length; i++) { inputVideo.onVideoComplete[i](this); }
+        public void EndVideo(ref VideoPlayer inputVideoPlayer) {
+            inputVideoPlayer.node.Stop();
+            if (inputVideoPlayer.onVideoComplete == null) { return; }
+            for (int i = 0; i < inputVideoPlayer.onVideoComplete.Length; i++) { inputVideoPlayer.onVideoComplete[i](this); }
+            inputVideoPlayer.onVideoStart = null;
+            inputVideoPlayer.onVideoComplete = null;
         }
     }
 }

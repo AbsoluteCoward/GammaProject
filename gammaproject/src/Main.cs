@@ -49,11 +49,11 @@ namespace Gamma {
             public bool isSceneLoaded;
         }
         public SceneState sceneState;
-        public AudioStream metalDinkSFX = GD.Load<AudioStream>("res://assets/sound/metalslam.wav");
-        public AudioStream metalSlamSFX = GD.Load<AudioStream>("res://assets/sound/metalslam1.wav");
-        public AudioStream footStepMetalSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");
-        public AudioStream teleportSFX = GD.Load<AudioStream>("res://assets/sound/teleport.mp3");
-        public AudioStream shootSFX = GD.Load<AudioStream>("res://assets/sound/rocket-launcher-shoot.wav");
+        public static AudioStream metalDinkSFX = GD.Load<AudioStream>("res://assets/sound/metalslam.wav");
+        public static AudioStream metalSlamSFX = GD.Load<AudioStream>("res://assets/sound/metalslam1.wav");
+        public static AudioStream footStepMetalSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");
+        public static AudioStream teleportSFX = GD.Load<AudioStream>("res://assets/sound/teleport.mp3");
+        public static AudioStream shootSFX = GD.Load<AudioStream>("res://assets/sound/rocket-launcher-shoot.wav");
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public PackedScene targetReticleScene = GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
@@ -63,7 +63,7 @@ namespace Gamma {
         public PendingSceneChange pendingSceneChange;
         public PrisonSpotLight prisonSpotlight;
         public WorldEnvironment worldEnvironment;
-        public VideoPlayback videoPlayback;
+        public VideoPlayer videoPlayer;
         public Node entitiesNode;
         public Node uiNode;
         public PhysicsMaterial globalPhysicsMaterial;
@@ -111,7 +111,7 @@ namespace Gamma {
             worldEnvironment = GetTree().CurrentScene.GetNode<WorldEnvironment>("Environment/WorldEnvironment");
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
             uiNode = GetTree().CurrentScene.GetNode<Node>("UI");
-            videoPlayback.node = uiNode.GetNode<VideoStreamPlayer>("VideoStreamPlayer");
+            videoPlayer.node = uiNode.GetNode<VideoStreamPlayer>("VideoStreamPlayer");
             GD.Print("entities children: " + entitiesNode.GetChildCount());
             int typelessEntityCount = 0;
             for (int i = 0; i < entitiesNode.GetChildCount(); i++) {
@@ -189,16 +189,11 @@ namespace Gamma {
             sceneState.timeSinceSceneLoad += (float)delta;
             sceneState.physicsFramesSinceSceneLoad++;
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
-            UpdateVideo(ref videoPlayback);
+            UpdateVideo(ref videoPlayer);
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
             if (Input.IsActionJustPressed("debug")) {
-                Video testVideoData = new Video {
-                    videoPath = "res://assets/videos/testvideo.ogv",
-                    onVideoStart = null,
-                    onVideoComplete = null,
-                };
-                StartVideo(videoPlayback, testVideoData);
+                StartVideo(ref videoPlayer, testVideoData);
                 string randomText = "";
                 int textLength = GD.RandRange(5, 20);
                 for (int i = 0; i < textLength; i++) {

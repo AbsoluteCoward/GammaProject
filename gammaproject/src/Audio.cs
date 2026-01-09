@@ -20,7 +20,6 @@ namespace Gamma {
         public SoundUI[] soundsui = new SoundUI[2];
         int soundUICount = 0;
         public readonly Dictionary<string, AudioStream> soundCache = new();
-
         public AudioStream GetOrLoadSound(string path) {
             if (!soundCache.TryGetValue(path, out var stream)) {
                 stream = GD.Load<AudioStream>(path);
@@ -39,11 +38,9 @@ namespace Gamma {
                 sounds[i].timeRemaining = 0f;
             }
         }
-
         public void Audio3DResize() {
             int newSize = sounds.Length * AUDIO_POOL_GROWTH_FACTOR;
             Array.Resize(ref sounds, newSize);
-
             for (int i = sounds.Length / AUDIO_POOL_GROWTH_FACTOR; i < newSize; i++) {
                 AudioStreamPlayer3D newNode = new AudioStreamPlayer3D();
                 entitiesNode.AddChild(newNode);
@@ -52,7 +49,7 @@ namespace Gamma {
                 sounds[i].timeRemaining = 0f;
             }
         }
-        public void PlayAudio3D(AudioStream inputSound, Vector3 inputPosition, float inputVolume, float inputPitchModifier, bool inputShouldOverlap) {
+        public void StartSound3D(AudioStream inputSound, Vector3 inputPosition, float inputVolume, float inputPitchModifier, bool inputShouldOverlap) {
             int availableSlot = -1;
             for (int i = 0; i < sounds.Length; i++) {
                 if (sounds[i].node.Stream == inputSound && !inputShouldOverlap) {
