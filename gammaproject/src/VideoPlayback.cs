@@ -19,8 +19,8 @@ namespace Gamma {
             inputVideoPlayer.onVideoComplete = inputVideoData.onVideoComplete;
             if (inputVideoPlayer.onVideoStart == null) { return; }
             GD.Print("Starting " + inputVideoPlayer.onVideoStart.Length + " video start functions");
-            for (int i = 0; i < inputVideoPlayer.onVideoStart.Length; i++) { 
-                inputVideoPlayer.onVideoStart[i](this); 
+            for (int i = 0; i < inputVideoPlayer.onVideoStart.Length; i++) {
+                inputVideoPlayer.onVideoStart[i](this);
             }
         }
         public void UpdateVideo(ref VideoPlayer inputVideoPlayer) {

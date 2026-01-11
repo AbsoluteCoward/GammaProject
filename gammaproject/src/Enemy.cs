@@ -29,7 +29,7 @@ namespace Gamma {
             for (int i = 0; i < enemyCount; i++) {
                 CharacterBody3D enemyNode = enemies[i].node;
                 if (enemyNode == null) { continue; }
-                AnimationNodeStateMachinePlayback animationState =(AnimationNodeStateMachinePlayback)enemies[i].animationTree.Get("parameters/playback");
+                AnimationNodeStateMachinePlayback animationState = (AnimationNodeStateMachinePlayback)enemies[i].animationTree.Get("parameters/playback");
                 animationState.Travel("Run");
                 enemyNode.Velocity = -enemyNode.GlobalTransform.Basis.Z * 1.0f;
                 enemyNode.Velocity += new Vector3(0, -9.8f * (float)globalDelta, 0);

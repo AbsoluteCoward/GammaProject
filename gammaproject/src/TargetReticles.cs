@@ -28,7 +28,7 @@ namespace Gamma {
                 targetReticles[i].node.Visible = false;
             }
         }
-        
+
         public void TargetReticlesUpdate() {
             for (int i = 0; i < targetReticles.Length; i++) {
                 targetReticles[i].node.Visible = false;
@@ -48,7 +48,7 @@ namespace Gamma {
                     float maxDistance = 20f;
                     float normalizedDistance = Mathf.Clamp((distance - minDistance) / (maxDistance - minDistance), 0f, 1f);
                     float scale = Mathf.Lerp(0.3f, 0.05f, normalizedDistance);
-                    
+
                     targetReticles[i].onScreenReticle.Frame = (targetReticles[i].onScreenReticle.Frame + 1) % targetReticleTotalFrames;
                     targetReticles[i].onScreenReticle.Scale = Vector2.One * scale;
                 } else {

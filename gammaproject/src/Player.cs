@@ -231,7 +231,7 @@ namespace Gamma {
                             Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.01f),
                             player.node.Velocity.Y,
                             Mathf.Lerp(player.node.Velocity.Z, airControlDirection.Z * player.moveSpeed, 0.01f)
-                        ); 
+                        );
                     }
                     break;
                 case "Fall":
@@ -367,12 +367,12 @@ namespace Gamma {
                 (offsetDirection * inputCamera.offsetDistance) +
                 new Vector3(0, inputCamera.offsetHeight, 0)
             );
-            inputCamera.WallRayCast.GlobalPosition = 
-                player.node.GlobalPosition + 
+            inputCamera.WallRayCast.GlobalPosition =
+                player.node.GlobalPosition +
                 player.skeleton.GetBoneGlobalPose(player.chestBoneIndex).Origin;
             //player.node.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild<MeshInstance3D>(0).GlobalPosition +
             inputCamera.node.GlobalPosition = inputCamera.WallRayCast.IsColliding() ?
-                inputCamera.WallRayCast.GetCollisionPoint() + inputCamera.WallRayCast.GetCollisionNormal() * 0.1f:
+                inputCamera.WallRayCast.GetCollisionPoint() + inputCamera.WallRayCast.GetCollisionNormal() * 0.1f :
                 inputCamera.WallRayCast.ToGlobal(inputCamera.WallRayCast.TargetPosition);
             inputCamera.targetPosition = medianPosition;
             inputCamera.node.LookAt(inputCamera.targetPosition);
