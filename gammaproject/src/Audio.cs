@@ -70,15 +70,12 @@ namespace Gamma {
                 Audio3DResize();
                 availableSlot = oldSize;
             }
-
             sounds[availableSlot].node.Stream = inputSound;
             sounds[availableSlot].node.GlobalPosition = inputPosition;
             sounds[availableSlot].node.VolumeDb = Mathf.LinearToDb(inputVolume);
             sounds[availableSlot].node.PitchScale = inputPitchModifier;
             sounds[availableSlot].node.Play();
-            if (!sounds[availableSlot].isPlaying) {
-                soundCount++;
-            }
+            if (!sounds[availableSlot].isPlaying) { soundCount++; }
             sounds[availableSlot].isPlaying = true;
             sounds[availableSlot].timeRemaining = (float)inputSound.GetLength() / inputPitchModifier;
         }

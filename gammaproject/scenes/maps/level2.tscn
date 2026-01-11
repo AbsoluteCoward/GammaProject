@@ -587,6 +587,16 @@ size = 27.89
 
 [node name="UI" type="Node" parent="."]
 
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="UI"]
+process_mode = 3
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand = true
+
 [node name="SubtitleBox" parent="UI" instance=ExtResource("11_rtfyc")]
 
 [node name="DialogueBox" parent="UI" instance=ExtResource("11_iyhkt")]

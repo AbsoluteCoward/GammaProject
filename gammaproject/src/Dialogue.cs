@@ -87,9 +87,7 @@ namespace Gamma {
             if (!dialogueBox.node.Visible) { return; }
             NoiseTexture2D noiseTexture = (NoiseTexture2D)dialogueBox.gradient.Texture;
             FastNoiseLite noise = (FastNoiseLite)noiseTexture.Noise;
-            Vector3 offset = noise.Offset;
-            offset.X += 1f;
-            noise.Offset = offset;
+            noise.Offset = new Vector3(noise.Offset.X + 1f, noise.Offset.Y, noise.Offset.Z);
             if (dialogueBox.node.Modulate.A < 1f) {
                 dialogueBox.node.Modulate = new Color(1f, 1f, 1f, dialogueBox.node.Modulate.A + 0.1f);
             }
