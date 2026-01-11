@@ -24,9 +24,7 @@ namespace Gamma {
             }
         }
         public void UpdateVideo(ref VideoPlayer inputVideoPlayer) {
-            if (!inputVideoPlayer.node.IsPlaying()) {
-                if (!inputVideoPlayer.node.IsPlaying()) { EndVideo(ref inputVideoPlayer); }
-            }
+            if (!inputVideoPlayer.node.IsPlaying()) { EndVideo(ref inputVideoPlayer); }
         }
         public void EndVideo(ref VideoPlayer inputVideoPlayer) {
             inputVideoPlayer.node.Stop();

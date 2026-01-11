@@ -19,19 +19,20 @@ namespace Gamma {
             public AnimationNodeStateMachinePlayback animationState;
             public Skeleton3D skeleton;
             public string previousAnimationName;
+            public static float maxDistance = float.MaxValue;
             public float moveSpeed;
             public float turnAnticipation;
             public float maxTeleportDistance;
             public float previousAnimationPlaybackPosition;
-            public int chestBoneIndex;
+            public static int meatCount = 0;
+            public static int chestBoneIndex;
+            public static int headBoneIndex;
             public int targetCount;
             public bool isOnGround;
             public bool shouldBeAsleep;
             public bool hasPlayerModelCopy;
             public bool isTeleporting;
             public Node3D[] targets;
-            public static float maxDistance = float.MaxValue;
-            public static int meatCount = 0;
         }
         public struct PlayerCamera {
             public Vector3 targetPosition;
@@ -66,8 +67,12 @@ namespace Gamma {
             player.animationPlayer.Active = false;
             player.animationState = (AnimationNodeStateMachinePlayback)player.animationTree.Get("parameters/playback");
             player.skeleton = inputPlayerNode.GetChild<Node3D>(2).GetChild<Node3D>(0).GetChild<Skeleton3D>(0);
-            for (int i = 0; i < player.skeleton.GetBoneCount(); i++) { if (player.skeleton.GetBoneName(i) == "Abdomen") { player.chestBoneIndex = i; } }
-            if (player.chestBoneIndex == -1) { GD.PrintErr("Couldn't find chest bone!"); }
+            for (int i = 0; i < player.skeleton.GetBoneCount(); i++) { 
+                if (player.skeleton.GetBoneName(i) == "Abdomen") { Player.chestBoneIndex = i; } 
+                if (player.skeleton.GetBoneName(i) == "spine.006") { Player.headBoneIndex = i; } 
+            }
+            if (Player.chestBoneIndex == -1) { GD.PrintErr("Couldn't find chest bone!"); }
+            if (Player.headBoneIndex == -1) { GD.PrintErr("Couldn't find head bone!"); }
             player.moveSpeed = 8.0f;
             player.turnAnticipation = 0f;
             player.previousAnimationPlaybackPosition = 0f;
@@ -103,6 +108,8 @@ namespace Gamma {
         }
         public void ApplyDynamicBoneTransformations() {
             if (player.skeleton == null) { return; }
+            
+            //chest section
             float chestRotation = player.turnAnticipation;
             Transform3D pelvisPose = player.skeleton.GetBoneGlobalPose(1);
             Transform3D chestPose = DEFAULT_SLINK_WALK_CHEST_POSE;
@@ -111,10 +118,17 @@ namespace Gamma {
                 chestPose.Origin.Y + (pelvisPose.Origin.Y - 1.184f),
                 chestPose.Origin.Z
             );
-            Vector3 chestRotationAxis = player.skeleton.GetBoneGlobalRest(player.chestBoneIndex).Basis.Y;
+            Vector3 chestRotationAxis = player.skeleton.GetBoneGlobalRest(Player.chestBoneIndex).Basis.Y;
             Quaternion chestTwist = new Quaternion(chestRotationAxis, chestRotation);
             chestPose.Basis = chestPose.Basis * new Basis(chestTwist);
-            player.skeleton.SetBoneGlobalPose(player.chestBoneIndex, chestPose);
+            player.skeleton.SetBoneGlobalPose(Player.chestBoneIndex, chestPose);
+            
+            //head section
+            Vector3 headRotationAxis = player.skeleton.GetBoneGlobalRest(Player.headBoneIndex).Basis.Y.Normalized();
+            Quaternion headTwist = new Quaternion(headRotationAxis, chestRotation * 0.5f);
+            Transform3D headPose = player.skeleton.GetBoneGlobalPose(Player.headBoneIndex);
+            headPose.Basis = headPose.Basis * new Basis(headTwist);
+            player.skeleton.SetBoneGlobalPose(Player.headBoneIndex, headPose);
         }
         public void CreatePlayerModelCopy() {
             if (player.hasPlayerModelCopy) { return; }
@@ -369,7 +383,7 @@ namespace Gamma {
             );
             inputCamera.WallRayCast.GlobalPosition =
                 player.node.GlobalPosition +
-                player.skeleton.GetBoneGlobalPose(player.chestBoneIndex).Origin;
+                player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex).Origin;
             //player.node.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild<MeshInstance3D>(0).GlobalPosition +
             inputCamera.node.GlobalPosition = inputCamera.WallRayCast.IsColliding() ?
                 inputCamera.WallRayCast.GetCollisionPoint() + inputCamera.WallRayCast.GetCollisionNormal() * 0.1f :
