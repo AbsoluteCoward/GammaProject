@@ -10,7 +10,7 @@ shading_mode = 0
 albedo_color = Color(1, 0, 0, 1)
 fixed_size = true
 
-[node name="DungeonExit" type="Node3D"]
+[node name="TargetReticle" type="Node3D"]
 metadata/Type = "DungeonExit"
 
 [node name="OnScreenReticle" type="Sprite2D" parent="."]

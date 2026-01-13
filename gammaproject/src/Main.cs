@@ -2,6 +2,10 @@ using Godot;
 using System;
 namespace Gamma {
     public partial class Main : Node {
+        public struct FadeRect {
+            public ColorRect node;
+            public float fadeMagnitude;
+        }
         public struct PendingSceneChange {
             public string scenePath;
             public bool shouldChangeScene;
@@ -57,6 +61,7 @@ namespace Gamma {
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public PackedScene targetReticleScene = GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
+        public PackedScene fadeNode = GD.Load<PackedScene>("res://scenes/entities/fade.tscn");
         public Interactable[] interactables;
         public Projectile[] projectiles;
         public Explosion[] explosions;
@@ -64,6 +69,7 @@ namespace Gamma {
         public PrisonSpotLight prisonSpotlight;
         public WorldEnvironment worldEnvironment;
         public VideoPlayer videoPlayer;
+        public FadeRect fadeRect;
         public Node entitiesNode;
         public Node uiNode;
         public PhysicsMaterial globalPhysicsMaterial;
@@ -80,12 +86,27 @@ namespace Gamma {
             if (inputCurrentPosition >= inputPreviousPosition) return inputPreviousPosition < inputEventPosition && inputEventPosition <= inputCurrentPosition;
             return inputPreviousPosition < inputEventPosition || inputEventPosition <= inputCurrentPosition;
         }
+        public void UpdateFadeInOut() {
+            if (fadeRect.node == null) { return; }
+            float newAlpha = fadeRect.node.Color.A + (fadeRect.fadeMagnitude * (float)globalDelta);
+            if (newAlpha <= 0f || newAlpha >= 1) {
+                return;
+            }
+            fadeRect.node.Color = new Color(
+                fadeRect.node.Color.R,
+                fadeRect.node.Color.G,
+                fadeRect.node.Color.B,
+                Mathf.Clamp(newAlpha, 0f, 1)
+            );
+            GD.Print("Fading to alpha: " + fadeRect.node.Color.A);
+        }
         public void ChangeScene(string scenePath) {
             pendingSceneChange.shouldChangeScene = true;
             pendingSceneChange.scenePath = scenePath;
         }
         public void ProcessPendingSceneChange() {
             if (!pendingSceneChange.shouldChangeScene) { return; }
+            if (fadeRect.node.Color.A != 1f || fadeRect.node.Color.A != 0f) { return; }
             GD.Print("Changing scene");
             ClearScene();
             sceneState.isSceneLoaded = false;
@@ -165,10 +186,14 @@ namespace Gamma {
             DialogueBoxInitialize(uiNode.GetNode<Control>("DialogueBox"));
             SubtitlesInitialize(uiNode.GetNode<VBoxContainer>("SubtitleBox"));
             Audio3DInitialize(DEFAULT_AUDIO_POOL_SIZE);
+            uiNode.AddChild(fadeNode.Instantiate<ColorRect>());
+            fadeRect.node = uiNode.GetNode<ColorRect>("FadeRect");
+            fadeRect.node.Color = new Color(0, 0, 0, 1);
+            fadeRect.fadeMagnitude = -0.1f;
         }
         public override void _Ready() {
-            ProcessMode = ProcessModeEnum.Always;
             GD.Print("Setting up game");
+            ProcessMode = ProcessModeEnum.Always;
             Engine.MaxFps = 999;
             targetReticleMaterial = new StandardMaterial3D();
             targetReticleMaterial.AlbedoColor = new Color(1, 0, 0);
@@ -190,6 +215,7 @@ namespace Gamma {
             sceneState.physicsFramesSinceSceneLoad++;
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             UpdateVideo(ref videoPlayer);
+            UpdateFadeInOut();
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
             if (Input.IsActionJustPressed("debug")) {
@@ -213,6 +239,7 @@ namespace Gamma {
                 };
                 SubtitlesAdd(RandomSubtitle);
             }
+            //if (GetTree().CurrentScene.Name == "Level") { entitiesNode.GetParent().GetChild(0).GetChild<DirectionalLight3D>(1).RotationDegrees += new Vector3(0f, 20f, 0f); }
             ProjectilesUpdate();
             PlayerCameraUpdate(ref playerCamera);
             PlayerUpdate();

@@ -4,7 +4,6 @@ namespace Gamma {
     public partial class Main : Node {
         public struct TeleportEntity {
             public CharacterBody3D node;
-            public SpotLight3D light;
             public RayCast3D topRayCast;
             public Node3D teleportShadowMesh;
         }
@@ -56,8 +55,8 @@ namespace Gamma {
             player.gunBarrel = player.node.GetNode<MeshInstance3D>("Slink/metarig/Skeleton3D/Gun_2/Gun_2");
             player.headMesh = player.node.GetNode<MeshInstance3D>("Slink/metarig/Skeleton3D/Head/Head");
             player.teleportEntity.node = inputPlayerNode.GetChild<CharacterBody3D>(4);
-            player.teleportEntity.light = player.teleportEntity.node.GetChild<SpotLight3D>(0);
             player.teleportEntity.topRayCast = player.teleportEntity.node.GetChild<RayCast3D>(1);
+            player.teleportEntity.teleportShadowMesh = inputPlayerNode.GetNode<Node3D>("TeleportEntity/ShadowSlink");
             player.targets = new Node3D[16];
             player.targetCount = 0;
             player.animationPlayer = inputPlayerNode.GetChild<Node3D>(2).GetChild<AnimationPlayer>(1);
@@ -67,9 +66,9 @@ namespace Gamma {
             player.animationPlayer.Active = false;
             player.animationState = (AnimationNodeStateMachinePlayback)player.animationTree.Get("parameters/playback");
             player.skeleton = inputPlayerNode.GetChild<Node3D>(2).GetChild<Node3D>(0).GetChild<Skeleton3D>(0);
-            for (int i = 0; i < player.skeleton.GetBoneCount(); i++) { 
-                if (player.skeleton.GetBoneName(i) == "Abdomen") { Player.chestBoneIndex = i; } 
-                if (player.skeleton.GetBoneName(i) == "spine.006") { Player.headBoneIndex = i; } 
+            for (int i = 0; i < player.skeleton.GetBoneCount(); i++) {
+                if (player.skeleton.GetBoneName(i) == "Abdomen") { Player.chestBoneIndex = i; }
+                if (player.skeleton.GetBoneName(i) == "spine.006") { Player.headBoneIndex = i; }
             }
             if (Player.chestBoneIndex == -1) { GD.PrintErr("Couldn't find chest bone!"); }
             if (Player.headBoneIndex == -1) { GD.PrintErr("Couldn't find head bone!"); }
@@ -78,7 +77,7 @@ namespace Gamma {
             player.previousAnimationPlaybackPosition = 0f;
             player.previousAnimationName = "";
             player.node.FloorSnapLength = 0.8f;
-            player.teleportEntity.light.LightEnergy = 0;
+            player.teleportEntity.node.CollisionLayer = 0;
             player.hasPlayerModelCopy = false;
             player.isTeleporting = false;
             GD.Print("Player Initialized");
@@ -108,8 +107,6 @@ namespace Gamma {
         }
         public void ApplyDynamicBoneTransformations() {
             if (player.skeleton == null) { return; }
-            
-            //chest section
             float chestRotation = player.turnAnticipation;
             Transform3D pelvisPose = player.skeleton.GetBoneGlobalPose(1);
             Transform3D chestPose = DEFAULT_SLINK_WALK_CHEST_POSE;
@@ -122,48 +119,11 @@ namespace Gamma {
             Quaternion chestTwist = new Quaternion(chestRotationAxis, chestRotation);
             chestPose.Basis = chestPose.Basis * new Basis(chestTwist);
             player.skeleton.SetBoneGlobalPose(Player.chestBoneIndex, chestPose);
-            
-            //head section
             Vector3 headRotationAxis = player.skeleton.GetBoneGlobalRest(Player.headBoneIndex).Basis.Y.Normalized();
             Quaternion headTwist = new Quaternion(headRotationAxis, chestRotation * 0.5f);
             Transform3D headPose = player.skeleton.GetBoneGlobalPose(Player.headBoneIndex);
             headPose.Basis = headPose.Basis * new Basis(headTwist);
             player.skeleton.SetBoneGlobalPose(Player.headBoneIndex, headPose);
-        }
-        public void CreatePlayerModelCopy() {
-            if (player.hasPlayerModelCopy) { return; }
-            Node3D originalModel = player.node.GetChild<Node3D>(2);
-            Node3D modelCopy = (Node3D)originalModel.Duplicate();
-            player.teleportEntity.node.AddChild(modelCopy);
-            int maxStackSize = 256;
-            Node[] stack = new Node[maxStackSize];
-            int stackSize = 0;
-            stack[stackSize++] = modelCopy;
-            while (stackSize > 0) {
-                Node currentNode = stack[--stackSize];
-                if (currentNode.GetType() == typeof(MeshInstance3D)) {
-                    MeshInstance3D mesh = (MeshInstance3D)currentNode;
-                    mesh.CastShadow = GeometryInstance3D.ShadowCastingSetting.ShadowsOnly;
-                }
-                int childCount = currentNode.GetChildCount();
-                for (int i = 0; i < childCount; i++) {
-                    if (stackSize >= maxStackSize) {
-                        GD.PrintErr("CreatePlayerModelCopy: Stack overflow");
-                        return;
-                    }
-                    stack[stackSize++] = currentNode.GetChild(i);
-                }
-            }
-            player.teleportEntity.teleportShadowMesh = modelCopy;
-            player.hasPlayerModelCopy = true;
-        }
-        public void RemovePlayerModelCopy() {
-            if (!player.hasPlayerModelCopy) { return; }
-            if (player.teleportEntity.teleportShadowMesh != null) {
-                player.teleportEntity.teleportShadowMesh.QueueFree();
-                player.teleportEntity.teleportShadowMesh = null;
-            }
-            player.hasPlayerModelCopy = false;
         }
         public void PlayerUpdate() {
             player.animationTree.Advance((float)globalDelta);
@@ -281,14 +241,14 @@ namespace Gamma {
                 player.isTeleporting = true;
                 inputState.action3.isConsumed = true;
                 TurnShadowsOffOrOn(player.skeleton, false);
-                CreatePlayerModelCopy();
+                player.teleportEntity.teleportShadowMesh.Visible = true;
                 player.teleportEntity.node.TopLevel = true;
+                player.teleportEntity.node.CollisionMask = 2;
                 player.teleportEntity.node.GlobalPosition = player.node.GlobalPosition;
             }
             if (player.isTeleporting && action3Pressed) {
                 Vector3 teleportDirection = hasMovementInput ? player.wishDirection : playerForward;
                 player.teleportEntity.node.Velocity = teleportDirection * TELEPORTENTITY_SPEED_MODIFIER;
-                player.teleportEntity.light.LightEnergy = 1f;
                 player.wishDirection = playerForward;
                 RotateTowards((player.teleportEntity.node.Velocity * Y_FLAT).Normalized(), player.teleportEntity.node, 0.4f);
                 if (player.teleportEntity.topRayCast.IsColliding()) {
@@ -307,10 +267,10 @@ namespace Gamma {
             } else if (player.isTeleporting && action3JustReleased) {
                 player.isTeleporting = false;
                 TurnShadowsOffOrOn(player.skeleton, true);
-                RemovePlayerModelCopy();
+                player.teleportEntity.teleportShadowMesh.Visible = false;
                 StartSound3D(teleportSFX, player.teleportEntity.node.GlobalPosition, 0.01f, 1.0f, false);
                 player.node.GlobalPosition = player.teleportEntity.node.GlobalPosition;
-                player.teleportEntity.light.LightEnergy = 0;
+                player.teleportEntity.node.CollisionMask = 0;
                 player.teleportEntity.node.TopLevel = false;
             }
             if (Input.IsActionPressed("attack")) {
