@@ -3,7 +3,20 @@ using System;
 
 namespace Gamma {
     public partial class Main : Node {
-        public static DialogueData defaultDialogue = new DialogueData {
+        public static DialogueData testDialogueData = new DialogueData {
+            speakerPortrait = GD.Load<Texture2D>("res://assets/textures/dialogueportraits/spritesheet.png"),
+            speakerName = "TEST",
+            text = "This is a test dialogue. This is a test dialogue. This is a test dialogue. This is a test dialogue.",
+            onDialogueStart = new Action<Main>[] {
+                (Main) => Main.StartSound3D(GD.Load<AudioStream>("res://assets/sound/notification.wav"), Main.player.node.GlobalPosition, 1f, 1f, true),
+            },
+            onDialogueComplete = new Action<Main>[] {
+                (Main) => GD.Print("Dialogue completed!"),
+            },
+            shouldSkipAnimation = false,
+            textSpeed = 2f,
+        };
+        public static DialogueData errorDialogue = new DialogueData {
             speakerPortrait = GD.Load<Texture2D>("res://assets/textures/NA_MISSINGTEXTURE.png"),
             speakerName = "ERROR",
             text = "YOU ARE NOT SUPPOSED TO SEE THIS",

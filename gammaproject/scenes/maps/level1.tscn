@@ -165,6 +165,14 @@ transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, 19.8814,
 
 [node name="UI" type="Node" parent="."]
 
+[node name="FadeRect" type="ColorRect" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
 [node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="UI"]
 process_mode = 3
 texture_filter = 1

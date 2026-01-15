@@ -8,7 +8,9 @@ namespace Gamma {
             ExitDungeon,
             EnterDungeon,
             SlinkSinkDialogueStart,
-            PotOpen
+            PotOpen,
+            VideoTest,
+            TestDialogue
         }
         public struct Interactable {
             public Node3D node;
@@ -79,6 +81,12 @@ namespace Gamma {
                                 onSubtitleComplete = null
                             });
                             interactables[i].interaction = InteractableLookup.None;
+                            return;
+                        case InteractableLookup.VideoTest:
+                            StartVideo(ref videoPlayer, testVideoData);
+                            return;
+                        case InteractableLookup.TestDialogue:
+                            DialogueStart(testDialogueData);
                             return;
                     }
                 }

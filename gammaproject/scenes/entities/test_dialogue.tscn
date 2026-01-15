@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://5mkchlnk6u3w"]
+
+[ext_resource type="Texture2D" uid="uid://d48pd0oi0rta" path="res://assets/textures/CHR_SLINK_FABRIC.jpg" id="1_d0wjy"]
+[ext_resource type="FontFile" uid="uid://xhdxc8yfkes2" path="res://assets/fonts/patheticbit.ttf" id="2_utrky"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_utrky"]
+albedo_texture = ExtResource("1_d0wjy")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_hvmky"]
+height = 1.6
+radial_segments = 12
+rings = 0
+cap_bottom = false
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1ywwd"]
+size = Vector3(1.2, 1, 1.2)
+
+[node name="TestDialogue" type="Node3D"]
+metadata/Type = "TestDialogue"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+material_override = SubResource("StandardMaterial3D_utrky")
+mesh = SubResource("CylinderMesh_hvmky")
+
+[node name="Label3D" type="Label3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+billboard = 2
+texture_filter = 0
+text = "TEST DIALOGUE!!"
+font = ExtResource("2_utrky")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_1ywwd")

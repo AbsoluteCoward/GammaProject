@@ -61,7 +61,6 @@ namespace Gamma {
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public PackedScene targetReticleScene = GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
-        public PackedScene fadeNode = GD.Load<PackedScene>("res://scenes/entities/fade.tscn");
         public Interactable[] interactables;
         public Projectile[] projectiles;
         public Explosion[] explosions;
@@ -70,6 +69,7 @@ namespace Gamma {
         public WorldEnvironment worldEnvironment;
         public VideoPlayer videoPlayer;
         public FadeRect fadeRect;
+        public Node environmentNode;
         public Node entitiesNode;
         public Node uiNode;
         public PhysicsMaterial globalPhysicsMaterial;
@@ -89,24 +89,26 @@ namespace Gamma {
         public void UpdateFadeInOut() {
             if (fadeRect.node == null) { return; }
             float newAlpha = fadeRect.node.Color.A + (fadeRect.fadeMagnitude * (float)globalDelta);
-            if (newAlpha <= 0f || newAlpha >= 1) {
-                return;
-            }
             fadeRect.node.Color = new Color(
                 fadeRect.node.Color.R,
                 fadeRect.node.Color.G,
                 fadeRect.node.Color.B,
                 Mathf.Clamp(newAlpha, 0f, 1)
             );
-            GD.Print("Fading to alpha: " + fadeRect.node.Color.A);
+        }
+        public void StartFade(float inputFadeMagnitude) {
+            float startAlpha = inputFadeMagnitude > 0f ? 0f : 1f;
+            fadeRect.node.Color = new Color(0, 0, 0, startAlpha);
+            fadeRect.fadeMagnitude = inputFadeMagnitude;
         }
         public void ChangeScene(string scenePath) {
             pendingSceneChange.shouldChangeScene = true;
             pendingSceneChange.scenePath = scenePath;
+            StartFade(0.3f);
         }
         public void ProcessPendingSceneChange() {
             if (!pendingSceneChange.shouldChangeScene) { return; }
-            if (fadeRect.node.Color.A != 1f || fadeRect.node.Color.A != 0f) { return; }
+            if (fadeRect.node.Color.A < 1f) { return; }
             GD.Print("Changing scene");
             ClearScene();
             sceneState.isSceneLoaded = false;
@@ -129,9 +131,11 @@ namespace Gamma {
             interactables = new Interactable[DEFAULT_INTERACTABLES_SIZE];
             projectiles = new Projectile[DEFAULT_PROJECTILES_SIZE];
             explosions = new Explosion[DEFAULT_EXPLOSIONS_SIZE];
-            worldEnvironment = GetTree().CurrentScene.GetNode<WorldEnvironment>("Environment/WorldEnvironment");
+            environmentNode = GetTree().CurrentScene.GetNode<Node>("Environment");
+            worldEnvironment = environmentNode.GetNode<WorldEnvironment>("WorldEnvironment");
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
             uiNode = GetTree().CurrentScene.GetNode<Node>("UI");
+            fadeRect.node = uiNode.GetNode<ColorRect>("FadeRect");
             videoPlayer.node = uiNode.GetNode<VideoStreamPlayer>("VideoStreamPlayer");
             GD.Print("entities children: " + entitiesNode.GetChildCount());
             int typelessEntityCount = 0;
@@ -171,6 +175,12 @@ namespace Gamma {
                         prisonSpotlight.node = child;
                         prisonSpotlight.speed = 0.5f;
                         break;
+                    case "VideoTest":
+                        InteractablesInitialize((Node3D)child, InteractableLookup.VideoTest);
+                        break;
+                    case "TestDialogue":
+                        InteractablesInitialize((Node3D)child, InteractableLookup.TestDialogue);
+                        break;
                     default:
                         GD.PrintErr("Unknown entity type: " + entityType + "\n");
                         break;
@@ -186,10 +196,7 @@ namespace Gamma {
             DialogueBoxInitialize(uiNode.GetNode<Control>("DialogueBox"));
             SubtitlesInitialize(uiNode.GetNode<VBoxContainer>("SubtitleBox"));
             Audio3DInitialize(DEFAULT_AUDIO_POOL_SIZE);
-            uiNode.AddChild(fadeNode.Instantiate<ColorRect>());
-            fadeRect.node = uiNode.GetNode<ColorRect>("FadeRect");
-            fadeRect.node.Color = new Color(0, 0, 0, 1);
-            fadeRect.fadeMagnitude = -0.1f;
+            StartFade(-0.3f);
         }
         public override void _Ready() {
             GD.Print("Setting up game");
@@ -219,7 +226,8 @@ namespace Gamma {
             if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
             if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
             if (Input.IsActionJustPressed("debug")) {
-                StartVideo(ref videoPlayer, testVideoData);
+                //StartVideo(ref videoPlayer, testVideoData);
+                StartFade(-0.3f);
                 string randomText = "";
                 int textLength = GD.RandRange(5, 20);
                 for (int i = 0; i < textLength; i++) {

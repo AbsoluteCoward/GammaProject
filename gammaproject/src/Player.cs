@@ -96,11 +96,18 @@ namespace Gamma {
             playerCamera.offsetHeight = DEFAULT_CAMERA_HEIGHT;
             playerCamera.node.Fov = 64;
             playerCamera.node.Far = cameraFarSetting;
-            worldEnvironment.Environment.FogEnabled = true;
-            worldEnvironment.Environment.FogLightColor = Colors.Black;
-            worldEnvironment.Environment.FogMode = Godot.Environment.FogModeEnum.Depth;
-            worldEnvironment.Environment.FogDepthBegin = cameraFarSetting * 0.8f;
-            worldEnvironment.Environment.FogDepthEnd = cameraFarSetting;
+            bool sceneHasFog = worldEnvironment.Environment.FogEnabled;
+            if (sceneHasFog) {
+                playerCamera.node.Far = worldEnvironment.Environment.FogDepthEnd < cameraFarSetting ?
+                    worldEnvironment.Environment.FogDepthEnd :
+                    cameraFarSetting;
+            } else {
+                worldEnvironment.Environment.FogEnabled = true;
+                worldEnvironment.Environment.FogLightColor = Colors.Black;
+                worldEnvironment.Environment.FogMode = Godot.Environment.FogModeEnum.Depth;
+                worldEnvironment.Environment.FogDepthBegin = cameraFarSetting * 0.8f;
+                worldEnvironment.Environment.FogDepthEnd = cameraFarSetting;
+            }
             playerCamera.maxLerpDistance = 200f;
             playerCamera.rotationLerpSpeed = 0.1f;
             GD.Print("Player Camera Initialized");
