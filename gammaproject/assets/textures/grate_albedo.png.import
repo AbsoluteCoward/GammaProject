@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cqrtvq4ykux4l"
-path.s3tc="res://.godot/imported/CNK_DARKCONCRETE01.jpg-af249e68d65cebd126620fafb7caf4fc.s3tc.ctex"
+uid="uid://dhn4b0hkmgfs5"
+path.s3tc="res://.godot/imported/grate_albedo.png-280a1c33fb5c85335d86ed1cd1f75b40.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/CNK_DARKCONCRETE01.jpg"
-dest_files=["res://.godot/imported/CNK_DARKCONCRETE01.jpg-af249e68d65cebd126620fafb7caf4fc.s3tc.ctex"]
+source_file="res://assets/textures/grate_albedo.png"
+dest_files=["res://.godot/imported/grate_albedo.png-280a1c33fb5c85335d86ed1cd1f75b40.s3tc.ctex"]
 
 [params]
 

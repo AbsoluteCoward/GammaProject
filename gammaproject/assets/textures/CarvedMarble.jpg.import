@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cqrtvq4ykux4l"
-path.s3tc="res://.godot/imported/CNK_DARKCONCRETE01.jpg-af249e68d65cebd126620fafb7caf4fc.s3tc.ctex"
+uid="uid://1u7ditj7b3qo"
+path.s3tc="res://.godot/imported/CarvedMarble.jpg-7abb94037bf41f6a2d63f80e57b5f8a3.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/CNK_DARKCONCRETE01.jpg"
-dest_files=["res://.godot/imported/CNK_DARKCONCRETE01.jpg-af249e68d65cebd126620fafb7caf4fc.s3tc.ctex"]
+source_file="res://assets/textures/CarvedMarble.jpg"
+dest_files=["res://.godot/imported/CarvedMarble.jpg-7abb94037bf41f6a2d63f80e57b5f8a3.s3tc.ctex"]
 
 [params]
 

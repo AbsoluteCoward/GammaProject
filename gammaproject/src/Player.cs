@@ -98,7 +98,7 @@ namespace Gamma {
             playerCamera.node.Far = cameraFarSetting;
             bool sceneHasFog = worldEnvironment.Environment.FogEnabled;
             if (sceneHasFog) {
-                playerCamera.node.Far = worldEnvironment.Environment.FogDepthEnd < cameraFarSetting ?
+                playerCamera.node.Far = worldEnvironment.Environment.FogDepthEnd > cameraFarSetting ?
                     worldEnvironment.Environment.FogDepthEnd :
                     cameraFarSetting;
             } else {
@@ -108,13 +108,15 @@ namespace Gamma {
                 worldEnvironment.Environment.FogDepthBegin = cameraFarSetting * 0.8f;
                 worldEnvironment.Environment.FogDepthEnd = cameraFarSetting;
             }
+            GD.Print("fog begin" + worldEnvironment.Environment.FogDepthBegin);
+            GD.Print("fog end" + worldEnvironment.Environment.FogDepthEnd);
             playerCamera.maxLerpDistance = 200f;
             playerCamera.rotationLerpSpeed = 0.1f;
             GD.Print("Player Camera Initialized");
         }
         public void ApplyDynamicBoneTransformations() {
             if (player.skeleton == null) { return; }
-            float chestRotation = player.turnAnticipation;
+            float chestRotation = player.turnAnticipation * 0.9f;
             Transform3D pelvisPose = player.skeleton.GetBoneGlobalPose(1);
             Transform3D chestPose = DEFAULT_SLINK_WALK_CHEST_POSE;
             chestPose.Origin = new Vector3(

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c414oohc0xxq4"
-path="res://.godot/imported/church.glb-37faeddef61b423c5d9621c1bcb8b99d.scn"
+uid="uid://h32aloclpwkg"
+path="res://.godot/imported/church.gltf-842398749401fb40af48bb7b2ac71bed.scn"
 
 [deps]
 
-source_file="res://assets/church.glb"
-dest_files=["res://.godot/imported/church.glb-37faeddef61b423c5d9621c1bcb8b99d.scn"]
+source_file="res://assets/temp/church.gltf"
+dest_files=["res://.godot/imported/church.gltf-842398749401fb40af48bb7b2ac71bed.scn"]
 
 [params]
 
