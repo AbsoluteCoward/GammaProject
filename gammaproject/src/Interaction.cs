@@ -5,6 +5,7 @@ namespace Gamma {
     public partial class Main : Node {
         public enum InteractableLookup : byte {
             None,
+            ChangeLevel,
             ExitDungeon,
             EnterDungeon,
             SlinkSinkDialogueStart,
@@ -59,6 +60,10 @@ namespace Gamma {
                                 onSubtitleStart = null,
                                 onSubtitleComplete = null
                             });
+                            return;
+                        case InteractableLookup.ChangeLevel:
+                            string levelPath = (string)interactables[i].node.GetMeta("LevelPath");
+                            ChangeScene(levelPath);
                             return;
                         case InteractableLookup.ExitDungeon:
                             ChangeScene("res://scenes/maps/level2.tscn");

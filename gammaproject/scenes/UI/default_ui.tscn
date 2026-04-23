@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://qley5ny6m3l2"]
+
+[ext_resource type="PackedScene" uid="uid://b624rkte3tvyp" path="res://scenes/UI/subtitle_box.tscn" id="1_j31w5"]
+[ext_resource type="PackedScene" uid="uid://coytvcqlue4h2" path="res://scenes/UI/dialogue_box.tscn" id="2_27lm4"]
+
+[node name="UI" type="Node" unique_id=1110879225]
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=1277227144]
+process_mode = 3
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand = true
+
+[node name="SubtitleBox" parent="." unique_id=2093459578 instance=ExtResource("1_j31w5")]
+
+[node name="DialogueBox" parent="." unique_id=143058347 instance=ExtResource("2_27lm4")]
+metadata/_edit_use_anchors_ = true
+
+[node name="FadeRect" type="ColorRect" parent="." unique_id=434102490]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)

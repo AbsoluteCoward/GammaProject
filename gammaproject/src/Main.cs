@@ -45,7 +45,6 @@ namespace Gamma {
             new Vector3(-0.0055462415f, 1.320011f, 0.01605832f)
         );
         public struct SceneState {
-            public Node previousFrameScene;
             public Node currentScene;
             public float timeSinceSceneLoad;
             public int physicsFramesSinceSceneLoad;
@@ -53,6 +52,10 @@ namespace Gamma {
             public bool isSceneLoaded;
         }
         public SceneState sceneState;
+        public Player player;
+        public PlayerCamera playerCamera;
+        public VideoPlayer videoPlayer;
+        public FadeRect fadeRect;
         public static AudioStream metalDinkSFX = GD.Load<AudioStream>("res://assets/sound/metalslam.wav");
         public static AudioStream metalSlamSFX = GD.Load<AudioStream>("res://assets/sound/metalslam1.wav");
         public static AudioStream footStepMetalSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");
@@ -67,28 +70,26 @@ namespace Gamma {
         public PendingSceneChange pendingSceneChange;
         public PrisonSpotLight prisonSpotlight;
         public WorldEnvironment worldEnvironment;
-        public VideoPlayer videoPlayer;
-        public FadeRect fadeRect;
         public Node environmentNode;
         public Node entitiesNode;
         public Node uiNode;
+        public Camera3D currentCamera;
         public PhysicsMaterial globalPhysicsMaterial;
         public float cameraFarSetting = 100;
-        public double globalDelta;
-        public bool shouldSpawnMothman = false;
-        public bool outOfTime = false;
+        public double globalPhysicsDelta;
+        public double globalProcessDelta;
         public void RotateTowards(Vector3 lookDirection, Node3D inputNode, float rotationSpeed) {
             if (lookDirection.LengthSquared() <= ALMOST_ZERO) { return; }
             float targetRotation = (float)Math.Atan2(-lookDirection.X, -lookDirection.Z);
             inputNode.Rotation = new Vector3(inputNode.Rotation.X, Mathf.LerpAngle(inputNode.Rotation.Y, targetRotation, rotationSpeed), inputNode.Rotation.Z);
         }
         bool HasCrossedPlaybackPosition(float inputPreviousPosition, float inputCurrentPosition, float inputEventPosition) {
-            if (inputCurrentPosition >= inputPreviousPosition) return inputPreviousPosition < inputEventPosition && inputEventPosition <= inputCurrentPosition;
+            if (inputCurrentPosition >= inputPreviousPosition) { return inputPreviousPosition < inputEventPosition && inputEventPosition <= inputCurrentPosition; }
             return inputPreviousPosition < inputEventPosition || inputEventPosition <= inputCurrentPosition;
         }
         public void UpdateFadeInOut() {
             if (fadeRect.node == null) { return; }
-            float newAlpha = fadeRect.node.Color.A + (fadeRect.fadeMagnitude * (float)globalDelta);
+            float newAlpha = fadeRect.node.Color.A + (fadeRect.fadeMagnitude * (float)globalPhysicsDelta);
             fadeRect.node.Color = new Color(
                 fadeRect.node.Color.R,
                 fadeRect.node.Color.G,
@@ -181,6 +182,14 @@ namespace Gamma {
                     case "TestDialogue":
                         InteractablesInitialize((Node3D)child, InteractableLookup.TestDialogue);
                         break;
+                    case "ChangeLevel":
+                        InteractablesInitialize((Node3D)child, InteractableLookup.ChangeLevel);
+                        if (!(bool)child.GetMeta("isVisible")) {
+                            for (int j = 0; j < child.GetChildCount(); j++) {
+                                child.GetChild(j).QueueFree();
+                            }
+                        }
+                        break;
                     default:
                         GD.PrintErr("Unknown entity type: " + entityType + "\n");
                         break;
@@ -196,61 +205,37 @@ namespace Gamma {
             DialogueBoxInitialize(uiNode.GetNode<Control>("DialogueBox"));
             SubtitlesInitialize(uiNode.GetNode<VBoxContainer>("SubtitleBox"));
             Audio3DInitialize(DEFAULT_AUDIO_POOL_SIZE);
+            AudioUIInitialize(DEFAULT_AUDIO_POOL_SIZE);
             StartFade(-0.3f);
+            sceneState.isSceneLoaded = true;
         }
         public override void _Ready() {
-            GD.Print("Setting up game");
+            GD.Print("Setting up game...");
             ProcessMode = ProcessModeEnum.Always;
             Engine.MaxFps = 999;
-            targetReticleMaterial = new StandardMaterial3D();
-            targetReticleMaterial.AlbedoColor = new Color(1, 0, 0);
-            targetReticleMaterial.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
-            targetReticleMaterial.NoDepthTest = true;
-            globalPhysicsMaterial = new PhysicsMaterial();
-            globalPhysicsMaterial.Friction = 0.2f;
-            globalPhysicsMaterial.Bounce = 0f;
+            targetReticleMaterial = new StandardMaterial3D {
+                AlbedoColor = new Color(1, 0, 0),
+                ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
+                NoDepthTest = true
+            };
+            globalPhysicsMaterial = new PhysicsMaterial {
+                Friction = 0.2f,
+                Bounce = 0f
+            };
             GD.Print("Setup complete");
         }
         public override void _PhysicsProcess(double delta) {
-            if (GetTree().CurrentScene != sceneState.previousFrameScene) {
-                sceneState.isSceneLoaded = false;
-                sceneState.previousFrameScene = GetTree().CurrentScene;
-                InitializeScene();
-            }
-            globalDelta = delta;
+            if (sceneState.isSceneLoaded == false) { InitializeScene(); }
+            globalPhysicsDelta = delta;
             sceneState.timeSinceSceneLoad += (float)delta;
             sceneState.physicsFramesSinceSceneLoad++;
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             UpdateVideo(ref videoPlayer);
             UpdateFadeInOut();
-            if (!shouldSpawnMothman && sceneState.timeSinceSceneLoad >= 300f) { shouldSpawnMothman = true; }
-            if (!outOfTime && sceneState.timeSinceSceneLoad >= 600f) { outOfTime = true; }
-            if (Input.IsActionJustPressed("debug")) {
-                //StartVideo(ref videoPlayer, testVideoData);
-                StartFade(-0.3f);
-                string randomText = "";
-                int textLength = GD.RandRange(5, 20);
-                for (int i = 0; i < textLength; i++) {
-                    randomText += (char)GD.RandRange(65, 90);
-                }
-                float randomLifetime = (float)GD.RandRange(2f, 10f);
-                SubtitleData RandomSubtitle = new SubtitleData {
-                    text = "Random subtitle " + randomText,
-                    textColor = new Color(
-                        (float)GD.RandRange(0f, 1f),
-                        (float)GD.RandRange(0f, 1f),
-                        (float)GD.RandRange(0f, 1f),
-                        1f
-                    ),
-                    totalLifeTime = randomLifetime,
-                    currentLifeTime = randomLifetime,
-                };
-                SubtitlesAdd(RandomSubtitle);
-            }
             //if (GetTree().CurrentScene.Name == "Level") { entitiesNode.GetParent().GetChild(0).GetChild<DirectionalLight3D>(1).RotationDegrees += new Vector3(0f, 20f, 0f); }
             ProjectilesUpdate();
-            PlayerCameraUpdate(ref playerCamera);
             PlayerUpdate();
+            PlayerCameraUpdate(ref playerCamera);
             EnemyUpdate();
             if (Input.IsActionJustPressed("interact")) { Interact(); }
             DialogueUpdate();
@@ -262,6 +247,9 @@ namespace Gamma {
             inputState.action1.isConsumed = false;
             inputState.action2.isConsumed = false;
             inputState.action3.isConsumed = false;
+        }
+        public override void _Process(double delta) {
+            globalProcessDelta = delta;
             ProcessPendingSceneChange();
         }
     }

@@ -8,16 +8,30 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="GammaProject"
 run/main_scene="uid://b0pi1p7vaslco"
-config/features=PackedStringArray("4.4", "C#", "Forward Plus")
+config/features=PackedStringArray("4.6", "C#", "Forward Plus")
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/stretch_mode=0
+boot_splash/use_filter=false
+boot_splash/image="uid://dpr6bi3f56fj1"
 config/icon="res://icon.svg"
+boot_splash/minimum_display_time=1800
 
 [autoload]
 
 Main="*res://src/Main.cs"
+
+[debug]
+
+settings/stdout/print_fps=true
+settings/stdout/print_gpu_profile=true
 
 [display]
 
@@ -115,14 +129,17 @@ interact={
 
 common/physics_ticks_per_second=30
 3d/physics_engine="Jolt Physics"
-common/physics_interpolation=true
 
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
 lights_and_shadows/directional_shadow/size=6144
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=0
+lights_and_shadows/directional_shadow/16_bits=false
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=0
+lights_and_shadows/positional_shadow/atlas_16_bits=false
 shading/overrides/force_lambert_over_burley=true
 textures/default_filters/anisotropic_filtering_level=0
+textures/decals/filter=0
+textures/light_projectors/filter=0
 lights_and_shadows/positional_shadow/atlas_size=6144

@@ -15,10 +15,10 @@ namespace Gamma {
             public bool isPlaying;
             public float timeRemaining;
         }
-        public Sound3D[] sounds = new Sound3D[8];
-        int soundCount = 0;
-        public SoundUI[] soundsui = new SoundUI[2];
-        int soundUICount = 0;
+        public Sound3D[] sounds3D;
+        int sounds3DCount = 0;
+        public SoundUI[] soundsUI;
+        int soundsUICount = 0;
         public readonly Dictionary<string, AudioStream> soundCache = new();
         public AudioStream GetOrLoadSound(string path) {
             if (!soundCache.TryGetValue(path, out var stream)) {
@@ -28,56 +28,106 @@ namespace Gamma {
             return stream;
         }
         public void Audio3DInitialize(int inputSize) {
-            sounds = new Sound3D[inputSize];
-            soundCount = 0;
+            sounds3D = new Sound3D[inputSize];
+            sounds3DCount = 0;
             for (int i = 0; i < inputSize; i++) {
                 AudioStreamPlayer3D newNode = new AudioStreamPlayer3D();
                 entitiesNode.AddChild(newNode);
-                sounds[i].node = newNode;
-                sounds[i].isPlaying = false;
-                sounds[i].timeRemaining = 0f;
+                sounds3D[i].node = newNode;
+                sounds3D[i].isPlaying = false;
+                sounds3D[i].timeRemaining = 0f;
             }
         }
         public void Audio3DResize() {
-            int newSize = sounds.Length * AUDIO_POOL_GROWTH_FACTOR;
-            Array.Resize(ref sounds, newSize);
-            for (int i = sounds.Length / AUDIO_POOL_GROWTH_FACTOR; i < newSize; i++) {
+            int newSize = sounds3D.Length * AUDIO_POOL_GROWTH_FACTOR;
+            Array.Resize(ref sounds3D, newSize);
+            for (int i = sounds3D.Length / AUDIO_POOL_GROWTH_FACTOR; i < newSize; i++) {
                 AudioStreamPlayer3D newNode = new AudioStreamPlayer3D();
                 entitiesNode.AddChild(newNode);
-                sounds[i].node = newNode;
-                sounds[i].isPlaying = false;
-                sounds[i].timeRemaining = 0f;
+                sounds3D[i].node = newNode;
+                sounds3D[i].isPlaying = false;
+                sounds3D[i].timeRemaining = 0f;
             }
         }
         public void StartSound3D(AudioStream inputSound, Vector3 inputPosition, float inputVolume, float inputPitchModifier, bool inputShouldOverlap) {
             int availableSlot = -1;
-            for (int i = 0; i < sounds.Length; i++) {
-                if (sounds[i].node.Stream == inputSound && !inputShouldOverlap) {
+            for (int i = 0; i < sounds3D.Length; i++) {
+                if (sounds3D[i].node.Stream == inputSound && !inputShouldOverlap) {
                     GD.Print(inputSound + " does not want to overlap. Repeating instead");
-                    sounds[i].node.GlobalPosition = inputPosition;
-                    sounds[i].node.VolumeDb = Mathf.LinearToDb(inputVolume);
-                    sounds[i].node.PitchScale = inputPitchModifier;
-                    sounds[i].node.Play();
+                    sounds3D[i].node.GlobalPosition = inputPosition;
+                    sounds3D[i].node.VolumeDb = Mathf.LinearToDb(inputVolume);
+                    sounds3D[i].node.PitchScale = inputPitchModifier;
+                    sounds3D[i].node.Play();
                     return;
                 }
-                if (!sounds[i].isPlaying) {
+                if (!sounds3D[i].isPlaying) {
                     availableSlot = i;
                     break;
                 }
             }
             if (availableSlot == -1) {
-                int oldSize = sounds.Length;
+                int oldSize = sounds3D.Length;
                 Audio3DResize();
                 availableSlot = oldSize;
             }
-            sounds[availableSlot].node.Stream = inputSound;
-            sounds[availableSlot].node.GlobalPosition = inputPosition;
-            sounds[availableSlot].node.VolumeDb = Mathf.LinearToDb(inputVolume);
-            sounds[availableSlot].node.PitchScale = inputPitchModifier;
-            sounds[availableSlot].node.Play();
-            if (!sounds[availableSlot].isPlaying) { soundCount++; }
-            sounds[availableSlot].isPlaying = true;
-            sounds[availableSlot].timeRemaining = (float)inputSound.GetLength() / inputPitchModifier;
+            sounds3D[availableSlot].node.Stream = inputSound;
+            sounds3D[availableSlot].node.GlobalPosition = inputPosition;
+            sounds3D[availableSlot].node.VolumeDb = Mathf.LinearToDb(inputVolume);
+            sounds3D[availableSlot].node.PitchScale = inputPitchModifier;
+            sounds3D[availableSlot].node.Play();
+            if (!sounds3D[availableSlot].isPlaying) { sounds3DCount++; }
+            sounds3D[availableSlot].isPlaying = true;
+            sounds3D[availableSlot].timeRemaining = (float)inputSound.GetLength() / inputPitchModifier;
+        }
+        public void AudioUIInitialize(int inputSize) {
+            soundsUI = new SoundUI[inputSize];
+            soundsUICount = 0;
+            for (int i = 0; i < inputSize; i++) {
+                AudioStreamPlayer newNode = new AudioStreamPlayer();
+                entitiesNode.AddChild(newNode);
+                soundsUI[i].node = newNode;
+                soundsUI[i].isPlaying = false;
+                soundsUI[i].timeRemaining = 0f;
+            }
+        }
+        public void AudioUIResize() {
+            int newSize = soundsUI.Length * AUDIO_POOL_GROWTH_FACTOR;
+            Array.Resize(ref soundsUI, newSize);
+            for (int i = soundsUI.Length / AUDIO_POOL_GROWTH_FACTOR; i < newSize; i++) {
+                AudioStreamPlayer newNode = new AudioStreamPlayer();
+                entitiesNode.AddChild(newNode);
+                soundsUI[i].node = newNode;
+                soundsUI[i].isPlaying = false;
+                soundsUI[i].timeRemaining = 0f;
+            }
+        }
+        public void StartSoundUI(AudioStream inputSound, float inputVolume, float inputPitchModifier, bool inputShouldOverlap) {
+            int availableSlot = -1;
+            for (int i = 0; i < soundsUI.Length; i++) {
+                if (soundsUI[i].node.Stream == inputSound && !inputShouldOverlap) {
+                    GD.Print(inputSound + " does not want to overlap. Repeating instead");
+                    soundsUI[i].node.VolumeDb = Mathf.LinearToDb(inputVolume);
+                    soundsUI[i].node.PitchScale = inputPitchModifier;
+                    soundsUI[i].node.Play();
+                    return;
+                }
+                if (!soundsUI[i].isPlaying) {
+                    availableSlot = i;
+                    break;
+                }
+            }
+            if (availableSlot == -1) {
+                int oldSize = soundsUI.Length;
+                AudioUIResize();
+                availableSlot = oldSize;
+            }
+            soundsUI[availableSlot].node.Stream = inputSound;
+            soundsUI[availableSlot].node.VolumeDb = Mathf.LinearToDb(inputVolume);
+            soundsUI[availableSlot].node.PitchScale = inputPitchModifier;
+            soundsUI[availableSlot].node.Play();
+            if (!soundsUI[availableSlot].isPlaying) { soundsUICount++; }
+            soundsUI[availableSlot].isPlaying = true;
+            soundsUI[availableSlot].timeRemaining = (float)inputSound.GetLength() / inputPitchModifier;
         }
     }
 }

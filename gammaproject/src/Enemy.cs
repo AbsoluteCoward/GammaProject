@@ -32,7 +32,7 @@ namespace Gamma {
                 AnimationNodeStateMachinePlayback animationState = (AnimationNodeStateMachinePlayback)enemies[i].animationTree.Get("parameters/playback");
                 animationState.Travel("Run");
                 enemyNode.Velocity = -enemyNode.GlobalTransform.Basis.Z * 1.0f;
-                enemyNode.Velocity += new Vector3(0, -9.8f * (float)globalDelta, 0);
+                enemyNode.Velocity += new Vector3(0, -9.8f * (float)globalPhysicsDelta, 0);
                 enemyNode.MoveAndSlide();
             }
         }

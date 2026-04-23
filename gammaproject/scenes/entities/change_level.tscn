@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://bkuilqriq51he"]
+
+[ext_resource type="Texture2D" uid="uid://b47lirpcrf56m" path="res://assets/textures/Grass_04.png" id="1_2q8ei"]
+[ext_resource type="FontFile" uid="uid://xhdxc8yfkes2" path="res://assets/fonts/patheticbit.ttf" id="2_0r88i"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0r88i"]
+albedo_texture = ExtResource("1_2q8ei")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_hvmky"]
+height = 1.6
+radial_segments = 12
+rings = 0
+cap_bottom = false
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1ywwd"]
+size = Vector3(1, 1.6, 1)
+
+[node name="ChangeLevel" type="Node3D" unique_id=148112684]
+metadata/Type = "ChangeLevel"
+metadata/LevelPath = "res://scenes/maps/playtest.tscn"
+metadata/isVisible = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1959206005]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+material_override = SubResource("StandardMaterial3D_0r88i")
+mesh = SubResource("CylinderMesh_hvmky")
+
+[node name="Label3D" type="Label3D" parent="MeshInstance3D" unique_id=1593540920]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+billboard = 2
+texture_filter = 0
+text = "TEST DIALOGUE!!"
+font = ExtResource("2_0r88i")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1491628762]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=516893665]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+shape = SubResource("BoxShape3D_1ywwd")

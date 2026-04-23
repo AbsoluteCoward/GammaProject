@@ -45,9 +45,6 @@ namespace Gamma {
             public float maxLerpDistance;
             public float rotationLerpSpeed;
         }
-        public Player player;
-        public PlayerCamera playerCamera;
-        public Camera3D currentCamera;
         public void PlayerInitialize(CharacterBody3D inputPlayerNode) {
             player = new Player();
             player.wishDirection = Vector3.Zero;
@@ -117,16 +114,12 @@ namespace Gamma {
         public void ApplyDynamicBoneTransformations() {
             if (player.skeleton == null) { return; }
             float chestRotation = player.turnAnticipation * 0.9f;
-            Transform3D pelvisPose = player.skeleton.GetBoneGlobalPose(1);
-            Transform3D chestPose = DEFAULT_SLINK_WALK_CHEST_POSE;
-            chestPose.Origin = new Vector3(
-                chestPose.Origin.X,
-                chestPose.Origin.Y + (pelvisPose.Origin.Y - 1.184f),
-                chestPose.Origin.Z
-            );
-            Vector3 chestRotationAxis = player.skeleton.GetBoneGlobalRest(Player.chestBoneIndex).Basis.Y;
-            Quaternion chestTwist = new Quaternion(chestRotationAxis, chestRotation);
-            chestPose.Basis = chestPose.Basis * new Basis(chestTwist);
+            Transform3D chestPose = player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex);
+            Vector3 chestYawAxis = player.skeleton.GetBoneGlobalRest(Player.chestBoneIndex).Basis.Y;
+            Vector3 chestRollAxis = player.skeleton.GetBoneGlobalRest(Player.chestBoneIndex).Basis.Z;
+            Quaternion chestTwist = new Quaternion(chestYawAxis, chestRotation);
+            Quaternion chestRoll = new Quaternion(chestRollAxis, chestRotation * 0.15f);
+            chestPose.Basis = chestPose.Basis * new Basis(chestTwist * chestRoll);
             player.skeleton.SetBoneGlobalPose(Player.chestBoneIndex, chestPose);
             Vector3 headRotationAxis = player.skeleton.GetBoneGlobalRest(Player.headBoneIndex).Basis.Y.Normalized();
             Quaternion headTwist = new Quaternion(headRotationAxis, chestRotation * 0.5f);
@@ -135,7 +128,7 @@ namespace Gamma {
             player.skeleton.SetBoneGlobalPose(Player.headBoneIndex, headPose);
         }
         public void PlayerUpdate() {
-            player.animationTree.Advance((float)globalDelta);
+            player.animationTree.Advance((float)globalPhysicsDelta);
             if (sceneState.physicsFramesSinceSceneLoad % (int)GD.RandRange(20f, 100f) == 0) {
                 Vector3 playerPosition = player.node.GlobalPosition;
                 if (Mathf.Abs(playerPosition.X) > Player.maxDistance ||
@@ -173,8 +166,8 @@ namespace Gamma {
                         inputState.action3.isConsumed = true;
                     }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.2f);
-                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
-                    player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, -0.3f, 0.1f); // we do this so the player visually faces forward
+                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
+                    player.turnAnticipation = Mathf.LerpAngle(player.turnAnticipation, 0f, 0.1f); // we do this so the player visually faces forward
                     ApplyDynamicBoneTransformations();
                     break;
                 case "Walk":
@@ -192,7 +185,7 @@ namespace Gamma {
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
                     RotateTowards(direction, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
-                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
+                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
                     ApplyDynamicBoneTransformations();
                     break;
                 case "Jump":
@@ -208,7 +201,7 @@ namespace Gamma {
                         player.node.Velocity += Vector3.Up * 12f;
                         player.node.Velocity += player.wishDirection.Length() > 0.1f ? player.wishDirection * 2f : player.node.Transform.Basis.Z.Normalized() * 2f;
                     }
-                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
+                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
                     if (!player.isOnGround) {
                         player.node.Velocity = new Vector3(
                             Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.01f),
@@ -219,7 +212,7 @@ namespace Gamma {
                     break;
                 case "Fall":
                     if (player.isOnGround) { targetAnimation = "FallToIdle"; }
-                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
+                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
                     player.node.Velocity = new Vector3(
                         Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.01f),
                         player.node.Velocity.Y,
@@ -233,7 +226,7 @@ namespace Gamma {
                         }
                     }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.08f);
-                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalDelta;
+                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, 0f, 0.1f);
                     break;
             }
@@ -279,6 +272,7 @@ namespace Gamma {
                 player.teleportEntity.teleportShadowMesh.Visible = false;
                 StartSound3D(teleportSFX, player.teleportEntity.node.GlobalPosition, 0.01f, 1.0f, false);
                 player.node.GlobalPosition = player.teleportEntity.node.GlobalPosition;
+                playerCamera.node.GlobalPosition = player.node.GlobalPosition;
                 player.teleportEntity.node.CollisionMask = 0;
                 player.teleportEntity.node.TopLevel = false;
             }

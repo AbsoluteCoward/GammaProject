@@ -1,73 +1,47 @@
-[gd_scene load_steps=8 format=3 uid="uid://bvhp8nrawnejj"]
+[gd_scene format=3 uid="uid://bvhp8nrawnejj"]
 
 [ext_resource type="PackedScene" uid="uid://h32aloclpwkg" path="res://assets/temp/church.gltf" id="1_aobmw"]
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="1_b2g8u"]
 [ext_resource type="PackedScene" uid="uid://cvgp5f0d7udpo" path="res://scenes/entities/dungeon_exit.tscn" id="2_b7bw0"]
 [ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="2_idapr"]
-[ext_resource type="PackedScene" uid="uid://coytvcqlue4h2" path="res://scenes/UI/dialogue_box.tscn" id="4_4hhfj"]
-[ext_resource type="PackedScene" uid="uid://b624rkte3tvyp" path="res://scenes/UI/subtitle_box.tscn" id="7_ti75c"]
+[ext_resource type="PackedScene" uid="uid://qley5ny6m3l2" path="res://scenes/UI/default_ui.tscn" id="5_3i5vt"]
 
 [sub_resource type="Environment" id="Environment_0et32"]
 background_mode = 1
-ambient_light_source = 2
-ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 0.03
-sdfgi_y_scale = 0
+ambient_light_source = 3
 fog_enabled = true
 fog_mode = 1
-fog_light_color = Color(1, 1, 1, 1)
+fog_light_color = Color(0.2509804, 0.2509804, 0.2509804, 1)
 fog_density = 1.0
 fog_depth_begin = 180.0
 fog_depth_end = 220.0
 
-[node name="Level" type="Node3D"]
+[node name="Level" type="Node3D" unique_id=669255445]
 
-[node name="Environment" type="Node" parent="."]
+[node name="Environment" type="Node" parent="." unique_id=1567989323]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=302251868]
 environment = SubResource("Environment_0et32")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=198355569]
 transform = Transform3D(0.868308, -0.457397, -0.191909, -0.191909, -0.666546, 0.720338, -0.457397, -0.588646, -0.666546, 0, 44, 0)
 light_color = Color(1, 0.79, 0.79, 1)
 shadow_enabled = true
 directional_shadow_max_distance = 200.0
 
-[node name="Geometry" type="Node" parent="."]
+[node name="Geometry" type="Node" parent="." unique_id=827188263]
 
-[node name="church" parent="Geometry" instance=ExtResource("1_aobmw")]
+[node name="church" parent="Geometry" unique_id=1863356493 instance=ExtResource("1_aobmw")]
 
-[node name="Entities" type="Node" parent="."]
+[node name="Entities" type="Node" parent="." unique_id=711179880]
 
-[node name="Player" parent="Entities" instance=ExtResource("1_b2g8u")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -79.7, 2, -4)
+[node name="Player" parent="Entities" unique_id=848986129 instance=ExtResource("1_b2g8u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.699997, 2, 5)
 
-[node name="PlayerCamera" parent="Entities" instance=ExtResource("2_idapr")]
+[node name="PlayerCamera" parent="Entities" unique_id=556203230 instance=ExtResource("2_idapr")]
 transform = Transform3D(-4.37114e-08, -0.549825, 0.83528, 0, 0.83528, 0.549825, -1, 2.40336e-08, -3.65113e-08, -76.9, 4.9183, -3.39305)
 
-[node name="DungeonExit" parent="Entities" instance=ExtResource("2_b7bw0")]
+[node name="DungeonExit" parent="Entities" unique_id=225296671 instance=ExtResource("2_b7bw0")]
 transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -85.8186, -0.00268555, -3.14227)
 
-[node name="UI" type="Node" parent="."]
-
-[node name="FadeRect" type="ColorRect" parent="UI"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-
-[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="UI"]
-process_mode = 3
-texture_filter = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-expand = true
-
-[node name="SubtitleBox" parent="UI" instance=ExtResource("7_ti75c")]
-
-[node name="DialogueBox" parent="UI" instance=ExtResource("4_4hhfj")]
+[node name="UI" parent="." unique_id=1110879225 instance=ExtResource("5_3i5vt")]

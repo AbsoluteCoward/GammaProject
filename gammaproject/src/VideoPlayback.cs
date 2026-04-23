@@ -24,10 +24,13 @@ namespace Gamma {
             }
         }
         public void UpdateVideo(ref VideoPlayer inputVideoPlayer) {
-            if (!inputVideoPlayer.node.IsPlaying()) { EndVideo(ref inputVideoPlayer); }
+            if (inputVideoPlayer.node.Stream != null && !inputVideoPlayer.node.IsPlaying()) {
+                EndVideo(ref inputVideoPlayer);
+            }
         }
         public void EndVideo(ref VideoPlayer inputVideoPlayer) {
-            inputVideoPlayer.node.Stop();
+            inputVideoPlayer.node.Stream = null;
+            GD.Print("Starting " + inputVideoPlayer.onVideoComplete.Length + " video end functions");
             if (inputVideoPlayer.onVideoComplete == null) { return; }
             for (int i = 0; i < inputVideoPlayer.onVideoComplete.Length; i++) { inputVideoPlayer.onVideoComplete[i](this); }
             inputVideoPlayer.onVideoStart = null;
