@@ -80,6 +80,7 @@ namespace Gamma {
             GD.Print("Player Initialized");
         }
         public void PlayerCameraInitialize(Camera3D inputCamera) {
+            currentCamera = inputCamera;
             playerCamera.node = inputCamera;
             playerCamera.WallRayCast = inputCamera.GetChild<RayCast3D>(0);
             playerCamera.SpotLight = inputCamera.GetChild<SpotLight3D>(1);
@@ -113,7 +114,7 @@ namespace Gamma {
         }
         public void ApplyDynamicBoneTransformations() {
             if (player.skeleton == null) { return; }
-            float chestRotation = player.turnAnticipation * 0.9f;
+            float chestRotation = player.turnAnticipation * 0.6f;
             Transform3D chestPose = player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex);
             Vector3 chestYawAxis = player.skeleton.GetBoneGlobalRest(Player.chestBoneIndex).Basis.Y;
             Vector3 chestRollAxis = player.skeleton.GetBoneGlobalRest(Player.chestBoneIndex).Basis.Z;
@@ -171,7 +172,7 @@ namespace Gamma {
                     ApplyDynamicBoneTransformations();
                     break;
                 case "Walk":
-                    if (!hasMovementInput && !player.isTeleporting) { targetAnimation = "Idle"; }
+                    if (!hasMovementInput && !player.isTeleporting) { targetAnimation = "Idle" ; }
                     if (!player.isOnGround) { targetAnimation = "Fall"; }
                     if (Input.IsActionPressed("action2") && player.wishDirection.Length() < 0.1f) { targetAnimation = "Jump"; }
                     if (HasCrossedPlaybackPosition(player.previousAnimationPlaybackPosition, currentAnimationPlaybackPosition, 0.33f) ||
@@ -272,7 +273,7 @@ namespace Gamma {
                 player.teleportEntity.teleportShadowMesh.Visible = false;
                 StartSound3D(teleportSFX, player.teleportEntity.node.GlobalPosition, 0.01f, 1.0f, false);
                 player.node.GlobalPosition = player.teleportEntity.node.GlobalPosition;
-                playerCamera.node.GlobalPosition = player.node.GlobalPosition;
+                PlayerCameraUpdate(ref playerCamera); // We force an update to the camera to prevent jitter
                 player.teleportEntity.node.CollisionMask = 0;
                 player.teleportEntity.node.TopLevel = false;
             }
