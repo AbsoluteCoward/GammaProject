@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://clfm13i3vny1v"
-path.s3tc="res://.godot/imported/CHR_SLINK_GOLDHEAD.jpg-c16061bc9ef62831d825c02cf4e73837.s3tc.ctex"
+uid="uid://bxbj5djdip8lb"
+path.s3tc="res://.godot/imported/CHR_SLINK_LEATHER2.jpg-28135f6ff0c2d2541a46202fa727f7c3.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/CHR_SLINK_GOLDHEAD.jpg"
-dest_files=["res://.godot/imported/CHR_SLINK_GOLDHEAD.jpg-c16061bc9ef62831d825c02cf4e73837.s3tc.ctex"]
+source_file="res://assets/textures/CHR_SLINK_LEATHER2.jpg"
+dest_files=["res://.godot/imported/CHR_SLINK_LEATHER2.jpg-28135f6ff0c2d2541a46202fa727f7c3.s3tc.ctex"]
 
 [params]
 

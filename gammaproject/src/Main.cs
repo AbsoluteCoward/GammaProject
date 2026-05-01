@@ -83,10 +83,6 @@ namespace Gamma {
             float targetRotation = (float)Math.Atan2(-lookDirection.X, -lookDirection.Z);
             inputNode.Rotation = new Vector3(inputNode.Rotation.X, Mathf.LerpAngle(inputNode.Rotation.Y, targetRotation, rotationSpeed), inputNode.Rotation.Z);
         }
-        bool HasCrossedPlaybackPosition(float inputPreviousPosition, float inputCurrentPosition, float inputEventPosition) {
-            if (inputCurrentPosition >= inputPreviousPosition) { return inputPreviousPosition < inputEventPosition && inputEventPosition <= inputCurrentPosition; }
-            return inputPreviousPosition < inputEventPosition || inputEventPosition <= inputCurrentPosition;
-        }
         public void UpdateFadeInOut() {
             if (fadeRect.node == null) { return; }
             float newAlpha = fadeRect.node.Color.A + (fadeRect.fadeMagnitude * (float)globalPhysicsDelta);

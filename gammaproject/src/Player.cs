@@ -12,26 +12,25 @@ namespace Gamma {
             public Vector3 wishDirection;
             public CharacterBody3D node;
             public Node3D gunBarrel;
-            public MeshInstance3D headMesh;
             public AnimationPlayer animationPlayer;
             public AnimationTree animationTree;
             public AnimationNodeStateMachinePlayback animationState;
             public Skeleton3D skeleton;
+            public Node3D[] targets;
+            public PlaybackPositionData[] animationPlaybackBlocks;
             public string previousAnimationName;
-            public static float maxDistance = float.MaxValue;
             public float moveSpeed;
             public float turnAnticipation;
             public float maxTeleportDistance;
-            public float previousAnimationPlaybackPosition;
-            public static int meatCount = 0;
-            public static int chestBoneIndex;
-            public static int headBoneIndex;
             public int targetCount;
             public bool isOnGround;
             public bool shouldBeAsleep;
             public bool hasPlayerModelCopy;
             public bool isTeleporting;
-            public Node3D[] targets;
+            public static float maxDistance = float.MaxValue;
+            public static int meatCount = 0;
+            public static int chestBoneIndex;
+            public static int headBoneIndex;
         }
         public struct PlayerCamera {
             public Vector3 targetPosition;
@@ -49,29 +48,29 @@ namespace Gamma {
             player = new Player();
             player.wishDirection = Vector3.Zero;
             player.node = inputPlayerNode;
-            player.gunBarrel = player.node.GetNode<MeshInstance3D>("Slink/metarig/Skeleton3D/Gun_2/Gun_2");
-            player.headMesh = player.node.GetNode<MeshInstance3D>("Slink/metarig/Skeleton3D/Head/Head");
+            player.gunBarrel = player.node.GetNode<MeshInstance3D>("Slink/Skeleton3D/GunBone/Trigger");
             player.teleportEntity.node = inputPlayerNode.GetChild<CharacterBody3D>(4);
             player.teleportEntity.topRayCast = player.teleportEntity.node.GetChild<RayCast3D>(1);
             player.teleportEntity.teleportShadowMesh = inputPlayerNode.GetNode<Node3D>("TeleportEntity/ShadowSlink");
-            player.targets = new Node3D[16];
-            player.targetCount = 0;
             player.animationPlayer = inputPlayerNode.GetChild<Node3D>(2).GetChild<AnimationPlayer>(1);
             player.animationTree = inputPlayerNode.GetChild<AnimationTree>(3);
             player.animationTree.Active = true;
             player.animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
             player.animationPlayer.Active = false;
             player.animationState = (AnimationNodeStateMachinePlayback)player.animationTree.Get("parameters/playback");
-            player.skeleton = inputPlayerNode.GetChild<Node3D>(2).GetChild<Node3D>(0).GetChild<Skeleton3D>(0);
+            player.skeleton = inputPlayerNode.GetChild<Node3D>(2).GetChild<Skeleton3D>(0);
             for (int i = 0; i < player.skeleton.GetBoneCount(); i++) {
                 if (player.skeleton.GetBoneName(i) == "Abdomen") { Player.chestBoneIndex = i; }
-                if (player.skeleton.GetBoneName(i) == "spine.006") { Player.headBoneIndex = i; }
+                if (player.skeleton.GetBoneName(i) == "HeadBone") { Player.headBoneIndex = i; }
             }
-            if (Player.chestBoneIndex == -1) { GD.PrintErr("Couldn't find chest bone!"); }
-            if (Player.headBoneIndex == -1) { GD.PrintErr("Couldn't find head bone!"); }
+            if (Player.chestBoneIndex  == 0) { GD.PrintErr("Couldn't find chest bone!"); }
+            if (Player.headBoneIndex == 0) { GD.PrintErr("Couldn't find head bone!"); }
+            player.targets = new Node3D[16];
+            player.animationPlaybackBlocks = new PlaybackPositionData[4];
+            player.targetCount = 0;
             player.moveSpeed = 8.0f;
             player.turnAnticipation = 0f;
-            player.previousAnimationPlaybackPosition = 0f;
+            player.animationPlaybackBlocks[0].previousPlaybackPosition = 0f;
             player.previousAnimationName = "";
             player.node.FloorSnapLength = 0.8f;
             player.teleportEntity.node.CollisionLayer = 0;
@@ -154,35 +153,66 @@ namespace Gamma {
             bool action3JustReleased = Input.IsActionJustReleased("action3");
             bool hasMovementInput = player.wishDirection.Length() > 0.1f;
             if (player.animationState.GetCurrentNode() == "") { return; }
-            float currentAnimationPlaybackPosition = player.animationState.GetCurrentPlayPosition();
-            bool isIdleAndStill = player.animationState.GetCurrentNode() == "Idle" && !hasMovementInput;
+            AnimationNodeStateMachine stateMachine = (AnimationNodeStateMachine)player.animationTree.TreeRoot;
+            bool isCurrentAnimationNodeABlendTree = ((AnimationNodeStateMachine)player.animationTree.TreeRoot).GetNode(player.animationState.GetCurrentNode()).GetType() == typeof(AnimationNodeBlendTree);
+            if (!isCurrentAnimationNodeABlendTree) {
+                player.animationPlaybackBlocks[0].currentPlaybackPosition = player.animationState.GetCurrentPlayPosition();
+            } else {
+                AnimationNodeBlendTree currentBlendTree = (AnimationNodeBlendTree)stateMachine.GetNode(player.animationState.GetCurrentNode());
+                Godot.Collections.Array<Godot.StringName> childNodes = currentBlendTree.GetNodeList();
+                GD.Print(childNodes);
+                int blockIndex = 0;
+                for (int i = 0; i < childNodes.Count; i++) {
+                    AnimationNode childNode = currentBlendTree.GetNode(childNodes[i]);
+                    if (childNode.GetType() != typeof(AnimationNodeAnimation)) { continue; }
+                    string path = "parameters/" + player.animationState.GetCurrentNode() + "/" + childNodes[i] + "/current_position";
+                    player.animationPlaybackBlocks[blockIndex].currentPlaybackPosition = (float)player.animationTree.Get(path);
+                    player.animationPlaybackBlocks[blockIndex].parameterName = childNodes[i];
+                    blockIndex++;
+                }
+            }
+            bool isIdleAndStill = (float)player.animationTree.Get("parameters/Walk/WalkBlend/blend_amount") <= ALMOST_ZERO && !hasMovementInput;
             bool shouldStartJump = action3JustPressed && isIdleAndStill;
             bool shouldStartTeleport = action3JustPressed && !isIdleAndStill;
             switch (player.animationState.GetCurrentNode()) {
-                case "Idle":
-                    if (hasMovementInput) { targetAnimation = "Walk"; }
+                case "Walk":
+                    for (int i = 0; i < player.animationPlaybackBlocks.Length; i++) {
+                        GD.Print($"Block {i} with parameter {player.animationPlaybackBlocks[i].parameterName} is at playback position {player.animationPlaybackBlocks[i].currentPlaybackPosition}");
+                    }
+                    bool shouldWalk = hasMovementInput || player.isTeleporting;
+                    float walkBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/WalkBlend/blend_amount"), shouldWalk ? 1f : 0f, 0.1f);
+                    player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", walkBlendAmount);
+                    bool shouldTeleportBlend = Input.IsActionPressed("action2");
+                    float teleportBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount"), shouldTeleportBlend ? 1f : 0f, 0.1f);
+                    player.animationTree.Set("parameters/Walk/TeleportStartupBlend/blend_amount", teleportBlendAmount);
+                    if ((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount") <= ALMOST_ZERO && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.0f) {
+                        player.animationTree.Set("parameters/Walk/TeleportStartupSeek/seek_request", 0.0f);
+                    }
                     if (!player.isOnGround) { targetAnimation = "Fall"; }
                     if (shouldStartJump) {
                         targetAnimation = "Jump";
                         inputState.action3.isConsumed = true;
                     }
-                    player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.2f);
-                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
-                    player.turnAnticipation = Mathf.LerpAngle(player.turnAnticipation, 0f, 0.1f); // we do this so the player visually faces forward
-                    ApplyDynamicBoneTransformations();
-                    break;
-                case "Walk":
-                    if (!hasMovementInput && !player.isTeleporting) { targetAnimation = "Idle" ; }
-                    if (!player.isOnGround) { targetAnimation = "Fall"; }
-                    if (Input.IsActionPressed("action2") && player.wishDirection.Length() < 0.1f) { targetAnimation = "Jump"; }
-                    if (HasCrossedPlaybackPosition(player.previousAnimationPlaybackPosition, currentAnimationPlaybackPosition, 0.33f) ||
-                        HasCrossedPlaybackPosition(player.previousAnimationPlaybackPosition, currentAnimationPlaybackPosition, 1.54f)) {
+                    int walkBlockIndex = GetPlaybackBlockIndex("Walk");
+                    if (
+                        HasCrossedPlaybackPosition(player.animationPlaybackBlocks[walkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[walkBlockIndex].currentPlaybackPosition, 0.33f)
+                    ) {
                         if (player.isOnGround) {
-                            StartSound3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                            StartSound3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f * walkBlendAmount, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                            GD.Print("Right footstep sound");
                         }
                     }
-                    Vector3 direction = player.isTeleporting ? playerForward : player.wishDirection;
+                    if (
+                        HasCrossedPlaybackPosition(player.animationPlaybackBlocks[walkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[walkBlockIndex].currentPlaybackPosition, 1.54f)
+                    ) {
+                        if (player.isOnGround) {
+                            StartSound3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f * walkBlendAmount, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                            GD.Print("Left footstep sound");
+                        }
+                    }
+                    Vector3 direction = player.isTeleporting || !hasMovementInput ? playerForward : player.wishDirection;
                     float targetAngle = Mathf.Atan2(playerForward.Cross(direction).Y, playerForward.Dot(direction));
+                    targetAngle = Mathf.Clamp(targetAngle, -0.8f, 0.8f);
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
                     RotateTowards(direction, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
@@ -192,8 +222,8 @@ namespace Gamma {
                 case "Jump":
                     bool shouldJump =
                         HasCrossedPlaybackPosition(
-                            inputPreviousPosition: player.previousAnimationPlaybackPosition,
-                            inputCurrentPosition: currentAnimationPlaybackPosition,
+                            inputPreviousPosition: player.animationPlaybackBlocks[0].previousPlaybackPosition,
+                            inputCurrentPosition: player.animationPlaybackBlocks[0].currentPlaybackPosition,
                             inputEventPosition: 0.66f
                         ) &&
                         player.isOnGround &&
@@ -202,7 +232,17 @@ namespace Gamma {
                         player.node.Velocity += Vector3.Up * 12f;
                         player.node.Velocity += player.wishDirection.Length() > 0.1f ? player.wishDirection * 2f : player.node.Transform.Basis.Z.Normalized() * 2f;
                     }
+                    if (
+                        player.animationPlaybackBlocks[0].currentPlaybackPosition > 0.67f && 
+                        player.node.GetLastSlideCollision() != null
+                    ) {
+                        GD.Print("Cancelling jump animation due to collision ");
+                        targetAnimation = "Fall";
+                    }
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= player.animationPlayer.GetAnimation(player.animationState.GetCurrentNode()).Length) {
+                        targetAnimation = "Fall";
+                    }
                     if (!player.isOnGround) {
                         player.node.Velocity = new Vector3(
                             Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.01f),
@@ -221,23 +261,32 @@ namespace Gamma {
                     );
                     break;
                 case "FallToIdle":
-                    if (HasCrossedPlaybackPosition(player.previousAnimationPlaybackPosition, currentAnimationPlaybackPosition, 0.22f)) {
+                    if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.2f)) {
                         if (player.isOnGround) {
                             StartSound3D(footStepMetalSFX, player.node.GlobalPosition, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                         }
                     }
+                    if (!player.isOnGround) { targetAnimation = "Fall"; }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.08f);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
-                    player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, 0f, 0.1f);
                     break;
             }
-            player.previousAnimationPlaybackPosition = currentAnimationPlaybackPosition;
+            if (!isCurrentAnimationNodeABlendTree) {
+                player.animationPlaybackBlocks[0].previousPlaybackPosition = player.animationPlaybackBlocks[0].currentPlaybackPosition;
+            } else {
+                for (int i = 0; i < player.animationPlaybackBlocks.Length; i++) {
+                    player.animationPlaybackBlocks[i].previousPlaybackPosition = player.animationPlaybackBlocks[i].currentPlaybackPosition;
+                }
+            }
             player.previousAnimationName = player.animationState.GetCurrentNode();
             bool shouldChangeAnimation = player.animationState.GetCurrentNode() != targetAnimation;
             bool isInTransition = player.animationState.GetTravelPath().Count > 0;
             if (shouldChangeAnimation && !isInTransition) {
                 GD.Print("changing animation to " + targetAnimation + " from " + player.animationState.GetCurrentNode());
-                player.previousAnimationPlaybackPosition = 0f;
+                player.animationPlaybackBlocks[0].previousPlaybackPosition = 0f;
+                player.animationPlaybackBlocks[1].previousPlaybackPosition = 0f;
+                player.animationTree.Set("parameters/Walk/Walk/current_position", 0f);
+                player.animationTree.Set("parameters/Walk/TeleportStartup/current_position", 0f);
                 player.animationState.Travel(targetAnimation);
             }
             if (shouldStartTeleport) {

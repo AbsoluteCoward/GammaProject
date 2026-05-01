@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bkfuafbgruf8m"]
+
+[ext_resource type="Texture2D" uid="uid://bxbj5djdip8lb" path="res://assets/textures/CHR_SLINK_LEATHER2.jpg" id="1_at6h1"]
+
+[resource]
+albedo_texture = ExtResource("1_at6h1")
+metallic_specular = 0.0
+stencil_flags = 2
+stencil_outline_thickness = 0.02
