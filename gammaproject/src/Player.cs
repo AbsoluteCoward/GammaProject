@@ -144,8 +144,7 @@ namespace Gamma {
                 Y_FLAT;
             Vector3 airControlDirection = player.wishDirection.Length() > 0.1f ? player.wishDirection : player.node.Velocity.Normalized();
             Vector3 rootPosition = player.animationTree.GetRootMotionPosition();
-            Vector3 rootVelocity = player.node.Transform.Basis * rootPosition;
-            rootVelocity *= player.moveSpeed;
+            Vector3 rootVelocity = (player.node.Transform.Basis * rootPosition) / (float)globalPhysicsDelta;
             string targetAnimation = player.animationState.GetCurrentNode();
             bool isAnimationSameAsPrevious = player.animationState.GetCurrentNode() == player.previousAnimationName;
             bool action3JustPressed = Input.IsActionJustPressed("action3") && !inputState.action3.isConsumed;
@@ -160,7 +159,6 @@ namespace Gamma {
             } else {
                 AnimationNodeBlendTree currentBlendTree = (AnimationNodeBlendTree)stateMachine.GetNode(player.animationState.GetCurrentNode());
                 Godot.Collections.Array<Godot.StringName> childNodes = currentBlendTree.GetNodeList();
-                GD.Print(childNodes);
                 int blockIndex = 0;
                 for (int i = 0; i < childNodes.Count; i++) {
                     AnimationNode childNode = currentBlendTree.GetNode(childNodes[i]);
@@ -176,9 +174,9 @@ namespace Gamma {
             bool shouldStartTeleport = action3JustPressed && !isIdleAndStill;
             switch (player.animationState.GetCurrentNode()) {
                 case "Walk":
-                    for (int i = 0; i < player.animationPlaybackBlocks.Length; i++) {
-                        GD.Print($"Block {i} with parameter {player.animationPlaybackBlocks[i].parameterName} is at playback position {player.animationPlaybackBlocks[i].currentPlaybackPosition}");
-                    }
+                    // for (int i = 0; i < player.animationPlaybackBlocks.Length; i++) {
+                    //     GD.Print($"Block {i} with parameter {player.animationPlaybackBlocks[i].parameterName} is at playback position {player.animationPlaybackBlocks[i].currentPlaybackPosition}");
+                    // }
                     bool shouldWalk = hasMovementInput || player.isTeleporting;
                     float walkBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/WalkBlend/blend_amount"), shouldWalk ? 1f : 0f, 0.1f);
                     player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", walkBlendAmount);
@@ -188,6 +186,8 @@ namespace Gamma {
                     if ((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount") <= ALMOST_ZERO && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.0f) {
                         player.animationTree.Set("parameters/Walk/TeleportStartupSeek/seek_request", 0.0f);
                     }
+                    bool shouldShoot = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.8f;
+                    if (shouldShoot) { targetAnimation = "TeleportShoot"; }
                     if (!player.isOnGround) { targetAnimation = "Fall"; }
                     if (shouldStartJump) {
                         targetAnimation = "Jump";
@@ -240,9 +240,6 @@ namespace Gamma {
                         targetAnimation = "Fall";
                     }
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
-                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= player.animationPlayer.GetAnimation(player.animationState.GetCurrentNode()).Length) {
-                        targetAnimation = "Fall";
-                    }
                     if (!player.isOnGround) {
                         player.node.Velocity = new Vector3(
                             Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.01f),
@@ -252,7 +249,7 @@ namespace Gamma {
                     }
                     break;
                 case "Fall":
-                    if (player.isOnGround) { targetAnimation = "FallToIdle"; }
+                    if (player.isOnGround) { player.animationState.Start("FallToIdle", true); }
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
                     player.node.Velocity = new Vector3(
                         Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.01f),
@@ -261,14 +258,28 @@ namespace Gamma {
                     );
                     break;
                 case "FallToIdle":
-                    if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.2f)) {
+                    if (!player.isOnGround) { targetAnimation = "Fall"; }
+                    if (
+                        HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.2f) &&
+                        isAnimationSameAsPrevious
+                    ) {
                         if (player.isOnGround) {
+                            GD.Print("Landing sound at positions " + player.animationPlaybackBlocks[0].previousPlaybackPosition + " and " + player.animationPlaybackBlocks[0].currentPlaybackPosition);
                             StartSound3D(footStepMetalSFX, player.node.GlobalPosition, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                         }
                     }
-                    if (!player.isOnGround) { targetAnimation = "Fall"; }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.08f);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
+                    break;
+                case "TeleportShoot":
+                    if (!player.isOnGround) {
+                        player.node.Velocity = (player.node.Velocity * 18f) + Vector3.Up * 4f;
+                        player.animationState.Start("Fall", true); 
+                    }
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= player.animationPlayer.GetAnimation(player.animationState.GetCurrentNode()).Length) {
+                        targetAnimation = "Walk";
+                    }
+                    player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     break;
             }
             if (!isCurrentAnimationNodeABlendTree) {
