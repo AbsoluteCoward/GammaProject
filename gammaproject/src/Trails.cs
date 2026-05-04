@@ -13,7 +13,7 @@ namespace Gamma {
             public float length;
             public int count;
         }
-        public void TrailsCreate(Trail[] inputTrails, Node3D parent, Vector3 inputOffset, Color inputColor, float inputWidth, float inputLength, int maxCount) {
+        public void TrailsCreate(Trail[] inputTrails, Node3D parent, Vector3 inputOffset, Color inputColor, float inputWidth, float inputLength, int maxCount, bool isFullbright) {
             int index = -1;
             for (int i = 0; i < inputTrails.Length; i++) {
                 if (inputTrails[i].node == null) {
@@ -38,6 +38,7 @@ namespace Gamma {
             trail.color = inputColor;
             StandardMaterial3D material = new StandardMaterial3D();
             material.AlbedoColor = inputColor;
+            material.ShadingMode = isFullbright ? StandardMaterial3D.ShadingModeEnum.Unshaded : StandardMaterial3D.ShadingModeEnum.PerVertex;
             trail.node.MaterialOverride = material;
             trail.node.TopLevel = true;
             trail.node.CastShadow = GeometryInstance3D.ShadowCastingSetting.Off;

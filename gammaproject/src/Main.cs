@@ -233,13 +233,14 @@ namespace Gamma {
             ProjectilesUpdate();
             PlayerUpdate();
             PlayerCameraUpdate(ref playerCamera);
+            OrbUpdate();
             EnemyUpdate();
             if (Input.IsActionJustPressed("interact")) { Interact(); }
             DialogueUpdate();
             SubtitlesUpdate();
             UpdateExplosions();
             TargetReticlesUpdate();
-            TrailUpdate(trails, 0.2f);
+            TrailUpdate(trails, 0.1f);
             if (prisonSpotlight.node != null) { PrisonSpotlightUpdate(ref prisonSpotlight); }
             inputState.interact.isConsumed = false;
             inputState.action1.isConsumed = false;
