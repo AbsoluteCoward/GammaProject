@@ -67,6 +67,7 @@ namespace Gamma {
         public Interactable[] interactables;
         public Projectile[] projectiles;
         public Explosion[] explosions;
+        public Trail[] trails = new Trail[2];
         public PendingSceneChange pendingSceneChange;
         public PrisonSpotLight prisonSpotlight;
         public WorldEnvironment worldEnvironment;
@@ -238,6 +239,7 @@ namespace Gamma {
             SubtitlesUpdate();
             UpdateExplosions();
             TargetReticlesUpdate();
+            TrailUpdate(trails, 0.2f);
             if (prisonSpotlight.node != null) { PrisonSpotlightUpdate(ref prisonSpotlight); }
             inputState.interact.isConsumed = false;
             inputState.action1.isConsumed = false;

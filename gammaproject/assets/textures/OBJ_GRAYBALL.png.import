@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b46uqcjeu8xui"
-path.s3tc="res://.godot/imported/ICO_TARGETRETICLE_SPRITESHEET.png-8ab67fa81b37d4a1c7ac39ecf17e390f.s3tc.ctex"
+uid="uid://ct17f02e6kuca"
+path.s3tc="res://.godot/imported/OBJ_GRAYBALL.png-8dcdad201342fa80551fbbf49e433775.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/ICO_TARGETRETICLE_SPRITESHEET.png"
-dest_files=["res://.godot/imported/ICO_TARGETRETICLE_SPRITESHEET.png-8ab67fa81b37d4a1c7ac39ecf17e390f.s3tc.ctex"]
+source_file="res://assets/textures/OBJ_GRAYBALL.png"
+dest_files=["res://.godot/imported/OBJ_GRAYBALL.png-8dcdad201342fa80551fbbf49e433775.s3tc.ctex"]
 
 [params]
 
@@ -21,10 +21,10 @@ compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
-compress/hdr_compression=2
-compress/normal_map=2
-compress/channel_pack=1
-mipmaps/generate=false
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
@@ -37,5 +37,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=1024
-detect_3d/compress_to=1
+process/size_limit=0
+detect_3d/compress_to=0

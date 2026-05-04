@@ -16,6 +16,7 @@ namespace Gamma {
             public AnimationTree animationTree;
             public AnimationNodeStateMachinePlayback animationState;
             public Skeleton3D skeleton;
+            public Sprite3D orb;
             public Node3D[] targets;
             public PlaybackPositionData[] animationPlaybackBlocks;
             public string previousAnimationName;
@@ -31,6 +32,7 @@ namespace Gamma {
             public static int meatCount = 0;
             public static int chestBoneIndex;
             public static int headBoneIndex;
+            public static int miscObjectBoneIndex;
         }
         public struct PlayerCamera {
             public Vector3 targetPosition;
@@ -62,9 +64,13 @@ namespace Gamma {
             for (int i = 0; i < player.skeleton.GetBoneCount(); i++) {
                 if (player.skeleton.GetBoneName(i) == "Abdomen") { Player.chestBoneIndex = i; }
                 if (player.skeleton.GetBoneName(i) == "HeadBone") { Player.headBoneIndex = i; }
+                if (player.skeleton.GetBoneName(i) == "MiscObject") { Player.miscObjectBoneIndex = i; }
             }
             if (Player.chestBoneIndex  == 0) { GD.PrintErr("Couldn't find chest bone!"); }
             if (Player.headBoneIndex == 0) { GD.PrintErr("Couldn't find head bone!"); }
+            if (Player.miscObjectBoneIndex == 0) { GD.PrintErr("Couldn't find misc object bone!"); }
+            player.orb = inputPlayerNode.GetNode<Sprite3D>("Sprite3D");
+            TrailsCreate(trails, player.orb, Vector3.Zero, Colors.White, 0.05f, 0.5f, 100);
             player.targets = new Node3D[16];
             player.animationPlaybackBlocks = new PlaybackPositionData[4];
             player.targetCount = 0;
@@ -129,6 +135,9 @@ namespace Gamma {
         }
         public void PlayerUpdate() {
             player.animationTree.Advance((float)globalPhysicsDelta);
+            Transform3D whatever = player.skeleton.GetBoneGlobalPose(Player.miscObjectBoneIndex);
+            Vector3 global_whatever = player.skeleton.ToGlobal(whatever.Origin);
+            player.orb.GlobalPosition = global_whatever;
             if (sceneState.physicsFramesSinceSceneLoad % (int)GD.RandRange(20f, 100f) == 0) {
                 Vector3 playerPosition = player.node.GlobalPosition;
                 if (Mathf.Abs(playerPosition.X) > Player.maxDistance ||
@@ -174,9 +183,6 @@ namespace Gamma {
             bool shouldStartTeleport = action3JustPressed && !isIdleAndStill;
             switch (player.animationState.GetCurrentNode()) {
                 case "Walk":
-                    // for (int i = 0; i < player.animationPlaybackBlocks.Length; i++) {
-                    //     GD.Print($"Block {i} with parameter {player.animationPlaybackBlocks[i].parameterName} is at playback position {player.animationPlaybackBlocks[i].currentPlaybackPosition}");
-                    // }
                     bool shouldWalk = hasMovementInput || player.isTeleporting;
                     float walkBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/WalkBlend/blend_amount"), shouldWalk ? 1f : 0f, 0.1f);
                     player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", walkBlendAmount);
@@ -186,8 +192,16 @@ namespace Gamma {
                     if ((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount") <= ALMOST_ZERO && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.0f) {
                         player.animationTree.Set("parameters/Walk/TeleportStartupSeek/seek_request", 0.0f);
                     }
+                    if ((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount") <= ALMOST_ZERO) {
+                        player.orb.Visible = false;
+                    } else {
+                        player.orb.Visible = true;
+                    }
+
                     bool shouldShoot = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.8f;
-                    if (shouldShoot) { targetAnimation = "TeleportShoot"; }
+                    if (shouldShoot) { 
+                        targetAnimation = "TeleportShoot"; 
+                    }
                     if (!player.isOnGround) { targetAnimation = "Fall"; }
                     if (shouldStartJump) {
                         targetAnimation = "Jump";
@@ -218,8 +232,21 @@ namespace Gamma {
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
                     ApplyDynamicBoneTransformations();
+                    if (targetAnimation != "Walk") {
+                        player.animationTree.Set("parameters/Walk/TeleportStartupBlend/blend_amount", 0.0f);
+                        player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", 0.0f);
+                    }
                     break;
                 case "Jump":
+                    if (!isAnimationSameAsPrevious) {
+                        if (player.previousAnimationName == "TeleportShoot") {
+                            player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.4f);
+                        } else {
+                            player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
+                        }
+                        break;
+                    }
+                    GD.Print(player.animationTree.Get("parameters/Jump/Jump/current_position"));
                     bool shouldJump =
                         HasCrossedPlaybackPosition(
                             inputPreviousPosition: player.animationPlaybackBlocks[0].previousPlaybackPosition,
@@ -237,6 +264,9 @@ namespace Gamma {
                         player.node.GetLastSlideCollision() != null
                     ) {
                         GD.Print("Cancelling jump animation due to collision ");
+                        targetAnimation = "Fall";
+                    }
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Jump/Jump/current_length") && isAnimationSameAsPrevious) {
                         targetAnimation = "Fall";
                     }
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
@@ -273,13 +303,29 @@ namespace Gamma {
                     break;
                 case "TeleportShoot":
                     if (!player.isOnGround) {
-                        player.node.Velocity = (player.node.Velocity * 18f) + Vector3.Up * 4f;
-                        player.animationState.Start("Fall", true); 
+                        player.node.Velocity = Vector3.Up * 5f;
+                        player.animationState.Start("Fall", true);
+                        targetAnimation = "Fall";
+                        player.orb.Visible = false;
+                    }
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition > 0.8f && action3JustPressed) {
+                        GD.Print("JUMP!!!!");
+                        player.animationState.Start("Jump", true);
+                        targetAnimation = "Jump";
+                        player.node.Velocity = Vector3.Up * 12f;
+                        player.node.GlobalPosition += Vector3.Up * 0.5f;
+                        player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.4f);
                     }
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= player.animationPlayer.GetAnimation(player.animationState.GetCurrentNode()).Length) {
                         targetAnimation = "Walk";
                     }
+                    if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 1.18f)) {
+                        player.orb.Visible = false;
+                    }
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
+                    if (targetAnimation != "TeleportShoot") {
+                        player.orb.Visible = false;
+                    }
                     break;
             }
             if (!isCurrentAnimationNodeABlendTree) {
@@ -296,6 +342,7 @@ namespace Gamma {
                 GD.Print("changing animation to " + targetAnimation + " from " + player.animationState.GetCurrentNode());
                 player.animationPlaybackBlocks[0].previousPlaybackPosition = 0f;
                 player.animationPlaybackBlocks[1].previousPlaybackPosition = 0f;
+                player.animationPlaybackBlocks[2].previousPlaybackPosition = 0f;
                 player.animationTree.Set("parameters/Walk/Walk/current_position", 0f);
                 player.animationTree.Set("parameters/Walk/TeleportStartup/current_position", 0f);
                 player.animationState.Travel(targetAnimation);
