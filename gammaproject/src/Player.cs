@@ -16,7 +16,7 @@ namespace Gamma {
             public AnimationTree animationTree;
             public AnimationNodeStateMachinePlayback animationState;
             public Skeleton3D skeleton;
-            public MeshInstance3D orb;
+            public TeleportOrb orb;
             public Node3D[] targets;
             public PlaybackPositionData[] animationPlaybackBlocks;
             public string previousAnimationName;
@@ -69,8 +69,7 @@ namespace Gamma {
             if (Player.chestBoneIndex  == 0) { GD.PrintErr("Couldn't find chest bone!"); }
             if (Player.headBoneIndex == 0) { GD.PrintErr("Couldn't find head bone!"); }
             if (Player.miscObjectBoneIndex == 0) { GD.PrintErr("Couldn't find misc object bone!"); }
-            player.orb = inputPlayerNode.GetNode<MeshInstance3D>("Sprite3D");
-            TrailsCreate(trails, player.orb, Vector3.Forward * 0.3f, Colors.Cyan, 0.05f, 0.5f, 100, true);
+            OrbInitialize(inputPlayerNode.GetNode<MeshInstance3D>("Sprite3D"));
             player.targets = new Node3D[16];
             player.animationPlaybackBlocks = new PlaybackPositionData[4];
             player.targetCount = 0;
@@ -135,11 +134,11 @@ namespace Gamma {
         }
         public void PlayerUpdate() {
             player.animationTree.Advance((float)globalPhysicsDelta);
-            Transform3D whatever = player.orb.Visible ?
+            Transform3D whatever = player.orb.node.Visible ?
                 player.skeleton.GetBoneGlobalPose(Player.miscObjectBoneIndex) : 
                 player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex);
             Vector3 global_whatever = player.skeleton.ToGlobal(whatever.Origin);
-            player.orb.GlobalPosition = player.orb.TopLevel ? player.orb.GlobalPosition : global_whatever;
+            player.orb.node.GlobalPosition = player.orb.node.TopLevel ? player.orb.node.GlobalPosition : global_whatever;
             if (sceneState.physicsFramesSinceSceneLoad % (int)GD.RandRange(20f, 100f) == 0) {
                 Vector3 playerPosition = player.node.GlobalPosition;
                 if (Mathf.Abs(playerPosition.X) > Player.maxDistance ||
@@ -198,14 +197,14 @@ namespace Gamma {
                     if ((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount") <= ALMOST_ZERO && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.0f) {
                         player.animationTree.Set("parameters/Walk/TeleportStartupSeek/seek_request", 0.0f);
                     }
-                    if ((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount") <= ALMOST_ZERO && !player.orb.TopLevel) {
-                        player.orb.Visible = false;
+                    if ((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount") <= ALMOST_ZERO && !player.orb.node.TopLevel) {
+                        player.orb.node.Visible = false;
                     } else {
-                        player.orb.Visible = true;
+                        player.orb.node.Visible = true;
                     }
                     bool shouldShoot = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.8f;
                     if (shouldShoot) { 
-                        targetAnimation = "TeleportShoot"; 
+                        targetAnimation = "TeleportShoot";
                     }
                     if (!player.isOnGround) { targetAnimation = "Fall"; }
                     if (shouldStartJump) {
@@ -303,30 +302,48 @@ namespace Gamma {
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
                     break;
                 case "TeleportShoot":
+                    if (!isAnimationSameAsPrevious) {
+                        break;
+                    }
+                    if (player.wishDirection != Vector3.Zero) {
+                        RotateTowards(player.wishDirection, player.node, 1f);
+                    }
                     if (!player.isOnGround) {
                         player.node.Velocity = Vector3.Up * 5f;
                         player.animationState.Start("Fall", true);
                         targetAnimation = "Fall";
-                        player.orb.Visible = false;
+                        OrbReturn(true);
                     }
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition > 0.8f && action3JustPressed) {
                         targetAnimation = "Jump";
                         player.node.Velocity = Vector3.Up * 12f;
                         player.node.GlobalPosition += Vector3.Up * 0.5f;
+                        OrbReturn(true);
                     }
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= player.animationPlayer.GetAnimation(player.animationState.GetCurrentNode()).Length) {
-                        targetAnimation = "Walk";
+                        targetAnimation = "OrbIdle";
                     }
-                    if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 1.18f)) {
+                    if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 1f)) {
+                        if (player.wishDirection != Vector3.Zero) {
+                            RotateTowards(player.wishDirection, player.node, 1f);
+                        }
                         GD.Print("Emitting orb on position " + player.animationPlaybackBlocks[0].currentPlaybackPosition);
-                        player.orb.TopLevel = true;
+                        OrbShoot();
                     }
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
-                    if (targetAnimation != "TeleportShoot") {
-                        player.orb.Visible = false;
+                    if (targetAnimation != "TeleportShoot" && targetAnimation != "OrbIdle") {
+                        OrbReturn(false);
                     } else {
-                        player.orb.Visible = true;
+                        player.orb.node.Visible = true;
                     }
+                    break;
+                    case "OrbIdle":
+                        if (!isAnimationSameAsPrevious) {
+                            break;
+                        }
+                        if (!player.orb.node.TopLevel) {
+                            targetAnimation = "Walk";
+                        }
                     break;
             }
             if (!isCurrentAnimationNodeABlendTree) {
@@ -347,9 +364,14 @@ namespace Gamma {
                 switch (player.animationState.GetCurrentNode()) {
                     case "Walk":
                         GD.Print("Resetting walk blend amounts");
-                        if (!player.orb.TopLevel) {
-                            player.orb.Visible = false;
+                        if (!player.orb.node.TopLevel) {
+                            player.orb.node.Visible = false;
                         }
+                        break;
+                    case "TeleportShoot":
+                        if (player.wishDirection != Vector3.Zero) {
+                            RotateTowards(-player.wishDirection, player.node, 1f);
+                        }; 
                         break;
                 }
                 player.animationState.Travel(targetAnimation);
@@ -448,7 +470,7 @@ namespace Gamma {
             }
             float targetHeight = DEFAULT_CAMERA_HEIGHT + (player.isOnGround ? 0f : 3f);
             inputCamera.offsetHeight = Mathf.Lerp(inputCamera.offsetHeight, targetHeight, 0.05f);
-            Vector3 medianPosition = inputCamera.WallRayCast.GlobalPosition.Lerp(player.orb.GlobalPosition, 0.1f);
+            Vector3 medianPosition = inputCamera.WallRayCast.GlobalPosition.Lerp(player.orb.node.GlobalPosition, 0.1f);
             inputCamera.targetAngle = Mathf.PosMod(inputCamera.targetAngle, 360f);
             float angleDifference = Mathf.PosMod(inputCamera.targetAngle - inputCamera.angle + 180f, 360f) - 180f;
             inputCamera.angle += angleDifference * inputCamera.rotationLerpSpeed;
@@ -460,8 +482,9 @@ namespace Gamma {
                 new Vector3(0, inputCamera.offsetHeight, 0)
             );
             inputCamera.WallRayCast.GlobalPosition =
-                (player.node.GlobalPosition + player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex).Origin).Lerp(player.orb.GlobalPosition, 0.5f);
-            //player.node.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild<MeshInstance3D>(0).GlobalPosition +
+                player.orb.node.GlobalPosition;
+                //(player.node.GlobalPosition + player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex).Origin).Lerp(player.orb.node.GlobalPosition, 0.5f);
+                //player.node.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild<MeshInstance3D>(0).GlobalPosition +
             inputCamera.node.GlobalPosition = inputCamera.WallRayCast.IsColliding() ?
                 inputCamera.WallRayCast.GetCollisionPoint() + inputCamera.WallRayCast.GetCollisionNormal() * 0.1f :
                 inputCamera.WallRayCast.ToGlobal(inputCamera.WallRayCast.TargetPosition);

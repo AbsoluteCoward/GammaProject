@@ -10,6 +10,7 @@ namespace Gamma {
             public string scenePath;
             public bool shouldChangeScene;
         }
+        public const int DEFAULT_MISCELLANEOUS_SIZE = 8;
         public const int DIALOGUE_PORTRAIT_SIZE = 192;
         public const int DEFAULT_INTERACTABLES_SIZE = 16;
         public const int DEFAULT_AUDIO_POOL_SIZE = 8;
@@ -67,7 +68,7 @@ namespace Gamma {
         public Interactable[] interactables;
         public Projectile[] projectiles;
         public Explosion[] explosions;
-        public Trail[] trails = new Trail[2];
+        public Trail[] trails;
         public PendingSceneChange pendingSceneChange;
         public PrisonSpotLight prisonSpotlight;
         public WorldEnvironment worldEnvironment;
@@ -129,6 +130,7 @@ namespace Gamma {
             interactables = new Interactable[DEFAULT_INTERACTABLES_SIZE];
             projectiles = new Projectile[DEFAULT_PROJECTILES_SIZE];
             explosions = new Explosion[DEFAULT_EXPLOSIONS_SIZE];
+            trails = new Trail[DEFAULT_MISCELLANEOUS_SIZE];
             environmentNode = GetTree().CurrentScene.GetNode<Node>("Environment");
             worldEnvironment = environmentNode.GetNode<WorldEnvironment>("WorldEnvironment");
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
