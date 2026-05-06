@@ -127,6 +127,11 @@ namespace Gamma {
             headPose.Basis = headPose.Basis * new Basis(headTwist);
             player.skeleton.SetBoneGlobalPose(Player.headBoneIndex, headPose);
         }
+        public void PlayerTeleportTo(Vector3 inputPosition, PlayerCamera inputCamera) {
+            StartSound3D(teleportSFX, inputPosition, 0.01f, 1.0f, false);
+            player.node.GlobalPosition = inputPosition;
+            PlayerCameraUpdate(ref inputCamera);
+        }
         public void PlayerUpdate() {
             player.animationTree.Advance((float)globalPhysicsDelta);
             Transform3D whatever = player.orb.node.Visible ?

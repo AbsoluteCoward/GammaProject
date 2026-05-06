@@ -14,7 +14,7 @@ namespace Gamma {
             player.orb.collisionRaycast = (RayCast3D)player.orb.node.GetChild(0);
             SphereMesh sphere = (SphereMesh)player.orb.node.Mesh;
             float orbRadius = sphere.Radius / 2f;
-            TrailsCreate(trails, player.orb.node, Vector3.Forward * orbRadius, Colors.Cyan, orbRadius * 1.5f, 2f, 256, true);
+            //TrailsCreate(trails, player.orb.node, Vector3.Forward * orbRadius, Colors.Cyan, orbRadius * 1.5f, 2f, 256, true);
         }
         public void OrbShoot() {
             GD.Print("Orb shoot");
@@ -29,11 +29,7 @@ namespace Gamma {
             player.orb.velocity = Vector3.Zero;
             player.orb.timeAlive = 0f;
             player.orb.positionLastFrame = Vector3.Zero;
-            if (!inputShouldCancel) { 
-                StartSound3D(teleportSFX, player.orb.node.GlobalPosition, 0.01f, 1.0f, false);
-                player.node.GlobalPosition = player.orb.node.GlobalPosition;
-                PlayerCameraUpdate(ref playerCamera); // We force an update to the camera to prevent jitter
-            }
+            if (!inputShouldCancel) { PlayerTeleportTo(player.orb.node.GlobalPosition, playerCamera); }
             player.orb.node.GlobalPosition = player.node.GlobalPosition; 
             player.orb.node.Visible = false;
             player.orb.node.TopLevel = false;
@@ -56,11 +52,17 @@ namespace Gamma {
             orb.velocity *= 1f - 0.25f * (float)globalPhysicsDelta;
             float lift = 0.8f;
             orb.velocity = orb.velocity.Lerp(orbForward * currentSpeed, lift);
+            GD.Print(orb.node.GlobalTransform.Basis.Y);
             if (inputDirection != Vector2.Zero) {
                 float inputMagnitude = Mathf.Clamp(1f - (currentSpeed / 20f), 0.4f, 1f);
                 inputMagnitude *= Mathf.Clamp(orb.timeAlive / 2f, 0f, 1f);
                 orb.node.RotateObjectLocal(Vector3.Right, Mathf.DegToRad(inputDirection.Y * 3f * inputMagnitude));
                 orb.node.RotateObjectLocal(Vector3.Down, Mathf.DegToRad(inputDirection.X * 3f * inputMagnitude));
+            } else {
+                // Vector3 target = (Vector3.Up - orbForward * orbForward.Dot(Vector3.Up)).Normalized();
+                // float angle = orb.node.GlobalTransform.Basis.Y.Normalized().SignedAngleTo(target, orbForward);
+                // float rollSpeed = 4f;
+                // orb.node.RotateObjectLocal(Vector3.Forward, angle * rollSpeed * (float)globalPhysicsDelta);
             }
             if (currentSpeed < 6f) {
                 float factor = 1f - (currentSpeed / 6f);

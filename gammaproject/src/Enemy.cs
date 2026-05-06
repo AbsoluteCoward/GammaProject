@@ -41,7 +41,6 @@ namespace Gamma {
                 animationState.Travel("Run");
                 if (sceneState.physicsFramesSinceSceneLoad % 64 == 0) {
                     enemy.wishDirection = new Vector3((float)GD.RandRange(-1f, 1f), 0, (float)GD.RandRange(-1f, 1f));
-                    GD.Print($"{enemyNode.Name} wish direction: {enemy.wishDirection}");
                 }
                 RotateTowards(enemy.wishDirection, enemyNode, 1f);
                 enemies[i] = enemy;
