@@ -50,6 +50,7 @@ theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
 text = "WASD - Move
 I - charge telepirt orb
+K - Attack (Buggy)
 E - interact
-Space - Jump/Old Teleport"
+Space - Jump/Run"
 autowrap_mode = 3

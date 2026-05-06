@@ -8,7 +8,6 @@ namespace Gamma {
             public Node3D teleportShadowMesh;
         }
         public struct Player {
-            public TeleportEntity teleportEntity;
             public Vector3 wishDirection;
             public CharacterBody3D node;
             public Node3D gunBarrel;
@@ -51,9 +50,6 @@ namespace Gamma {
             player.wishDirection = Vector3.Zero;
             player.node = inputPlayerNode;
             player.gunBarrel = player.node.GetNode<MeshInstance3D>("Slink/Skeleton3D/GunBone/Trigger");
-            player.teleportEntity.node = inputPlayerNode.GetChild<CharacterBody3D>(4);
-            player.teleportEntity.topRayCast = player.teleportEntity.node.GetChild<RayCast3D>(1);
-            player.teleportEntity.teleportShadowMesh = inputPlayerNode.GetNode<Node3D>("TeleportEntity/ShadowSlink");
             player.animationPlayer = inputPlayerNode.GetChild<Node3D>(2).GetChild<AnimationPlayer>(1);
             player.animationTree = inputPlayerNode.GetChild<AnimationTree>(3);
             player.animationTree.Active = true;
@@ -78,7 +74,6 @@ namespace Gamma {
             player.animationPlaybackBlocks[0].previousPlaybackPosition = 0f;
             player.previousAnimationName = "";
             player.node.FloorSnapLength = 0.8f;
-            player.teleportEntity.node.CollisionLayer = 0;
             player.hasPlayerModelCopy = false;
             player.isTeleporting = false;
             GD.Print("Player Initialized");
@@ -116,18 +111,18 @@ namespace Gamma {
             playerCamera.rotationLerpSpeed = 0.1f;
             GD.Print("Player Camera Initialized");
         }
-        public void ApplyDynamicBoneTransformations() {
+        public void ApplyDynamicBoneTransformations(float inputChestTwist, float inputChestRoll, float inputHeadTwist) {
             if (player.skeleton == null) { return; }
             float chestRotation = player.turnAnticipation * 0.6f;
             Transform3D chestPose = player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex);
             Vector3 chestYawAxis = player.skeleton.GetBoneGlobalRest(Player.chestBoneIndex).Basis.Y;
             Vector3 chestRollAxis = player.skeleton.GetBoneGlobalRest(Player.chestBoneIndex).Basis.Z;
-            Quaternion chestTwist = new Quaternion(chestYawAxis, chestRotation);
-            Quaternion chestRoll = new Quaternion(chestRollAxis, chestRotation * 0.15f);
+            Quaternion chestTwist = new Quaternion(chestYawAxis, chestRotation * inputChestTwist);
+            Quaternion chestRoll = new Quaternion(chestRollAxis, chestRotation * inputChestRoll);
             chestPose.Basis = chestPose.Basis * new Basis(chestTwist * chestRoll);
             player.skeleton.SetBoneGlobalPose(Player.chestBoneIndex, chestPose);
             Vector3 headRotationAxis = player.skeleton.GetBoneGlobalRest(Player.headBoneIndex).Basis.Y.Normalized();
-            Quaternion headTwist = new Quaternion(headRotationAxis, chestRotation * 0.5f);
+            Quaternion headTwist = new Quaternion(headRotationAxis, chestRotation * inputHeadTwist);
             Transform3D headPose = player.skeleton.GetBoneGlobalPose(Player.headBoneIndex);
             headPose.Basis = headPose.Basis * new Basis(headTwist);
             player.skeleton.SetBoneGlobalPose(Player.headBoneIndex, headPose);
@@ -180,16 +175,14 @@ namespace Gamma {
                 }
             }
             bool isIdleAndStill = (float)player.animationTree.Get("parameters/Walk/WalkBlend/blend_amount") <= ALMOST_ZERO && !hasMovementInput;
-            bool shouldStartJump = action3JustPressed && isIdleAndStill;
-            bool shouldStartTeleport = action3JustPressed && !isIdleAndStill;
             switch (player.animationState.GetCurrentNode()) {
                 case "Walk":
                     if (!isAnimationSameAsPrevious) {
                         player.animationTree.Set("parameters/Walk/TeleportStartupBlend/blend_amount", 0.0f);
                         player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", 0.0f);
                     }
-                    bool shouldWalk = hasMovementInput || player.isTeleporting;
-                    float walkBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/WalkBlend/blend_amount"), shouldWalk ? 1f : 0f, 0.1f);
+                    bool shouldWalkBlend = hasMovementInput || player.isTeleporting;
+                    float walkBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/WalkBlend/blend_amount"), shouldWalkBlend ? 1f : 0f, 0.1f);
                     player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", walkBlendAmount);
                     bool shouldTeleportBlend = Input.IsActionPressed("action2");
                     float teleportBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount"), shouldTeleportBlend ? 1f : 0f, 0.1f);
@@ -202,22 +195,23 @@ namespace Gamma {
                     } else {
                         player.orb.node.Visible = true;
                     }
-                    bool shouldShoot = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.8f;
-                    if (shouldShoot) { 
+                    bool shouldShootFromWalk = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.8f;
+                    if (shouldShootFromWalk) { 
                         targetAnimation = "TeleportShoot";
                     }
-                    bool shouldRun = Input.IsActionPressed("shiftModifier") && hasMovementInput;
-                    if (shouldRun) {
-                        targetAnimation = "Run";
-                    }
-                    bool shouldFall = !player.isOnGround;
-                    if (shouldFall) { 
+                    bool shouldFallFromWalk = !player.isOnGround;
+                    if (shouldFallFromWalk) { 
                         targetAnimation = "Fall"; 
                     }
-                    if (shouldStartJump) {
+                    bool shouldJumpFromWalk = action3JustPressed && isIdleAndStill;
+                    if (shouldJumpFromWalk) {
                         targetAnimation = "Jump";
                         player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
                         inputState.action3.isConsumed = true;
+                    }
+                    bool shouldRunFromWalk = action3Pressed && hasMovementInput;
+                    if (shouldRunFromWalk) {
+                        targetAnimation = "Run";
                     }
                     int walkBlockIndex = GetPlaybackBlockIndex("Walk");
                     if (
@@ -243,10 +237,10 @@ namespace Gamma {
                     RotateTowards(direction, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
-                    ApplyDynamicBoneTransformations();
+                    ApplyDynamicBoneTransformations(1, 0.15f, 0.5f);
                     break;
                 case "Run":
-                    if (!Input.IsActionPressed("shiftModifier") || !hasMovementInput || player.node.Velocity.Length() < 0.2f) {
+                    if (!action3Pressed || !hasMovementInput || player.node.Velocity.Length() < 0.2f) {
                         targetAnimation = "Walk";
                     }
                     if (!player.isOnGround) {
@@ -266,7 +260,7 @@ namespace Gamma {
                     RotateTowards(player.wishDirection, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
-                    ApplyDynamicBoneTransformations();
+                    ApplyDynamicBoneTransformations(1, 0.15f, 0.5f);
                     break;
                 case "Jump":
                     if (!isAnimationSameAsPrevious) {
@@ -399,43 +393,6 @@ namespace Gamma {
                 }
                 player.animationState.Travel(targetAnimation);
             }
-            if (shouldStartTeleport) {
-                player.isTeleporting = true;
-                inputState.action3.isConsumed = true;
-                TurnShadowsOffOrOn(player.skeleton, false);
-                player.teleportEntity.teleportShadowMesh.Visible = true;
-                player.teleportEntity.node.TopLevel = true;
-                player.teleportEntity.node.CollisionMask = 2;
-                player.teleportEntity.node.GlobalPosition = player.node.GlobalPosition;
-            }
-            if (player.isTeleporting && action3Pressed) {
-                Vector3 teleportDirection = hasMovementInput ? player.wishDirection : playerForward;
-                player.teleportEntity.node.Velocity = teleportDirection * TELEPORTENTITY_SPEED_MODIFIER;
-                player.wishDirection = playerForward;
-                RotateTowards((player.teleportEntity.node.Velocity * Y_FLAT).Normalized(), player.teleportEntity.node, 0.4f);
-                if (player.teleportEntity.topRayCast.IsColliding()) {
-                    Vector3 collisionPoint = player.teleportEntity.topRayCast.GetCollisionPoint();
-                    float heightDifference = Mathf.Abs(player.teleportEntity.node.GlobalPosition.Y - collisionPoint.Y);
-                    bool canClimbSurface =
-                        heightDifference > TELEPORTENTITY_CLIMB_MINIMUM_HEIGHT_DIFFERENCE &&
-                        heightDifference < TELEPORTENTITY_CLIMB_MAXIMUM_HEIGHT_DIFFERENCE &&
-                        player.teleportEntity.topRayCast.GetCollisionNormal().Dot(Vector3.Up) > TELEPORTENTITY_CLIMB_SURFACE_NORMAL_THRESHOLD;
-                    bool isVerticallyCloseToCollision = player.teleportEntity.node.GlobalPosition.Y < collisionPoint.Y;
-                    if (canClimbSurface || isVerticallyCloseToCollision) {
-                        player.teleportEntity.node.GlobalPosition = collisionPoint + TELEPORT_VERTICAL_OFFSET;
-                    }
-                }
-                player.teleportEntity.node.MoveAndSlide();
-            } else if (player.isTeleporting && action3JustReleased) {
-                player.isTeleporting = false;
-                TurnShadowsOffOrOn(player.skeleton, true);
-                player.teleportEntity.teleportShadowMesh.Visible = false;
-                StartSound3D(teleportSFX, player.teleportEntity.node.GlobalPosition, 0.01f, 1.0f, false);
-                player.node.GlobalPosition = player.teleportEntity.node.GlobalPosition;
-                PlayerCameraUpdate(ref playerCamera); // We force an update to the camera to prevent jitter
-                player.teleportEntity.node.CollisionMask = 0;
-                player.teleportEntity.node.TopLevel = false;
-            }
             if (Input.IsActionPressed("attack")) {
                 if (Input.IsActionJustPressed("attack")) {
                     for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
@@ -443,7 +400,7 @@ namespace Gamma {
                 }
                 for (int i = 0; i < enemyCount; i++) {
                     Node3D potentialTarget = enemies[i].node;
-                    bool isTargetInvalid = potentialTarget == player.node || potentialTarget == player.teleportEntity.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D);
+                    bool isTargetInvalid = potentialTarget == player.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D);
                     if (isTargetInvalid) { continue; }
                     Vector3 toTarget = potentialTarget.GlobalPosition - player.gunBarrel.GlobalPosition;
                     Vector3 toTargetFlat = (toTarget * Y_FLAT).Normalized();
