@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://b624rkte3tvyp" path="res://scenes/UI/subtitle_box.tscn" id="1_j31w5"]
 [ext_resource type="PackedScene" uid="uid://coytvcqlue4h2" path="res://scenes/UI/dialogue_box.tscn" id="2_27lm4"]
+[ext_resource type="Theme" uid="uid://bomkalgxvri2f" path="res://assets/tres/texttheme.tres" id="3_27lm4"]
 
 [node name="UI" type="Node" unique_id=1110879225]
 
@@ -27,3 +28,28 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
+
+[node name="Controls" type="Label" parent="." unique_id=333663813]
+texture_filter = 2
+texture_repeat = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -11.199996
+offset_top = -11.199996
+offset_right = 48.799988
+offset_bottom = 28.799988
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.8, 0.8)
+pivot_offset = Vector2(96, 96)
+size_flags_stretch_ratio = 0.0
+theme = ExtResource("3_27lm4")
+theme_override_constants/paragraph_spacing = 0
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+text = "WASD - Move
+I - charge telepirt orb
+E - interact
+Space - Jump/Old Teleport"
+autowrap_mode = 3

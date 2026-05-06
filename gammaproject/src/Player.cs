@@ -206,7 +206,14 @@ namespace Gamma {
                     if (shouldShoot) { 
                         targetAnimation = "TeleportShoot";
                     }
-                    if (!player.isOnGround) { targetAnimation = "Fall"; }
+                    bool shouldRun = Input.IsActionPressed("shiftModifier") && hasMovementInput;
+                    if (shouldRun) {
+                        targetAnimation = "Run";
+                    }
+                    bool shouldFall = !player.isOnGround;
+                    if (shouldFall) { 
+                        targetAnimation = "Fall"; 
+                    }
                     if (shouldStartJump) {
                         targetAnimation = "Jump";
                         player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
@@ -234,6 +241,29 @@ namespace Gamma {
                     targetAngle = Mathf.Clamp(targetAngle, -0.8f, 0.8f);
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
                     RotateTowards(direction, player.node, 0.2f);
+                    player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
+                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
+                    ApplyDynamicBoneTransformations();
+                    break;
+                case "Run":
+                    if (!Input.IsActionPressed("shiftModifier") || !hasMovementInput || player.node.Velocity.Length() < 0.2f) {
+                        targetAnimation = "Walk";
+                    }
+                    if (!player.isOnGround) {
+                        targetAnimation = "Fall"; 
+                    }
+                    if (
+                        HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.14f) ||
+                        HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.68f)
+                    ) {
+                        if (player.isOnGround) {
+                            StartSound3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                        }
+                    }
+                    float targetAngleRun = Mathf.Atan2(playerForward.Cross(player.wishDirection).Y, playerForward.Dot(player.wishDirection));
+                    targetAngle = Mathf.Clamp(targetAngleRun, -0.8f, 0.8f);
+                    player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
+                    RotateTowards(player.wishDirection, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
                     ApplyDynamicBoneTransformations();
@@ -303,10 +333,8 @@ namespace Gamma {
                     break;
                 case "TeleportShoot":
                     if (!isAnimationSameAsPrevious) {
+                        RotateTowards(-player.wishDirection, player.node, 1f);
                         break;
-                    }
-                    if (player.wishDirection != Vector3.Zero) {
-                        RotateTowards(player.wishDirection, player.node, 1f);
                     }
                     if (!player.isOnGround) {
                         player.node.Velocity = Vector3.Up * 5f;
@@ -367,11 +395,6 @@ namespace Gamma {
                         if (!player.orb.node.TopLevel) {
                             player.orb.node.Visible = false;
                         }
-                        break;
-                    case "TeleportShoot":
-                        if (player.wishDirection != Vector3.Zero) {
-                            RotateTowards(-player.wishDirection, player.node, 1f);
-                        }; 
                         break;
                 }
                 player.animationState.Travel(targetAnimation);
