@@ -14,7 +14,7 @@ namespace Gamma {
             player.orb.collisionRaycast = (RayCast3D)player.orb.node.GetChild(0);
             SphereMesh sphere = (SphereMesh)player.orb.node.Mesh;
             float orbRadius = sphere.Radius / 2f;
-            //TrailsCreate(trails, player.orb.node, Vector3.Forward * orbRadius, Colors.Cyan, orbRadius * 1.5f, 2f, 256, true);
+            TrailsCreate(trails, player.orb.node, Vector3.Forward * orbRadius, Colors.Cyan, orbRadius * 1.5f, 2f, 256, true);
         }
         public void OrbShoot() {
             GD.Print("Orb shoot");
@@ -50,9 +50,15 @@ namespace Gamma {
             Vector3 orbForward = -orb.node.GlobalTransform.Basis.Z.Normalized();
             orb.velocity += Vector3.Down * GRAVITY * (float)globalPhysicsDelta;
             orb.velocity *= 1f - 0.25f * (float)globalPhysicsDelta;
+            if (orb.velocity.Dot(Vector3.Down) > 0f) {
+                orb.velocity += Vector3.Down * (GRAVITY/2) * (float)globalPhysicsDelta;
+            }
             float lift = 0.8f;
             orb.velocity = orb.velocity.Lerp(orbForward * currentSpeed, lift);
             GD.Print(orb.node.GlobalTransform.Basis.Y);
+            if (Input.IsActionJustPressed("action3")) {
+                orb.velocity += orbForward * 2f;
+            }
             if (inputDirection != Vector2.Zero) {
                 float inputMagnitude = Mathf.Clamp(1f - (currentSpeed / 20f), 0.4f, 1f);
                 inputMagnitude *= Mathf.Clamp(orb.timeAlive / 2f, 0f, 1f);

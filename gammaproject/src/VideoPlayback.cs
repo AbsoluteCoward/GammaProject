@@ -23,10 +23,12 @@ namespace Gamma {
                 inputVideoPlayer.onVideoStart[i](this);
             }
         }
-        public void UpdateVideo(ref VideoPlayer inputVideoPlayer) {
+        public bool UpdateVideo(ref VideoPlayer inputVideoPlayer) {
+            bool isPlaying = inputVideoPlayer.node.IsPlaying();
             if (inputVideoPlayer.node.Stream != null && !inputVideoPlayer.node.IsPlaying()) {
                 EndVideo(ref inputVideoPlayer);
             }
+            return isPlaying;
         }
         public void EndVideo(ref VideoPlayer inputVideoPlayer) {
             inputVideoPlayer.node.Stream = null;

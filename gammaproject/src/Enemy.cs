@@ -44,7 +44,8 @@ namespace Gamma {
                 }
                 RotateTowards(enemy.wishDirection, enemyNode, 1f);
                 enemies[i] = enemy;
-                enemyNode.Velocity = -enemyNode.GlobalTransform.Basis.Z.Normalized() * 2f;
+                Vector3 enemyForward = -enemyNode.GlobalTransform.Basis.Z.Normalized() * 2f;
+                enemyNode.Velocity = new Vector3(enemyForward.X, enemyNode.Velocity.Y, enemyForward.Z);
                 enemyNode.Velocity += new Vector3(0, -9.8f * (float)globalPhysicsDelta, 0);
                 enemyNode.MoveAndSlide();
             }

@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://bbxkn1att1lyd" path="res://scenes/entities/prison_door.tscn" id="7_iyhkt"]
 [ext_resource type="PackedScene" uid="uid://csnkr661bahx6" path="res://scenes/entities/prison_spotlight.tscn" id="7_rtfyc"]
 [ext_resource type="PackedScene" uid="uid://qley5ny6m3l2" path="res://scenes/UI/default_ui.tscn" id="11_iyhkt"]
+[ext_resource type="PackedScene" uid="uid://bkuilqriq51he" path="res://scenes/entities/change_level.tscn" id="12_rtfyc"]
 
 [sub_resource type="Environment" id="Environment_6yhfo"]
 background_mode = 1
@@ -577,11 +578,14 @@ transform = Transform3D(-4.068e-08, -0.258819, 0.965926, -1.13133e-08, 0.965926,
 [node name="DungeonEntrance" parent="Entities" unique_id=1885244868 instance=ExtResource("3_ld8m6")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -11.9521, 1.3804, -24.8788)
 
-[node name="Player" parent="Entities" unique_id=1386249293 instance=ExtResource("1_0dihh")]
+[node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("1_0dihh")]
 transform = Transform3D(1, 0, 1.06581e-14, 0, 1, 0, -1.06581e-14, 0, 1, -5.26864, 1.46221, 62.2343)
 
 [node name="PlayerCamera" parent="Entities" unique_id=1744850958 instance=ExtResource("4_etjn4")]
 transform = Transform3D(1, 0, 0, 0, 0.83528, 0.549825, 0, -0.549825, 0.83528, -4.3, 4.23441, 62.5392)
 size = 27.89
+
+[node name="ChangeLevel" parent="Entities" unique_id=148112684 instance=ExtResource("12_rtfyc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 60)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("11_iyhkt")]

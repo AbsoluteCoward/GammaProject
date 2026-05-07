@@ -229,7 +229,7 @@ namespace Gamma {
             sceneState.timeSinceSceneLoad += (float)delta;
             sceneState.physicsFramesSinceSceneLoad++;
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
-            UpdateVideo(ref videoPlayer);
+            if (UpdateVideo(ref videoPlayer)) { return; }
             UpdateFadeInOut();
             //if (GetTree().CurrentScene.Name == "Level") { entitiesNode.GetParent().GetChild(0).GetChild<DirectionalLight3D>(1).RotationDegrees += new Vector3(0f, 20f, 0f); }
             ProjectilesUpdate();

@@ -265,7 +265,7 @@ namespace Gamma {
                     RotateTowards(player.wishDirection, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
-                    ApplyDynamicBoneTransformations(1, 0.15f, 0.5f);
+                    ApplyDynamicBoneTransformations(1.5f, 0.8f, 0.5f);
                     break;
                 case "Jump":
                     if (!isAnimationSameAsPrevious) {
