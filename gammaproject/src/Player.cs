@@ -65,7 +65,7 @@ namespace Gamma {
             if (Player.chestBoneIndex  == 0) { GD.PrintErr("Couldn't find chest bone!"); }
             if (Player.headBoneIndex == 0) { GD.PrintErr("Couldn't find head bone!"); }
             if (Player.miscObjectBoneIndex == 0) { GD.PrintErr("Couldn't find misc object bone!"); }
-            OrbInitialize(inputPlayerNode.GetNode<MeshInstance3D>("Sprite3D"));
+            OrbInitialize(inputPlayerNode.GetNode<Node3D>("TeleportOrb"));
             player.targets = new Node3D[16];
             player.animationPlaybackBlocks = new PlaybackPositionData[4];
             player.targetCount = 0;
@@ -111,7 +111,7 @@ namespace Gamma {
             playerCamera.rotationLerpSpeed = 0.1f;
             GD.Print("Player Camera Initialized");
         }
-        public void ApplyDynamicBoneTransformations(float inputChestTwist, float inputChestRoll, float inputHeadTwist) {
+        public void PlayerApplyDynamicBoneTransformations(float inputChestTwist, float inputChestRoll, float inputHeadTwist) {
             if (player.skeleton == null) { return; }
             float chestRotation = player.turnAnticipation * 0.6f;
             Transform3D chestPose = player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex);
@@ -242,7 +242,7 @@ namespace Gamma {
                     RotateTowards(direction, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
-                    ApplyDynamicBoneTransformations(1, 0.15f, 0.5f);
+                    PlayerApplyDynamicBoneTransformations(1, 0.15f, 0.5f);
                     break;
                 case "Run":
                     if (!action3Pressed || !hasMovementInput || player.node.Velocity.Length() < 0.2f) {
@@ -265,7 +265,7 @@ namespace Gamma {
                     RotateTowards(player.wishDirection, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
-                    ApplyDynamicBoneTransformations(1.5f, 0.8f, 0.5f);
+                    PlayerApplyDynamicBoneTransformations(1.5f, 0.8f, 0.5f);
                     break;
                 case "Jump":
                     if (!isAnimationSameAsPrevious) {
@@ -467,7 +467,7 @@ namespace Gamma {
                 new Vector3(0, inputCamera.offsetHeight, 0)
             );
             inputCamera.WallRayCast.GlobalPosition =
-                player.orb.node.GlobalPosition;
+                inputCamera.WallRayCast.GlobalPosition.Lerp(player.orb.node.GlobalPosition, 0.3f);
                 //(player.node.GlobalPosition + player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex).Origin).Lerp(player.orb.node.GlobalPosition, 0.5f);
                 //player.node.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild<MeshInstance3D>(0).GlobalPosition +
             inputCamera.node.GlobalPosition = inputCamera.WallRayCast.IsColliding() ?

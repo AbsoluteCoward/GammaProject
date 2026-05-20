@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://dl4gt4ixoj7h3"]
+
+[ext_resource type="PackedScene" uid="uid://d176dqblrsuxt" path="res://assets/models/TeleportOrb.gltf" id="1_oeu38"]
+[ext_resource type="Texture2D" uid="uid://nodktsu5kako" path="res://assets/textures/ICO_ARROW01.png" id="1_rfkj3"]
+[ext_resource type="PackedScene" uid="uid://b2viy0s85pdop" path="res://assets/models/Mantaray.gltf" id="3_3qdhe"]
+
+[node name="TeleportOrb" type="Node3D" unique_id=1002891983]
+
+[node name="TeleportOrb" parent="." unique_id=405297337 instance=ExtResource("1_oeu38")]
+
+[node name="Orb" parent="TeleportOrb" index="0" unique_id=309801503]
+visible = false
+
+[node name="OrbFront" parent="TeleportOrb" index="1" unique_id=500939138]
+visible = false
+
+[node name="RayCast3D" type="RayCast3D" parent="." unique_id=832659772]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1114606102]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+light_color = Color(0.8059726, 1, 1, 1)
+shadow_enabled = true
+omni_range = 10.0
+omni_attenuation = 0.5
+
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=2066462010]
+transform = Transform3D(-6.119594e-08, -1.4, -6.119594e-08, 0, -6.119594e-08, 1.4, -1.4, 6.119594e-08, 2.6749597e-15, 0, 0, -0.10000002)
+visible = false
+modulate = Color(0, 1, 1, 1)
+texture = ExtResource("1_rfkj3")
+
+[node name="Mantaray" parent="." unique_id=259857255 instance=ExtResource("3_3qdhe")]
+
+[node name="Skeleton3D" parent="Mantaray" index="0" unique_id=697718565]
+bones/0/rotation = Quaternion(-0.67962784, 1.5393755e-17, 1.1523354e-17, 0.73355716)
+bones/1/rotation = Quaternion(-0.045198876, -7.892519e-20, -2.258037e-17, 0.998978)
+bones/2/rotation = Quaternion(-0.051284503, -4.715511e-20, -2.1951937e-17, 0.99868417)
+bones/3/rotation = Quaternion(-0.046007227, 0.07054353, 0.31876114, 0.94408596)
+bones/4/rotation = Quaternion(-0.02319754, -0.023029687, -0.4089297, 0.9119803)
+bones/5/rotation = Quaternion(-0.046007227, -0.07054353, -0.31876114, 0.94408596)
+bones/6/rotation = Quaternion(-0.02319754, 0.023029687, 0.4089297, 0.9119803)
+bones/7/rotation = Quaternion(-0.02922289, -0.074181564, 0.7547261, 0.6511771)
+bones/8/rotation = Quaternion(-0.031794548, 0.20866182, 0.0434142, 0.9765064)
+bones/9/rotation = Quaternion(-0.03529602, 0.19376276, 0.13311568, 0.9713344)
+bones/10/rotation = Quaternion(-0.029222777, 0.07418139, -0.7547263, 0.6511769)
+bones/11/rotation = Quaternion(-0.0317948, -0.20866187, -0.04341439, 0.9765063)
+bones/12/rotation = Quaternion(-0.03529573, -0.19376278, -0.13311464, 0.97133446)
+
+[editable path="TeleportOrb"]
+[editable path="Mantaray"]
