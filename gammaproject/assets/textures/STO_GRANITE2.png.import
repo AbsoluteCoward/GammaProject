@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d37qy4ktvh18w"
-path.s3tc="res://.godot/imported/FAB_HERRINGBONE01.jpg-c40bd59fa6631c784d4226d5794b8871.s3tc.ctex"
+uid="uid://6euo4gfis1ds"
+path.s3tc="res://.godot/imported/STO_GRANITE2.png-ef14ae3a84cf6139b68bc98b20bad68e.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/FAB_HERRINGBONE01.jpg"
-dest_files=["res://.godot/imported/FAB_HERRINGBONE01.jpg-c40bd59fa6631c784d4226d5794b8871.s3tc.ctex"]
+source_file="res://assets/textures/STO_GRANITE2.png"
+dest_files=["res://.godot/imported/STO_GRANITE2.png-ef14ae3a84cf6139b68bc98b20bad68e.s3tc.ctex"]
 
 [params]
 

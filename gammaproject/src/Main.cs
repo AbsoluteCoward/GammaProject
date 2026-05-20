@@ -170,6 +170,10 @@ namespace Gamma {
                     case "Pot":
                         InteractablesInitialize((Node3D)child, InteractableLookup.PotOpen);
                         break;
+                    case "OilCandle":
+                        child.GetChild<Node3D>(0).GetChild<AnimationPlayer>(2).Play("Fire");
+                        InteractablesInitialize((Node3D)child, InteractableLookup.OilCandle);
+                        break;
                     case "PrisonSpotlight":
                         prisonSpotlight = new PrisonSpotLight();
                         prisonSpotlight.node = child;

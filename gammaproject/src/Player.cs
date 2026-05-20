@@ -248,15 +248,14 @@ namespace Gamma {
                     if (!action3Pressed || !hasMovementInput || player.node.Velocity.Length() < 0.2f) {
                         targetAnimation = "Walk";
                     }
-                    if (!player.isOnGround) {
-                        targetAnimation = "Fall"; 
-                    }
                     if (
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.14f) ||
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.68f)
                     ) {
                         if (player.isOnGround) {
                             StartSound3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                        } else {
+                            targetAnimation = "Fall";
                         }
                     }
                     float targetAngleRun = Mathf.Atan2(playerForward.Cross(player.wishDirection).Y, playerForward.Dot(player.wishDirection));
@@ -264,7 +263,7 @@ namespace Gamma {
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
                     RotateTowards(player.wishDirection, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
-                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
+                    player.node.Velocity += Vector3.Down * 1.8f * (float)globalPhysicsDelta;
                     PlayerApplyDynamicBoneTransformations(1.5f, 0.8f, 0.5f);
                     break;
                 case "Jump":

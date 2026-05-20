@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://cjlahtne2e1ro"]
+
+[ext_resource type="PackedScene" uid="uid://cvbbcevp00mf2" path="res://assets/models/OilCandle.gltf" id="1_7o8or"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1ywwd"]
+size = Vector3(0.4, 0.1, 0.6)
+
+[node name="OilCandle01" type="Node3D" unique_id=1181755276]
+metadata/Type = "OilCandle"
+
+[node name="OilCandle" parent="." unique_id=773370173 instance=ExtResource("1_7o8or")]
+
+[node name="Fire" parent="OilCandle" index="1" unique_id=597977066]
+"blend_shapes/Key 1" = 1.0
+"blend_shapes/Key 2" = 1.0
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1960999143]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=352997823]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1175871e-08, 0.049999993, 7.450581e-09)
+shape = SubResource("BoxShape3D_1ywwd")
+
+[editable path="OilCandle"]

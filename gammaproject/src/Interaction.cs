@@ -10,6 +10,7 @@ namespace Gamma {
             EnterDungeon,
             SlinkSinkDialogueStart,
             PotOpen,
+            OilCandle,
             VideoTest,
             TestDialogue
         }
@@ -84,6 +85,22 @@ namespace Gamma {
                                 currentLifeTime = 5f,
                                 onSubtitleStart = null,
                                 onSubtitleComplete = null
+                            });
+                            interactables[i].interaction = InteractableLookup.None;
+                            return;
+                        case InteractableLookup.OilCandle:
+                            if (!interactables[i].node.GetChild<Node3D>(0).GetChild<AnimationPlayer>(2).IsPlaying()) { goto case InteractableLookup.None; }
+                            SubtitlesAdd(new SubtitleData() {
+                                text = "You blow out the candle.",
+                                textColor = Colors.White,
+                                totalLifeTime = 5f,
+                                currentLifeTime = 5f,
+                                onSubtitleStart = null,
+                                onSubtitleComplete = new Action<Main>[] {
+                                    (Main) => Main.StartSound3D(GD.Load<AudioStream>("res://assets/sound/sigh.wav"), Vector3.Zero, 1.5f, 1f, true),
+                                    (Main) => interactables[i].node.GetChild<Node3D>(0).GetChild<MeshInstance3D>(1).Visible = false,
+                                    (Main) => interactables[i].node.GetChild<Node3D>(0).GetChild<AnimationPlayer>(2).Stop()
+                                },
                             });
                             interactables[i].interaction = InteractableLookup.None;
                             return;

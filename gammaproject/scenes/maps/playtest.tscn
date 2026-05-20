@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://b0pi1p7vaslco"]
 
+[ext_resource type="Texture2D" uid="uid://d0neoaw4r7020" path="res://assets/textures/FLR_TILE10.JPG" id="1_6xplv"]
 [ext_resource type="Texture2D" uid="uid://gnyim4vlsb18" path="res://assets/textures/FAB_LINENBEIGE.jpg" id="1_lau34"]
 [ext_resource type="Texture2D" uid="uid://0e2hnjca4y0y" path="res://assets/textures/MET_IRONINDUSTRAILPERFORATEGATE01_SEAMLESS.jpg" id="2_mfmdp"]
 [ext_resource type="PackedScene" uid="uid://cgbfcwwskitny" path="res://scenes/entities/bear.tscn" id="3_jpqbp"]
@@ -18,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://bkuilqriq51he" path="res://scenes/entities/change_level.tscn" id="17_5pg0k"]
 [ext_resource type="PackedScene" uid="uid://2rwuu2sj14ik" path="res://scenes/entities/test_video_playback.tscn" id="17_iwdfl"]
 [ext_resource type="PackedScene" uid="uid://qley5ny6m3l2" path="res://scenes/UI/default_ui.tscn" id="18_rrwtf"]
+[ext_resource type="PackedScene" uid="uid://cjlahtne2e1ro" path="res://scenes/entities/oil_candle01.tscn" id="19_5pg0k"]
 [ext_resource type="PackedScene" uid="uid://5mkchlnk6u3w" path="res://scenes/entities/test_dialogue.tscn" id="20_5pg0k"]
 
 [sub_resource type="Environment" id="Environment_lau34"]
@@ -30,14 +32,19 @@ fog_light_color = Color(0.29803923, 0.34509805, 0.26666668, 1)
 fog_density = 1.0
 fog_depth_end = 50.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4vflo"]
-albedo_texture = ExtResource("1_lau34")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qtude"]
+albedo_texture = ExtResource("1_6xplv")
+uv1_scale = Vector3(0.25, 0.25, 0.25)
+uv1_triplanar = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_aypjb"]
 size = Vector2(64, 64)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_rrwtf"]
 data = PackedVector3Array(32, 0, 32, -32, 0, 32, 32, 0, -32, -32, 0, 32, -32, 0, -32, 32, 0, -32)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4vflo"]
+albedo_texture = ExtResource("1_lau34")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wel7t"]
 albedo_texture = ExtResource("2_mfmdp")
@@ -99,7 +106,7 @@ spot_range = 10.0
 
 [node name="Cube" type="MeshInstance3D" parent="Geometry/playtest" unique_id=650711827]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 0)
-material_override = SubResource("StandardMaterial3D_4vflo")
+material_override = SubResource("StandardMaterial3D_qtude")
 mesh = SubResource("PlaneMesh_aypjb")
 skeleton = NodePath("")
 
@@ -441,15 +448,18 @@ transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -23, 0, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -26.2)
 
 [node name="Pot01" parent="Entities" unique_id=2002821025 instance=ExtResource("6_jpqbp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -22.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -16.2)
 
 [node name="TestVideoPlayback" parent="Entities" unique_id=1320848521 instance=ExtResource("17_iwdfl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -20.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -22.2)
 
 [node name="TestDialogue" parent="Entities" unique_id=1964998030 instance=ExtResource("20_5pg0k")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -18.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -20.2)
 
 [node name="ChangeLevel" parent="Entities" unique_id=148112684 instance=ExtResource("17_5pg0k")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -16.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -18.2)
+
+[node name="OilCandle01" parent="Entities" unique_id=1181755276 instance=ExtResource("19_5pg0k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -13)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("18_rrwtf")]
