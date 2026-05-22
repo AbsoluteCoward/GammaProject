@@ -8,9 +8,10 @@ size = Vector3(0.4, 0.1, 0.6)
 [node name="OilCandle01" type="Node3D" unique_id=1181755276]
 metadata/Type = "OilCandle"
 
-[node name="OilCandle" parent="." unique_id=773370173 instance=ExtResource("1_7o8or")]
+[node name="OilCandle" parent="." unique_id=1525579988 instance=ExtResource("1_7o8or")]
 
-[node name="Fire" parent="OilCandle" index="1" unique_id=597977066]
+[node name="Fire" parent="OilCandle" index="1" unique_id=1631412601]
+cast_shadow = 0
 "blend_shapes/Key 1" = 1.0
 "blend_shapes/Key 2" = 1.0
 
