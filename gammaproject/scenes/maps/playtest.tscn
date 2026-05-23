@@ -368,7 +368,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -16)
 [node name="Bear" parent="Entities" unique_id=2039105678 instance=ExtResource("20_4vflo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 8, 12)
 
-[node name="Crab01" parent="Entities" unique_id=1020102920 instance=ExtResource("21_wel7t")]
+[node name="Crab01" parent="Entities" unique_id=1247901200 instance=ExtResource("21_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 8, 12)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("18_rrwtf")]

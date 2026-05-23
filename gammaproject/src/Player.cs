@@ -208,7 +208,7 @@ namespace Gamma {
                     if (shouldFallFromWalk) { 
                         targetAnimation = "Fall"; 
                     }
-                    bool shouldJumpFromWalk = action3JustPressed && isIdleAndStill;
+                    bool shouldJumpFromWalk = action3JustPressed && !hasMovementInput;
                     if (shouldJumpFromWalk) {
                         targetAnimation = "Jump";
                         player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
@@ -248,14 +248,16 @@ namespace Gamma {
                     if (!action3Pressed || !hasMovementInput || player.node.Velocity.Length() < 0.2f) {
                         targetAnimation = "Walk";
                     }
+                    if (!player.isOnGround) {
+                        targetAnimation = "Fall";
+                        player.node.Velocity += Vector3.Up * 4f;
+                    }
                     if (
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.14f) ||
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.68f)
                     ) {
                         if (player.isOnGround) {
                             StartSound3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
-                        } else {
-                            targetAnimation = "Fall";
                         }
                     }
                     float targetAngleRun = Mathf.Atan2(playerForward.Cross(player.wishDirection).Y, playerForward.Dot(player.wishDirection));
@@ -402,7 +404,7 @@ namespace Gamma {
                     for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
                     player.targetCount = 0;
                 }
-                for (int i = 0; i < enemyCount; i++) {
+                for (int i = 0; i < Enemy.enemyCount; i++) {
                     Node3D potentialTarget = enemies[i].node;
                     bool isTargetInvalid = potentialTarget == player.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D);
                     if (isTargetInvalid) { continue; }

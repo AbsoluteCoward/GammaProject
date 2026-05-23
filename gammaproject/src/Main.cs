@@ -70,6 +70,7 @@ namespace Gamma {
         public Projectile[] projectiles;
         public Explosion[] explosions;
         public Trail[] trails;
+        public Enemy[] enemies;
         public PendingSceneChange pendingSceneChange;
         public PrisonSpotLight prisonSpotlight;
         public WorldEnvironment worldEnvironment;
@@ -127,7 +128,7 @@ namespace Gamma {
             player = new Player();
             playerCamera = new PlayerCamera();
             enemies = new Enemy[DEFAULT_ENEMIES_SIZE];
-            enemyCount = 0;
+            Enemy.enemyCount = 0;
             interactables = new Interactable[DEFAULT_INTERACTABLES_SIZE];
             projectiles = new Projectile[DEFAULT_PROJECTILES_SIZE];
             explosions = new Explosion[DEFAULT_EXPLOSIONS_SIZE];
