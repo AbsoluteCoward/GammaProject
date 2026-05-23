@@ -57,6 +57,7 @@ namespace Gamma {
         public PlayerCamera playerCamera;
         public VideoPlayer videoPlayer;
         public FadeRect fadeRect;
+        public SubtitleBox subtitleBox;
         public static AudioStream metalDinkSFX = GD.Load<AudioStream>("res://assets/sound/metalslam.wav");
         public static AudioStream metalSlamSFX = GD.Load<AudioStream>("res://assets/sound/metalslam1.wav");
         public static AudioStream footStepMetalSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");

@@ -10,8 +10,8 @@ namespace Gamma {
         public struct SubtitleLabel {
             public Color textColor;
             public Label dialogueTextLabel;
-            public Action<Main>[] onSubtitleComplete;
             public Action<Main>[] onSubtitleStart;
+            public Action<Main>[] onSubtitleComplete;
             public float totalLifeTime;
             public float currentLifeTime;
         }
@@ -23,7 +23,6 @@ namespace Gamma {
             public float totalLifeTime;
             public float currentLifeTime;
         }
-        public SubtitleBox subtitleBox;
         public void SubtitlesInitialize(VBoxContainer inputSubtitleNode) {
             subtitleBox.node = inputSubtitleNode;
             subtitleBox.activeSubtitles = new SubtitleLabel[3];
@@ -39,10 +38,16 @@ namespace Gamma {
             }
         }
         public void SubtitlesAdd(SubtitleData inputSubtitle) {
+            if (subtitleBox.activeSubtitles[0].onSubtitleComplete != null) {
+                for (int i = 0; i < subtitleBox.activeSubtitles[0].onSubtitleComplete.Length; i++) {
+                    subtitleBox.activeSubtitles[0].onSubtitleComplete[i](this);
+                }
+            }
             for (int i = 0; i < subtitleBox.activeSubtitles.Length - 1; i++) {
                 subtitleBox.activeSubtitles[i].textColor = subtitleBox.activeSubtitles[i + 1].textColor;
                 subtitleBox.activeSubtitles[i].dialogueTextLabel.Text = subtitleBox.activeSubtitles[i + 1].dialogueTextLabel.Text;
                 subtitleBox.activeSubtitles[i].dialogueTextLabel.Modulate = subtitleBox.activeSubtitles[i + 1].dialogueTextLabel.Modulate;
+                subtitleBox.activeSubtitles[i].dialogueTextLabel.VisibleCharacters = subtitleBox.activeSubtitles[i + 1].dialogueTextLabel.VisibleCharacters;
                 subtitleBox.activeSubtitles[i].onSubtitleComplete = subtitleBox.activeSubtitles[i + 1].onSubtitleComplete;
                 subtitleBox.activeSubtitles[i].onSubtitleStart = subtitleBox.activeSubtitles[i + 1].onSubtitleStart;
                 subtitleBox.activeSubtitles[i].totalLifeTime = subtitleBox.activeSubtitles[i + 1].totalLifeTime;
