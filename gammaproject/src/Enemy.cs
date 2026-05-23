@@ -11,7 +11,6 @@ namespace Gamma {
         public Enemy[] enemies;
         public int enemyCount;
         public void EnemyInitialize(CharacterBody3D inputNode) {
-            
             if (enemyCount >= enemies.Length) {
                 Enemy[] newEnemies = new Enemy[enemies.Length * 2];
                 for (int i = 0; i < enemies.Length; i++) {
@@ -22,7 +21,7 @@ namespace Gamma {
             }
             int index = enemyCount;
             enemies[index].node = inputNode;
-            enemies[index].animationPlayer = inputNode.GetNode<AnimationPlayer>("bear/AnimationPlayer");
+            enemies[index].animationPlayer = inputNode.GetChild<Node3D>(0).GetNode<AnimationPlayer>("AnimationPlayer");
             enemies[index].animationTree = inputNode.GetNode<AnimationTree>("AnimationTree");
             enemyCount++;
             for (int i = 0; i < enemyCount; i++) {
@@ -38,7 +37,7 @@ namespace Gamma {
                 if (enemyNode == null) { continue; }
                 Enemy enemy = enemies[i];
                 AnimationNodeStateMachinePlayback animationState = (AnimationNodeStateMachinePlayback)enemies[i].animationTree.Get("parameters/playback");
-                animationState.Travel("Run");
+                animationState.Travel("Move");
                 if (sceneState.physicsFramesSinceSceneLoad % 64 == 0) {
                     enemy.wishDirection = new Vector3((float)GD.RandRange(-1f, 1f), 0, (float)GD.RandRange(-1f, 1f));
                 }
@@ -52,7 +51,7 @@ namespace Gamma {
         }
         public void EnemyRemove(int inputIndex) {
             if (inputIndex < 0 || inputIndex >= enemyCount) {
-                GD.PrintErr("Bear Failed to remove: Invalid index!");
+                GD.PrintErr("Enemy Failed to remove: Invalid index!");
                 return;
             }
             if (enemies[inputIndex].node != null) { enemies[inputIndex].node.QueueFree(); }

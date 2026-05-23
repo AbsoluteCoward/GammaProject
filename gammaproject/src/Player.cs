@@ -279,7 +279,7 @@ namespace Gamma {
                         HasCrossedPlaybackPosition(
                             inputPreviousPosition: player.animationPlaybackBlocks[0].previousPlaybackPosition,
                             inputCurrentPosition: player.animationPlaybackBlocks[0].currentPlaybackPosition,
-                            inputEventPosition: 0.66f
+                            inputEventPosition: 0.5f
                         ) &&
                         player.isOnGround &&
                         isAnimationSameAsPrevious;

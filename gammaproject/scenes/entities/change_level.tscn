@@ -20,17 +20,17 @@ metadata/Type = "ChangeLevel"
 metadata/LevelPath = "res://scenes/maps/playtest.tscn"
 metadata/isVisible = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1959206005]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
-material_override = SubResource("StandardMaterial3D_0r88i")
-mesh = SubResource("CylinderMesh_hvmky")
-
-[node name="Label3D" type="Label3D" parent="MeshInstance3D" unique_id=1593540920]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+[node name="Label3D" type="Label3D" parent="." unique_id=1593540920]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 billboard = 2
 texture_filter = 0
 text = "LOAD LEVEL"
 font = ExtResource("2_0r88i")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1959206005]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+material_override = SubResource("StandardMaterial3D_0r88i")
+mesh = SubResource("CylinderMesh_hvmky")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1491628762]
 

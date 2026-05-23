@@ -17,7 +17,7 @@ length = 0.5
 animation = &"Idle"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_88yfi"]
-animation = &"Walk"
+animation = &"Move"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_lurs6"]
 advance_mode = 2
@@ -29,17 +29,43 @@ advance_mode = 2
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_uqnte"]
 states/Idle/node = SubResource("AnimationNodeAnimation_g01ac")
 states/Idle/position = Vector2(391, 100)
+states/Move/node = SubResource("AnimationNodeAnimation_88yfi")
+states/Move/position = Vector2(391, 215)
 states/Start/position = Vector2(212, 100)
-states/Walk/node = SubResource("AnimationNodeAnimation_88yfi")
-states/Walk/position = Vector2(391, 215)
-transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_lurs6"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_x6g3o"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_riunw")]
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_lurs6"), "Idle", "Move", SubResource("AnimationNodeStateMachineTransition_x6g3o"), "Move", "Idle", SubResource("AnimationNodeStateMachineTransition_riunw")]
+graph_offset = Vector2(-228.82658, -52)
 
 [node name="Crab01" type="CharacterBody3D" unique_id=2039105678]
-metadata/Type = "Crab"
+metadata/Type = "Enemy"
+
+[node name="Crab01" parent="." unique_id=1226842468 instance=ExtResource("1_g01ac")]
+
+[node name="Skeleton3D" parent="Crab01" index="0" unique_id=106954301]
+bones/2/rotation = Quaternion(-0.7139162, 2.894984e-11, -3.0101666e-09, 0.70023125)
+bones/3/rotation = Quaternion(-0.021951614, 0.0020227488, -0.058729988, 0.99803054)
+bones/4/rotation = Quaternion(-0.42922863, -0.0022414713, -0.024154022, 0.90287006)
+bones/8/rotation = Quaternion(-0.1155344, -0.033501096, -0.07800737, 0.98966885)
+bones/9/rotation = Quaternion(-0.552842, 0.005035153, 0.010431719, 0.83320564)
+bones/10/rotation = Quaternion(-0.26792324, 0.0302075, 0.084993415, 0.9592084)
+bones/11/rotation = Quaternion(-0.3217094, -0.0027656795, 0.0014220808, 0.9468334)
+bones/12/position = Vector3(0.43890727, 1.0822471, 0.2831961)
+bones/12/rotation = Quaternion(0.0060600955, -0.019638838, -0.26899293, 0.96292293)
+bones/13/rotation = Quaternion(0.93235326, 0.34933376, 0.09081443, -0.020886932)
+bones/14/position = Vector3(0.32500574, -0.16942818, -0.3249245)
+bones/15/position = Vector3(0.32500574, -0.16935043, 0.32523602)
+bones/16/position = Vector3(-0.43890736, 1.0822473, 0.28319612)
+bones/16/rotation = Quaternion(0.006060103, 0.01963884, 0.26899284, 0.96292293)
+bones/17/rotation = Quaternion(0.93235326, -0.34933376, -0.09081442, -0.020886924)
+bones/18/position = Vector3(-0.3250058, -0.16942818, -0.3249245)
+bones/19/position = Vector3(-0.3250058, -0.16935043, 0.32523602)
+
+[node name="Head" parent="Crab01/Skeleton3D" index="0" unique_id=2039392552]
+transform = Transform3D(0.9872048, 0.11393852, 0.111555375, 0.028161772, -0.813178, 0.5813333, 0.15695064, -0.5707534, -0.80598193, 0.0973442, 1.8018028, -1.944648)
 
 [node name="CollisionCylinder" type="CollisionShape3D" parent="." unique_id=1604721726]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4937501, 1.4901161e-08)
 shape = SubResource("CylinderShape3D_pi8ka")
+metadata/Type = "Enemy"
 
 [node name="CollisionCylinder2" type="CollisionShape3D" parent="." unique_id=2050036549]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8988283, -1.6)
@@ -48,30 +74,6 @@ shape = SubResource("CylinderShape3D_g01ac")
 [node name="CollisionRay" type="CollisionShape3D" parent="." unique_id=1288128542]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.5, 0)
 shape = SubResource("SeparationRayShape3D_vhn86")
-
-[node name="Crab01" parent="." unique_id=1664118941 instance=ExtResource("1_g01ac")]
-
-[node name="Skeleton3D" parent="Crab01" index="0" unique_id=951510947]
-bones/2/rotation = Quaternion(-0.7139162, 2.894984e-11, -3.0101666e-09, 0.70023125)
-bones/3/rotation = Quaternion(-0.012783789, 0.001274438, -0.041684, 0.99904835)
-bones/4/rotation = Quaternion(-0.40375727, -0.0015892343, -0.017125497, 0.91470444)
-bones/8/rotation = Quaternion(-0.13946554, -0.03655521, -0.0829066, 0.9860729)
-bones/9/rotation = Quaternion(-0.4920818, 0.0035418244, 0.0052710054, 0.87052584)
-bones/10/rotation = Quaternion(-0.24768366, 0.03422328, 0.087868184, 0.9642411)
-bones/11/rotation = Quaternion(-0.3273288, -0.001965338, 0.0029875373, 0.94490373)
-bones/12/position = Vector3(0.43890727, 1.0822471, 0.2831961)
-bones/12/rotation = Quaternion(0.027255438, -0.06705652, -0.2972471, 0.95205295)
-bones/13/rotation = Quaternion(0.9234202, 0.37669864, 0.071334414, -0.017457504)
-bones/14/position = Vector3(0.32500574, -0.16942818, -0.3249245)
-bones/15/position = Vector3(0.32500574, -0.16935043, 0.32523602)
-bones/16/position = Vector3(-0.43890736, 1.0822473, 0.28319612)
-bones/16/rotation = Quaternion(0.02725545, 0.06705655, 0.29724708, 0.95205295)
-bones/17/rotation = Quaternion(0.9234202, -0.37669867, -0.07133443, -0.017457519)
-bones/18/position = Vector3(-0.3250058, -0.16942818, -0.3249245)
-bones/19/position = Vector3(-0.3250058, -0.16935043, 0.32523602)
-
-[node name="Head" parent="Crab01/Skeleton3D" index="0" unique_id=621541856]
-transform = Transform3D(0.993491, 0.085893944, 0.074818745, 0.018187864, -0.7680072, 0.64018285, 0.11244917, -0.6346551, -0.76457036, 0.0691865, 1.8170296, -1.9483156)
 
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=911403435]
 root_node = NodePath("../Crab01")

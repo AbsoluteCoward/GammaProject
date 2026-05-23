@@ -1638,7 +1638,7 @@
 					}
 				}
 			],
-			"name":"Walk",
+			"name":"Move",
 			"samplers":[
 				{
 					"input":107,

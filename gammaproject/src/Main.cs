@@ -150,7 +150,7 @@ namespace Gamma {
                 string entityType = (string)child.GetMeta("Type");
                 GD.Print("entity: " + child.GetMeta("Type"));
                 switch (entityType) {
-                    case "Bear":
+                    case "Enemy":
                         EnemyInitialize((CharacterBody3D)child);
                         break;
                     case "Player":
@@ -188,6 +188,10 @@ namespace Gamma {
                         break;
                     case "ChangeLevel":
                         InteractablesInitialize((Node3D)child, InteractableLookup.ChangeLevel);
+                        string labelName = (string)child.GetMeta("LevelPath");
+                        int lastSlashIndex = labelName.LastIndexOf('/');
+                        labelName = labelName.Substring(lastSlashIndex + 1);
+                        child.GetChild<Label3D>(0).Text = labelName;
                         if (!(bool)child.GetMeta("isVisible")) {
                             for (int j = 0; j < child.GetChildCount(); j++) {
                                 child.GetChild(j).QueueFree();

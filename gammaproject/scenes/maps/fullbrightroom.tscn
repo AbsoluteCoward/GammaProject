@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://c4dtdcsjwlxdp"]
 
+[ext_resource type="Texture2D" uid="uid://5lqyl3ujygci" path="res://assets/textures/Grass_01.png" id="7_tq2xm"]
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="11_ahs3x"]
 [ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="12_byhnx"]
-[ext_resource type="PackedScene" uid="uid://cgbfcwwskitny" path="res://scenes/entities/bear.tscn" id="13_v6pp5"]
-[ext_resource type="PackedScene" uid="uid://dgbvqthwrtpuq" path="res://scenes/entities/crab01.tscn" id="14_2ruwh"]
+[ext_resource type="PackedScene" uid="uid://cgbfcwwskitny" path="res://scenes/entities/enemies/bear.tscn" id="13_v6pp5"]
+[ext_resource type="PackedScene" uid="uid://dgbvqthwrtpuq" path="res://scenes/entities/enemies/crab01.tscn" id="14_2ruwh"]
 [ext_resource type="PackedScene" uid="uid://bkuilqriq51he" path="res://scenes/entities/change_level.tscn" id="20_o536e"]
 [ext_resource type="PackedScene" uid="uid://qley5ny6m3l2" path="res://scenes/UI/default_ui.tscn" id="22_15htx"]
 
@@ -17,6 +18,9 @@ fog_mode = 1
 fog_light_color = Color(0.29803923, 0.34509805, 0.26666668, 1)
 fog_density = 1.0
 fog_depth_end = 50.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1ub6q"]
+albedo_texture = ExtResource("7_tq2xm")
 
 [node name="Level" type="Node3D" unique_id=500624464]
 
@@ -35,6 +39,8 @@ spot_range = 10.0
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Geometry" unique_id=146233033]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.2, 0)
+material_override = SubResource("StandardMaterial3D_1ub6q")
+use_collision = true
 size = Vector3(20, 20, 20)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Geometry/CSGBox3D" unique_id=1886955793]

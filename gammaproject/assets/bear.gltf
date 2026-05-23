@@ -11,7 +11,8 @@
 		{
 			"name":"Scene",
 			"nodes":[
-				27
+				26,
+				25
 			]
 		}
 	],
@@ -552,13 +553,6 @@
 			"mesh":0,
 			"name":"Bear",
 			"skin":0
-		},
-		{
-			"children":[
-				26,
-				25
-			],
-			"name":"BearRig"
 		}
 	],
 	"animations":[
@@ -1113,21 +1107,18 @@
 				{
 					"sampler":78,
 					"target":{
-						"node":27,
 						"path":"translation"
 					}
 				},
 				{
 					"sampler":79,
 					"target":{
-						"node":27,
 						"path":"rotation"
 					}
 				},
 				{
 					"sampler":80,
 					"target":{
-						"node":27,
 						"path":"scale"
 					}
 				}
@@ -2090,7 +2081,7 @@
 					}
 				}
 			],
-			"name":"Run",
+			"name":"Move",
 			"samplers":[
 				{
 					"input":96,
