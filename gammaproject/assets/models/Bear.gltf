@@ -11,8 +11,7 @@
 		{
 			"name":"Scene",
 			"nodes":[
-				26,
-				25
+				27
 			]
 		}
 	],
@@ -553,6 +552,13 @@
 			"mesh":0,
 			"name":"Bear",
 			"skin":0
+		},
+		{
+			"children":[
+				26,
+				25
+			],
+			"name":"BearRig"
 		}
 	],
 	"animations":[
@@ -1107,18 +1113,21 @@
 				{
 					"sampler":78,
 					"target":{
+						"node":27,
 						"path":"translation"
 					}
 				},
 				{
 					"sampler":79,
 					"target":{
+						"node":27,
 						"path":"rotation"
 					}
 				},
 				{
 					"sampler":80,
 					"target":{
+						"node":27,
 						"path":"scale"
 					}
 				}
@@ -2546,7 +2555,7 @@
 		{
 			"mimeType":"image/png",
 			"name":"CHR_BLACKBEAR_FUR",
-			"uri":"textures/CHR_BLACKBEAR_FUR.png"
+			"uri":"../textures/CHR_BLACKBEAR_FUR.png"
 		}
 	],
 	"skins":[
@@ -4588,7 +4597,7 @@
 	"buffers":[
 		{
 			"byteLength":113236,
-			"uri":"bear.bin"
+			"uri":"Bear.bin"
 		}
 	]
 }

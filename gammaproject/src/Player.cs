@@ -52,9 +52,7 @@ namespace Gamma {
             player.gunBarrel = player.node.GetNode<MeshInstance3D>("Slink/Skeleton3D/GunBone/Trigger");
             player.animationPlayer = inputPlayerNode.GetChild<Node3D>(2).GetChild<AnimationPlayer>(1);
             player.animationTree = inputPlayerNode.GetChild<AnimationTree>(3);
-            player.animationTree.Active = true;
             player.animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
-            player.animationPlayer.Active = false;
             player.animationState = (AnimationNodeStateMachinePlayback)player.animationTree.Get("parameters/playback");
             player.skeleton = inputPlayerNode.GetChild<Node3D>(2).GetChild<Skeleton3D>(0);
             for (int i = 0; i < player.skeleton.GetBoneCount(); i++) {

@@ -1,9 +1,10 @@
+using System;
 using Godot;
 namespace Gamma {
     public partial class Main : Node {
         public enum EnemyType : byte {
-            Bear,
-            Crab
+            Generic,
+            Crab01
         }
         public enum EnemyState : byte {
             Idle,
@@ -12,13 +13,27 @@ namespace Gamma {
             Flee,
             Dead
         }
+        public struct EnemyParameters {
+            public EnemyType type;
+            public float moveSpeed;
+        }
         public struct Enemy {
             public CharacterBody3D node;
             public AnimationPlayer animationPlayer;
             public AnimationTree animationTree;
             public AnimationNodeStateMachinePlayback animationState;
+            public EnemyType type;
             public Vector3 wishDirection;
             static public int enemyCount;
+        }
+        public void EnemyGenericUpdate(Enemy enemy) {
+            Vector3 enemyForward = -enemy.node.GlobalTransform.Basis.Z.Normalized();
+            if (sceneState.physicsFramesSinceSceneLoad % 2 == 0) {
+                enemy.wishDirection = new Vector3((float)GD.RandRange(-1f, 1f), 0, (float)GD.RandRange(-1f, 1f));
+            }
+            RotateTowards(enemy.wishDirection, enemy.node, 0.01f);
+            enemy.node.Velocity = new Vector3(enemyForward.X, enemy.node.Velocity.Y, enemyForward.Z);
+            enemy.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
         }
         public void EnemyInitialize(CharacterBody3D inputNode) {
             if (Enemy.enemyCount >= enemies.Length) {
@@ -33,29 +48,27 @@ namespace Gamma {
             enemies[index].node = inputNode;
             enemies[index].animationPlayer = inputNode.GetChild<Node3D>(0).GetNode<AnimationPlayer>("AnimationPlayer");
             enemies[index].animationTree = inputNode.GetNode<AnimationTree>("AnimationTree");
+            enemies[index].animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
             enemies[index].animationState = (AnimationNodeStateMachinePlayback)enemies[index].animationTree.Get("parameters/playback");
+            enemies[index].animationState.Travel("Move");
+            enemies[index].wishDirection = new Vector3((float)GD.RandRange(-1f, 1f), 0, (float)GD.RandRange(-1f, 1f));
             Enemy.enemyCount++;
-            for (int i = 0; i < Enemy.enemyCount; i++) {
-                Enemy enemy = enemies[i];
-                enemy.wishDirection = new Vector3((float)GD.RandRange(-1f, 1f), 0, (float)GD.RandRange(-1f, 1f));
-                enemies[i] = enemy;
-            }
             GD.Print($"{inputNode.Name} Initialized at index {index}");
         }
         public void EnemyUpdate() {
             for (int i = 0; i < Enemy.enemyCount; i++) {
                 Enemy enemy = enemies[i];
                 CharacterBody3D enemyNode = enemies[i].node;
-                Vector3 enemyForward = -enemyNode.GlobalTransform.Basis.Z.Normalized() * 2f;
-                if (enemyNode == null) { continue; }
-                enemyNode.Velocity += new Vector3(0, -9.8f * (float)globalPhysicsDelta, 0);
-                enemy.animationState.Travel("Move");
-                if (sceneState.physicsFramesSinceSceneLoad % 64 == 0) {
-                    enemy.wishDirection = new Vector3((float)GD.RandRange(-1f, 1f), 0, (float)GD.RandRange(-1f, 1f));
+                enemy.animationTree.Advance((float)globalPhysicsDelta);
+                switch (enemy.type) {
+                    case EnemyType.Generic:
+                        EnemyGenericUpdate(enemy);
+                        break;
+                    case EnemyType.Crab01:
+                        EnemyGenericUpdate(enemy);
+                        break;
                 }
-                RotateTowards(enemy.wishDirection, enemyNode, 0.01f);
                 enemies[i] = enemy;
-                enemyNode.Velocity = new Vector3(enemyForward.X, enemyNode.Velocity.Y, enemyForward.Z);
                 enemyNode.MoveAndSlide();
             }
         }

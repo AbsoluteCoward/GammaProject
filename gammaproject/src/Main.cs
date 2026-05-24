@@ -151,7 +151,10 @@ namespace Gamma {
                 string entityType = (string)child.GetMeta("Type");
                 GD.Print("entity: " + child.GetMeta("Type"));
                 switch (entityType) {
-                    case "Enemy":
+                    case "EnemyGeneric":
+                        EnemyInitialize((CharacterBody3D)child);
+                        break;
+                    case "EnemyCrab01":
                         EnemyInitialize((CharacterBody3D)child);
                         break;
                     case "Player":
