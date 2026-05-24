@@ -5,10 +5,18 @@ namespace Gamma {
             Bear,
             Crab
         }
+        public enum EnemyState : byte {
+            Idle,
+            Wander,
+            Attack,
+            Flee,
+            Dead
+        }
         public struct Enemy {
             public CharacterBody3D node;
             public AnimationPlayer animationPlayer;
             public AnimationTree animationTree;
+            public AnimationNodeStateMachinePlayback animationState;
             public Vector3 wishDirection;
             static public int enemyCount;
         }
@@ -25,6 +33,7 @@ namespace Gamma {
             enemies[index].node = inputNode;
             enemies[index].animationPlayer = inputNode.GetChild<Node3D>(0).GetNode<AnimationPlayer>("AnimationPlayer");
             enemies[index].animationTree = inputNode.GetNode<AnimationTree>("AnimationTree");
+            enemies[index].animationState = (AnimationNodeStateMachinePlayback)enemies[index].animationTree.Get("parameters/playback");
             Enemy.enemyCount++;
             for (int i = 0; i < Enemy.enemyCount; i++) {
                 Enemy enemy = enemies[i];
@@ -35,19 +44,18 @@ namespace Gamma {
         }
         public void EnemyUpdate() {
             for (int i = 0; i < Enemy.enemyCount; i++) {
-                CharacterBody3D enemyNode = enemies[i].node;
-                if (enemyNode == null) { continue; }
                 Enemy enemy = enemies[i];
-                AnimationNodeStateMachinePlayback animationState = (AnimationNodeStateMachinePlayback)enemies[i].animationTree.Get("parameters/playback");
-                animationState.Travel("Move");
+                CharacterBody3D enemyNode = enemies[i].node;
+                Vector3 enemyForward = -enemyNode.GlobalTransform.Basis.Z.Normalized() * 2f;
+                if (enemyNode == null) { continue; }
+                enemyNode.Velocity += new Vector3(0, -9.8f * (float)globalPhysicsDelta, 0);
+                enemy.animationState.Travel("Move");
                 if (sceneState.physicsFramesSinceSceneLoad % 64 == 0) {
                     enemy.wishDirection = new Vector3((float)GD.RandRange(-1f, 1f), 0, (float)GD.RandRange(-1f, 1f));
                 }
                 RotateTowards(enemy.wishDirection, enemyNode, 0.01f);
                 enemies[i] = enemy;
-                Vector3 enemyForward = -enemyNode.GlobalTransform.Basis.Z.Normalized() * 2f;
                 enemyNode.Velocity = new Vector3(enemyForward.X, enemyNode.Velocity.Y, enemyForward.Z);
-                enemyNode.Velocity += new Vector3(0, -9.8f * (float)globalPhysicsDelta, 0);
                 enemyNode.MoveAndSlide();
             }
         }
