@@ -246,7 +246,8 @@ namespace Gamma {
                     if (!action3Pressed || !hasMovementInput || player.node.Velocity.Length() < 0.2f) {
                         targetAnimation = "Walk";
                     }
-                    if (!player.isOnGround) {
+                    if (!player.isOnGround && targetAnimation == "Run") {
+                        GD.Print("Jump from run");
                         targetAnimation = "Fall";
                         player.node.Velocity += Vector3.Up * 4f;
                     }

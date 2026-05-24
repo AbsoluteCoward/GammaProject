@@ -19,7 +19,6 @@
 [ext_resource type="PackedScene" uid="uid://2rwuu2sj14ik" path="res://scenes/entities/test_video_playback.tscn" id="17_iwdfl"]
 [ext_resource type="PackedScene" uid="uid://qley5ny6m3l2" path="res://scenes/UI/default_ui.tscn" id="18_rrwtf"]
 [ext_resource type="PackedScene" uid="uid://cjlahtne2e1ro" path="res://scenes/entities/oil_candle01.tscn" id="19_5pg0k"]
-[ext_resource type="PackedScene" uid="uid://cgbfcwwskitny" path="res://scenes/entities/enemies/bear.tscn" id="20_4vflo"]
 [ext_resource type="PackedScene" uid="uid://5mkchlnk6u3w" path="res://scenes/entities/test_dialogue.tscn" id="20_5pg0k"]
 [ext_resource type="PackedScene" uid="uid://dgbvqthwrtpuq" path="res://scenes/entities/enemies/crab01.tscn" id="21_wel7t"]
 
@@ -364,9 +363,6 @@ metadata/LevelPath = "res://scenes/maps/fullbrightroom.tscn"
 
 [node name="OilCandle01" parent="Entities" unique_id=1181755276 instance=ExtResource("19_5pg0k")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -16)
-
-[node name="Bear" parent="Entities" unique_id=2039105678 instance=ExtResource("20_4vflo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 8, 12)
 
 [node name="Crab01" parent="Entities" unique_id=1247901200 instance=ExtResource("21_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 8, 12)

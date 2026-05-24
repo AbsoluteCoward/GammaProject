@@ -3,11 +3,11 @@
 [ext_resource type="PackedScene" uid="uid://bpi5sj81h7o1f" path="res://assets/models/Crab01.gltf" id="1_g01ac"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_pi8ka"]
-height = 3.4109378
+height = 3.5
 radius = 1.7
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_g01ac"]
-height = 1.1138673
+height = 1.0
 radius = 0.8
 
 [sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_vhn86"]
@@ -23,8 +23,10 @@ animation = &"Move"
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_x6g3o"]
+xfade_time = 0.4
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_riunw"]
+xfade_time = 0.4
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_uqnte"]
 states/Idle/node = SubResource("AnimationNodeAnimation_g01ac")
@@ -42,33 +44,33 @@ metadata/Type = "EnemyCrab01"
 
 [node name="Skeleton3D" parent="Crab01" index="0" unique_id=2041853527]
 bones/2/rotation = Quaternion(-0.71391624, 2.8950672e-11, -3.0101672e-09, 0.7002311)
-bones/3/rotation = Quaternion(-0.055715933, 0.022807272, -0.109047964, 0.9922117)
-bones/4/rotation = Quaternion(-0.5642687, -0.0018535296, -0.044907685, 0.82436687)
-bones/8/rotation = Quaternion(-0.01909648, -0.027661413, -0.065329865, 0.9972975)
-bones/9/rotation = Quaternion(-0.84620374, 0.007927377, 0.020421851, 0.532409)
-bones/10/rotation = Quaternion(-0.36642691, 0.019670362, 0.0812038, 0.9266879)
-bones/11/rotation = Quaternion(-0.3961845, -0.0035527335, 0.0052095177, 0.9181493)
+bones/3/rotation = Quaternion(-0.03032195, 0.02596974, -0.047354862, 0.99808)
+bones/4/rotation = Quaternion(-0.5502085, 0.0031397287, -0.020350406, 0.83477336)
+bones/8/rotation = Quaternion(-0.07771208, -0.04300192, -0.086316705, 0.992301)
+bones/9/rotation = Quaternion(-0.8442911, 0.0017987925, -0.0015727329, 0.5358797)
+bones/10/rotation = Quaternion(-0.3405005, 0.03612627, 0.09789548, 0.93443614)
+bones/11/rotation = Quaternion(-0.5229726, 0.0015376748, 0.021469736, 0.85207766)
 bones/12/position = Vector3(0.6497148, 1.6020517, 0.4192155)
-bones/12/rotation = Quaternion(0.16878332, -0.32270762, -0.44045776, 0.8205906)
-bones/13/rotation = Quaternion(0.81364125, 0.5807141, -0.020147718, -0.01879411)
+bones/12/rotation = Quaternion(0.19636078, -0.34309983, -0.45472866, 0.7980895)
+bones/13/rotation = Quaternion(0.7731139, 0.6332112, -0.023551147, -0.027999407)
 bones/14/position = Vector3(0.4811063, -0.25080472, -0.48098624)
 bones/15/position = Vector3(0.4811063, -0.2506896, 0.48144725)
 bones/16/position = Vector3(-0.6497148, 1.6020517, 0.4192155)
-bones/16/rotation = Quaternion(0.16877775, 0.32268634, 0.44044882, 0.820605)
-bones/17/rotation = Quaternion(0.81358284, -0.58080035, 0.020065054, -0.018744979)
+bones/16/rotation = Quaternion(0.1963642, 0.34310612, 0.45473152, 0.7980843)
+bones/17/rotation = Quaternion(0.77310693, -0.63321954, 0.023552192, -0.028001241)
 bones/18/position = Vector3(-0.4811063, -0.2508047, -0.48098627)
 bones/19/position = Vector3(-0.4811063, -0.25068957, 0.48144722)
 
 [node name="Head" parent="Crab01/Skeleton3D" index="0" unique_id=1561412319]
-transform = Transform3D(0.9589351, 0.097651705, 0.266285, 0.03410694, -0.97174996, 0.23353441, 0.28156748, -0.21486212, -0.9351758, 0.26307315, 2.579814, -2.849755)
+transform = Transform3D(0.99078226, 0.016674716, 0.13443413, -0.02692299, -0.9483589, 0.31605402, 0.13276193, -0.31676006, -0.9391683, 0.11434539, 2.6438875, -2.8801076)
 
 [node name="CollisionCylinder" type="CollisionShape3D" parent="." unique_id=1604721726]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.977344, 1.4901161e-08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.077344, 1.4901161e-08)
 shape = SubResource("CylinderShape3D_pi8ka")
 metadata/Type = "Enemy"
 
 [node name="CollisionCylinder2" type="CollisionShape3D" parent="." unique_id=2050036549]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8418946, -2.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8703613, -2.2)
 shape = SubResource("CylinderShape3D_g01ac")
 
 [node name="CollisionRay" type="CollisionShape3D" parent="." unique_id=1288128542]
