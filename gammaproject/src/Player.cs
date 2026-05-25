@@ -243,12 +243,12 @@ namespace Gamma {
                     PlayerApplyDynamicBoneTransformations(1, 0.15f, 0.5f);
                     break;
                 case "Run":
-                    if (!action3Pressed || !hasMovementInput || player.node.Velocity.Length() < 0.2f) {
+                    if (!action3Pressed || !hasMovementInput) {
                         targetAnimation = "Walk";
                     }
                     if (!player.isOnGround && targetAnimation == "Run") {
                         GD.Print("Jump from run");
-                        targetAnimation = "Fall";
+                        targetAnimation = "RunJump02";
                         player.node.Velocity += Vector3.Up * 4f;
                     }
                     if (
@@ -306,6 +306,26 @@ namespace Gamma {
                             Mathf.Lerp(player.node.Velocity.Z, airControlDirection.Z * player.moveSpeed, 0.01f)
                         );
                     }
+                    break;
+                case "RunJump02":
+                    if (player.isOnGround) { player.animationState.Start("Roll", true); }
+                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
+                    break;
+                case "Roll":
+                    if (!isAnimationSameAsPrevious) {
+                        player.node.Velocity = playerForward * player.node.Velocity.Length();
+                        break;
+                    }
+                    if (!player.isOnGround) { targetAnimation = "Fall"; }
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Roll/current_length") && isAnimationSameAsPrevious) {
+                        if (inputDirection != Vector2.Zero && action3Pressed) { 
+                            targetAnimation = "Run"; 
+                        } else {
+                            targetAnimation = "Walk";
+                        }
+                    }
+                    player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.04f);
+                    player.node.Velocity += Vector3.Down * 9.8f * (float)globalPhysicsDelta;
                     break;
                 case "Fall":
                     if (player.isOnGround) { player.animationState.Start("FallToIdle", true); }

@@ -32,12 +32,10 @@ namespace Gamma {
             Vector3 enemyForward = -enemy.node.GlobalTransform.Basis.Z.Normalized();
             switch (enemy.state) {
                 case EnemyState.Wander:
-                    GD.Print(enemy.wishDirection);
                     if (enemy.animationState.GetCurrentNode() == "Move") {
                         if (sceneState.physicsFramesSinceSceneLoad % 64 == 0) {
                             enemy.wishDirection = new Vector3((float)GD.RandRange(-1f, 1f), 0, (float)GD.RandRange(-1f, 1f)).Normalized();
                         }
-                        GD.Print("moving");
                     }
                     if (sceneState.physicsFramesSinceSceneLoad % 128 == 0) {
                         bool shouldIdle = GD.Randf() < 0.5f;
