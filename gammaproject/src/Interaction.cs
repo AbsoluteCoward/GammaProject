@@ -97,7 +97,7 @@ namespace Gamma {
                                 currentLifeTime = 5f,
                                 onSubtitleStart = null,
                                 onSubtitleComplete = new Action<Main>[] {
-                                    (Main) => Main.StartSound3D(GD.Load<AudioStream>("res://assets/sound/sigh.wav"), Vector3.Zero, 1.5f, 1f, true),
+                                    (Main) => Main.PlaySound3D(GD.Load<AudioStream>("res://assets/sound/sigh.wav"), Vector3.Zero, 1.5f, 1f, true),
                                     (Main) => interactables[i].node.GetChild<Node3D>(0).GetChild<MeshInstance3D>(1).Visible = false,
                                     (Main) => interactables[i].node.GetChild<Node3D>(0).GetChild<AnimationPlayer>(2).Stop()
                                 },

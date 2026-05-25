@@ -96,10 +96,10 @@ namespace Gamma {
             float clamp = Mathf.Clamp(9f / Mathf.Max(9f, currentSpeed), 0f, 1f);
             player.orb.animationPlayer.SpeedScale = 1f + 11f * Mathf.Pow(clamp, 3f);
             Vector3 orbForward = -orb.node.GlobalTransform.Basis.Z.Normalized();
-            orb.velocity += Vector3.Down * GRAVITY * (float)globalPhysicsDelta;
+            orb.velocity += Vector3.Down * GRAVITY_STRENGTH * (float)globalPhysicsDelta;
             orb.velocity *= 1f - 0.25f * (float)globalPhysicsDelta;
             if (orb.velocity.Dot(Vector3.Down) > 0f) {
-                orb.velocity += Vector3.Down * (GRAVITY/2) * (float)globalPhysicsDelta;
+                orb.velocity += Vector3.Down * (GRAVITY_STRENGTH/2) * (float)globalPhysicsDelta;
             }
             float lift = 0.8f;
             orb.velocity = orb.velocity.Lerp(orbForward * currentSpeed, lift);

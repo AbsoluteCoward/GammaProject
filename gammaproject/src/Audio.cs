@@ -49,7 +49,7 @@ namespace Gamma {
                 sounds3D[i].timeRemaining = 0f;
             }
         }
-        public void StartSound3D(AudioStream inputSound, Vector3 inputPosition, float inputVolume, float inputPitchModifier, bool inputShouldOverlap) {
+        public void PlaySound3D(AudioStream inputSound, Vector3 inputPosition, float inputVolume, float inputPitchModifier, bool inputShouldOverlap) {
             int availableSlot = -1;
             for (int i = 0; i < sounds3D.Length; i++) {
                 if (sounds3D[i].node.Stream == inputSound && !inputShouldOverlap) {

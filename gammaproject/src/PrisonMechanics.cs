@@ -29,16 +29,16 @@ namespace Gamma {
                     prisonSpotlight.velocity.Z = Math.Abs(prisonSpotlight.velocity.Z);
                     GD.Print(prisonSpotlight.velocity.Z);
                     if (prisonSpotlight.velocity.Z > 10f) {
-                        StartSound3D(metalSlamSFX, prisonSpotlight.node.GlobalPosition, 1f, 1f, true);
+                        PlaySound3D(metalSlamSFX, prisonSpotlight.node.GlobalPosition, 1f, 1f, true);
                     }
-                    StartSound3D(metalDinkSFX, prisonSpotlight.node.GlobalPosition, 0.05f, 0.8f, true);
+                    PlaySound3D(metalDinkSFX, prisonSpotlight.node.GlobalPosition, 0.05f, 0.8f, true);
                     break;
                 case > 52f:
                     prisonSpotlight.velocity.Z = -Math.Abs(prisonSpotlight.velocity.Z);
                     if (prisonSpotlight.velocity.Z < -10f) {
-                        StartSound3D(metalSlamSFX, prisonSpotlight.node.GlobalPosition, 1f, 1f, true);
+                        PlaySound3D(metalSlamSFX, prisonSpotlight.node.GlobalPosition, 1f, 1f, true);
                     }
-                    StartSound3D(metalDinkSFX, prisonSpotlight.node.GlobalPosition, 0.05f, 0.8f, true);
+                    PlaySound3D(metalDinkSFX, prisonSpotlight.node.GlobalPosition, 0.05f, 0.8f, true);
                     break;
             }
             prisonSpotlight.node.GlobalPosition += prisonSpotlight.velocity * (float)globalPhysicsDelta;

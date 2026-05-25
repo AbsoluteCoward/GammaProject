@@ -21,18 +21,16 @@ namespace Gamma {
         public const float DEFAULT_CAMERA_DISTANCE = 3.0f;
         public const float DEFAULT_CAMERA_HEIGHT = DEFAULT_CAMERA_DISTANCE * 0.5f;
         public const float ALMOST_ZERO = 0.00001f;
-        public const float GRAVITY = 9.81f;
+        public const float GRAVITY_STRENGTH = 9.81f;
         public const float MAX_PROJECTILE_DISTANCE = 1000f;
         public const float MAX_PROJECTILE_LIFETIME = 10f;
         public const float TARGETTING_ANGLE = 12f;
-        public const float TELEPORTENTITY_SPEED_MODIFIER = 8.0f;
-        public const float TELEPORTENTITY_CLIMB_MINIMUM_HEIGHT_DIFFERENCE = 0.1f;
-        public const float TELEPORTENTITY_CLIMB_MAXIMUM_HEIGHT_DIFFERENCE = 2f;
-        public const float TELEPORTENTITY_CLIMB_SURFACE_NORMAL_THRESHOLD = 0.7f;
+        public const float PLAYER_LEG_LENGTH = 1;
         public static readonly Color NULL_COLOR = new Color(0f, 0f, 0f, 0f);
         public static readonly Vector3 TELEPORT_VERTICAL_OFFSET = new Vector3(0, 0.1f, 0);
         public static readonly Vector3 DEFAULT_UPWARD_CAMERA_OFFSET = new Vector3(0, 1.246f, 0);
         public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
+        public static readonly Vector3 GRAVITY_VECTOR = new Vector3(0, -GRAVITY_STRENGTH, 0);
         public static readonly Transform3D DEFAULT_SLINK_WALK_CHEST_POSE = new Transform3D(
             new Vector3(-1f, 0f, 0f),
             new Vector3(0f, 1f, 0f),
