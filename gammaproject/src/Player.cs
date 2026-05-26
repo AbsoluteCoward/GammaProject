@@ -51,11 +51,11 @@ namespace Gamma {
             player.wishDirection = Vector3.Zero;
             player.node = inputPlayerNode;
             player.gunBarrel = player.node.GetNode<MeshInstance3D>("Slink/Skeleton3D/GunBone/Trigger");
-            player.animationPlayer = inputPlayerNode.GetChild<Node3D>(2).GetChild<AnimationPlayer>(1);
-            player.animationTree = inputPlayerNode.GetChild<AnimationTree>(3);
+            player.animationPlayer = inputPlayerNode.GetNode<AnimationPlayer>("Slink/AnimationPlayer");
+            player.animationTree = inputPlayerNode.GetNode<AnimationTree>("AnimationTree");
             player.animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
             player.animationState = (AnimationNodeStateMachinePlayback)player.animationTree.Get("parameters/playback");
-            player.skeleton = inputPlayerNode.GetChild<Node3D>(2).GetChild<Skeleton3D>(0);
+            player.skeleton = inputPlayerNode.GetNode<Skeleton3D>("Slink/Skeleton3D");
             for (int i = 0; i < player.skeleton.GetBoneCount(); i++) {
                 if (player.skeleton.GetBoneName(i) == "Abdomen") { Player.chestBoneIndex = i; }
                 if (player.skeleton.GetBoneName(i) == "HeadBone") { Player.headBoneIndex = i; }
@@ -72,7 +72,6 @@ namespace Gamma {
             player.turnAnticipation = 0f;
             player.animationPlaybackBlocks[0].previousPlaybackPosition = 0f;
             player.previousAnimationName = "";
-            player.node.FloorSnapLength = 0.8f;
             player.groundRayCast = player.node.GetNode<RayCast3D>("RayCast3D");
             player.hasPlayerModelCopy = false;
             player.isTeleporting = false;
@@ -147,11 +146,27 @@ namespace Gamma {
                     player.node.GlobalPosition = Vector3.Zero;
                 }
             }
-            player.isOnGround = 
-                player.node.IsOnFloor() || 
-                (player.groundRayCast.IsColliding() && (player.groundRayCast.GlobalPosition.Y - player.groundRayCast.GetCollisionPoint().Y <= PLAYER_LEG_LENGTH)) ||
-                player.node.Velocity.Y > 0f;
-            GD.Print(player.isOnGround);
+
+            float distanceToGround = player.groundRayCast.IsColliding()
+                ? player.groundRayCast.GlobalPosition.Y - player.groundRayCast.GetCollisionPoint().Y
+                : float.MaxValue;
+            bool shouldSnapToGround = distanceToGround <= PLAYER_LEG_LENGTH * 1.5f;
+            bool isRayCollidingAtPlayerFeet = distanceToGround <= PLAYER_LEG_LENGTH;
+            player.isOnGround = (player.node.IsOnFloor() || shouldSnapToGround) && player.node.Velocity.Y <= 0f;
+            float targetY = player.groundRayCast.GetCollisionPoint().Y;
+            Vector3 TargetPosition = new Vector3(player.node.GlobalPosition.X, targetY, player.node.GlobalPosition.Z);
+            if (player.isOnGround) {
+                // GD.Print(targetY);
+                // GD.Print(player.node.GlobalPosition.Y);
+                // player.node.GlobalPosition = new Vector3(
+                //     player.node.GlobalPosition.X,
+                //     Mathf.Lerp(player.node.GlobalPosition.Y, targetY, 0.5f),
+                //     player.node.GlobalPosition.Z
+                // );
+                player.node.GlobalPosition = player.node.GlobalPosition.Lerp(TargetPosition, 0.3f + (player.node.Velocity.Length() * (float)globalPhysicsDelta));
+            }
+            GD.Print(player.node.Velocity.Length() * (float)globalPhysicsDelta);
+
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
             player.wishDirection =
                 (currentCamera.GlobalTransform.Basis.Z.Normalized() * inputDirection.Y + currentCamera.GlobalTransform.Basis.X.Normalized() * inputDirection.X) *
@@ -245,7 +260,6 @@ namespace Gamma {
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
                     RotateTowards(direction, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
-                    player.node.Velocity += GRAVITY_VECTOR * (float)globalPhysicsDelta;
                     PlayerApplyDynamicBoneTransformations(1, 0.15f, 0.5f);
                     break;
                 case "Run":
@@ -270,7 +284,6 @@ namespace Gamma {
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
                     RotateTowards(player.wishDirection, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
-                    player.node.Velocity += Vector3.Down * 1.8f * (float)globalPhysicsDelta;
                     PlayerApplyDynamicBoneTransformations(1.5f, 0.8f, 0.5f);
                     break;
                 case "Jump":
@@ -467,19 +480,10 @@ namespace Gamma {
                 for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
                 player.targetCount = 0;
             }
-            player.node.MoveAndSlide();
-            if (player.groundRayCast.IsColliding()) {
-                Vector3 collisionPoint = player.groundRayCast.GetCollisionPoint();
-                float distanceToGround = collisionPoint.DistanceTo(player.node.Position);
-                if (distanceToGround < PLAYER_LEG_LENGTH && player.isOnGround) {
-                    float target = collisionPoint.Y;
-                    player.node.GlobalPosition = new Vector3(
-                        player.node.GlobalPosition.X,
-                        Mathf.Lerp(player.node.GlobalPosition.Y, target, 1f),
-                        player.node.GlobalPosition.Z
-                    );
-                }
+            if (player.isOnGround && player.node.Velocity.Y < 0f) {
+                player.node.Velocity = new Vector3(player.node.Velocity.X, 0f, player.node.Velocity.Z);
             }
+            player.node.MoveAndSlide();
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }
