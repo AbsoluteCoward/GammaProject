@@ -318,7 +318,7 @@ namespace Gamma {
                 case "Roll":
                     if (!isAnimationSameAsPrevious) {
                         player.node.Velocity = playerForward * 5;
-                        PlaySound3D(GD.Load<AudioStream>("res://assets/sound/thud.ogg"), player.node.GlobalPosition, 0.05f, 1f, true);
+                        PlaySoundUI(GD.Load<AudioStream>("res://assets/sound/thud.ogg"), 0.05f, 1f, true);
                         break;
                     }
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Roll/current_length") && isAnimationSameAsPrevious) {
@@ -459,7 +459,7 @@ namespace Gamma {
                 }
             } else if (Input.IsActionJustReleased("attack")) {
                 Vector3 gunPosition = player.node.GlobalPosition + Vector3.Up;
-                PlaySound3D(shootSFX, gunPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
+                PlaySoundUI(shootSFX, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
                 for (int i = 0; i < player.targets.Length; i++) {
                     if (player.targets[i] == null) { continue; }
                     GD.Print("Firing at target " + player.targets[i].Name);
