@@ -66,11 +66,13 @@ namespace Gamma {
             if (Player.miscObjectBoneIndex == 0) { GD.PrintErr("Couldn't find misc object bone!"); }
             OrbInitialize(inputPlayerNode.GetNode<Node3D>("TeleportOrb"));
             player.targets = new Node3D[16];
-            player.animationPlaybackBlocks = new PlaybackPositionData[4];
+            player.animationPlaybackBlocks = new PlaybackPositionData[8];
             player.targetCount = 0;
             player.moveSpeed = 8.0f;
             player.turnAnticipation = 0f;
-            player.animationPlaybackBlocks[0].previousPlaybackPosition = 0f;
+            for (int i = 0; i < player.animationPlaybackBlocks.Length; i++) {
+                player.animationPlaybackBlocks[i].previousPlaybackPosition = 0f;
+            }
             player.previousAnimationName = "";
             player.groundRayCast = player.node.GetNode<RayCast3D>("RayCast3D");
             player.hasPlayerModelCopy = false;
@@ -127,7 +129,7 @@ namespace Gamma {
             player.skeleton.SetBoneGlobalPose(Player.headBoneIndex, headPose);
         }
         public void PlayerTeleportTo(Vector3 inputPosition, PlayerCamera inputCamera) {
-            PlaySound3D(teleportSFX, inputPosition, 0.01f, 1.0f, false);
+            PlaySoundUI(teleportSFX, 0.01f, 1.0f, false);
             player.node.GlobalPosition = inputPosition;
             PlayerCameraUpdate(ref inputCamera);
         }
@@ -146,10 +148,9 @@ namespace Gamma {
                     player.node.GlobalPosition = Vector3.Zero;
                 }
             }
-
-            float distanceToGround = player.groundRayCast.IsColliding()
-                ? player.groundRayCast.GlobalPosition.Y - player.groundRayCast.GetCollisionPoint().Y
-                : float.MaxValue;
+            float distanceToGround = player.groundRayCast.IsColliding() ? 
+                player.groundRayCast.GlobalPosition.Y - player.groundRayCast.GetCollisionPoint().Y  : 
+                float.MaxValue;
             bool shouldSnapToGround = distanceToGround <= PLAYER_LEG_LENGTH * 1.5f;
             bool isRayCollidingAtPlayerFeet = distanceToGround <= PLAYER_LEG_LENGTH;
             player.isOnGround = (player.node.IsOnFloor() || shouldSnapToGround) && player.node.Velocity.Y <= 0f;
@@ -158,7 +159,6 @@ namespace Gamma {
             if (player.isOnGround) {
                 player.node.GlobalPosition = player.node.GlobalPosition.Lerp(TargetPosition, 0.3f + (player.node.Velocity.Length() * (float)globalPhysicsDelta));
             }
-
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
             player.wishDirection =
                 (currentCamera.GlobalTransform.Basis.Z.Normalized() * inputDirection.Y + currentCamera.GlobalTransform.Basis.X.Normalized() * inputDirection.X) *
@@ -174,7 +174,7 @@ namespace Gamma {
             bool hasMovementInput = player.wishDirection.Length() > 0.1f;
             if (player.animationState.GetCurrentNode() == "") { return; }
             AnimationNodeStateMachine stateMachine = (AnimationNodeStateMachine)player.animationTree.TreeRoot;
-            bool isCurrentAnimationNodeABlendTree = ((AnimationNodeStateMachine)player.animationTree.TreeRoot).GetNode(player.animationState.GetCurrentNode()).GetType() == typeof(AnimationNodeBlendTree);
+            bool isCurrentAnimationNodeABlendTree = stateMachine.GetNode(player.animationState.GetCurrentNode()).GetType() == typeof(AnimationNodeBlendTree);
             if (!isCurrentAnimationNodeABlendTree) {
                 player.animationPlaybackBlocks[0].currentPlaybackPosition = player.animationState.GetCurrentPlayPosition();
             } else {
@@ -214,6 +214,9 @@ namespace Gamma {
                     if (shouldShootFromWalk) { 
                         targetAnimation = "TeleportShoot";
                     }
+                    bool shouldGunBlend = Input.IsActionPressed("attack");
+                    float gunBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/GunBlend/blend_amount"), shouldGunBlend ? 1f : 0f, 0.1f);
+                    player.animationTree.Set("parameters/Walk/GunBlend/blend_amount", gunBlendAmount);
                     bool shouldFallFromWalk = !player.isOnGround;
                     if (shouldFallFromWalk) { 
                         targetAnimation = "Fall";
@@ -231,19 +234,12 @@ namespace Gamma {
                     }
                     int walkBlockIndex = GetPlaybackBlockIndex("Walk");
                     if (
-                        HasCrossedPlaybackPosition(player.animationPlaybackBlocks[walkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[walkBlockIndex].currentPlaybackPosition, 0.33f)
-                    ) {
-                        if (player.isOnGround) {
-                            PlaySound3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f * walkBlendAmount, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
-                            GD.Print("Right footstep sound");
-                        }
-                    }
-                    if (
+                        HasCrossedPlaybackPosition(player.animationPlaybackBlocks[walkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[walkBlockIndex].currentPlaybackPosition, 0.33f) ||
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[walkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[walkBlockIndex].currentPlaybackPosition, 1.54f)
                     ) {
                         if (player.isOnGround) {
-                            PlaySound3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f * walkBlendAmount, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
-                            GD.Print("Left footstep sound");
+                            PlaySoundUI(footStepMetalSFX, 0.1f * walkBlendAmount, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                            GD.Print("Footstep");
                         }
                     }
                     Vector3 direction = player.isTeleporting || !hasMovementInput ? playerForward : player.wishDirection;
@@ -268,7 +264,8 @@ namespace Gamma {
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.68f)
                     ) {
                         if (player.isOnGround) {
-                            PlaySound3D(footStepMetalSFX, player.node.GlobalPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                            PlaySoundUI(footStepMetalSFX, 0.2f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                            GD.Print("Footstep");
                         }
                     }
                     float targetAngleRun = Mathf.Atan2(playerForward.Cross(player.wishDirection).Y, playerForward.Dot(player.wishDirection));
@@ -292,9 +289,7 @@ namespace Gamma {
                             inputPreviousPosition: player.animationPlaybackBlocks[0].previousPlaybackPosition,
                             inputCurrentPosition: player.animationPlaybackBlocks[0].currentPlaybackPosition,
                             inputEventPosition: 0.5f
-                        ) &&
-                        player.isOnGround &&
-                        isAnimationSameAsPrevious;
+                        );
                     if (shouldJump) {
                         player.node.Velocity += Vector3.Up * 12f;
                         player.node.Velocity += player.wishDirection.Length() > 0.1f ? player.wishDirection * 2f : player.node.Transform.Basis.Z.Normalized() * 2f;
@@ -359,7 +354,7 @@ namespace Gamma {
                     ) {
                         if (player.isOnGround) {
                             GD.Print("Landing sound at positions " + player.animationPlaybackBlocks[0].previousPlaybackPosition + " and " + player.animationPlaybackBlocks[0].currentPlaybackPosition);
-                            PlaySound3D(footStepMetalSFX, player.node.GlobalPosition, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                            PlaySoundUI(footStepMetalSFX, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                         }
                     }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.08f);
@@ -463,7 +458,7 @@ namespace Gamma {
                     }
                 }
             } else if (Input.IsActionJustReleased("attack")) {
-                Vector3 gunPosition = player.gunBarrel.GlobalPosition;
+                Vector3 gunPosition = player.node.GlobalPosition + Vector3.Up;
                 PlaySound3D(shootSFX, gunPosition, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
                 for (int i = 0; i < player.targets.Length; i++) {
                     if (player.targets[i] == null) { continue; }

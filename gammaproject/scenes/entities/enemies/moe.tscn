@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://b2pnfis3dskio"]
+
+[ext_resource type="PackedScene" uid="uid://chdtuqakpmpso" path="res://assets/models/Moe.gltf" id="1_ec151"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_pi8ka"]
+height = 1.575
+radius = 0.90000004
+
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_vhn86"]
+length = 0.5
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pi8ka"]
+animation = &"Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vhn86"]
+animation = &"Move"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vhn86"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_filh8"]
+xfade_time = 0.4
+advance_mode = 2
+advance_condition = &"shouldRun"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_p76uv"]
+advance_mode = 2
+advance_condition = &"shouldIdle"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_filh8"]
+states/Idle/node = SubResource("AnimationNodeAnimation_pi8ka")
+states/Idle/position = Vector2(308, 108)
+states/Move/node = SubResource("AnimationNodeAnimation_vhn86")
+states/Move/position = Vector2(308, 206)
+states/Start/position = Vector2(179, 108)
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_vhn86"), "Idle", "Move", SubResource("AnimationNodeStateMachineTransition_filh8"), "Move", "Idle", SubResource("AnimationNodeStateMachineTransition_p76uv")]
+graph_offset = Vector2(-175, 30)
+
+[node name="Moe" type="CharacterBody3D" unique_id=2039105678]
+metadata/Type = "EnemyGeneric"
+
+[node name="Moe" parent="." unique_id=1515932505 instance=ExtResource("1_ec151")]
+
+[node name="Skeleton3D" parent="Moe/Base" parent_id_path=PackedInt32Array(1515932505, 207482489) index="0" unique_id=2134033829]
+bones/1/position = Vector3(3.9794705e-09, 8.573811e-10, 0.23703538)
+bones/1/rotation = Quaternion(0.7587142, -7.7655756e-08, -9.564967e-08, 0.65142363)
+bones/2/rotation = Quaternion(-0.08075269, 3.661664e-09, 2.295062e-08, 0.9967342)
+bones/3/rotation = Quaternion(-0.32131833, -1.9095267e-14, 7.6608266e-08, 0.94697124)
+bones/4/rotation = Quaternion(-0.40966883, -2.1529942e-09, 9.297987e-08, 0.91223437)
+bones/6/rotation = Quaternion(-0.048985623, 0.34651428, 0.92430997, 0.15224822)
+bones/7/rotation = Quaternion(-0.6681429, 0.0073891627, -0.22973885, 0.70763725)
+bones/8/rotation = Quaternion(-0.028385546, 0.127534, 0.9866905, -0.09680575)
+bones/9/rotation = Quaternion(-0.53285587, -0.025112458, 0.18258938, 0.8258906)
+
+[node name="CollisionCylinder" type="CollisionShape3D" parent="." unique_id=1604721726]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3375001, 0)
+shape = SubResource("CylinderShape3D_pi8ka")
+
+[node name="CollisionRay" type="CollisionShape3D" parent="." unique_id=1288128542]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.5, 0)
+shape = SubResource("SeparationRayShape3D_vhn86")
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=1396183583]
+root_node = NodePath("../Moe")
+tree_root = SubResource("AnimationNodeStateMachine_filh8")
+anim_player = NodePath("../Moe/AnimationPlayer")
+parameters/conditions/shouldIdle = false
+parameters/conditions/shouldRun = false
+
+[editable path="Moe"]

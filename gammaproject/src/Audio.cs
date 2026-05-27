@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace Gamma {
     public partial class Main : Node {
-        public const int AUDIO_POOL_GROWTH_FACTOR = 2;
         public struct Sound3D {
             public AudioStreamPlayer3D node;
             public bool isPlaying;
@@ -101,7 +100,7 @@ namespace Gamma {
                 soundsUI[i].timeRemaining = 0f;
             }
         }
-        public void StartSoundUI(AudioStream inputSound, float inputVolume, float inputPitchModifier, bool inputShouldOverlap) {
+        public void PlaySoundUI(AudioStream inputSound, float inputVolume, float inputPitchModifier, bool inputShouldOverlap) {
             int availableSlot = -1;
             for (int i = 0; i < soundsUI.Length; i++) {
                 if (soundsUI[i].node.Stream == inputSound && !inputShouldOverlap) {
@@ -128,6 +127,7 @@ namespace Gamma {
             if (!soundsUI[availableSlot].isPlaying) { soundsUICount++; }
             soundsUI[availableSlot].isPlaying = true;
             soundsUI[availableSlot].timeRemaining = (float)inputSound.GetLength() / inputPitchModifier;
+            GD.Print("Playing sound " + inputSound + " at node " + soundsUI[availableSlot].node.Name);
         }
     }
 }

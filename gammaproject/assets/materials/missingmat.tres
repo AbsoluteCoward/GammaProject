@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bx8iuo3jx4u1s"]
+
+[ext_resource type="Texture2D" uid="uid://jah5ygnmea2w" path="res://assets/textures/NA_MISSINGTEXTURE.png" id="1_mgu0j"]
+
+[resource]
+shading_mode = 0
+albedo_texture = ExtResource("1_mgu0j")
+uv1_scale = Vector3(0.3, 0.3, 0.3)
+uv1_triplanar = true
+stencil_flags = 2
+stencil_outline_thickness = 0.02
