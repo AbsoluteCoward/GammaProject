@@ -156,16 +156,8 @@ namespace Gamma {
             float targetY = player.groundRayCast.GetCollisionPoint().Y;
             Vector3 TargetPosition = new Vector3(player.node.GlobalPosition.X, targetY, player.node.GlobalPosition.Z);
             if (player.isOnGround) {
-                // GD.Print(targetY);
-                // GD.Print(player.node.GlobalPosition.Y);
-                // player.node.GlobalPosition = new Vector3(
-                //     player.node.GlobalPosition.X,
-                //     Mathf.Lerp(player.node.GlobalPosition.Y, targetY, 0.5f),
-                //     player.node.GlobalPosition.Z
-                // );
                 player.node.GlobalPosition = player.node.GlobalPosition.Lerp(TargetPosition, 0.3f + (player.node.Velocity.Length() * (float)globalPhysicsDelta));
             }
-            GD.Print(player.node.Velocity.Length() * (float)globalPhysicsDelta);
 
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
             player.wishDirection =
@@ -334,7 +326,6 @@ namespace Gamma {
                         PlaySound3D(GD.Load<AudioStream>("res://assets/sound/thud.ogg"), player.node.GlobalPosition, 0.05f, 1f, true);
                         break;
                     }
-                    if (!player.isOnGround) { targetAnimation = "Fall"; }
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Roll/current_length") && isAnimationSameAsPrevious) {
                         if (inputDirection != Vector2.Zero && action3Pressed) { 
                             targetAnimation = "Run";
@@ -342,10 +333,17 @@ namespace Gamma {
                             targetAnimation = "Walk";
                         }
                     }
+                    if (!player.isOnGround) { targetAnimation = "Fall"; }
                     player.node.Velocity += GRAVITY_VECTOR * (float)globalPhysicsDelta;
                     break;
                 case "Fall":
-                    if (player.isOnGround) { player.animationState.Start("FallToIdle", true); }
+                    if (player.isOnGround) {
+                        if ((player.node.Velocity * Y_FLAT).Length() > 6f) {
+                            player.animationState.Start("Roll", true);
+                        } else {
+                            player.animationState.Start("FallToIdle", true); 
+                        }
+                    }
                     player.node.Velocity += GRAVITY_VECTOR * (float)globalPhysicsDelta;
                     player.node.Velocity = new Vector3(
                         Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.02f),
