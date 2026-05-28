@@ -51,7 +51,7 @@ namespace Gamma {
             player.orb.velocity = Vector3.Zero;
             player.orb.timeAlive = 0f;
             player.orb.positionLastFrame = Vector3.Zero;
-            if (!inputShouldCancel) { PlayerTeleportTo(player.orb.node.GlobalPosition, playerCamera); }
+            if (!inputShouldCancel) { PlayerTeleportTo(player.orb.collisionRaycast.GetCollisionPoint(), playerCamera); }
             player.orb.node.GlobalPosition = player.node.GlobalPosition; 
             player.orb.node.Visible = false;
             player.orb.node.TopLevel = false;

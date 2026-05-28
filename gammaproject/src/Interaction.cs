@@ -46,11 +46,11 @@ namespace Gamma {
             float halfSize = interactBoxSize / 2f;
             for (int i = 0; i < interactables.Length; i++) {
                 if (interactables[i].node == null) continue;
-                var pos = interactables[i].node.GlobalPosition;
-                if (pos.X >= interactBoxCenter.X - halfSize &&
-                    pos.X <= interactBoxCenter.X + halfSize &&
-                    pos.Z >= interactBoxCenter.Z - halfSize &&
-                    pos.Z <= interactBoxCenter.Z + halfSize) {
+                Vector3 position = interactables[i].node.GlobalPosition;
+                if (position.X >= interactBoxCenter.X - halfSize &&
+                    position.X <= interactBoxCenter.X + halfSize &&
+                    position.Z >= interactBoxCenter.Z - halfSize &&
+                    position.Z <= interactBoxCenter.Z + halfSize) {
                     switch (interactables[i].interaction) {
                         case InteractableLookup.None:
                             // SubtitlesAdd(new SubtitleData() {

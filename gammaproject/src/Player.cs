@@ -74,7 +74,7 @@ namespace Gamma {
                 player.animationPlaybackBlocks[i].previousPlaybackPosition = 0f;
             }
             player.previousAnimationName = "";
-            player.groundRayCast = player.node.GetNode<RayCast3D>("RayCast3D");
+            player.groundRayCast = player.node.GetNode<RayCast3D>("GroundRay");
             player.hasPlayerModelCopy = false;
             player.isTeleporting = false;
             GD.Print("Player Initialized");
@@ -131,6 +131,7 @@ namespace Gamma {
         public void PlayerTeleportTo(Vector3 inputPosition, PlayerCamera inputCamera) {
             PlaySoundUI(teleportSFX, 0.01f, 1.0f, false);
             player.node.GlobalPosition = inputPosition;
+            player.node.Velocity = Vector3.Zero;
             PlayerCameraUpdate(ref inputCamera);
         }
         public void PlayerUpdate() {

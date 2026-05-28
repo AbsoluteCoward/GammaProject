@@ -6,24 +6,14 @@ namespace Gamma {
     public partial class Main : Node {
         public struct Sound3D {
             public AudioStreamPlayer3D node;
-            public float timeRemaining;
         }
         public struct SoundUI {
             public AudioStreamPlayer node;
-            public float timeRemaining;
         }
         public Sound3D[] sounds3D;
         int sounds3DCount = 0;
         public SoundUI[] soundsUI;
         int soundsUICount = 0;
-        public readonly Dictionary<string, AudioStream> soundCache = new();
-        public AudioStream GetOrLoadSound(string path) {
-            if (!soundCache.TryGetValue(path, out var stream)) {
-                stream = GD.Load<AudioStream>(path);
-                soundCache[path] = stream;
-            }
-            return stream;
-        }
         public void Audio3DInitialize(int inputSize) {
             sounds3D = new Sound3D[inputSize];
             sounds3DCount = 0;
@@ -31,7 +21,6 @@ namespace Gamma {
                 AudioStreamPlayer3D newNode = new AudioStreamPlayer3D();
                 entitiesNode.AddChild(newNode);
                 sounds3D[i].node = newNode;
-                sounds3D[i].timeRemaining = 0f;
             }
         }
         public void Audio3DResize() {
@@ -41,7 +30,6 @@ namespace Gamma {
                 AudioStreamPlayer3D newNode = new AudioStreamPlayer3D();
                 entitiesNode.AddChild(newNode);
                 sounds3D[i].node = newNode;
-                sounds3D[i].timeRemaining = 0f;
             }
         }
         public void PlaySound3D(AudioStream inputSound, Vector3 inputPosition, float inputVolume, float inputPitchModifier, bool inputShouldOverlap) {
@@ -71,7 +59,6 @@ namespace Gamma {
             sounds3D[availableSlot].node.PitchScale = inputPitchModifier;
             sounds3D[availableSlot].node.Play();
             if (!sounds3D[availableSlot].node.Playing) { sounds3DCount++; }
-            sounds3D[availableSlot].timeRemaining = (float)inputSound.GetLength() / inputPitchModifier;
         }
         public void AudioUIInitialize(int inputSize) {
             soundsUI = new SoundUI[inputSize];
@@ -80,7 +67,6 @@ namespace Gamma {
                 AudioStreamPlayer newNode = new AudioStreamPlayer();
                 entitiesNode.AddChild(newNode);
                 soundsUI[i].node = newNode;
-                soundsUI[i].timeRemaining = 0f;
             }
         }
         public void AudioUIResize() {
@@ -90,7 +76,6 @@ namespace Gamma {
                 AudioStreamPlayer newNode = new AudioStreamPlayer();
                 entitiesNode.AddChild(newNode);
                 soundsUI[i].node = newNode;
-                soundsUI[i].timeRemaining = 0f;
             }
         }
         public void PlaySoundUI(AudioStream inputSound, float inputVolume, float inputPitchModifier, bool inputShouldOverlap) {
@@ -118,7 +103,6 @@ namespace Gamma {
             soundsUI[availableSlot].node.PitchScale = inputPitchModifier;
             soundsUI[availableSlot].node.Play();
             if (!soundsUI[availableSlot].node.Playing) { soundsUICount++; }
-            soundsUI[availableSlot].timeRemaining = (float)inputSound.GetLength() / inputPitchModifier;
         }
     }
 }
