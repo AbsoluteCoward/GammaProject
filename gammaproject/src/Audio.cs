@@ -38,9 +38,9 @@ namespace Gamma {
             }
         }
         public void Audio3DResize() {
-            int newSize = sounds3D.Length * AUDIO_POOL_GROWTH_FACTOR;
+            int newSize = sounds3D.Length * ARRAY_GROWTH_FACTOR;
             Array.Resize(ref sounds3D, newSize);
-            for (int i = sounds3D.Length / AUDIO_POOL_GROWTH_FACTOR; i < newSize; i++) {
+            for (int i = sounds3D.Length / ARRAY_GROWTH_FACTOR; i < newSize; i++) {
                 AudioStreamPlayer3D newNode = new AudioStreamPlayer3D();
                 entitiesNode.AddChild(newNode);
                 sounds3D[i].node = newNode;
@@ -90,9 +90,9 @@ namespace Gamma {
             }
         }
         public void AudioUIResize() {
-            int newSize = soundsUI.Length * AUDIO_POOL_GROWTH_FACTOR;
+            int newSize = soundsUI.Length * ARRAY_GROWTH_FACTOR;
             Array.Resize(ref soundsUI, newSize);
-            for (int i = soundsUI.Length / AUDIO_POOL_GROWTH_FACTOR; i < newSize; i++) {
+            for (int i = soundsUI.Length / ARRAY_GROWTH_FACTOR; i < newSize; i++) {
                 AudioStreamPlayer newNode = new AudioStreamPlayer();
                 entitiesNode.AddChild(newNode);
                 soundsUI[i].node = newNode;

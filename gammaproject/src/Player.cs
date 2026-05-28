@@ -157,7 +157,7 @@ namespace Gamma {
             float targetY = player.groundRayCast.GetCollisionPoint().Y;
             Vector3 TargetPosition = new Vector3(player.node.GlobalPosition.X, targetY, player.node.GlobalPosition.Z);
             if (player.isOnGround) {
-                player.node.GlobalPosition = player.node.GlobalPosition.Lerp(TargetPosition, 0.3f + (player.node.Velocity.Length() * (float)globalPhysicsDelta));
+                player.node.GlobalPosition = player.node.GlobalPosition.Lerp(TargetPosition, 0.1f + (player.node.Velocity.Length() * (float)globalPhysicsDelta));
             }
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
             player.wishDirection =
@@ -317,10 +317,14 @@ namespace Gamma {
                     break;
                 case "Roll":
                     if (!isAnimationSameAsPrevious) {
-                        player.node.Velocity = playerForward * 5;
                         PlaySoundUI(GD.Load<AudioStream>("res://assets/sound/thud.ogg"), 0.05f, 1f, true);
                         break;
                     }
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition < 0.5f) {
+                        RotateTowards(player.wishDirection, player.node, 0.1f);
+                        player.node.Velocity = playerForward * 8f;
+                    }
+                    player.node.Velocity = playerForward * 5;
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Roll/current_length") && isAnimationSameAsPrevious) {
                         if (inputDirection != Vector2.Zero && action3Pressed) { 
                             targetAnimation = "Run";
