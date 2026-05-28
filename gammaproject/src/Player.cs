@@ -129,7 +129,7 @@ namespace Gamma {
             player.skeleton.SetBoneGlobalPose(Player.headBoneIndex, headPose);
         }
         public void PlayerTeleportTo(Vector3 inputPosition, PlayerCamera inputCamera) {
-            PlaySound(teleportSFX, Vector3.Inf, 0.01f, 1.0f, false);
+            PlaySoundUI(teleportSFX, 0.01f, 1.0f, false);
             player.node.GlobalPosition = inputPosition;
             PlayerCameraUpdate(ref inputCamera);
         }
@@ -238,7 +238,7 @@ namespace Gamma {
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[walkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[walkBlockIndex].currentPlaybackPosition, 1.54f)
                     ) {
                         if (player.isOnGround) {
-                            PlaySound(footStepMetalSFX, Vector3.Inf, 0.1f * walkBlendAmount, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                            PlaySoundUI(footStepMetalSFX, 0.1f * walkBlendAmount, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                             GD.Print("Footstep");
                         }
                     }
@@ -264,7 +264,7 @@ namespace Gamma {
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.68f)
                     ) {
                         if (player.isOnGround) {
-                            PlaySound(footStepMetalSFX, player.node.GlobalPosition, 0.2f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
+                            PlaySoundUI(footStepMetalSFX, 0.2f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                             GD.Print("Footstep");
                         }
                     }
@@ -317,7 +317,7 @@ namespace Gamma {
                     break;
                 case "Roll":
                     if (!isAnimationSameAsPrevious) {
-                        PlaySound(GD.Load<AudioStream>("res://assets/sound/thud.ogg"), Vector3.Inf, 0.05f, 1f, true);
+                        PlaySoundUI(GD.Load<AudioStream>("res://assets/sound/thud.ogg"), 0.05f, 1f, true);
                         break;
                     }
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition < 0.5f) {
@@ -356,7 +356,7 @@ namespace Gamma {
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.2f) &&
                         isAnimationSameAsPrevious
                     ) {
-                        if (player.isOnGround) { PlaySound(footStepMetalSFX, Vector3.Inf, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true); }
+                        if (player.isOnGround) { PlaySoundUI(footStepMetalSFX, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true); }
                     }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.08f);
                     player.node.Velocity += GRAVITY_VECTOR * (float)globalPhysicsDelta;
@@ -460,7 +460,7 @@ namespace Gamma {
                 }
             } else if (Input.IsActionJustReleased("attack")) {
                 Vector3 gunPosition = player.node.GlobalPosition + Vector3.Up;
-                PlaySound(shootSFX, Vector3.Inf, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
+                PlaySoundUI(shootSFX, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
                 for (int i = 0; i < player.targets.Length; i++) {
                     if (player.targets[i] == null) { continue; }
                     GD.Print("Firing at target " + player.targets[i].Name);

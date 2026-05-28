@@ -8,7 +8,7 @@ namespace Gamma {
             speakerName = "TEST",
             text = "This is a test dialogue. This is a test dialogue. This is a test dialogue. This is a test dialogue.",
             onDialogueStart = new Action<Main>[] {
-                (Main) => Main.PlaySound(GD.Load<AudioStream>("res://assets/sound/notification.wav"), Vector3.Inf, 1f, 1f, true),
+                (Main) => Main.PlaySoundUI(GD.Load<AudioStream>("res://assets/sound/notification.wav"), 1f, 1f, true),
             },
             onDialogueComplete = new Action<Main>[] {
                 (Main) => GD.Print("Dialogue completed!"),

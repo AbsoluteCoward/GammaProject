@@ -468,23 +468,6 @@ transform = Transform3D(0.13012737, -0.9913703, 0.01583305, -0.87434053, -0.1222
 [node name="GunBone" parent="Slink/Skeleton3D" index="3" unique_id=1206332773]
 transform = Transform3D(0.13012762, -0.99137026, 0.015833035, -0.87434065, -0.12226707, -0.4696579, 0.46754053, 0.04727202, -0.8827062, -0.03227143, 0.37423182, -0.31643015)
 
-[node name="AnimationTree" type="AnimationTree" parent="." unique_id=2143095118]
-root_node = NodePath("../Slink")
-root_motion_track = NodePath("Skeleton3D:Base")
-tree_root = SubResource("AnimationNodeStateMachine_d4qa6")
-anim_player = NodePath("../Slink/AnimationPlayer")
-parameters/conditions/shouldFall = false
-parameters/conditions/shouldJump = false
-parameters/conditions/shouldOrb = false
-parameters/conditions/shouldRun = false
-parameters/conditions/shouldShoot = false
-parameters/conditions/shouldWalk = false
-parameters/Jump/JumpSeek/seek_request = -1.0
-parameters/Walk/WalkBlend/blend_amount = 0.0
-parameters/Walk/TeleportStartupBlend/blend_amount = 0.0
-parameters/Walk/TeleportStartupSeek/seek_request = -1.0
-parameters/Walk/GunBlend/blend_amount = 0.0
-
 [node name="TeleportOrb" parent="." unique_id=1002891983 instance=ExtResource("2_08t41")]
 visible = false
 
@@ -502,6 +485,23 @@ bones/9/rotation = Quaternion(0.00032911837, -0.0014455069, 0.054809347, 0.99849
 bones/10/rotation = Quaternion(-0.0031908576, 0.008807359, -0.7495978, 0.6618273)
 bones/11/rotation = Quaternion(-0.004558057, -0.002941453, -0.022478195, 0.9997326)
 bones/12/rotation = Quaternion(0.00032911837, 0.0014455069, -0.054809347, 0.99849576)
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=2143095118]
+root_node = NodePath("../Slink")
+root_motion_track = NodePath("Skeleton3D:Base")
+tree_root = SubResource("AnimationNodeStateMachine_d4qa6")
+anim_player = NodePath("../Slink/AnimationPlayer")
+parameters/conditions/shouldFall = false
+parameters/conditions/shouldJump = false
+parameters/conditions/shouldOrb = false
+parameters/conditions/shouldRun = false
+parameters/conditions/shouldShoot = false
+parameters/conditions/shouldWalk = false
+parameters/Jump/JumpSeek/seek_request = -1.0
+parameters/Walk/WalkBlend/blend_amount = 0.0
+parameters/Walk/TeleportStartupBlend/blend_amount = 0.0
+parameters/Walk/TeleportStartupSeek/seek_request = -1.0
+parameters/Walk/GunBlend/blend_amount = 0.0
 
 [editable path="Slink"]
 [editable path="TeleportOrb"]

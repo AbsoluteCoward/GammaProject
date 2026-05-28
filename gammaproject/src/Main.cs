@@ -217,7 +217,6 @@ namespace Gamma {
             SubtitlesInitialize(uiNode.GetNode<VBoxContainer>("SubtitleBox"));
             Audio3DInitialize(AUDIO_POOL_SIZE);
             AudioUIInitialize(AUDIO_POOL_SIZE);
-            AudioInitialize(AUDIO_POOL_SIZE, AUDIO_POOL_SIZE);
             StartFade(-0.3f);
             sceneState.isSceneLoaded = true;
         }
