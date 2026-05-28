@@ -65,6 +65,10 @@ namespace Gamma {
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public PackedScene targetReticleScene = GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
+        public Sound3D[] sounds3D;
+        int sounds3DCount = 0;
+        public SoundUI[] soundsUI;
+        int soundsUICount = 0;
         public Interactable[] interactables;
         public Projectile[] projectiles;
         public Explosion[] explosions;
@@ -122,6 +126,7 @@ namespace Gamma {
         }
         public void InitializeScene() {
             GD.Print("Initializing scene");
+            GD.Print(IsStructOptimal<Player>(new Player()));
             sceneState.timeSinceSceneLoad = 0;
             sceneState.physicsFramesSinceSceneLoad = 0;
             player = new Player();

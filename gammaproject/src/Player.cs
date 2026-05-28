@@ -2,24 +2,19 @@ using Godot;
 using System;
 namespace Gamma {
     public partial class Main : Node {
-        public struct TeleportEntity {
-            public CharacterBody3D node;
-            public RayCast3D topRayCast;
-            public Node3D teleportShadowMesh;
-        }
         public struct Player {
-            public Vector3 wishDirection;
+            public TeleportOrb orb;
             public CharacterBody3D node;
             public Node3D gunBarrel;
             public AnimationPlayer animationPlayer;
             public AnimationTree animationTree;
             public AnimationNodeStateMachinePlayback animationState;
             public Skeleton3D skeleton;
-            public TeleportOrb orb;
             public Node3D[] targets;
             public PlaybackPositionData[] animationPlaybackBlocks;
             public RayCast3D groundRayCast;
             public string previousAnimationName;
+            public Vector3 wishDirection;
             public float moveSpeed;
             public float turnAnticipation;
             public float maxTeleportDistance;
@@ -28,7 +23,7 @@ namespace Gamma {
             public bool shouldBeAsleep;
             public bool hasPlayerModelCopy;
             public bool isTeleporting;
-            public static float maxDistance = float.MaxValue;
+            public static float maxDistance = 1000f;
             public static int meatCount = 0;
             public static int chestBoneIndex;
             public static int headBoneIndex;
@@ -240,7 +235,6 @@ namespace Gamma {
                     ) {
                         if (player.isOnGround) {
                             PlaySoundUI(footStepMetalSFX, 0.1f * walkBlendAmount, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
-                            GD.Print("Footstep");
                         }
                     }
                     Vector3 direction = player.isTeleporting || !hasMovementInput ? playerForward : player.wishDirection;
@@ -266,7 +260,6 @@ namespace Gamma {
                     ) {
                         if (player.isOnGround) {
                             PlaySoundUI(footStepMetalSFX, 0.2f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
-                            GD.Print("Footstep");
                         }
                     }
                     float targetAngleRun = Mathf.Atan2(playerForward.Cross(player.wishDirection).Y, playerForward.Dot(player.wishDirection));

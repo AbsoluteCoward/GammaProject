@@ -1,7 +1,5 @@
 using Godot;
 using System;
-using System.Collections.Generic;
-
 namespace Gamma {
     public partial class Main : Node {
         public struct Sound3D {
@@ -10,10 +8,6 @@ namespace Gamma {
         public struct SoundUI {
             public AudioStreamPlayer node;
         }
-        public Sound3D[] sounds3D;
-        int sounds3DCount = 0;
-        public SoundUI[] soundsUI;
-        int soundsUICount = 0;
         public void Audio3DInitialize(int inputSize) {
             sounds3D = new Sound3D[inputSize];
             sounds3DCount = 0;
