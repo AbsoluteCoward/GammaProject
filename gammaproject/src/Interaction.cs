@@ -61,7 +61,7 @@ namespace Gamma {
                             //     onSubtitleStart = null,
                             //     onSubtitleComplete = null
                             // });
-                            PlaySoundUI(GD.Load<AudioStream>("res://assets/sound/switch02.ogg"), 0.4f, 1f, false);
+                            PlaySound(GD.Load<AudioStream>("res://assets/sound/switch02.ogg"), Vector3.Inf, 0.4f, 1f, false);
                             return;
                         case InteractableLookup.ChangeLevel:
                             string levelPath = (string)interactables[i].node.GetMeta("LevelPath");
@@ -98,7 +98,7 @@ namespace Gamma {
                                 currentLifeTime = 5f,
                                 onSubtitleStart = null,
                                 onSubtitleComplete = new Action<Main>[] {
-                                    (Main) => Main.PlaySoundUI(GD.Load<AudioStream>("res://assets/sound/sigh.wav"), 1.5f, 1f, true),
+                                    (Main) => Main.PlaySound(GD.Load<AudioStream>("res://assets/sound/sigh.wav"), Vector3.Inf, 1.5f, 1f, true),
                                     (Main) => interactables[i].node.GetChild<Node3D>(0).GetChild<MeshInstance3D>(1).Visible = false,
                                     (Main) => interactables[i].node.GetChild<Node3D>(0).GetChild<AnimationPlayer>(2).Stop(),
                                     (Main) => interactables[i].node.GetChild<Node3D>(0).GetChild<AnimationPlayer>(2).Free()

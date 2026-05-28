@@ -100,34 +100,33 @@ namespace Gamma {
                 soundsUI[i].timeRemaining = 0f;
             }
         }
-        public void PlaySoundUI(AudioStream inputSound, float inputVolume, float inputPitchModifier, bool inputShouldOverlap) {
-            int availableSlot = -1;
-            for (int i = 0; i < soundsUI.Length; i++) {
-                if (soundsUI[i].node.Stream == inputSound && !inputShouldOverlap) {
-                    GD.Print(inputSound + " does not want to overlap. Repeating instead");
-                    soundsUI[i].node.VolumeDb = Mathf.LinearToDb(inputVolume);
-                    soundsUI[i].node.PitchScale = inputPitchModifier;
-                    soundsUI[i].node.Play();
-                    return;
-                }
-                if (!soundsUI[i].isPlaying) {
-                    availableSlot = i;
-                    break;
-                }
-            }
-            if (availableSlot == -1) {
-                int oldSize = soundsUI.Length;
-                AudioUIResize();
-                availableSlot = oldSize;
-            }
-            soundsUI[availableSlot].node.Stream = inputSound;
-            soundsUI[availableSlot].node.VolumeDb = Mathf.LinearToDb(inputVolume);
-            soundsUI[availableSlot].node.PitchScale = inputPitchModifier;
-            soundsUI[availableSlot].node.Play();
-            if (!soundsUI[availableSlot].isPlaying) { soundsUICount++; }
-            soundsUI[availableSlot].isPlaying = true;
-            soundsUI[availableSlot].timeRemaining = (float)inputSound.GetLength() / inputPitchModifier;
-            GD.Print("Playing sound " + inputSound + " at node " + soundsUI[availableSlot].node.Name);
-        }
+        // public void PlaySoundUI(AudioStream inputSound, float inputVolume, float inputPitchModifier, bool inputShouldOverlap) {
+        //     int availableSlot = -1;
+        //     for (int i = 0; i < soundsUI.Length; i++) {
+        //         if (soundsUI[i].node.Stream == inputSound && !inputShouldOverlap) {
+        //             GD.Print(inputSound + " does not want to overlap. Repeating instead");
+        //             soundsUI[i].node.VolumeDb = Mathf.LinearToDb(inputVolume);
+        //             soundsUI[i].node.PitchScale = inputPitchModifier;
+        //             soundsUI[i].node.Play();
+        //             return;
+        //         }
+        //         if (!soundsUI[i].isPlaying) {
+        //             availableSlot = i;
+        //             break;
+        //         }
+        //     }
+        //     if (availableSlot == -1) {
+        //         int oldSize = soundsUI.Length;
+        //         AudioUIResize();
+        //         availableSlot = oldSize;
+        //     }
+        //     soundsUI[availableSlot].node.Stream = inputSound;
+        //     soundsUI[availableSlot].node.VolumeDb = Mathf.LinearToDb(inputVolume);
+        //     soundsUI[availableSlot].node.PitchScale = inputPitchModifier;
+        //     soundsUI[availableSlot].node.Play();
+        //     if (!soundsUI[availableSlot].isPlaying) { soundsUICount++; }
+        //     soundsUI[availableSlot].isPlaying = true;
+        //     soundsUI[availableSlot].timeRemaining = (float)inputSound.GetLength() / inputPitchModifier;
+        // }
     }
 }
