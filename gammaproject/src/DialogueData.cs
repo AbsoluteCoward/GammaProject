@@ -8,12 +8,12 @@ namespace Gamma {
             speakerName = "TEST",
             text = "This is a test dialogue. This is a test dialogue. This is a test dialogue. This is a test dialogue.",
             onDialogueStart = new Action<Main>[] {
-                (Main) => Main.PlaySound3D(GD.Load<AudioStream>("res://assets/sound/notification.wav"), Main.player.node.GlobalPosition, 1f, 1f, true),
+                (Main) => Main.PlaySoundUI(GD.Load<AudioStream>("res://assets/sound/notification.wav"), 1f, 1f, true),
             },
             onDialogueComplete = new Action<Main>[] {
                 (Main) => GD.Print("Dialogue completed!"),
             },
-            shouldSkipAnimation = false,
+            shouldSkipAnimation = true,
             textSpeed = 2f,
         };
         public static DialogueData errorDialogue = new DialogueData {

@@ -53,14 +53,15 @@ namespace Gamma {
                     pos.Z <= interactBoxCenter.Z + halfSize) {
                     switch (interactables[i].interaction) {
                         case InteractableLookup.None:
-                            SubtitlesAdd(new SubtitleData() {
-                                text = "\"I will not.\"",
-                                textColor = Colors.DarkRed,
-                                totalLifeTime = 5f,
-                                currentLifeTime = 5f,
-                                onSubtitleStart = null,
-                                onSubtitleComplete = null
-                            });
+                            // SubtitlesAdd(new SubtitleData() {
+                            //     text = "\"I will not.\"",
+                            //     textColor = Colors.DarkRed,
+                            //     totalLifeTime = 5f,
+                            //     currentLifeTime = 5f,
+                            //     onSubtitleStart = null,
+                            //     onSubtitleComplete = null
+                            // });
+                            PlaySoundUI(GD.Load<AudioStream>("res://assets/sound/switch02.ogg"), 0.4f, 1f, false);
                             return;
                         case InteractableLookup.ChangeLevel:
                             string levelPath = (string)interactables[i].node.GetMeta("LevelPath");
