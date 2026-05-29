@@ -47,7 +47,7 @@ namespace Gamma {
                     float minDistance = 1f;
                     float maxDistance = 20f;
                     float normalizedDistance = Mathf.Clamp((distance - minDistance) / (maxDistance - minDistance), 0f, 1f);
-                    float scale = Mathf.Lerp(0.3f, 0.05f, normalizedDistance);
+                    float scale = Mathf.Lerp(0.65f, 0.08f, normalizedDistance);
 
                     targetReticles[i].onScreenReticle.Frame = (targetReticles[i].onScreenReticle.Frame + 1) % targetReticleTotalFrames;
                     targetReticles[i].onScreenReticle.Scale = Vector2.One * scale;
