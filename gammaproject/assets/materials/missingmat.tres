@@ -4,8 +4,9 @@
 
 [resource]
 shading_mode = 0
+albedo_color = Color(0, 1, 1, 1)
 albedo_texture = ExtResource("1_mgu0j")
-uv1_scale = Vector3(0.3, 0.3, 0.3)
+uv1_scale = Vector3(0.25, 0.25, 0.25)
 uv1_triplanar = true
 stencil_flags = 2
 stencil_outline_thickness = 0.02

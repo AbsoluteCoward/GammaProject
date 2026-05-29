@@ -45,7 +45,7 @@ namespace Gamma {
             player = new Player();
             player.wishDirection = Vector3.Zero;
             player.node = inputPlayerNode;
-            player.gunBarrel = player.node.GetNode<MeshInstance3D>("Slink/Skeleton3D/GunBone/Trigger");
+            player.gunBarrel = player.node.GetNode<Node3D>("Slink/Skeleton3D/GunBone/GunBarrel");
             player.animationPlayer = inputPlayerNode.GetNode<AnimationPlayer>("Slink/AnimationPlayer");
             player.animationTree = inputPlayerNode.GetNode<AnimationTree>("AnimationTree");
             player.animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
@@ -73,6 +73,24 @@ namespace Gamma {
             player.hasPlayerModelCopy = false;
             player.isTeleporting = false;
             GD.Print("Player Initialized");
+        }
+        public void AttackLoop() {
+        }
+        public void Shoot() {
+            Vector3 gunPosition = player.gunBarrel.GlobalPosition;
+            PlaySoundUI(shootSFX, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
+            for (int i = 0; i < player.targets.Length; i++) {
+                if (player.targets[i] == null) { continue; }
+                GD.Print("Firing at target " + player.targets[i].Name);
+                ProjectilesCreate(
+                    inputStartPosition: gunPosition,
+                    inputTarget: player.targets[i],
+                    inputDirection: -player.node.GlobalTransform.Basis.Z,
+                    inputSpeed: 15f
+                );
+            }
+            for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
+            player.targetCount = 0;
         }
         public void PlayerCameraInitialize(Camera3D inputCamera) {
             currentCamera = inputCamera;
@@ -191,6 +209,7 @@ namespace Gamma {
                     if (!isAnimationSameAsPrevious) {
                         player.animationTree.Set("parameters/Walk/TeleportStartupBlend/blend_amount", 0.0f);
                         player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", 0.0f);
+                        break;
                     }
                     bool shouldWalkBlend = hasMovementInput || player.isTeleporting;
                     float walkBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/WalkBlend/blend_amount"), shouldWalkBlend ? 1f : 0f, 0.1f);
@@ -207,12 +226,42 @@ namespace Gamma {
                         player.orb.node.Visible = true;
                     }
                     bool shouldShootFromWalk = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.8f;
-                    if (shouldShootFromWalk) { 
+                    if (shouldShootFromWalk) {
                         targetAnimation = "TeleportShoot";
                     }
                     bool shouldGunBlend = Input.IsActionPressed("attack");
                     float gunBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/GunBlend/blend_amount"), shouldGunBlend ? 1f : 0f, 0.1f);
                     player.animationTree.Set("parameters/Walk/GunBlend/blend_amount", gunBlendAmount);
+                    if (Input.IsActionJustReleased("attack") && player.targetCount > 0) {
+                        player.animationTree.Set("parameters/Walk/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
+                        gunBlendAmount = 0f;
+                    }
+                    if (gunBlendAmount == 1) {
+                        for (int i = 0; i < Enemy.enemyCount; i++) {
+                            Node3D potentialTarget = enemies[i].node;
+                            bool isTargetInvalid = potentialTarget == player.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D);
+                            if (isTargetInvalid) { continue; }
+                            Vector3 toTarget = potentialTarget.GlobalPosition - player.gunBarrel.GlobalPosition;
+                            Vector3 toTargetFlat = (toTarget * Y_FLAT).Normalized();
+                            float dotProduct = playerForward.Dot(toTargetFlat);
+                            float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
+                            float angleInDegrees = Mathf.RadToDeg(angleToTarget);
+                            if (angleInDegrees <= TARGETTING_ANGLE) {
+                                bool alreadyTargeted = false;
+                                for (int j = 0; j < player.targetCount; j++) {
+                                    if (player.targets[j] == potentialTarget) {
+                                        alreadyTargeted = true;
+                                        break;
+                                    }
+                                }
+                                if (!alreadyTargeted && player.targetCount < player.targets.Length) {
+                                    player.targets[player.targetCount] = potentialTarget;
+                                    targetReticles[player.targetCount].node.Visible = true;
+                                    player.targetCount++;
+                                }
+                            }
+                        }
+                    }
                     bool shouldFallFromWalk = !player.isOnGround;
                     if (shouldFallFromWalk) { 
                         targetAnimation = "Fall";
@@ -237,6 +286,10 @@ namespace Gamma {
                             PlaySoundUI(footStepMetalSFX, 0.1f * walkBlendAmount, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                         }
                     }
+                    int fireWalkBlockIndex = GetPlaybackBlockIndex("FireWalk");
+                    if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[fireWalkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[fireWalkBlockIndex].currentPlaybackPosition, 0.1f) && (float)player.animationTree.Get("parameters/Walk/FireWalk/current_position") > 0.0f) {
+                        Shoot();
+                    }
                     Vector3 direction = player.isTeleporting || !hasMovementInput ? playerForward : player.wishDirection;
                     float targetAngle = Mathf.Atan2(playerForward.Cross(direction).Y, playerForward.Dot(direction));
                     targetAngle = Mathf.Clamp(targetAngle, -0.8f, 0.8f);
@@ -244,6 +297,16 @@ namespace Gamma {
                     RotateTowards(direction, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     PlayerApplyDynamicBoneTransformations(1, 0.15f, 0.5f);
+                    break;
+                case "Fire01":
+                    if (!isAnimationSameAsPrevious) { break; }
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Fire01/current_length")) {
+                        targetAnimation = "Walk";
+                    }
+                    if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.66f)) {
+                        Shoot();
+                    }
+                    player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     break;
                 case "Run":
                     if (!isAnimationSameAsPrevious) { break; }
@@ -422,51 +485,6 @@ namespace Gamma {
                         break;
                 }
                 player.animationState.Travel(targetAnimation);
-            }
-            if (Input.IsActionPressed("attack")) {
-                if (Input.IsActionJustPressed("attack")) {
-                    for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
-                    player.targetCount = 0;
-                }
-                for (int i = 0; i < Enemy.enemyCount; i++) {
-                    Node3D potentialTarget = enemies[i].node;
-                    bool isTargetInvalid = potentialTarget == player.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D);
-                    if (isTargetInvalid) { continue; }
-                    Vector3 toTarget = potentialTarget.GlobalPosition - player.gunBarrel.GlobalPosition;
-                    Vector3 toTargetFlat = (toTarget * Y_FLAT).Normalized();
-                    float dotProduct = playerForward.Dot(toTargetFlat);
-                    float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
-                    float angleInDegrees = Mathf.RadToDeg(angleToTarget);
-                    if (angleInDegrees <= TARGETTING_ANGLE) {
-                        bool alreadyTargeted = false;
-                        for (int j = 0; j < player.targetCount; j++) {
-                            if (player.targets[j] == potentialTarget) {
-                                alreadyTargeted = true;
-                                break;
-                            }
-                        }
-                        if (!alreadyTargeted && player.targetCount < player.targets.Length) {
-                            player.targets[player.targetCount] = potentialTarget;
-                            targetReticles[player.targetCount].node.Visible = true;
-                            player.targetCount++;
-                        }
-                    }
-                }
-            } else if (Input.IsActionJustReleased("attack")) {
-                Vector3 gunPosition = player.node.GlobalPosition + Vector3.Up;
-                PlaySoundUI(shootSFX, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
-                for (int i = 0; i < player.targets.Length; i++) {
-                    if (player.targets[i] == null) { continue; }
-                    GD.Print("Firing at target " + player.targets[i].Name);
-                    ProjectilesCreate(
-                        inputStartPosition: gunPosition,
-                        inputTarget: player.targets[i],
-                        inputDirection: -player.node.GlobalTransform.Basis.Z,
-                        inputSpeed: 15f
-                    );
-                }
-                for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
-                player.targetCount = 0;
             }
             if (player.isOnGround && player.node.Velocity.Y < 0f) {
                 player.node.Velocity = new Vector3(player.node.Velocity.X, 0f, player.node.Velocity.Z);
