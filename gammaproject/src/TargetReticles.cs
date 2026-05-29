@@ -5,22 +5,20 @@ namespace Gamma {
             public Node3D node;
             public Sprite2D onScreenReticle;
             public Sprite2D offScreenReticle;
+            public static Vector2 viewportCenter;
+            public static Vector2 maxReticlePosition;
+            public static Vector2 borderOffset = new Vector2(20, 20); 
+            public static int targetReticleTotalFrames;
         }
-        public TargetReticle[] targetReticles;
-        int targetReticleTotalFrames;
-        public StandardMaterial3D targetReticleMaterial;
-        private Vector2 viewportCenter;
-        private Vector2 maxReticlePosition;
-        private Vector2 borderOffset = new Vector2(20, 20);
         public void TargetReticlesInitialize() {
             targetReticles = new TargetReticle[DEFAULT_TARGET_RETICLES_SIZE];
             Vector2 viewportSize = GetViewport().GetVisibleRect().Size;
-            viewportCenter = viewportSize / 2.0f;
-            maxReticlePosition = viewportCenter - borderOffset;
+            TargetReticle.viewportCenter = viewportSize / 2.0f;
+            TargetReticle.maxReticlePosition = TargetReticle.viewportCenter - TargetReticle.borderOffset;
             for (int i = 0; i < targetReticles.Length; i++) {
                 targetReticles[i].node = targetReticleScene.Instantiate<Node3D>();
                 targetReticles[i].onScreenReticle = targetReticles[i].node.GetChild<Sprite2D>(0);
-                targetReticleTotalFrames = targetReticles[i].onScreenReticle.Hframes * targetReticles[i].onScreenReticle.Vframes;
+                TargetReticle.targetReticleTotalFrames = targetReticles[i].onScreenReticle.Hframes * targetReticles[i].onScreenReticle.Vframes;
                 targetReticles[i].offScreenReticle = targetReticles[i].node.GetChild<Sprite2D>(1);
                 targetReticles[i].onScreenReticle.TopLevel = true;
                 targetReticles[i].offScreenReticle.TopLevel = true;
@@ -50,7 +48,7 @@ namespace Gamma {
                     float normalizedDistance = Mathf.Clamp((distance - minDistance) / (maxDistance - minDistance), 0f, 1f);
                     float scale = Mathf.Lerp(0.65f, 0.08f, normalizedDistance);
 
-                    targetReticles[i].onScreenReticle.Frame = (targetReticles[i].onScreenReticle.Frame + 1) % targetReticleTotalFrames;
+                    targetReticles[i].onScreenReticle.Frame = (targetReticles[i].onScreenReticle.Frame + 1) % TargetReticle.targetReticleTotalFrames;
                     targetReticles[i].onScreenReticle.Scale = Vector2.One * scale;
                 } else {
                     targetReticles[i].onScreenReticle.Visible = false;
@@ -59,13 +57,13 @@ namespace Gamma {
                     Vector2 reticlePosition = new Vector2(localToCamera.X, -localToCamera.Y);
                     Vector2 absReticlePos = reticlePosition.Abs();
                     float reticleAspect = absReticlePos.X / absReticlePos.Y;
-                    float viewportAspect = maxReticlePosition.X / maxReticlePosition.Y;
+                    float viewportAspect = TargetReticle.maxReticlePosition.X / TargetReticle.maxReticlePosition.Y;
                     if (reticleAspect > viewportAspect) {
-                        reticlePosition *= maxReticlePosition.X / absReticlePos.X;
+                        reticlePosition *= TargetReticle.maxReticlePosition.X / absReticlePos.X;
                     } else {
-                        reticlePosition *= maxReticlePosition.Y / absReticlePos.Y;
+                        reticlePosition *= TargetReticle.maxReticlePosition.Y / absReticlePos.Y;
                     }
-                    targetReticles[i].offScreenReticle.GlobalPosition = viewportCenter + reticlePosition;
+                    targetReticles[i].offScreenReticle.GlobalPosition = TargetReticle.viewportCenter + reticlePosition;
                     float angle = Vector2.Right.AngleTo(reticlePosition);
                     targetReticles[i].offScreenReticle.Rotation = angle;
                 }

@@ -106,6 +106,9 @@ spot_range = 10.0
 
 [node name="Geometry" type="Node" parent="." unique_id=1112735005]
 
+[node name="Table" parent="Geometry" unique_id=533505364 instance=ExtResource("25_vgkut")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 6)
+
 [node name="playtest" type="Node3D" parent="Geometry" unique_id=721767009]
 
 [node name="Cube" type="MeshInstance3D" parent="Geometry/playtest" unique_id=650711827]
@@ -590,7 +593,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 45)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 8, 11)
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("4_8d6xy")]
-transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 1.7, -17)
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 7.8999996, 21)
 
 [node name="PlayerCamera" parent="Entities" unique_id=29831598 instance=ExtResource("5_amgw8")]
 transform = Transform3D(-4.37114e-08, -0.549825, 0.83527994, 0, 0.83527994, 0.549825, -1, 2.4033621e-08, -3.6511256e-08, 3.7999992, 3.4183, 2.60695)
@@ -624,6 +627,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -16)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 8, 12)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("18_rrwtf")]
-
-[node name="Table" parent="." unique_id=533505364 instance=ExtResource("25_vgkut")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 6)

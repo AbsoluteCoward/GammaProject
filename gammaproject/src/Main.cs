@@ -10,6 +10,12 @@ namespace Gamma {
             public string scenePath;
             public bool shouldChangeScene;
         }
+        public struct RaycastWorldHitInfo {
+            public Vector3 Position;
+            public Vector3 Normal;
+            public object Collider;
+            public Godot.Collections.Dictionary RawResult;
+        }
         public const int DEFAULT_MISCELLANEOUS_SIZE = 8;
         public const int DIALOGUE_PORTRAIT_SIZE = 192;
         public const int DEFAULT_INTERACTABLES_SIZE = 16;
@@ -32,18 +38,6 @@ namespace Gamma {
         public static readonly Vector3 DEFAULT_UPWARD_CAMERA_OFFSET = new Vector3(0, 1.246f, 0);
         public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
         public static readonly Vector3 GRAVITY_VECTOR = new Vector3(0, -GRAVITY_STRENGTH, 0);
-        public static readonly Transform3D DEFAULT_SLINK_WALK_CHEST_POSE = new Transform3D(
-            new Vector3(-1f, 0f, 0f),
-            new Vector3(0f, 1f, 0f),
-            new Vector3(0f, 0f, -1f),
-            new Vector3(-0.0055462457f, 1.320011f, 0.016058354f)
-        );
-        public static readonly Transform3D DEFAULT_SLINK_IDLE_CHEST_POSE = new Transform3D(
-            new Vector3(-0.9452619f, 1.0294444E-07f, -0.32631275f),
-            new Vector3(0.005352374f, 0.9998655f, -0.015504442f),
-            new Vector3(0.32626888f, -0.016402349f, -0.9451347f),
-            new Vector3(-0.0055462415f, 1.320011f, 0.01605832f)
-        );
         public struct SceneState {
             public Node currentScene;
             public float timeSinceSceneLoad;
@@ -70,6 +64,7 @@ namespace Gamma {
         public SoundUI[] soundsUI;
         int soundsUICount = 0;
         public Interactable[] interactables;
+        public TargetReticle[] targetReticles;
         public Projectile[] projectiles;
         public Explosion[] explosions;
         public Trail[] trails;
@@ -85,6 +80,18 @@ namespace Gamma {
         public float cameraFarSetting = 100;
         public double globalPhysicsDelta;
         public double globalProcessDelta;
+        public static bool RaycastWorld(World3D relativeWorld, CollisionObject3D exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
+            hitInfo = new RaycastWorldHitInfo();
+            var rayResult = relativeWorld.DirectSpaceState.IntersectRay(
+                PhysicsRayQueryParameters3D.Create(start, end, 1, new Godot.Collections.Array<Rid> { exceptions.GetRid() })
+            );
+            if (rayResult.Count <= 0) { return false; }
+            hitInfo.RawResult = rayResult;
+            hitInfo.Position = (Vector3)rayResult["position"];
+            hitInfo.Normal = (Vector3)rayResult["normal"];
+            hitInfo.Collider = rayResult["collider"];
+            return true;
+        }
         public void RotateTowards(Vector3 lookDirection, Node3D inputNode, float rotationSpeed) {
             if (lookDirection.LengthSquared() <= ALMOST_ZERO) { return; }
             float targetRotation = (float)Math.Atan2(-lookDirection.X, -lookDirection.Z);
@@ -126,7 +133,6 @@ namespace Gamma {
         }
         public void InitializeScene() {
             GD.Print("Initializing scene");
-            GD.Print(IsStructOptimal<Player>(new Player()));
             sceneState.timeSinceSceneLoad = 0;
             sceneState.physicsFramesSinceSceneLoad = 0;
             player = new Player();
@@ -229,11 +235,6 @@ namespace Gamma {
             GD.Print("Setting up game...");
             ProcessMode = ProcessModeEnum.Always;
             Engine.MaxFps = 999;
-            targetReticleMaterial = new StandardMaterial3D {
-                AlbedoColor = new Color(1, 0, 0),
-                ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
-                NoDepthTest = true
-            };
             globalPhysicsMaterial = new PhysicsMaterial {
                 Friction = 0.2f,
                 Bounce = 0f
