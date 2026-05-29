@@ -42,15 +42,15 @@ metadata/Type = "EnemyGeneric"
 [node name="Moe" parent="." unique_id=1515932505 instance=ExtResource("1_ec151")]
 
 [node name="Skeleton3D" parent="Moe/Base" parent_id_path=PackedInt32Array(1515932505, 207482489) index="0" unique_id=2134033829]
-bones/1/position = Vector3(3.9794705e-09, 8.573811e-10, 0.23703538)
-bones/1/rotation = Quaternion(0.7587142, -7.7655756e-08, -9.564967e-08, 0.65142363)
-bones/2/rotation = Quaternion(-0.08075269, 3.661664e-09, 2.295062e-08, 0.9967342)
-bones/3/rotation = Quaternion(-0.32131833, -1.9095267e-14, 7.6608266e-08, 0.94697124)
-bones/4/rotation = Quaternion(-0.40966883, -2.1529942e-09, 9.297987e-08, 0.91223437)
-bones/6/rotation = Quaternion(-0.048985623, 0.34651428, 0.92430997, 0.15224822)
-bones/7/rotation = Quaternion(-0.6681429, 0.0073891627, -0.22973885, 0.70763725)
-bones/8/rotation = Quaternion(-0.028385546, 0.127534, 0.9866905, -0.09680575)
-bones/9/rotation = Quaternion(-0.53285587, -0.025112458, 0.18258938, 0.8258906)
+bones/1/position = Vector3(-1.2309307e-15, 2.5689325e-22, 0.17326345)
+bones/1/rotation = Quaternion(0.912614, -4.7255874e-08, -1.137812e-07, 0.40882242)
+bones/2/rotation = Quaternion(-0.33120307, 0.0041948566, 0.010179978, 0.94349533)
+bones/3/rotation = Quaternion(-0.39666116, -0.0038232848, 0.010325287, 0.9178991)
+bones/4/rotation = Quaternion(-0.38831148, -0.010100261, 0.004383221, 0.9214625)
+bones/6/rotation = Quaternion(-0.11311423, 0.13545205, 0.9607346, 0.21411915)
+bones/7/rotation = Quaternion(-0.8070325, -0.16437005, -0.36835134, 0.4312751)
+bones/8/rotation = Quaternion(0.113114506, 0.13545196, 0.9607346, -0.2141191)
+bones/9/rotation = Quaternion(-0.8070326, 0.16437003, 0.36835137, 0.43127495)
 
 [node name="CollisionCylinder" type="CollisionShape3D" parent="." unique_id=1604721726]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3375001, 0)

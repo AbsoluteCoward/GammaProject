@@ -36,6 +36,7 @@ namespace Gamma {
                 targetReticles[i].offScreenReticle.Visible = false;
             }
             for (int i = 0; i < player.targetCount; i++) {
+                if (player.targets[i] == null) { continue; }
                 targetReticles[i].node.GlobalPosition = player.targets[i].GlobalPosition;
                 targetReticles[i].node.Visible = true;
                 if (currentCamera.IsPositionInFrustum(targetReticles[i].node.GlobalPosition)) {

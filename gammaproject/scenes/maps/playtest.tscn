@@ -24,6 +24,7 @@
 [ext_resource type="PackedScene" uid="uid://cgbfcwwskitny" path="res://scenes/entities/enemies/bear.tscn" id="20_4vflo"]
 [ext_resource type="PackedScene" uid="uid://5mkchlnk6u3w" path="res://scenes/entities/test_dialogue.tscn" id="20_5pg0k"]
 [ext_resource type="PackedScene" uid="uid://dgbvqthwrtpuq" path="res://scenes/entities/enemies/crab01.tscn" id="21_wel7t"]
+[ext_resource type="PackedScene" uid="uid://ha0e4g0cun2l" path="res://scenes/props/table.tscn" id="25_vgkut"]
 
 [sub_resource type="Environment" id="Environment_lau34"]
 ambient_light_source = 2
@@ -623,3 +624,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -16)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 8, 12)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("18_rrwtf")]
+
+[node name="Table" parent="." unique_id=533505364 instance=ExtResource("25_vgkut")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 6)

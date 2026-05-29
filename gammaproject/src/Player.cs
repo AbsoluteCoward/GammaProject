@@ -19,6 +19,7 @@ namespace Gamma {
             public float turnAnticipation;
             public float maxTeleportDistance;
             public int targetCount;
+            public int currentTargetIndex;
             public bool isOnGround;
             public bool shouldBeAsleep;
             public bool hasPlayerModelCopy;
@@ -74,23 +75,36 @@ namespace Gamma {
             player.isTeleporting = false;
             GD.Print("Player Initialized");
         }
-        public void AttackLoop() {
-        }
         public void Shoot() {
-            Vector3 gunPosition = player.gunBarrel.GlobalPosition;
+            if (player.currentTargetIndex >= player.targetCount) { return; }
             PlaySoundUI(shootSFX, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
-            for (int i = 0; i < player.targets.Length; i++) {
-                if (player.targets[i] == null) { continue; }
-                GD.Print("Firing at target " + player.targets[i].Name);
-                ProjectilesCreate(
-                    inputStartPosition: gunPosition,
-                    inputTarget: player.targets[i],
-                    inputDirection: -player.node.GlobalTransform.Basis.Z,
-                    inputSpeed: 15f
-                );
+            ProjectilesCreate(
+                inputStartPosition: player.gunBarrel.GlobalPosition,
+                inputTarget: player.targets[player.currentTargetIndex],
+                inputDirection: -player.node.GlobalTransform.Basis.Z,
+                inputSpeed: 15f
+            );
+            player.targets[player.currentTargetIndex] = null;
+            player.currentTargetIndex++;
+            if (player.currentTargetIndex >= player.targetCount) {
+                for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
+                player.targetCount = 0;
+                player.currentTargetIndex = 0;
             }
-            for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
-            player.targetCount = 0;
+            // Vector3 gunPosition = player.gunBarrel.GlobalPosition;
+            // PlaySoundUI(shootSFX, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
+            // for (int i = 0; i < player.targets.Length; i++) {
+            //     if (player.targets[i] == null) { continue; }
+            //     GD.Print("Firing at target " + player.targets[i].Name);
+            //     ProjectilesCreate(
+            //         inputStartPosition: gunPosition,
+            //         inputTarget: player.targets[i],
+            //         inputDirection: -player.node.GlobalTransform.Basis.Z,
+            //         inputSpeed: 15f
+            //     );
+            // }
+            // for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
+            // player.targetCount = 0;
         }
         public void PlayerCameraInitialize(Camera3D inputCamera) {
             currentCamera = inputCamera;
@@ -225,14 +239,22 @@ namespace Gamma {
                     } else {
                         player.orb.node.Visible = true;
                     }
-                    bool shouldShootFromWalk = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.8f;
-                    if (shouldShootFromWalk) {
+                    bool shouldTeleportShootFromWalk = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.8f;
+                    if (shouldTeleportShootFromWalk) {
                         targetAnimation = "TeleportShoot";
                     }
-                    bool shouldGunBlend = Input.IsActionPressed("attack");
+                    bool shouldGunBlend = Input.IsActionPressed("attack") || player.targetCount > 0;
                     float gunBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/GunBlend/blend_amount"), shouldGunBlend ? 1f : 0f, 0.1f);
+                    bool isShooting = 
+                        (bool)player.animationTree.Get("parameters/Walk/FireWalkOneShot/active") &&
+                        (float)player.animationTree.Get("parameters/Walk/FireWalk/current_position") < 0.36f;
                     player.animationTree.Set("parameters/Walk/GunBlend/blend_amount", gunBlendAmount);
-                    if (Input.IsActionJustReleased("attack") && player.targetCount > 0) {
+                    if (Input.IsActionJustPressed("attack") && player.targetCount > 0) {
+                        for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
+                        player.targetCount = 0;
+                        player.currentTargetIndex = 0;
+                    }
+                    if (!isShooting && (Input.IsActionJustReleased("attack") || (player.targetCount > 0 && !Input.IsActionPressed("attack")))) {
                         player.animationTree.Set("parameters/Walk/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
                         gunBlendAmount = 0f;
                     }
