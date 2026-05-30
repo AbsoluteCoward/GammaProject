@@ -2,30 +2,11 @@ using Godot;
 using System;
 namespace Gamma {
     public partial class Main : Node {
-        public struct LoadingScreen {
-            public Control node;
-            public Sprite2D icon;
-        }
-        public struct FadeRect {
-            public ColorRect node;
-            public float fadeMagnitude;
-        }
-        public struct PendingSceneChange {
-            public string scenePath;
-            public bool shouldChangeScene;
-        }
         public struct RaycastWorldHitInfo {
             public Vector3 Position;
             public Vector3 Normal;
             public object Collider;
             public Godot.Collections.Dictionary RawResult;
-        }
-        public struct SceneState {
-            public Node currentScene;
-            public float timeSinceSceneLoad;
-            public int physicsFramesSinceSceneLoad;
-            public string CurrentScenePath;
-            public bool isSceneLoaded;
         }
         public const int DEFAULT_MISCELLANEOUS_SIZE = 8;
         public const int DIALOGUE_PORTRAIT_SIZE = 192;
@@ -36,7 +17,7 @@ namespace Gamma {
         public const int DEFAULT_TARGET_RETICLES_SIZE = 16;
         public const int AUDIO_POOL_SIZE = 8;
         public const int ARRAY_GROWTH_FACTOR = 2;
-        public const float DEFAULT_LOAD_DELAY = 2.0f;
+        public const float DEFAULT_LOAD_DELAY = 3.0f;
         public const float DEFAULT_CAMERA_DISTANCE = 3.0f;
         public const float DEFAULT_CAMERA_HEIGHT = DEFAULT_CAMERA_DISTANCE * 0.5f;
         public const float ALMOST_ZERO = 0.00001f;
@@ -105,40 +86,6 @@ namespace Gamma {
             float targetRotation = (float)Math.Atan2(-lookDirection.X, -lookDirection.Z);
             inputNode.Rotation = new Vector3(inputNode.Rotation.X, Mathf.LerpAngle(inputNode.Rotation.Y, targetRotation, rotationSpeed), inputNode.Rotation.Z);
         }
-        public void UpdateFadeInOut() {
-            if (fadeRect.node == null) { return; }
-            float newAlpha = fadeRect.node.Color.A + (fadeRect.fadeMagnitude * (float)globalPhysicsDelta);
-            fadeRect.node.Color = new Color(
-                fadeRect.node.Color.R,
-                fadeRect.node.Color.G,
-                fadeRect.node.Color.B,
-                Mathf.Clamp(newAlpha, 0f, 1)
-            );
-        }
-        public void StartFade(float inputFadeMagnitude) {
-            float startAlpha = inputFadeMagnitude > 0f ? 0f : 1f;
-            fadeRect.node.Color = new Color(0, 0, 0, startAlpha);
-            fadeRect.fadeMagnitude = inputFadeMagnitude;
-        }
-        public void ChangeScene(string scenePath) {
-            pendingSceneChange.shouldChangeScene = true;
-            pendingSceneChange.scenePath = scenePath;
-            StartFade(0.6f);
-        }
-        public void ProcessPendingSceneChange() {
-            if (!pendingSceneChange.shouldChangeScene) { return; }
-            if (fadeRect.node.Color.A < 1f) { return; }
-            GD.Print("Changing scene");
-            ClearScene();
-            sceneState.isSceneLoaded = false;
-            GetTree().ChangeSceneToFile(pendingSceneChange.scenePath);
-            pendingSceneChange.shouldChangeScene = false;
-            pendingSceneChange.scenePath = "";
-        }
-        public void ClearScene() {
-            GD.Print("Clearing scene");
-            prisonSpotlight.node = null;
-        }
         public void InitializeScene() {
             GD.Print("Initializing scene");
             loadDelay = DEFAULT_LOAD_DELAY + (float)GD.RandRange(-1f, 3f);
@@ -157,7 +104,7 @@ namespace Gamma {
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
             uiNode = GetTree().CurrentScene.GetNode<Node>("UI");
             fadeRect.node = uiNode.GetNode<ColorRect>("FadeRect");
-            loadingScreen.node = uiNode.GetNode<Control>("LoadingScreen");
+            InitializeLoadingScreen(uiNode.GetNode<Control>("LoadingScreen"));
             videoPlayer.node = uiNode.GetNode<VideoStreamPlayer>("VideoStreamPlayer");
             GD.Print("entities children: " + entitiesNode.GetChildCount());
             int typelessEntityCount = 0;
@@ -257,7 +204,12 @@ namespace Gamma {
                 InitializeScene(); 
                 return; 
             }
-            GD.Print(loadDelay);
+            globalPhysicsDelta = delta;
+            sceneState.timeSinceSceneLoad += (float)delta;
+            sceneState.physicsFramesSinceSceneLoad++;
+            if (sceneState.physicsFramesSinceSceneLoad % LoadingScreen.speed == 0) {
+                UpdateLoadingScreen();
+            }
             if (loadDelay < 2f) {
                 float t = Mathf.Clamp((loadDelay) / 2f, 0f, 1f);
                 loadingScreen.node.Modulate = new Color(1f, 1f, 1f, Mathf.Pow(t, 1.5f));
@@ -266,9 +218,10 @@ namespace Gamma {
                 loadDelay -= (float)delta;
                 return;
             }
-            globalPhysicsDelta = delta;
-            sceneState.timeSinceSceneLoad += (float)delta;
-            sceneState.physicsFramesSinceSceneLoad++;
+            if (loadDelay <= 0f) {
+                loadingScreen.node.Visible = false;
+                loadingScreen.icon.Texture = null;
+            }
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             if (UpdateVideo(ref videoPlayer)) { return; }
             UpdateFadeInOut();

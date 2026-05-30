@@ -1,0 +1,1 @@
+magick montage *.png -background none -gravity northwest -tile 6x4 -geometry +0+0 spritesheet.png
