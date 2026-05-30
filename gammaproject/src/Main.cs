@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Threading;
 namespace Gamma {
     public partial class Main : Node {
         public struct LoadingScreen {
