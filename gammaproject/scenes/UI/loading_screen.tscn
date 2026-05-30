@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://dvbguncxwb4ke"]
+
+[ext_resource type="Texture2D" uid="uid://ct17f02e6kuca" path="res://assets/textures/OBJ_GRAYBALL.png" id="1_35dpi"]
+
+[node name="Loading" type="Control" unique_id=1249529323]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="." unique_id=1223076609]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="LoadingSprite" type="Sprite2D" parent="Control" unique_id=1783916676]
+position = Vector2(-32, -32)
+texture = ExtResource("1_35dpi")

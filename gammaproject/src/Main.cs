@@ -1,7 +1,12 @@
 using Godot;
 using System;
+using System.Threading;
 namespace Gamma {
     public partial class Main : Node {
+        public struct LoadingScreen {
+            public Control node;
+            public Sprite2D icon;
+        }
         public struct FadeRect {
             public ColorRect node;
             public float fadeMagnitude;
@@ -16,6 +21,13 @@ namespace Gamma {
             public object Collider;
             public Godot.Collections.Dictionary RawResult;
         }
+        public struct SceneState {
+            public Node currentScene;
+            public float timeSinceSceneLoad;
+            public int physicsFramesSinceSceneLoad;
+            public string CurrentScenePath;
+            public bool isSceneLoaded;
+        }
         public const int DEFAULT_MISCELLANEOUS_SIZE = 8;
         public const int DIALOGUE_PORTRAIT_SIZE = 192;
         public const int DEFAULT_INTERACTABLES_SIZE = 16;
@@ -25,6 +37,7 @@ namespace Gamma {
         public const int DEFAULT_TARGET_RETICLES_SIZE = 16;
         public const int AUDIO_POOL_SIZE = 8;
         public const int ARRAY_GROWTH_FACTOR = 2;
+        public const float DEFAULT_LOAD_DELAY = 2.0f;
         public const float DEFAULT_CAMERA_DISTANCE = 3.0f;
         public const float DEFAULT_CAMERA_HEIGHT = DEFAULT_CAMERA_DISTANCE * 0.5f;
         public const float ALMOST_ZERO = 0.00001f;
@@ -38,19 +51,6 @@ namespace Gamma {
         public static readonly Vector3 DEFAULT_UPWARD_CAMERA_OFFSET = new Vector3(0, 1.246f, 0);
         public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
         public static readonly Vector3 GRAVITY_VECTOR = new Vector3(0, -GRAVITY_STRENGTH, 0);
-        public struct SceneState {
-            public Node currentScene;
-            public float timeSinceSceneLoad;
-            public int physicsFramesSinceSceneLoad;
-            public string CurrentScenePath;
-            public bool isSceneLoaded;
-        }
-        public SceneState sceneState;
-        public Player player;
-        public PlayerCamera playerCamera;
-        public VideoPlayer videoPlayer;
-        public FadeRect fadeRect;
-        public SubtitleBox subtitleBox;
         public static AudioStream metalDinkSFX = GD.Load<AudioStream>("res://assets/sound/metalslam.wav");
         public static AudioStream metalSlamSFX = GD.Load<AudioStream>("res://assets/sound/metalslam1.wav");
         public static AudioStream footStepMetalSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");
@@ -59,6 +59,13 @@ namespace Gamma {
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public PackedScene targetReticleScene = GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
+        public SceneState sceneState;
+        public Player player;
+        public PlayerCamera playerCamera;
+        public VideoPlayer videoPlayer;
+        public FadeRect fadeRect;
+        public LoadingScreen loadingScreen;
+        public SubtitleBox subtitleBox;
         public Sound3D[] sounds3D;
         int sounds3DCount = 0;
         public SoundUI[] soundsUI;
@@ -77,7 +84,9 @@ namespace Gamma {
         public Node uiNode;
         public Camera3D currentCamera;
         public PhysicsMaterial globalPhysicsMaterial;
+        public World3D globalWorld3D;
         public float cameraFarSetting = 100;
+        public float loadDelay = DEFAULT_LOAD_DELAY;
         public double globalPhysicsDelta;
         public double globalProcessDelta;
         public static bool RaycastWorld(World3D relativeWorld, CollisionObject3D exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
@@ -115,7 +124,7 @@ namespace Gamma {
         public void ChangeScene(string scenePath) {
             pendingSceneChange.shouldChangeScene = true;
             pendingSceneChange.scenePath = scenePath;
-            StartFade(0.3f);
+            StartFade(0.6f);
         }
         public void ProcessPendingSceneChange() {
             if (!pendingSceneChange.shouldChangeScene) { return; }
@@ -133,6 +142,7 @@ namespace Gamma {
         }
         public void InitializeScene() {
             GD.Print("Initializing scene");
+            loadDelay = DEFAULT_LOAD_DELAY + (float)GD.RandRange(-1f, 3f);
             sceneState.timeSinceSceneLoad = 0;
             sceneState.physicsFramesSinceSceneLoad = 0;
             player = new Player();
@@ -148,9 +158,11 @@ namespace Gamma {
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
             uiNode = GetTree().CurrentScene.GetNode<Node>("UI");
             fadeRect.node = uiNode.GetNode<ColorRect>("FadeRect");
+            loadingScreen.node = uiNode.GetNode<Control>("LoadingScreen");
             videoPlayer.node = uiNode.GetNode<VideoStreamPlayer>("VideoStreamPlayer");
             GD.Print("entities children: " + entitiesNode.GetChildCount());
             int typelessEntityCount = 0;
+            globalWorld3D = entitiesNode.GetChild<Node3D>(0).GetWorld3D();
             for (int i = 0; i < entitiesNode.GetChildCount(); i++) {
                 Node3D child = entitiesNode.GetChild<Node3D>(i);
                 if (child.HasMeta("Type") == false) {
@@ -242,7 +254,19 @@ namespace Gamma {
             GD.Print("Setup complete");
         }
         public override void _PhysicsProcess(double delta) {
-            if (sceneState.isSceneLoaded == false) { InitializeScene(); }
+            if (sceneState.isSceneLoaded == false) { 
+                InitializeScene(); 
+                return; 
+            }
+            GD.Print(loadDelay);
+            if (loadDelay < 2f) {
+                float t = Mathf.Clamp((loadDelay) / 2f, 0f, 1f);
+                loadingScreen.node.Modulate = new Color(1f, 1f, 1f, Mathf.Pow(t, 1.5f));
+            }
+            if (loadDelay > 0f) {
+                loadDelay -= (float)delta;
+                return;
+            }
             globalPhysicsDelta = delta;
             sceneState.timeSinceSceneLoad += (float)delta;
             sceneState.physicsFramesSinceSceneLoad++;

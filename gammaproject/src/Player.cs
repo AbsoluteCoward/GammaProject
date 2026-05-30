@@ -73,6 +73,24 @@ namespace Gamma {
             player.groundRayCast = player.node.GetNode<RayCast3D>("GroundRay");
             player.hasPlayerModelCopy = false;
             player.isTeleporting = false;
+            // player.groundRayCast.ForceRaycastUpdate();
+            // if (player.groundRayCast.IsColliding()) {
+            //     GD.Print("Snapping player to " + player.groundRayCast.GetCollisionPoint() + " at initialization...");
+            //     PlayerTeleportTo(player.groundRayCast.GetCollisionPoint(), playerCamera);
+            // } else {
+            //     GD.PrintErr("Ground raycast is not colliding at player initialization!");
+            // }
+            // RaycastWorldHitInfo raycastWorldHitInfo = new RaycastWorldHitInfo();
+            // if (RaycastWorld(
+            //     globalWorld3D,
+            //     player.node,
+            //     player.node.GlobalPosition + Vector3.Up,
+            //     player.node.GlobalPosition + Vector3.Down * 8,
+            //     out raycastWorldHitInfo
+            // )) {
+            //     GD.Print("Snapping player to " + raycastWorldHitInfo.Position + " at initialization...");
+            //     PlayerTeleportTo(raycastWorldHitInfo.Position, playerCamera);
+            // }
             GD.Print("Player Initialized");
         }
         public void Shoot() {
@@ -485,10 +503,7 @@ namespace Gamma {
                 }
                 switch (player.animationState.GetCurrentNode()) {
                     case "Walk":
-                        GD.Print("Resetting walk blend amounts");
-                        if (!player.orb.node.TopLevel) {
-                            player.orb.node.Visible = false;
-                        }
+                        if (!player.orb.node.TopLevel) { player.orb.node.Visible = false; }
                         break;
                 }
                 player.animationState.Travel(targetAnimation);

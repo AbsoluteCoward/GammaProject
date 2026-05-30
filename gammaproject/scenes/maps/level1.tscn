@@ -39,7 +39,7 @@ directional_shadow_max_distance = 200.0
 [node name="Entities" type="Node" parent="." unique_id=711179880]
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("1_b2g8u")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.699997, 2, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.699997, 2, 35)
 
 [node name="PlayerCamera" parent="Entities" unique_id=556203230 instance=ExtResource("2_idapr")]
 transform = Transform3D(-4.37114e-08, -0.549825, 0.83528, 0, 0.83528, 0.549825, -1, 2.40336e-08, -3.65113e-08, -76.9, 4.9183, -3.39305)

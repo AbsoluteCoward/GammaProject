@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://b624rkte3tvyp" path="res://scenes/UI/subtitle_box.tscn" id="1_j31w5"]
 [ext_resource type="PackedScene" uid="uid://coytvcqlue4h2" path="res://scenes/UI/dialogue_box.tscn" id="2_27lm4"]
 [ext_resource type="Theme" uid="uid://bomkalgxvri2f" path="res://assets/tres/texttheme.tres" id="3_27lm4"]
+[ext_resource type="PackedScene" uid="uid://dvbguncxwb4ke" path="res://scenes/UI/loading_screen.tscn" id="4_ibdca"]
 
 [node name="UI" type="Node" unique_id=1110879225]
 
@@ -20,14 +21,6 @@ expand = true
 
 [node name="DialogueBox" parent="." unique_id=143058347 instance=ExtResource("2_27lm4")]
 metadata/_edit_use_anchors_ = true
-
-[node name="FadeRect" type="ColorRect" parent="." unique_id=434102490]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
 
 [node name="Controls" type="Label" parent="." unique_id=333663813]
 texture_filter = 2
@@ -60,3 +53,13 @@ E - Interact/Self Reflect
 
 Space - Jump/Run/Boost Orb"
 autowrap_mode = 3
+
+[node name="FadeRect" type="ColorRect" parent="." unique_id=434102490]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="LoadingScreen" parent="." unique_id=1249529323 instance=ExtResource("4_ibdca")]
