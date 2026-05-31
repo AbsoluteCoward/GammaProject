@@ -21,9 +21,6 @@ namespace Gamma {
             public int targetCount;
             public int currentTargetIndex;
             public bool isOnGround;
-            public bool shouldBeAsleep;
-            public bool hasPlayerModelCopy;
-            public bool isTeleporting;
             public static float maxDistance = 1000f;
             public static int meatCount = 0;
             public static int chestBoneIndex;
@@ -76,8 +73,6 @@ namespace Gamma {
             .GetNode("Walk")).GetNode("FireWalkOneShot");
             SetOneShotFilters(true, "shoulder.R", player.skeleton, player.node, fireShotNode);
             player.groundRayCast = player.node.GetNode<RayCast3D>("GroundRay");
-            player.hasPlayerModelCopy = false;
-            player.isTeleporting = false;
             GD.Print("Player Initialized");
         }
         public void Shoot() {
@@ -216,7 +211,7 @@ namespace Gamma {
                         player.animationTree.Set("parameters/Walk/GunBlend/blend_amount", 0.0f);
                         break;
                     }
-                    bool shouldWalkBlend = hasMovementInput || player.isTeleporting;
+                    bool shouldWalkBlend = hasMovementInput;
                     float walkBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/WalkBlend/blend_amount"), shouldWalkBlend ? 1f : 0f, 0.1f);
                     player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", walkBlendAmount);
                     bool shouldTeleportBlend = Input.IsActionPressed("action2");
@@ -303,7 +298,7 @@ namespace Gamma {
                     if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[fireWalkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[fireWalkBlockIndex].currentPlaybackPosition, 0.1f) && (float)player.animationTree.Get("parameters/Walk/FireWalk/current_position") > 0.0f) {
                         Shoot();
                     }
-                    Vector3 direction = player.isTeleporting || !hasMovementInput ? playerForward : player.wishDirection;
+                    Vector3 direction = !hasMovementInput ? playerForward : player.wishDirection;
                     float targetAngle = Mathf.Atan2(playerForward.Cross(direction).Y, playerForward.Dot(direction));
                     targetAngle = Mathf.Clamp(targetAngle, -0.8f, 0.8f);
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, targetAngle, 0.2f);
