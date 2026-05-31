@@ -27,6 +27,17 @@ namespace Gamma {
             public Vector3 wishDirection;
             static public int enemyCount;
         }
+        public void EnemyRemove(int inputIndex) {
+            if (inputIndex < 0 || inputIndex >= Enemy.enemyCount) {
+                GD.PrintErr("Enemy Failed to remove: Invalid index!");
+                return;
+            }
+            enemies[inputIndex].node.Visible = false;
+            enemies[inputIndex].node.ProcessMode = ProcessModeEnum.Disabled;
+            enemies[inputIndex] = enemies[Enemy.enemyCount - 1];
+            enemies[Enemy.enemyCount - 1] = new Enemy();
+            Enemy.enemyCount--;
+        }
         public void EnemyGenericUpdate(ref Enemy inputEnemy) {
             Enemy enemy = inputEnemy;
             Vector3 enemyForward = -enemy.node.GlobalTransform.Basis.Z.Normalized();
@@ -89,6 +100,12 @@ namespace Gamma {
         }
         public void EnemyUpdate() {
             for (int i = 0; i < Enemy.enemyCount; i++) {
+                if (!enemies[i].node.Visible) { continue; }
+                if (enemies[i].state == EnemyState.Dead) {
+                    EnemyRemove(i);
+                    i--;
+                    continue; 
+                }
                 Enemy enemy = enemies[i];
                 CharacterBody3D enemyNode = enemies[i].node;
                 enemy.animationTree.Advance((float)globalPhysicsDelta);
@@ -103,18 +120,6 @@ namespace Gamma {
                 enemies[i] = enemy;
                 enemyNode.MoveAndSlide();
             }
-        }
-        public void EnemyRemove(int inputIndex) {
-            if (inputIndex < 0 || inputIndex >= Enemy.enemyCount) {
-                GD.PrintErr("Enemy Failed to remove: Invalid index!");
-                return;
-            }
-            if (enemies[inputIndex].node != null) { enemies[inputIndex].node.QueueFree(); }
-            for (int i = inputIndex; i < Enemy.enemyCount - 1; i++) {
-                enemies[i] = enemies[i + 1];
-            }
-            enemies[Enemy.enemyCount - 1] = new Enemy();
-            Enemy.enemyCount--;
         }
     }
 }

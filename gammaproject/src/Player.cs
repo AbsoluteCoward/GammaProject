@@ -68,29 +68,16 @@ namespace Gamma {
             player.turnAnticipation = 0f;
             for (int i = 0; i < player.animationPlaybackBlocks.Length; i++) {
                 player.animationPlaybackBlocks[i].previousPlaybackPosition = 0f;
+                player.animationPlaybackBlocks[i].currentPlaybackPosition = 0f;
             }
             player.previousAnimationName = "";
+            AnimationNodeOneShot fireShotNode = (AnimationNodeOneShot)
+            ((AnimationNodeBlendTree)((AnimationNodeStateMachine)player.animationTree.TreeRoot)
+            .GetNode("Walk")).GetNode("FireWalkOneShot");
+            SetOneShotFilters(true, "shoulder.R", player.skeleton, player.node, fireShotNode);
             player.groundRayCast = player.node.GetNode<RayCast3D>("GroundRay");
             player.hasPlayerModelCopy = false;
             player.isTeleporting = false;
-            // player.groundRayCast.ForceRaycastUpdate();
-            // if (player.groundRayCast.IsColliding()) {
-            //     GD.Print("Snapping player to " + player.groundRayCast.GetCollisionPoint() + " at initialization...");
-            //     PlayerTeleportTo(player.groundRayCast.GetCollisionPoint(), playerCamera);
-            // } else {
-            //     GD.PrintErr("Ground raycast is not colliding at player initialization!");
-            // }
-            // RaycastWorldHitInfo raycastWorldHitInfo = new RaycastWorldHitInfo();
-            // if (RaycastWorld(
-            //     globalWorld3D,
-            //     player.node,
-            //     player.node.GlobalPosition + Vector3.Up,
-            //     player.node.GlobalPosition + Vector3.Down * 8,
-            //     out raycastWorldHitInfo
-            // )) {
-            //     GD.Print("Snapping player to " + raycastWorldHitInfo.Position + " at initialization...");
-            //     PlayerTeleportTo(raycastWorldHitInfo.Position, playerCamera);
-            // }
             GD.Print("Player Initialized");
         }
         public void Shoot() {
@@ -224,8 +211,9 @@ namespace Gamma {
             switch (player.animationState.GetCurrentNode()) {
                 case "Walk":
                     if (!isAnimationSameAsPrevious) {
-                        player.animationTree.Set("parameters/Walk/TeleportStartupBlend/blend_amount", 0.0f);
                         player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", 0.0f);
+                        player.animationTree.Set("parameters/Walk/TeleportStartupBlend/blend_amount", 0.0f);
+                        player.animationTree.Set("parameters/Walk/GunBlend/blend_amount", 0.0f);
                         break;
                     }
                     bool shouldWalkBlend = hasMovementInput || player.isTeleporting;
@@ -245,12 +233,12 @@ namespace Gamma {
                     bool shouldTeleportShootFromWalk = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.8f;
                     if (shouldTeleportShootFromWalk) {
                         targetAnimation = "TeleportShoot";
-                    }
-                    bool shouldGunBlend = Input.IsActionPressed("attack") || player.targetCount > 0;
-                    float gunBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/GunBlend/blend_amount"), shouldGunBlend ? 1f : 0f, 0.1f);
+                    }                    
                     bool isShooting = 
                         (bool)player.animationTree.Get("parameters/Walk/FireWalkOneShot/active") &&
                         (float)player.animationTree.Get("parameters/Walk/FireWalk/current_position") < 0.36f;
+                    bool shouldGunBlend = !isShooting && (Input.IsActionPressed("attack") || player.targetCount > 0);
+                    float gunBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/GunBlend/blend_amount"), shouldGunBlend ? 1f : 0f, 0.1f);
                     player.animationTree.Set("parameters/Walk/GunBlend/blend_amount", gunBlendAmount);
                     if (Input.IsActionJustPressed("attack") && player.targetCount > 0) {
                         for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
