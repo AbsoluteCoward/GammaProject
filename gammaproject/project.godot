@@ -145,3 +145,4 @@ scaling_3d/mode=5
 textures/decals/filter=0
 textures/light_projectors/filter=0
 lights_and_shadows/positional_shadow/atlas_size=6144
+shader_compiler/threads/thread_model=1

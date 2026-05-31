@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dvbguncxwb4ke"]
 
-[ext_resource type="Texture2D" uid="uid://cqaec30ntj7ln" path="res://assets/textures/loadingicons/CHR_NAILLOADINGICON_SPRITESHEET.png" id="1_35dpi"]
+[ext_resource type="Texture2D" uid="uid://datpmutn7n30" path="res://assets/textures/loadingicons/ICO_BOXLOADINGICON_SPRITESHEET.png" id="1_35dpi"]
 
 [node name="Loading" type="Control" unique_id=1249529323]
 layout_mode = 3

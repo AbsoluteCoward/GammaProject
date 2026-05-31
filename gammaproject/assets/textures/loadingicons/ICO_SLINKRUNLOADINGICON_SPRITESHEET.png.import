@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cqaec30ntj7ln"
-path="res://.godot/imported/CHR_NAILLOADINGICON_SPRITESHEET.png-04116c45adb6b326d79439ed46e15d14.ctex"
+uid="uid://c8iet0oog62cp"
+path="res://.godot/imported/ICO_SLINKRUNLOADINGICON_SPRITESHEET.png-53c3a069e6325b7ad7da81fdc4b7defb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/loadingicons/CHR_NAILLOADINGICON_SPRITESHEET.png"
-dest_files=["res://.godot/imported/CHR_NAILLOADINGICON_SPRITESHEET.png-04116c45adb6b326d79439ed46e15d14.ctex"]
+source_file="res://assets/textures/loadingicons/ICO_SLINKRUNLOADINGICON_SPRITESHEET.png"
+dest_files=["res://.godot/imported/ICO_SLINKRUNLOADINGICON_SPRITESHEET.png-53c3a069e6325b7ad7da81fdc4b7defb.ctex"]
 
 [params]
 

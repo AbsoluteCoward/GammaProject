@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://5j4ljoj4sdil"
-path="res://.godot/imported/CHR_SLINKRUNLOADINGICON_SPRITESHEET.png-ba842be193d347919c08714c44c15a16.ctex"
+uid="uid://datpmutn7n30"
+path="res://.godot/imported/ICO_BOXLOADINGICON_SPRITESHEET.png-afb30c59e43ef595998993a3ea48afb4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/loadingicons/CHR_SLINKRUNLOADINGICON_SPRITESHEET.png"
-dest_files=["res://.godot/imported/CHR_SLINKRUNLOADINGICON_SPRITESHEET.png-ba842be193d347919c08714c44c15a16.ctex"]
+source_file="res://assets/textures/loadingicons/ICO_BOXLOADINGICON_SPRITESHEET.png"
+dest_files=["res://.godot/imported/ICO_BOXLOADINGICON_SPRITESHEET.png-afb30c59e43ef595998993a3ea48afb4.ctex"]
 
 [params]
 

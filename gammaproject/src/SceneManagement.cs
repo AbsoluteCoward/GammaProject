@@ -1,6 +1,5 @@
 using Godot;
 using System;
-
 namespace Gamma {
     public partial class Main : Node {
         public struct LoadingScreen {
@@ -43,7 +42,7 @@ namespace Gamma {
             loadingScreen.icon.Texture = GD.Load<Texture2D>($"res://assets/textures/loadingicons/{chosenFile}");
             LoadingScreen.totalFrames = 6;
             LoadingScreen.currentFrame = 0;
-            LoadingScreen.speed = 8;
+            LoadingScreen.speed = 4;
         }
         public void StartFade(float inputFadeMagnitude) {
             float startAlpha = inputFadeMagnitude > 0f ? 0f : 1f;
