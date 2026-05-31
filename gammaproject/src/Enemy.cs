@@ -32,6 +32,21 @@ namespace Gamma {
                 GD.PrintErr("Enemy Failed to remove: Invalid index!");
                 return;
             }
+            for (int i = 0; i < player.targetCount; i++) {
+                if (player.targets[i] == enemies[inputIndex].node) {
+                    for (int j = i; j < player.targetCount - 1; j++) {
+                        player.targets[j] = player.targets[j + 1];
+                    }
+                    player.targets[player.targetCount - 1] = null;
+                    player.targetCount--;
+                    if (player.currentTargetIndex > i) { 
+                        player.currentTargetIndex--; 
+                    } else if (player.currentTargetIndex == i) { 
+                        player.currentTargetIndex = 0; 
+                    }
+                    break;
+                }
+            }
             enemies[inputIndex].node.Visible = false;
             enemies[inputIndex].node.ProcessMode = ProcessModeEnum.Disabled;
             enemies[inputIndex] = enemies[Enemy.enemyCount - 1];

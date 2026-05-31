@@ -76,7 +76,6 @@ namespace Gamma {
                         currentDirection = -rocket.node.GlobalTransform.Basis.Z;
                     }
                 }
-                currentDirection = -rocket.node.GlobalTransform.Basis.Z;
                 Vector3 newPos = rocket.node.GlobalPosition + currentDirection * rocket.speed * (float)globalPhysicsDelta;
                 rocket.node.TopLevel = true;
                 rocket.node.GlobalPosition = newPos;
@@ -118,6 +117,12 @@ namespace Gamma {
                 GD.PrintErr("SpawnExplosion: No available explosion slots");
                 return;
             }
+            for (int j = 0; j < enemies.Length; j++) {
+                if (enemies[j].node == null) { continue; }
+                if (enemies[j].node.GlobalPosition.DistanceTo(inputPosition) < 6) {
+                    enemies[j].state = EnemyState.Dead;
+                }
+            }
             Explosion explosion = new Explosion();
             explosion.node = new MeshInstance3D();
             explosion.node.CastShadow = GeometryInstance3D.ShadowCastingSetting.Off;
@@ -151,12 +156,6 @@ namespace Gamma {
                 explosion.node.Rotation += explosion.randomRotation * 2 * (float)globalPhysicsDelta;
                 float maxLifetime = 1f;
                 if (explosion.timeAlive >= maxLifetime) {
-                    for (int j = 0; j < enemies.Length; j++) {
-                        if (enemies[j].node == null) { continue; }
-                        if (enemies[j].node.GlobalPosition.DistanceTo(explosion.node.GlobalPosition) < scaleAmount) {
-                            enemies[j].state = EnemyState.Dead;
-                        }
-                    }
                     if (explosion.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(explosion.node); }
                     explosion.node.QueueFree();
                     explosions[i].node = null;

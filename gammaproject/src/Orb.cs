@@ -17,7 +17,7 @@ namespace Gamma {
         }
         public void OrbInitialize(Node3D inputOrb) {
             player.orb.node = inputOrb;
-            player.orb.collisionRaycast = (RayCast3D)player.orb.node.GetChild(1);
+            player.orb.collisionRaycast = player.orb.node.GetNode<RayCast3D>("RayCast3D");
             GD.Print(player.orb.node.GetChildren());
             player.orb.model = player.orb.node.GetNode<MeshInstance3D>("Mantaray/Skeleton3D/Mantaray");
             player.orb.model.CastShadow = GeometryInstance3D.ShadowCastingSetting.Off;

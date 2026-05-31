@@ -76,7 +76,15 @@ namespace Gamma {
             GD.Print("Player Initialized");
         }
         public void Shoot() {
-            if (player.currentTargetIndex >= player.targetCount) { return; }
+            while (player.currentTargetIndex < player.targetCount && player.targets[player.currentTargetIndex] == null) { 
+                player.currentTargetIndex++; 
+            }
+            if (player.currentTargetIndex >= player.targetCount) {
+                for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
+                player.targetCount = 0;
+                player.currentTargetIndex = 0;
+                return;
+            }
             PlaySoundUI(shootSFX, 0.1f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), false);
             ProjectilesCreate(
                 inputStartPosition: player.gunBarrel.GlobalPosition,
@@ -228,7 +236,7 @@ namespace Gamma {
                     bool shouldTeleportShootFromWalk = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.8f;
                     if (shouldTeleportShootFromWalk) {
                         targetAnimation = "TeleportShoot";
-                    }                    
+                    }
                     bool isShooting = 
                         (bool)player.animationTree.Get("parameters/Walk/FireWalkOneShot/active") &&
                         (float)player.animationTree.Get("parameters/Walk/FireWalk/current_position") < 0.36f;

@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpv4fxrvf826h"
-path.s3tc="res://.godot/imported/MET_DIAMONDPLATE.jpg-e9cfa0af72d83d1516e9e06c9844d357.s3tc.ctex"
+uid="uid://g3fh6ix6wvbb"
+path.s3tc="res://.godot/imported/WOD_CRATE.png-d7544ff83adb287fa63caa39ac5cf3b7.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/MET_DIAMONDPLATE.jpg"
-dest_files=["res://.godot/imported/MET_DIAMONDPLATE.jpg-e9cfa0af72d83d1516e9e06c9844d357.s3tc.ctex"]
+source_file="res://assets/textures/WOD_CRATE.png"
+dest_files=["res://.godot/imported/WOD_CRATE.png-d7544ff83adb287fa63caa39ac5cf3b7.s3tc.ctex"]
 
 [params]
 

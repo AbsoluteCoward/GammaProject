@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://ccb5nct6n1k8r"]
+
+[ext_resource type="Texture2D" uid="uid://d1rgykn0bn3hq" path="res://assets/textures/MET_ERODEDSCRATCHMETAL_SEAMLESS.jpg" id="1_iki83"]
+[ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="16_6s4r3"]
+[ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="17_mcnjl"]
+[ext_resource type="PackedScene" uid="uid://qley5ny6m3l2" path="res://scenes/UI/default_ui.tscn" id="26_aof23"]
+
+[sub_resource type="Environment" id="Environment_lau34"]
+ambient_light_source = 2
+ssr_fade_in = 1e-05
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.540458, 0.53638595, 0.43588102, 1)
+fog_density = 1.0
+fog_depth_begin = 50.0
+fog_depth_end = 200.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1vh54"]
+albedo_texture = ExtResource("1_iki83")
+
+[node name="Level" type="Node3D" unique_id=500624464]
+
+[node name="Environment" type="Node" parent="." unique_id=1488914038]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=1760429321]
+environment = SubResource("Environment_lau34")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=704870207]
+transform = Transform3D(0.8365163, 0.25881907, -0.48296294, 0.50000006, -3.785517e-08, 0.8660254, 0.22414388, -0.9659258, -0.12940957, -10, 64, -10)
+light_color = Color(0.29954746, 0.29954746, 0.29954743, 1)
+light_angular_distance = 0.1
+shadow_enabled = true
+directional_shadow_mode = 0
+directional_shadow_max_distance = 200.0
+
+[node name="Geometry" type="Node" parent="." unique_id=1112735005]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Geometry" unique_id=114813607]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 54, -10)
+material_override = SubResource("StandardMaterial3D_1vh54")
+use_collision = true
+size = Vector3(20, 20, 20)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Geometry" unique_id=1158242765]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -160, 10, -136)
+material_override = SubResource("StandardMaterial3D_1vh54")
+use_collision = true
+size = Vector3(64, 20, 112)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Geometry" unique_id=1059421113]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 85, 10)
+material_override = SubResource("StandardMaterial3D_1vh54")
+use_collision = true
+size = Vector3(20, 42, 20)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Geometry" unique_id=919851299]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 42, -32.5)
+material_override = SubResource("StandardMaterial3D_1vh54")
+use_collision = true
+size = Vector3(20, 84, 65)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="Geometry" unique_id=1997771166]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -202, 42, -159.5)
+material_override = SubResource("StandardMaterial3D_1vh54")
+use_collision = true
+size = Vector3(20, 84, 65)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Geometry" unique_id=2132216722]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34, 42, -72.5)
+material_override = SubResource("StandardMaterial3D_1vh54")
+use_collision = true
+size = Vector3(20, 84, 65)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Geometry" unique_id=1962740503]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.5, 42, 10)
+material_override = SubResource("StandardMaterial3D_1vh54")
+use_collision = true
+size = Vector3(57, 84, 20)
+
+[node name="Entities" type="Node" parent="." unique_id=1339097609]
+
+[node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("16_6s4r3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 64, -10)
+
+[node name="PlayerCamera" parent="Entities" unique_id=1338417485 instance=ExtResource("17_mcnjl")]
+transform = Transform3D(1, 0, 0, 0, 0.83527994, 0.549825, 0, -0.549825, 0.83527994, -160, 64, -80)
+
+[node name="UI" parent="." unique_id=1110879225 instance=ExtResource("26_aof23")]
+
+[editable path="UI"]
