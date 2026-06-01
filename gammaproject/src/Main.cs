@@ -56,6 +56,7 @@ namespace Gamma {
         public Explosion[] explosions;
         public Trail[] trails;
         public Enemy[] enemies;
+        public DialogueBox dialogueBox;
         public PendingSceneChange pendingSceneChange;
         public PrisonSpotLight prisonSpotlight;
         public WorldEnvironment worldEnvironment;

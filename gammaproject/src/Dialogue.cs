@@ -25,8 +25,8 @@ namespace Gamma {
             public bool shouldSkipAnimation;
             public bool shouldFreezePlayer;
         }
-        public DialogueBox dialogueBox;
         public void DialogueBoxInitialize(Control inputNode) {
+            GD.Print("Initializing dialogue box");
             dialogueBox.node = inputNode;
             dialogueBox.node.Visible = false;
             dialogueBox.gradient = inputNode.GetChild<TextureRect>(0);

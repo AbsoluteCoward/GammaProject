@@ -24,6 +24,7 @@ namespace Gamma {
             public float currentLifeTime;
         }
         public void SubtitlesInitialize(VBoxContainer inputSubtitleNode) {
+            GD.Print("Initializing subtitles");
             subtitleBox.node = inputSubtitleNode;
             subtitleBox.activeSubtitles = new SubtitleLabel[3];
             for (int i = 0; i < subtitleBox.node.GetChildCount(); i++) {

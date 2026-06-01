@@ -9,6 +9,7 @@ namespace Gamma {
             public AudioStreamPlayer node;
         }
         public void Audio3DInitialize(int inputSize) {
+            GD.Print("Initializing 3D audio");
             sounds3D = new Sound3D[inputSize];
             sounds3DCount = 0;
             for (int i = 0; i < inputSize; i++) {
@@ -55,6 +56,7 @@ namespace Gamma {
             if (!sounds3D[availableSlot].node.Playing) { sounds3DCount++; }
         }
         public void AudioUIInitialize(int inputSize) {
+            GD.Print("Initializing UI audio");
             soundsUI = new SoundUI[inputSize];
             soundsUICount = 0;
             for (int i = 0; i < inputSize; i++) {

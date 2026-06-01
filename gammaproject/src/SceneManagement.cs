@@ -7,7 +7,7 @@ namespace Gamma {
             public Sprite2D icon;
             public static int currentFrame;
             public static int totalFrames;
-            public static int speed;
+            public static int speed = 2;
         }
         public struct FadeRect {
             public ColorRect node;
@@ -28,24 +28,39 @@ namespace Gamma {
             loadingScreen.node = inputLoadingScreen;
             loadingScreen.icon = loadingScreen.node.GetNode<Sprite2D>("LoadingSpriteControl/LoadingSprite");
             DirAccess directory = DirAccess.Open("res://assets/textures/loadingicons/");
+            if (directory == null) {
+                GD.PrintErr("InitializeLoadingScreen: Could not open loading icons directory!");
+                return;
+            }
             string[] files = directory.GetFiles();
             int count = 0;
             for (int i = 0; i < files.Length; i++) {
-                if (files[i].EndsWith(".png")) { count++; }
+                if (files[i].EndsWith(".png.import") || files[i].EndsWith(".png")) { count++; }
+            }
+            if (count == 0) {
+                GD.PrintErr("InitializeLoadingScreen: No PNG files found in loading icons directory!");
+                return;
             }
             string[] pngFiles = new string[count];
             int index = 0;
             for (int i = 0; i < files.Length; i++) {
-                if (files[i].EndsWith(".png")) { pngFiles[index] = files[i]; index++; }
+                if (files[i].EndsWith(".png.import")) { 
+                    pngFiles[index++] = "res://assets/textures/loadingicons/" + files[i].Replace(".import", "");
+                } else if (files[i].EndsWith(".png")) {
+                    pngFiles[index++] = "res://assets/textures/loadingicons/" + files[i];
+                }
             }
-            string chosenFile = pngFiles[GD.RandRange(0, pngFiles.Length - 1)];
-            loadingScreen.icon.Texture = GD.Load<Texture2D>($"res://assets/textures/loadingicons/{chosenFile}");
-            LoadingScreen.totalFrames = 6;
+            int chosenIndex = (int)GD.RandRange(0, count - 1);
+            loadingScreen.icon.Texture = GD.Load<Texture2D>(pngFiles[chosenIndex]);
+            GD.Print("loadingScreen.icon.Texture: " + loadingScreen.icon.Texture);
+            LoadingScreen.totalFrames =
+                loadingScreen.icon.Hframes *
+                loadingScreen.icon.Vframes;
             LoadingScreen.currentFrame = 0;
             LoadingScreen.speed = 4;
         }
         public void StartFade(float inputFadeMagnitude) {
-            float startAlpha = inputFadeMagnitude > 0f ? 0f : 1f;
+            float startAlpha = inputFadeMagnitude > 0f ? 0f : 0.99f;
             fadeRect.node.Color = new Color(0, 0, 0, startAlpha);
             fadeRect.fadeMagnitude = inputFadeMagnitude;
         }
