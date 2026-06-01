@@ -9,6 +9,7 @@ namespace Gamma {
             public Vector3 positionLastFrame;
             public float speed;
             public float timeAlive;
+            public int trailIndex;
         }
         public struct Explosion {
             public Vector3 randomRotation;
@@ -30,6 +31,14 @@ namespace Gamma {
             Projectile rocket = new Projectile();
             rocket.node = rocketScene.Instantiate<Node3D>();
             entitiesNode.AddChild(rocket.node);
+            TrailsCreate(trails, rocket.node, Vector3.Back, Colors.Orange, 0.1f, 1f, 256, true);
+            rocket.trailIndex = trails.Length - 1;
+            for (int j = 0; j < trails.Length; j++) {
+                if (trails[j].node != null && trails[j].node.GetParent() == rocket.node) {
+                    rocket.trailIndex = j;
+                    break;
+                }
+            }
             rocket.collisionRaycast = (RayCast3D)rocket.node.GetChild(0);
             rocket.targetNode = inputTarget;
             rocket.positionLastFrame = inputStartPosition;
@@ -92,7 +101,9 @@ namespace Gamma {
                     if (rocket.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(rocket.node); }
                     rocket.node.QueueFree();
                     projectiles[i].node = null;
-
+                    if (rocket.trailIndex != -1) {
+                        TrailsRemove(trails, rocket.trailIndex);
+                    }
                 } else {
                     projectiles[i] = rocket;
                 }
@@ -157,6 +168,8 @@ namespace Gamma {
                 float maxLifetime = 1f;
                 if (explosion.timeAlive >= maxLifetime) {
                     if (explosion.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(explosion.node); }
+                    //remove trail
+
                     explosion.node.QueueFree();
                     explosions[i].node = null;
                 } else {

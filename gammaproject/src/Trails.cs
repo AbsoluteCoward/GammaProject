@@ -45,6 +45,17 @@ namespace Gamma {
             parent.AddChild(trail.node);
             inputTrails[index] = trail;
         }
+        public void TrailsRemove(Trail[] inputTrails, int index) {
+            if (index < 0 || index >= inputTrails.Length) {
+                GD.PrintErr("TrailsRemove: Index out of bounds");
+                return;
+            }
+            if (inputTrails[index].node != null) {
+                if (inputTrails[index].node.GetParent() != null) { inputTrails[index].node.GetParent().RemoveChild(inputTrails[index].node); }
+                inputTrails[index].node.QueueFree();
+                inputTrails[index] = new Trail();
+            }
+        }
         public void TrailUpdate(Trail[] inputTrails, float inputDistance) {
             for (int i = 0; i < inputTrails.Length; i++) {
                 if (inputTrails[i].node == null) { continue; }
