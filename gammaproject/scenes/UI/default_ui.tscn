@@ -23,6 +23,7 @@ expand = true
 metadata/_edit_use_anchors_ = true
 
 [node name="Controls" type="Label" parent="." unique_id=333663813]
+visible = false
 texture_filter = 2
 texture_repeat = 1
 anchors_preset = -1
@@ -47,7 +48,7 @@ J/L - Rotate Camera
 
 I - Charge Teleport Orb
 
-K - Attack (Buggy)
+K
 
 E - Interact/Self Reflect
 

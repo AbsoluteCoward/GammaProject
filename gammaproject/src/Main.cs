@@ -10,7 +10,8 @@ namespace Gamma {
         }
         public const int AUDIO_POOL_SIZE = 8;
         public const int ARRAY_GROWTH_FACTOR = 2;
-        public const int DEFAULT_MISCELLANEOUS_SIZE = 8;
+        public const int DEFAULT_PLAYER_MAX_TARGET_COUNT = 4;
+        public const int DEFAULT_MISCELLANEOUS_SIZE = 16;
         public const int DIALOGUE_PORTRAIT_SIZE = 192;
         public const int DEFAULT_INTERACTABLES_SIZE = 16;
         public const int DEFAULT_PROJECTILES_SIZE = 16;
@@ -42,26 +43,27 @@ namespace Gamma {
         public PackedScene targetReticleScene = GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
         public PackedScene rewardObjectScene = GD.Load<PackedScene>("res://scenes/entities/reward.tscn");
         public SceneState sceneState;
-        public Player player;
-        public PlayerCamera playerCamera;
-        public VideoPlayer videoPlayer;
+        public PendingSceneChange pendingSceneChange;
         public FadeRect fadeRect;
         public LoadingScreen loadingScreen;
         public SubtitleBox subtitleBox;
-        public Reward[] rewards;
-        int rewardsCount = 0;
-        public Sound3D[] sounds3D;
-        int sounds3DCount = 0;
-        public SoundUI[] soundsUI;
-        int soundsUICount = 0;
+        public DialogueBox dialogueBox;
+        public VideoPlayer videoPlayer;
+        public Player player;
+        public PlayerCamera playerCamera;
+        public Enemy[] enemies;
+        public int enemyCount = 0;
         public Interactable[] interactables;
         public TargetReticle[] targetReticles;
         public Projectile[] projectiles;
         public Explosion[] explosions;
         public Trail[] trails;
-        public Enemy[] enemies;
-        public DialogueBox dialogueBox;
-        public PendingSceneChange pendingSceneChange;
+        public Reward[] rewards;
+        public int rewardsCount = 0;
+        public Sound3D[] sounds3D;
+        public int sounds3DCount = 0;
+        public SoundUI[] soundsUI;
+        public int soundsUICount = 0;
         public PrisonSpotLight prisonSpotlight;
         public WorldEnvironment worldEnvironment;
         public Node environmentNode;
@@ -93,12 +95,16 @@ namespace Gamma {
         }
         public void InitializeScene() {
             GD.Print("Initializing scene");
-            loadDelay = DEFAULT_LOAD_DELAY + (float)GD.RandRange(0f, 0f);
+            loadDelay = DEFAULT_LOAD_DELAY;
+            enemyCount = 0;
+            rewardsCount = 0;
+            sounds3DCount = 0;
+            soundsUICount = 0;
             player = new Player();
             playerCamera = new PlayerCamera();
             enemies = new Enemy[DEFAULT_ENEMIES_SIZE];
-            Enemy.enemyCount = 0;
             interactables = new Interactable[DEFAULT_INTERACTABLES_SIZE];
+            targetReticles = new TargetReticle[DEFAULT_TARGET_RETICLES_SIZE];
             projectiles = new Projectile[DEFAULT_PROJECTILES_SIZE];
             explosions = new Explosion[DEFAULT_EXPLOSIONS_SIZE];
             trails = new Trail[DEFAULT_MISCELLANEOUS_SIZE];
@@ -107,11 +113,10 @@ namespace Gamma {
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
             uiNode = GetTree().CurrentScene.GetNode<Node>("UI");
             fadeRect.node = uiNode.GetNode<ColorRect>("FadeRect");
-            InitializeLoadingScreen(uiNode.GetNode<Control>("LoadingScreen"));
             videoPlayer.node = uiNode.GetNode<VideoStreamPlayer>("VideoStreamPlayer");
-            GD.Print("entities children: " + entitiesNode.GetChildCount());
-            int typelessEntityCount = 0;
+            InitializeLoadingScreen(uiNode.GetNode<Control>("LoadingScreen"));
             globalWorld3D = entitiesNode.GetChild<Node3D>(0).GetWorld3D();
+            int typelessEntityCount = 0;
             for (int i = 0; i < entitiesNode.GetChildCount(); i++) {
                 Node3D child = entitiesNode.GetChild<Node3D>(i);
                 if (child.HasMeta("Type") == false) {

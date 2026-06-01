@@ -52,7 +52,7 @@ namespace Gamma {
             reward.raycast.GlobalPosition = inputPosition;
             reward.raycast.TargetPosition = reward.raycast.ToLocal(inputDesiredPosition);
             reward.raycast.ForceRaycastUpdate();
-            Vector3 newDesiredPosition = reward.raycast.IsColliding() ? 
+            Vector3 newDesiredPosition = reward.raycast.IsColliding() ?
                 reward.raycast.GetCollisionPoint() + reward.raycast.GetCollisionNormal() * 0.1f : 
                 inputDesiredPosition;
             reward.desiredPosition = newDesiredPosition;
@@ -65,13 +65,6 @@ namespace Gamma {
                 Reward reward = rewards[i];
                 Vector3 distancetoPlayer = player.node.GlobalPosition - reward.node.GlobalPosition;
                 float distanceToPlayerSq = distancetoPlayer.LengthSquared();
-                if (distanceToPlayerSq < 2f) {
-                    PlaySoundUI(sloshSFX, 0.1f, 1 + (float)GD.RandRange(-0.1f, 0.1f), true);
-                    reward.node.QueueFree();
-                    rewards[i] = new Reward();
-                    rewardsCount--;
-                    continue;
-                }
                 Vector3 distanceToDesired = reward.desiredPosition - reward.node.GlobalPosition;
                 if (distanceToDesired.LengthSquared() > ALMOST_ZERO) {
                     Vector3 move = distanceToDesired.Normalized() * 5f * (float)globalPhysicsDelta;
@@ -80,8 +73,16 @@ namespace Gamma {
                     reward.raycast.GlobalPosition = reward.node.GlobalPosition;
                     reward.raycast.TargetPosition = Vector3.Down * 0.5f;
                     reward.raycast.ForceRaycastUpdate();
-                } else {
-                    reward.node.GlobalPosition = reward.desiredPosition;
+                }
+                if (distanceToPlayerSq < 6f) {
+                    reward.desiredPosition = reward.desiredPosition.Lerp(player.node.GlobalPosition + Vector3.Up, 0.1f);
+                    if (distanceToPlayerSq < 1f) {
+                        PlaySoundUI(sloshSFX, 0.1f, 1 + (float)GD.RandRange(-0.1f, 0.1f), true);
+                        reward.node.QueueFree();
+                        rewards[i] = new Reward();
+                        rewardsCount--;
+                        continue;
+                    }
                 }
                 reward.mesh.RotateY(1 * (float)globalPhysicsDelta);
                 rewards[i] = reward;

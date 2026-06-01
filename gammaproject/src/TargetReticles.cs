@@ -12,7 +12,6 @@ namespace Gamma {
         }
         public void TargetReticlesInitialize() {
             GD.Print("Initializing target reticles");
-            targetReticles = new TargetReticle[DEFAULT_TARGET_RETICLES_SIZE];
             Vector2 viewportSize = GetViewport().GetVisibleRect().Size;
             TargetReticle.viewportCenter = viewportSize / 2.0f;
             TargetReticle.maxReticlePosition = TargetReticle.viewportCenter - TargetReticle.borderOffset;

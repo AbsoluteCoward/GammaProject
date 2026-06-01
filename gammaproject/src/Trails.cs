@@ -81,8 +81,9 @@ namespace Gamma {
                 mesh.SurfaceBegin(Mesh.PrimitiveType.TriangleStrip);
                 for (int j = 0; j < inputTrails[i].count; j++) {
                     float factor = j / (float)(inputTrails[i].count - 1);
-                    float taper = 1f - Mathf.Abs(factor * 2 - 1f);
-                    taper = Mathf.Pow(taper, 0.2f);
+                    float head = 0.2f;
+                    float tail = 0.9f;
+                    float taper = Mathf.Lerp(head, tail, Mathf.Pow(factor, 1f));
                     float width = inputTrails[i].width * taper;
                     Vector3 pathDirection = j < inputTrails[i].count - 1 ?
                         (inputTrails[i].points[j + 1] - inputTrails[i].points[j]).Normalized() :

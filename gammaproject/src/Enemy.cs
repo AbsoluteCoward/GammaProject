@@ -25,7 +25,6 @@ namespace Gamma {
             public EnemyType type;
             public EnemyState state;
             public Vector3 wishDirection;
-            static public int enemyCount;
         }
         public void EnemyRemove(int inputIndex) {
             int rewardAmount = (int)GD.RandRange(1, 4);
@@ -37,7 +36,7 @@ namespace Gamma {
                 ).Normalized() * (float)GD.RandRange(2f, 4f);
                 SpawnReward(RewardType.BloodVial, enemies[inputIndex].node.GlobalPosition, enemies[inputIndex].node.GlobalPosition + RandomRewardposition);
             }
-            if (inputIndex < 0 || inputIndex >= Enemy.enemyCount) {
+            if (inputIndex < 0 || inputIndex >= enemyCount) {
                 GD.PrintErr("Enemy Failed to remove: Invalid index!");
                 return;
             }
@@ -58,9 +57,9 @@ namespace Gamma {
             }
             enemies[inputIndex].node.Visible = false;
             enemies[inputIndex].node.ProcessMode = ProcessModeEnum.Disabled;
-            enemies[inputIndex] = enemies[Enemy.enemyCount - 1];
-            enemies[Enemy.enemyCount - 1] = new Enemy();
-            Enemy.enemyCount--;
+            enemies[inputIndex] = enemies[enemyCount - 1];
+            enemies[enemyCount - 1] = new Enemy();
+            enemyCount--;
         }
         public void EnemyGenericUpdate(ref Enemy inputEnemy) {
             Enemy enemy = inputEnemy;
@@ -102,7 +101,7 @@ namespace Gamma {
             inputEnemy = enemy;
         }
         public void EnemyInitialize(CharacterBody3D inputNode) {
-            if (Enemy.enemyCount >= enemies.Length) {
+            if (enemyCount >= enemies.Length) {
                 Enemy[] newEnemies = new Enemy[enemies.Length * 2];
                 for (int i = 0; i < enemies.Length; i++) {
                     newEnemies[i] = enemies[i];
@@ -110,7 +109,7 @@ namespace Gamma {
                 enemies = newEnemies;
                 GD.Print("Enemy array resized to " + enemies.Length);
             }
-            int index = Enemy.enemyCount;
+            int index = enemyCount;
             enemies[index].node = inputNode;
             enemies[index].animationPlayer = inputNode.GetChild<Node3D>(0).GetNode<AnimationPlayer>("AnimationPlayer");
             enemies[index].animationTree = inputNode.GetNode<AnimationTree>("AnimationTree");
@@ -119,11 +118,11 @@ namespace Gamma {
             enemies[index].animationState.Travel("Move");
             enemies[index].state = EnemyState.Wander;
             enemies[index].wishDirection = new Vector3((float)GD.RandRange(-1f, 1f), 0, (float)GD.RandRange(-1f, 1f));
-            Enemy.enemyCount++;
+            enemyCount++;
             GD.Print($"{inputNode.Name} Initialized at index {index}");
         }
         public void EnemyUpdate() {
-            for (int i = 0; i < Enemy.enemyCount; i++) {
+            for (int i = 0; i < enemyCount; i++) {
                 if (!enemies[i].node.Visible) { continue; }
                 if (enemies[i].state == EnemyState.Dead) {
                     EnemyRemove(i);
