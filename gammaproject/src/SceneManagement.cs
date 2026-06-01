@@ -57,7 +57,7 @@ namespace Gamma {
                 loadingScreen.icon.Hframes *
                 loadingScreen.icon.Vframes;
             LoadingScreen.currentFrame = 0;
-            LoadingScreen.speed = 4;
+            LoadingScreen.speed = 8;
         }
         public void StartFade(float inputFadeMagnitude) {
             float startAlpha = inputFadeMagnitude > 0f ? 0f : 0.99f;

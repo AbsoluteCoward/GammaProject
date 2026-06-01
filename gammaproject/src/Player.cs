@@ -513,7 +513,12 @@ namespace Gamma {
             } else if (Input.IsActionJustPressed("cameraLeft")) {
                 inputCamera.targetAngle += 90f;
             }
-            float targetHeight = DEFAULT_CAMERA_HEIGHT + (player.groundRayCast.IsColliding() ? 0f : 4f);
+            float targetHeight = 
+                DEFAULT_CAMERA_HEIGHT + 
+                (player.groundRayCast.IsColliding() ? 
+                    Mathf.Max(0f, player.node.GlobalPosition.Y - player.groundRayCast.GetCollisionPoint().Y) * 0.5f : 
+                    8f
+                );
             inputCamera.offsetHeight = Mathf.Lerp(inputCamera.offsetHeight, targetHeight, 0.05f);
             Vector3 medianPosition = inputCamera.WallRayCast.GlobalPosition.Lerp(player.orb.node.GlobalPosition, 0.1f);
             inputCamera.targetAngle = Mathf.PosMod(inputCamera.targetAngle, 360f);
@@ -535,7 +540,7 @@ namespace Gamma {
                 inputCamera.WallRayCast.ToGlobal(inputCamera.WallRayCast.TargetPosition);
             inputCamera.targetPosition = medianPosition;
             inputCamera.node.LookAt(inputCamera.targetPosition);
-            inputCamera.node.Fov = Mathf.Lerp(inputCamera.node.Fov, 60 + Mathf.Min(player.node.Velocity.LengthSquared() * 0.4f, 60f), 0.02f);
+            inputCamera.node.Fov = Mathf.Lerp(inputCamera.node.Fov, 50 + Mathf.Min(player.node.Velocity.LengthSquared() * 0.4f, 70f), 0.02f);
         }
     }
 }
