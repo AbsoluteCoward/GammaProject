@@ -63,7 +63,7 @@ namespace Gamma {
             for (int i = 0; i < rewards.Length; i++) {
                 if (rewards[i].node == null) { continue; }
                 Reward reward = rewards[i];
-                Vector3 distancetoPlayer = player.node.GlobalPosition - reward.node.GlobalPosition;
+                Vector3 distancetoPlayer = (player.node.GlobalPosition + Vector3.Up) - reward.node.GlobalPosition;
                 float distanceToPlayerSq = distancetoPlayer.LengthSquared();
                 Vector3 distanceToDesired = reward.desiredPosition - reward.node.GlobalPosition;
                 if (distanceToDesired.LengthSquared() > ALMOST_ZERO) {
@@ -74,7 +74,7 @@ namespace Gamma {
                     reward.raycast.TargetPosition = Vector3.Down * 0.5f;
                     reward.raycast.ForceRaycastUpdate();
                 }
-                if (distanceToPlayerSq < 6f) {
+                if (distanceToPlayerSq < 8f) {
                     reward.desiredPosition = reward.desiredPosition.Lerp(player.node.GlobalPosition + Vector3.Up, 0.1f);
                     if (distanceToPlayerSq < 1f) {
                         PlaySoundUI(sloshSFX, 0.1f, 1 + (float)GD.RandRange(-0.1f, 0.1f), true);

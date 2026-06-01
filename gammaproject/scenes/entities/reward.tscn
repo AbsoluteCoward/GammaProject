@@ -4,7 +4,7 @@
 
 [node name="Reward" type="Node3D" unique_id=1138498779]
 
-[node name="Vial" parent="." unique_id=7647510 instance=ExtResource("1_fhbco")]
+[node name="Vial" parent="." unique_id=769180196 instance=ExtResource("1_fhbco")]
 transform = Transform3D(1, 0, 0, 0, 0.9563048, -0.2923717, 0, 0.2923717, 0.9563048, 0, 0, 0)
 
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=1916892676]

@@ -1,0 +1,24 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://pl3mafeg0ucb"]
+
+[ext_resource type="Texture2D" uid="uid://b3vys4q18uofh" path="res://assets/models/Vial_OBJ_VIAL.png" id="1_hj4v1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x27oj"]
+render_priority = 1
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.81373656, 0.00010044888, 0.06676674, 1)
+grow = true
+grow_amount = 0.03
+stencil_mode = 3
+stencil_flags = 1
+stencil_compare = 5
+metadata/_stencil_owned = true
+
+[resource]
+next_pass = SubResource("StandardMaterial3D_x27oj")
+shading_mode = 0
+albedo_texture = ExtResource("1_hj4v1")
+stencil_mode = 1
+stencil_flags = 2
+stencil_color = Color(0.81373656, 0.00010044888, 0.06676674, 1)
+stencil_outline_thickness = 0.03
