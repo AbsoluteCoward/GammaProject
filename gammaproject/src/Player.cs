@@ -52,7 +52,7 @@ namespace Gamma {
                 if (player.skeleton.GetBoneName(i) == "HeadBone") { Player.headBoneIndex = i; }
                 if (player.skeleton.GetBoneName(i) == "MiscObject") { Player.miscObjectBoneIndex = i; }
             }
-            if (Player.chestBoneIndex  == 0) { GD.PrintErr("Couldn't find chest bone!"); }
+            if (Player.chestBoneIndex == 0) { GD.PrintErr("Couldn't find chest bone!"); }
             if (Player.headBoneIndex == 0) { GD.PrintErr("Couldn't find head bone!"); }
             if (Player.miscObjectBoneIndex == 0) { GD.PrintErr("Couldn't find misc object bone!"); }
             OrbInitialize(inputPlayerNode.GetNode<Node3D>("TeleportOrb"));

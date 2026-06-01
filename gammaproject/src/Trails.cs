@@ -37,6 +37,7 @@ namespace Gamma {
             trail.count = 0;
             trail.color = inputColor;
             StandardMaterial3D material = new StandardMaterial3D();
+            material.RenderPriority = 1;
             material.AlbedoColor = inputColor;
             material.ShadingMode = isFullbright ? StandardMaterial3D.ShadingModeEnum.Unshaded : StandardMaterial3D.ShadingModeEnum.PerVertex;
             trail.node.MaterialOverride = material;
@@ -80,7 +81,9 @@ namespace Gamma {
                 mesh.SurfaceBegin(Mesh.PrimitiveType.TriangleStrip);
                 for (int j = 0; j < inputTrails[i].count; j++) {
                     float factor = j / (float)(inputTrails[i].count - 1);
-                    float width = inputTrails[i].width * factor;
+                    float taper = 1f - Mathf.Abs(factor * 2 - 1f);
+                    taper = Mathf.Pow(taper, 0.2f);
+                    float width = inputTrails[i].width * taper;
                     Vector3 pathDirection = j < inputTrails[i].count - 1 ?
                         (inputTrails[i].points[j + 1] - inputTrails[i].points[j]).Normalized() :
                         (inputTrails[i].points[j] - inputTrails[i].points[j - 1]).Normalized();
