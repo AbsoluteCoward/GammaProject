@@ -31,7 +31,7 @@ light_color = Color(0.29954746, 0.29954746, 0.29954743, 1)
 light_angular_distance = 0.1
 shadow_enabled = true
 directional_shadow_mode = 0
-directional_shadow_max_distance = 200.0
+directional_shadow_max_distance = 140.0
 
 [node name="Geometry" type="Node" parent="." unique_id=1112735005]
 

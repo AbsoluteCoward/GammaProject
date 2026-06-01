@@ -22,6 +22,7 @@ boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/stretch_mode=0
 boot_splash/use_filter=false
 boot_splash/image="uid://dpr6bi3f56fj1"
+config/icon="uid://ct17f02e6kuca"
 boot_splash/minimum_display_time=1800
 
 [autoload]

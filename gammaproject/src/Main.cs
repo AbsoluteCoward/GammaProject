@@ -8,6 +8,8 @@ namespace Gamma {
             public object Collider;
             public Godot.Collections.Dictionary RawResult;
         }
+        public const int AUDIO_POOL_SIZE = 8;
+        public const int ARRAY_GROWTH_FACTOR = 2;
         public const int DEFAULT_MISCELLANEOUS_SIZE = 8;
         public const int DIALOGUE_PORTRAIT_SIZE = 192;
         public const int DEFAULT_INTERACTABLES_SIZE = 16;
@@ -15,9 +17,7 @@ namespace Gamma {
         public const int DEFAULT_EXPLOSIONS_SIZE = 16;
         public const int DEFAULT_ENEMIES_SIZE = 16;
         public const int DEFAULT_TARGET_RETICLES_SIZE = 16;
-        public const int AUDIO_POOL_SIZE = 8;
-        public const int ARRAY_GROWTH_FACTOR = 2;
-        public const float DEFAULT_LOAD_DELAY = 4.0f;
+        public const float DEFAULT_LOAD_DELAY = 0.0f;
         public const float DEFAULT_CAMERA_DISTANCE = 3.0f;
         public const float DEFAULT_CAMERA_HEIGHT = DEFAULT_CAMERA_DISTANCE * 0.5f;
         public const float ALMOST_ZERO = 0.00001f;
@@ -36,9 +36,11 @@ namespace Gamma {
         public static AudioStream footStepMetalSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");
         public static AudioStream teleportSFX = GD.Load<AudioStream>("res://assets/sound/teleport.mp3");
         public static AudioStream shootSFX = GD.Load<AudioStream>("res://assets/sound/rocket-launcher-shoot.wav");
+        public static AudioStream sloshSFX = GD.Load<AudioStream>("res://assets/sound/slosh.wav");
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public PackedScene targetReticleScene = GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
+        public PackedScene rewardObjectScene = GD.Load<PackedScene>("res://scenes/entities/reward.tscn");
         public SceneState sceneState;
         public Player player;
         public PlayerCamera playerCamera;
@@ -46,6 +48,8 @@ namespace Gamma {
         public FadeRect fadeRect;
         public LoadingScreen loadingScreen;
         public SubtitleBox subtitleBox;
+        public Reward[] rewards;
+        int rewardsCount = 0;
         public Sound3D[] sounds3D;
         int sounds3DCount = 0;
         public SoundUI[] soundsUI;
@@ -183,6 +187,7 @@ namespace Gamma {
             TargetReticlesInitialize();
             DialogueBoxInitialize(uiNode.GetNode<Control>("DialogueBox"));
             SubtitlesInitialize(uiNode.GetNode<VBoxContainer>("SubtitleBox"));
+            RewardsInitialize(DEFAULT_MISCELLANEOUS_SIZE);
             Audio3DInitialize(AUDIO_POOL_SIZE);
             AudioUIInitialize(AUDIO_POOL_SIZE);
             StartFade(-0.3f);
@@ -232,6 +237,7 @@ namespace Gamma {
             EnemyUpdate();
             if (Input.IsActionJustPressed("interact")) { Interact(); }
             DialogueUpdate();
+            RewardsUpdate();
             SubtitlesUpdate();
             UpdateExplosions();
             TargetReticlesUpdate();

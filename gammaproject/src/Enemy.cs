@@ -28,6 +28,15 @@ namespace Gamma {
             static public int enemyCount;
         }
         public void EnemyRemove(int inputIndex) {
+            int rewardAmount = (int)GD.RandRange(1, 4);
+            for (int i = 0; i < rewardAmount; i++) {
+                Vector3 RandomRewardposition = new Vector3(
+                    (float)GD.RandRange(-1f, 1f),
+                    1,
+                    (float)GD.RandRange(-1f, 1f)
+                ).Normalized() * (float)GD.RandRange(2f, 4f);
+                SpawnReward(RewardType.BloodVial, enemies[inputIndex].node.GlobalPosition, enemies[inputIndex].node.GlobalPosition + RandomRewardposition);
+            }
             if (inputIndex < 0 || inputIndex >= Enemy.enemyCount) {
                 GD.PrintErr("Enemy Failed to remove: Invalid index!");
                 return;

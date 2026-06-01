@@ -40,8 +40,6 @@ namespace Gamma {
             public float rotationLerpSpeed;
         }
         public void PlayerInitialize(CharacterBody3D inputPlayerNode) {
-            player = new Player();
-            player.wishDirection = Vector3.Zero;
             player.node = inputPlayerNode;
             player.gunBarrel = player.node.GetNode<Node3D>("Slink/Skeleton3D/GunBone/GunBarrel");
             player.animationPlayer = inputPlayerNode.GetNode<AnimationPlayer>("Slink/AnimationPlayer");
@@ -60,6 +58,7 @@ namespace Gamma {
             OrbInitialize(inputPlayerNode.GetNode<Node3D>("TeleportOrb"));
             player.targets = new Node3D[16];
             player.animationPlaybackBlocks = new PlaybackPositionData[8];
+            player.wishDirection = Vector3.Zero;
             player.targetCount = 0;
             player.moveSpeed = 8.0f;
             player.turnAnticipation = 0f;
