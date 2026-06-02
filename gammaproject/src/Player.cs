@@ -157,10 +157,10 @@ namespace Gamma {
         }
         public void PlayerUpdate() {
             player.animationTree.Advance((float)globalPhysicsDelta);
-            Transform3D whatever = player.orb.node.Visible ?
+            Transform3D orbTarget = player.orb.node.Visible ?
                 player.skeleton.GetBoneGlobalPose(Player.miscObjectBoneIndex) : 
                 player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex);
-            Vector3 global_whatever = player.skeleton.ToGlobal(whatever.Origin);
+            Vector3 global_whatever = player.skeleton.ToGlobal(orbTarget.Origin);
             player.orb.node.GlobalPosition = player.orb.node.TopLevel ? player.orb.node.GlobalPosition : global_whatever;
             if (sceneState.physicsFramesSinceSceneLoad % (int)GD.RandRange(20f, 100f) == 0) {
                 Vector3 playerPosition = player.node.GlobalPosition;
@@ -285,10 +285,17 @@ namespace Gamma {
                         player.node.Velocity = playerForward * 0.5f + Vector3.Up * 5f;
                     }
                     if (player.node.IsOnWall() && walkBlendAmount > 0.5f) {
-                        GD.Print("Wall Detected, should vault");
-                        DebugSpawnCube(player.node.GetSlideCollision(0).GetPosition(), 0.2f, entitiesNode);
-                        RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 1f);
-                        targetAnimation = "Vault";
+                        RaycastWorldHitInfo findLedge = new RaycastWorldHitInfo();
+                        Vector3 collisionPosition = player.node.GetSlideCollision(0).GetPosition();
+                        Vector3 rayStart = collisionPosition + Vector3.Up * 2f;
+                        Vector3 rayEnd = collisionPosition;
+                        if (RaycastWorld(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
+                            Vector3 offset = new Vector3(0, 1.3f, 0);
+                            player.node.GlobalPosition = findLedge.Position - offset;
+                            RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 0.6f);
+                            targetAnimation = "Vault";
+                            break;
+                        }
                     }
                     bool shouldJumpFromWalk = action3JustPressed && !hasMovementInput;
                     if (shouldJumpFromWalk) {
@@ -365,11 +372,14 @@ namespace Gamma {
                         if (RaycastWorld(globalWorld3D, player.node, vaultrayStart, vaultRayEnd, out vaultLandHit)) {
                             //DebugSpawnCube(vaultLandHit.Position, 0.3f, entitiesNode);
                             GD.Print("Going from " + player.node.GlobalPosition);
+                            DebugSpawnCube(vaultLandHit.Position, 0.3f, entitiesNode);
+                            Vector3 previousOrbPosition = player.orb.node.GlobalPosition;
                             player.node.GlobalPosition = vaultLandHit.Position;
                             GD.Print("Vaulted to: " + player.node.GlobalPosition);
                             player.animationState.Start("Walk", true);
                             targetAnimation = "Walk";
                             player.animationTree.Advance((float)globalPhysicsDelta);
+                            player.orb.node.GlobalPosition = previousOrbPosition;
                         } else {
                             player.animationState.Start("Fall", true);
                             targetAnimation = "Fall";
