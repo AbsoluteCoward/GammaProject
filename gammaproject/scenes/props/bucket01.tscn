@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://caxoj275di1y3"]
+
+[ext_resource type="PackedScene" uid="uid://bcppekm7ubn0k" path="res://assets/models/bucket01.gltf" id="1_bwj5j"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4qy43"]
+size = Vector3(0.4, 0.4, 0.4)
+
+[node name="Bucket01" type="Node3D" unique_id=533505364]
+
+[node name="bucket01" parent="." unique_id=1240274267 instance=ExtResource("1_bwj5j")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=281026428]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1372983756]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0430813e-07, 0.19999999, 3.5762787e-07)
+shape = SubResource("BoxShape3D_4qy43")
+
+[editable path="bucket01"]

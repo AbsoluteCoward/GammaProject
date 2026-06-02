@@ -10,8 +10,7 @@
 			"nodes":[
 				0,
 				1,
-				2,
-				3
+				2
 			]
 		}
 	],
@@ -26,15 +25,6 @@
 			]
 		},
 		{
-			"mesh":1,
-			"name":"Cube.001",
-			"translation":[
-				78,
-				-1,
-				0
-			]
-		},
-		{
 			"name":"Plane",
 			"translation":[
 				0,
@@ -43,7 +33,7 @@
 			]
 		},
 		{
-			"mesh":2,
+			"mesh":1,
 			"name":"Plane.001"
 		}
 	],
@@ -55,8 +45,8 @@
 				"baseColorTexture":{
 					"index":0
 				},
-				"metallicFactor":0,
-				"roughnessFactor":0.5
+				"metallicFactor":0.9090908765792847,
+				"roughnessFactor":0.75
 			}
 		}
 	],
@@ -76,7 +66,7 @@
 			]
 		},
 		{
-			"name":"Cube.001",
+			"name":"Plane.001",
 			"primitives":[
 				{
 					"attributes":{
@@ -85,20 +75,6 @@
 						"TEXCOORD_0":6
 					},
 					"indices":7,
-					"material":0
-				}
-			]
-		},
-		{
-			"name":"Plane.001",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":8,
-						"NORMAL":9,
-						"TEXCOORD_0":10
-					},
-					"indices":11,
 					"material":0
 				}
 			]
@@ -155,41 +131,7 @@
 		{
 			"bufferView":4,
 			"componentType":5126,
-			"count":24,
-			"max":[
-				1,
-				2,
-				1
-			],
-			"min":[
-				-1,
-				0,
-				-1
-			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":5,
-			"componentType":5126,
-			"count":24,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":6,
-			"componentType":5126,
-			"count":24,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":7,
-			"componentType":5123,
-			"count":36,
-			"type":"SCALAR"
-		},
-		{
-			"bufferView":8,
-			"componentType":5126,
-			"count":22,
+			"count":44,
 			"max":[
 				0.19009673595428467,
 				0.3757611811161041,
@@ -198,26 +140,26 @@
 			"min":[
 				-0.19009673595428467,
 				0.18939334154129028,
-				-0.013927455991506577
+				-0.0139274587854743
 			],
 			"type":"VEC3"
 		},
 		{
-			"bufferView":9,
+			"bufferView":5,
 			"componentType":5126,
-			"count":22,
+			"count":44,
 			"type":"VEC3"
 		},
 		{
-			"bufferView":10,
+			"bufferView":6,
 			"componentType":5126,
-			"count":22,
+			"count":44,
 			"type":"VEC2"
 		},
 		{
-			"bufferView":11,
+			"bufferView":7,
 			"componentType":5123,
-			"count":60,
+			"count":252,
 			"type":"SCALAR"
 		}
 	],
@@ -248,50 +190,26 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":288,
+			"byteLength":528,
 			"byteOffset":3776,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":288,
-			"byteOffset":4064,
+			"byteLength":528,
+			"byteOffset":4304,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":192,
-			"byteOffset":4352,
+			"byteLength":352,
+			"byteOffset":4832,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":72,
-			"byteOffset":4544,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":264,
-			"byteOffset":4616,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":264,
-			"byteOffset":4880,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":176,
-			"byteOffset":5144,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":120,
-			"byteOffset":5320,
+			"byteLength":504,
+			"byteOffset":5184,
 			"target":34963
 		}
 	],
@@ -303,7 +221,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":5440,
+			"byteLength":5688,
 			"uri":"bucket01.bin"
 		}
 	]
