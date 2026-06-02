@@ -284,6 +284,12 @@ namespace Gamma {
                         targetAnimation = "Fall";
                         player.node.Velocity = playerForward * 0.5f + Vector3.Up * 5f;
                     }
+                    if (player.node.IsOnWall() && walkBlendAmount > 0.5f) {
+                        GD.Print("Wall Detected, should vault");
+                        DebugSpawnCube(player.node.GetSlideCollision(0).GetPosition(), 0.2f, entitiesNode);
+                        RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 1f);
+                        targetAnimation = "Vault";
+                    }
                     bool shouldJumpFromWalk = action3JustPressed && !hasMovementInput;
                     if (shouldJumpFromWalk) {
                         targetAnimation = "Jump";
@@ -348,6 +354,28 @@ namespace Gamma {
                     RotateTowards(player.wishDirection, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     PlayerApplyDynamicBoneTransformations(1.5f, 0.8f, 0.5f);
+                    break;
+                case "Vault":
+                    if (!isAnimationSameAsPrevious) { break; }
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Vault/current_length") && isAnimationSameAsPrevious) {
+                        Vector3 pelvisGlobal = player.skeleton.ToGlobal(player.skeleton.GetBoneGlobalPose(1).Origin);
+                        RaycastWorldHitInfo vaultLandHit;
+                        Vector3 vaultrayStart = pelvisGlobal;
+                        Vector3 vaultRayEnd = pelvisGlobal + Vector3.Down * 2f;
+                        if (RaycastWorld(globalWorld3D, player.node, vaultrayStart, vaultRayEnd, out vaultLandHit)) {
+                            //DebugSpawnCube(vaultLandHit.Position, 0.3f, entitiesNode);
+                            GD.Print("Going from " + player.node.GlobalPosition);
+                            player.node.GlobalPosition = vaultLandHit.Position;
+                            GD.Print("Vaulted to: " + player.node.GlobalPosition);
+                            player.animationState.Start("Walk", true);
+                            targetAnimation = "Walk";
+                            player.animationTree.Advance((float)globalPhysicsDelta);
+                        } else {
+                            player.animationState.Start("Fall", true);
+                            targetAnimation = "Fall";
+                        }
+                    }
+                    player.node.Velocity = Vector3.Zero;
                     break;
                 case "Jump":
                     if (!isAnimationSameAsPrevious) {
@@ -540,7 +568,7 @@ namespace Gamma {
                 inputCamera.WallRayCast.ToGlobal(inputCamera.WallRayCast.TargetPosition);
             inputCamera.targetPosition = medianPosition;
             inputCamera.node.LookAt(inputCamera.targetPosition);
-            inputCamera.node.Fov = Mathf.Lerp(inputCamera.node.Fov, 50 + Mathf.Min(player.node.Velocity.LengthSquared() * 0.4f, 70f), 0.02f);
+            inputCamera.node.Fov = Mathf.Lerp(inputCamera.node.Fov, 50 + Mathf.Min(player.node.Velocity.LengthSquared() * 0.2f, 30f), 0.02f);
         }
     }
 }

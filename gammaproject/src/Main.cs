@@ -18,7 +18,7 @@ namespace Gamma {
         public const int DEFAULT_EXPLOSIONS_SIZE = 16;
         public const int DEFAULT_ENEMIES_SIZE = 16;
         public const int DEFAULT_TARGET_RETICLES_SIZE = 16;
-        public const float DEFAULT_LOAD_DELAY = 4.0f;
+        public const float DEFAULT_LOAD_DELAY = 0.0f;
         public const float DEFAULT_CAMERA_DISTANCE = 3.0f;
         public const float DEFAULT_CAMERA_HEIGHT = DEFAULT_CAMERA_DISTANCE * 0.4f;
         public const float ALMOST_ZERO = 0.00001f;
@@ -37,6 +37,7 @@ namespace Gamma {
         public static AudioStream footStepMetalSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");
         public static AudioStream teleportSFX = GD.Load<AudioStream>("res://assets/sound/teleport.mp3");
         public static AudioStream shootSFX = GD.Load<AudioStream>("res://assets/sound/rocket-launcher-shoot.wav");
+        public static AudioStream explosionSFX = GD.Load<AudioStream>("res://assets/sound/explosion02.wav");
         public static AudioStream sloshSFX = GD.Load<AudioStream>("res://assets/sound/slosh.wav");
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
@@ -76,6 +77,9 @@ namespace Gamma {
         public float loadDelay = DEFAULT_LOAD_DELAY;
         public double globalPhysicsDelta;
         public double globalProcessDelta;
+        public static void ShapeCastWorld() {
+            
+        }
         public static bool RaycastWorld(World3D relativeWorld, CollisionObject3D exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
             hitInfo = new RaycastWorldHitInfo();
             var rayResult = relativeWorld.DirectSpaceState.IntersectRay(

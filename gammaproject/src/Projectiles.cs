@@ -156,6 +156,7 @@ namespace Gamma {
             explosion.node.GlobalPosition = inputPosition;
             explosion.timeAlive = inputTimeAlive;
             explosions[index] = explosion;
+            PlaySound3D(explosionSFX, inputPosition, 0.5f, 0.8f + GD.Randf() * 0.4f, true);
         }
         public void UpdateExplosions() {
             for (int i = 0; i < explosions.Length; i++) {
