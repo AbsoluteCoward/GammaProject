@@ -86,9 +86,9 @@ namespace Gamma {
         }
         public void OrbUpdate() {
             TeleportOrb orb = player.orb;
-            orb.animationPlayer.Advance((float)globalPhysicsDelta);
+            orb.animationPlayer.Advance(globalProcessDeltaFloat);
             if (!orb.node.TopLevel || !orb.node.Visible) { return; }
-            orb.timeAlive += (float)globalPhysicsDelta;
+            orb.timeAlive += globalProcessDeltaFloat;
             float currentSpeed = orb.velocity.Length();
             // orb.node.Scale = new Vector3(
             //     orb.node.Scale.X,
@@ -99,10 +99,10 @@ namespace Gamma {
             float clamp = Mathf.Clamp(9f / Mathf.Max(9f, currentSpeed), 0f, 1f);
             player.orb.animationPlayer.SpeedScale = 1f + 11f * Mathf.Pow(clamp, 3f);
             Vector3 orbForward = -orb.node.GlobalTransform.Basis.Z.Normalized();
-            orb.velocity += Vector3.Down * GRAVITY_STRENGTH * (float)globalPhysicsDelta;
-            orb.velocity *= 1f - 0.25f * (float)globalPhysicsDelta;
+            orb.velocity += Vector3.Down * GRAVITY_STRENGTH * globalProcessDeltaFloat;
+            orb.velocity *= 1f - 0.25f * globalProcessDeltaFloat;
             if (orb.velocity.Dot(Vector3.Down) > 0f) {
-                orb.velocity += Vector3.Down * (GRAVITY_STRENGTH/2) * (float)globalPhysicsDelta;
+                orb.velocity += Vector3.Down * (GRAVITY_STRENGTH/2) * globalProcessDeltaFloat;
             }
             float lift = 0.8f;
             orb.velocity = orb.velocity.Lerp(orbForward * currentSpeed, lift);
@@ -121,13 +121,13 @@ namespace Gamma {
                 // Vector3 target = (Vector3.Up - orbForward * orbForward.Dot(Vector3.Up)).Normalized();
                 // float angle = orb.node.GlobalTransform.Basis.Y.Normalized().SignedAngleTo(target, orbForward);
                 // float rollSpeed = 4f;
-                // orb.node.RotateObjectLocal(Vector3.Forward, angle * rollSpeed * (float)globalPhysicsDelta);
+                // orb.node.RotateObjectLocal(Vector3.Forward, angle * rollSpeed * globalProcessDeltaFloat);
             }
             if (currentSpeed < 6f) {
                 float factor = 1f - (currentSpeed / 6f);
                 orb.node.Basis = orb.node.Basis.Orthonormalized().Slerp(orb.node.GlobalTransform.LookingAt(orb.node.GlobalPosition + Vector3.Down, Vector3.Right).Basis, factor * 0.05f) * Basis.FromScale(orb.node.Scale);
             }
-            Vector3 newPosition = orb.node.GlobalPosition + orb.velocity * (float)globalPhysicsDelta;
+            Vector3 newPosition = orb.node.GlobalPosition + orb.velocity * globalProcessDeltaFloat;
             orb.collisionRaycast.GlobalPosition = orb.positionLastFrame != Vector3.Zero
                 ? orb.positionLastFrame
                 : orb.node.GlobalPosition;

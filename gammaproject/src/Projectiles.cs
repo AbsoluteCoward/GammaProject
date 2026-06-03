@@ -60,7 +60,7 @@ namespace Gamma {
                     Vector3 directionToTarget = ((rocket.targetNode.GlobalPosition + Vector3.Up) - rocket.node.GlobalPosition).Normalized();
                     float angleToTarget = currentDirection.AngleTo(directionToTarget);
                     if (angleToTarget > 0.001f) {
-                        float maxRotationThisFrame = 2f * (float)globalPhysicsDelta;
+                        float maxRotationThisFrame = 2f * globalProcessDeltaFloat;
                         if (rocket.timeAlive > 1f) { maxRotationThisFrame *= rocket.timeAlive; }
                         float rotationAmount = Mathf.Min(angleToTarget, maxRotationThisFrame);
                         float randomOffsetIntensity = 1f;
@@ -85,7 +85,7 @@ namespace Gamma {
                         currentDirection = -rocket.node.GlobalTransform.Basis.Z;
                     }
                 }
-                Vector3 newPos = rocket.node.GlobalPosition + currentDirection * rocket.speed * (float)globalPhysicsDelta;
+                Vector3 newPos = rocket.node.GlobalPosition + currentDirection * rocket.speed * globalProcessDeltaFloat;
                 rocket.node.TopLevel = true;
                 rocket.node.GlobalPosition = newPos;
                 rocket.collisionRaycast.GlobalPosition = rocket.positionLastFrame != Vector3.Zero
@@ -95,7 +95,7 @@ namespace Gamma {
                 rocket.collisionRaycast.TargetPosition *= 2f;
                 rocket.collisionRaycast.ForceRaycastUpdate();
                 rocket.positionLastFrame = rocket.node.GlobalPosition;
-                rocket.timeAlive += (float)globalPhysicsDelta;
+                rocket.timeAlive += globalProcessDeltaFloat;
                 if (rocket.collisionRaycast.IsColliding() || isProjectileTooFar(rocket.node.GlobalPosition) || rocket.timeAlive > MAX_PROJECTILE_LIFETIME) {
                     SpawnExplosion(rocket.node.GlobalPosition, Mathf.Min(GD.Randf(), 0.8f));
                     if (rocket.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(rocket.node); }
@@ -162,10 +162,10 @@ namespace Gamma {
             for (int i = 0; i < explosions.Length; i++) {
                 if (explosions[i].node == null) { continue; }
                 Explosion explosion = explosions[i];
-                explosion.timeAlive += (float)globalPhysicsDelta;
+                explosion.timeAlive += globalProcessDeltaFloat;
                 float scaleAmount = 2f + explosion.timeAlive * 6f;
                 explosion.node.Scale = new Vector3(scaleAmount, scaleAmount, scaleAmount);
-                explosion.node.Rotation += explosion.randomRotation * 2 * (float)globalPhysicsDelta;
+                explosion.node.Rotation += explosion.randomRotation * 2 * globalProcessDeltaFloat;
                 float maxLifetime = 1f;
                 if (explosion.timeAlive >= maxLifetime) {
                     if (explosion.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(explosion.node); }

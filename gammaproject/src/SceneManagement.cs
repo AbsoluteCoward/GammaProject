@@ -87,7 +87,7 @@ namespace Gamma {
         }
         public void UpdateFadeInOut() {
             if (fadeRect.node == null) { return; }
-            float newAlpha = fadeRect.node.Color.A + (fadeRect.fadeMagnitude * (float)globalPhysicsDelta);
+            float newAlpha = fadeRect.node.Color.A + (fadeRect.fadeMagnitude * globalProcessDeltaFloat);
             fadeRect.node.Color = new Color(
                 fadeRect.node.Color.R,
                 fadeRect.node.Color.G,

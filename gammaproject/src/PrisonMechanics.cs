@@ -22,7 +22,7 @@ namespace Gamma {
                 Mathf.Clamp(player.node.GlobalPosition.Z, -30f, 50f)
             );
             Vector3 directionToTarget = prisonSpotlight.targetPosition - prisonSpotlight.node.GlobalPosition;
-            prisonSpotlight.velocity += directionToTarget * prisonSpotlight.speed * (float)globalPhysicsDelta;
+            prisonSpotlight.velocity += directionToTarget * prisonSpotlight.speed * globalProcessDeltaFloat;
             prisonSpotlight.velocity *= 0.98f;
             switch (prisonSpotlight.node.GlobalPosition.Z) {
                 case < -32f:
@@ -41,7 +41,7 @@ namespace Gamma {
                     PlaySound3D(metalDinkSFX, prisonSpotlight.node.GlobalPosition, 0.05f, 0.8f, true);
                     break;
             }
-            prisonSpotlight.node.GlobalPosition += prisonSpotlight.velocity * (float)globalPhysicsDelta;
+            prisonSpotlight.node.GlobalPosition += prisonSpotlight.velocity * globalProcessDeltaFloat;
             prisonSpotlight.node.LookAt(player.node.GlobalPosition, Vector3.Up);
         }
     }

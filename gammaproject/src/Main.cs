@@ -75,6 +75,8 @@ namespace Gamma {
         public World3D globalWorld3D;
         public float cameraFarSetting = 100;
         public float loadDelay = DEFAULT_LOAD_DELAY;
+        public float globalProcessDeltaFloat;
+        public float globalPhysicsDeltaFloat;
         public double globalPhysicsDelta;
         public double globalProcessDelta;
         public static bool RaycastWorld(World3D relativeWorld, CollisionObject3D exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
@@ -215,6 +217,7 @@ namespace Gamma {
                 return; 
             }
             globalPhysicsDelta = delta;
+            globalProcessDeltaFloat = (float)globalProcessDelta;
             sceneState.timeSinceSceneLoad += (float)delta;
             sceneState.physicsFramesSinceSceneLoad++;
             if (sceneState.physicsFramesSinceSceneLoad % LoadingScreen.speed == 0) {
@@ -256,6 +259,7 @@ namespace Gamma {
         }
         public override void _Process(double delta) {
             globalProcessDelta = delta;
+            globalProcessDeltaFloat = (float)globalProcessDelta;
             ProcessPendingSceneChange();
         }
     }

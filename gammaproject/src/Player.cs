@@ -154,7 +154,7 @@ namespace Gamma {
             PlayerCameraUpdate(ref inputCamera);
         }
         public void PlayerUpdate() {
-            player.animationTree.Advance((float)globalPhysicsDelta);
+            player.animationTree.Advance(globalProcessDeltaFloat);
             Transform3D orbTarget = player.orb.node.Visible ?
                 player.skeleton.GetBoneGlobalPose(Player.miscObjectBoneIndex) : 
                 player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex);
@@ -177,7 +177,7 @@ namespace Gamma {
             float targetY = player.groundRayCast.GetCollisionPoint().Y;
             Vector3 TargetPosition = new Vector3(player.node.GlobalPosition.X, targetY, player.node.GlobalPosition.Z);
             if (player.isOnGround) {
-                player.node.GlobalPosition = player.node.GlobalPosition.Lerp(TargetPosition, 0.1f + (player.node.Velocity.Length() * (float)globalPhysicsDelta));
+                player.node.GlobalPosition = player.node.GlobalPosition.Lerp(TargetPosition, 0.1f + (player.node.Velocity.Length() * globalProcessDeltaFloat));
             }
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
             player.wishDirection =
@@ -185,7 +185,7 @@ namespace Gamma {
                 Y_FLAT;
             Vector3 airControlDirection = player.wishDirection.Length() > 0.1f ? player.wishDirection : player.node.Velocity.Normalized();
             Vector3 rootPosition = player.animationTree.GetRootMotionPosition();
-            Vector3 rootVelocity = (player.node.Transform.Basis * rootPosition) / (float)globalPhysicsDelta;
+            Vector3 rootVelocity = (player.node.Transform.Basis * rootPosition) / globalProcessDeltaFloat;
             string targetAnimation = player.animationState.GetCurrentNode();
             bool isAnimationSameAsPrevious = player.animationState.GetCurrentNode() == player.previousAnimationName;
             bool action3JustPressed = Input.IsActionJustPressed("action3") && !inputState.action3.isConsumed;
@@ -381,7 +381,7 @@ namespace Gamma {
                             GD.Print("Vaulted to: " + player.node.GlobalPosition);
                             player.animationState.Start("Walk", true);
                             targetAnimation = "Walk";
-                            player.animationTree.Advance((float)globalPhysicsDelta);
+                            player.animationTree.Advance(globalProcessDeltaFloat);
                             player.orb.node.GlobalPosition = previousOrbPosition;
                         } else {
                             player.animationState.Start("Fall", true);
@@ -412,7 +412,7 @@ namespace Gamma {
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Jump/Jump/current_length") && isAnimationSameAsPrevious) {
                         targetAnimation = "Fall";
                     }
-                    player.node.Velocity += GRAVITY_VECTOR * (float)globalPhysicsDelta;
+                    player.node.Velocity += GRAVITY_VECTOR * globalProcessDeltaFloat;
                     if (!player.isOnGround) {
                         player.node.Velocity = new Vector3(
                             Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.01f),
@@ -428,7 +428,7 @@ namespace Gamma {
                     }
                     RotateTowards(player.node.Velocity, player.node, 0.2f);
                     if (player.isOnGround) { player.animationState.Start("Roll", true); }
-                    player.node.Velocity += GRAVITY_VECTOR * (float)globalPhysicsDelta;
+                    player.node.Velocity += GRAVITY_VECTOR * globalProcessDeltaFloat;
                     break;
                 case "Roll":
                     if (!isAnimationSameAsPrevious) {
@@ -448,7 +448,7 @@ namespace Gamma {
                         }
                     }
                     if (!player.isOnGround) { targetAnimation = "Fall"; }
-                    player.node.Velocity += GRAVITY_VECTOR * (float)globalPhysicsDelta;
+                    player.node.Velocity += GRAVITY_VECTOR * globalProcessDeltaFloat;
                     break;
                 case "Fall":
                     if (player.isOnGround) {
@@ -458,7 +458,7 @@ namespace Gamma {
                             player.animationState.Start("FallToIdle", true); 
                         }
                     }
-                    player.node.Velocity += GRAVITY_VECTOR * (float)globalPhysicsDelta;
+                    player.node.Velocity += GRAVITY_VECTOR * globalProcessDeltaFloat;
                     player.node.Velocity = new Vector3(
                         Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.02f),
                         player.node.Velocity.Y,
@@ -474,7 +474,7 @@ namespace Gamma {
                         if (player.isOnGround) { PlaySoundUI(footStepMetalSFX, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true); }
                     }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.08f);
-                    player.node.Velocity += GRAVITY_VECTOR * (float)globalPhysicsDelta;
+                    player.node.Velocity += GRAVITY_VECTOR * globalProcessDeltaFloat;
                     break;
                 case "TeleportShoot":
                     if (!isAnimationSameAsPrevious) {
