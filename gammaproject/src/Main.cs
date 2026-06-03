@@ -77,9 +77,6 @@ namespace Gamma {
         public float loadDelay = DEFAULT_LOAD_DELAY;
         public double globalPhysicsDelta;
         public double globalProcessDelta;
-        public static void ShapeCastWorld() {
-            
-        }
         public static bool RaycastWorld(World3D relativeWorld, CollisionObject3D exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
             hitInfo = new RaycastWorldHitInfo();
             var rayResult = relativeWorld.DirectSpaceState.IntersectRay(
