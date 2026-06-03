@@ -75,8 +75,8 @@ namespace Gamma {
         public World3D globalWorld3D;
         public float cameraFarSetting = 100;
         public float loadDelay = DEFAULT_LOAD_DELAY;
-        public float globalProcessDeltaFloat;
         public float globalPhysicsDeltaFloat;
+        public float globalProcessDeltaFloat;
         public double globalPhysicsDelta;
         public double globalProcessDelta;
         public static bool RaycastWorld(World3D relativeWorld, CollisionObject3D exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
@@ -212,17 +212,30 @@ namespace Gamma {
             GD.Print("Setup complete");
         }
         public override void _PhysicsProcess(double delta) {
+            globalPhysicsDelta = delta;
+            globalPhysicsDeltaFloat = (float)globalPhysicsDelta;
             if (sceneState.isSceneLoaded == false) { 
                 InitializeScene(); 
                 return; 
             }
-            globalPhysicsDelta = delta;
-            globalProcessDeltaFloat = (float)globalProcessDelta;
             sceneState.timeSinceSceneLoad += (float)delta;
             sceneState.physicsFramesSinceSceneLoad++;
             if (sceneState.physicsFramesSinceSceneLoad % LoadingScreen.speed == 0) {
                 UpdateLoadingScreen();
             }
+            // switch (loadDelay) {
+            //     case > 2f:
+            //         float t = Mathf.Clamp((loadDelay) / 2f, 0f, 1f);
+            //         loadingScreen.node.Modulate = new Color(1f, 1f, 1f, Mathf.Pow(t, 1.5f));
+            //         break;
+            //     case > 0f:
+            //         loadDelay -= globalPhysicsDeltaFloat;
+            //          break;
+            //     case <= 0f:
+            //         loadingScreen.node.Visible = false;
+            //         loadingScreen.icon.Texture = null;
+            //         break;
+            // }
             if (loadDelay < 2f) {
                 float t = Mathf.Clamp((loadDelay) / 2f, 0f, 1f);
                 loadingScreen.node.Modulate = new Color(1f, 1f, 1f, Mathf.Pow(t, 1.5f));

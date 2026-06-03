@@ -97,7 +97,7 @@ namespace Gamma {
             }
             enemy.node.Velocity = new Vector3(enemyForward.X * enemy.wishDirection.Length(), enemy.node.Velocity.Y, enemyForward.Z * enemy.wishDirection.Length());
             RotateTowards(enemy.wishDirection, enemy.node, 0.01f);
-            enemy.node.Velocity += Vector3.Down * 9.8f * globalProcessDeltaFloat;
+            enemy.node.Velocity += Vector3.Down * 9.8f * globalPhysicsDeltaFloat;
             inputEnemy = enemy;
         }
         public void EnemyInitialize(CharacterBody3D inputNode) {
@@ -131,7 +131,7 @@ namespace Gamma {
                 }
                 Enemy enemy = enemies[i];
                 CharacterBody3D enemyNode = enemies[i].node;
-                enemy.animationTree.Advance(globalProcessDeltaFloat);
+                enemy.animationTree.Advance(globalPhysicsDeltaFloat);
                 switch (enemy.type) {
                     case EnemyType.Generic:
                         EnemyGenericUpdate(ref enemy);

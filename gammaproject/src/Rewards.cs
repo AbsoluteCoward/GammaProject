@@ -67,7 +67,7 @@ namespace Gamma {
                 float distanceToPlayerSq = distancetoPlayer.LengthSquared();
                 Vector3 distanceToDesired = reward.desiredPosition - reward.node.GlobalPosition;
                 if (distanceToDesired.LengthSquared() > ALMOST_ZERO) {
-                    Vector3 move = distanceToDesired.Normalized() * 5f * globalProcessDeltaFloat;
+                    Vector3 move = distanceToDesired.Normalized() * 5f * globalPhysicsDeltaFloat;
                     if (move.LengthSquared() > distanceToDesired.LengthSquared()) { move = distanceToDesired; }
                     reward.node.GlobalPosition += move;
                     reward.raycast.GlobalPosition = reward.node.GlobalPosition;
@@ -84,7 +84,7 @@ namespace Gamma {
                         continue;
                     }
                 }
-                reward.mesh.RotateY(1 * globalProcessDeltaFloat);
+                reward.mesh.RotateY(1 * globalPhysicsDeltaFloat);
                 rewards[i] = reward;
             }
         }

@@ -60,7 +60,7 @@ namespace Gamma {
         public void TrailUpdate(Trail[] inputTrails, float inputDistance) {
             for (int i = 0; i < inputTrails.Length; i++) {
                 if (inputTrails[i].node == null) { continue; }
-                for (int j = 0; j < inputTrails[i].count; j++) { inputTrails[i].lifeTimes[j] -= globalProcessDeltaFloat; }
+                for (int j = 0; j < inputTrails[i].count; j++) { inputTrails[i].lifeTimes[j] -= globalPhysicsDeltaFloat; }
                 while (inputTrails[i].count > 0 && inputTrails[i].lifeTimes[0] <= 0) {
                     for (int k = 1; k < inputTrails[i].count; k++) {
                         inputTrails[i].points[k - 1] = inputTrails[i].points[k];

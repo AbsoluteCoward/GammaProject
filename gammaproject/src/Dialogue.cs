@@ -100,7 +100,7 @@ namespace Gamma {
                 return;
             }
             if (dialogueBox.delay > 0f) {
-                dialogueBox.delay -= globalProcessDeltaFloat;
+                dialogueBox.delay -= globalPhysicsDeltaFloat;
                 return;
             }
             if (dialogueBox.portraitCoverPanel.Modulate.A < 1f) {
