@@ -247,14 +247,9 @@ namespace Gamma {
                         player.targetCount = 0;
                         player.currentTargetIndex = 0;
                     }
-                    if (!isShooting) { 
-                        if (Input.IsActionJustReleased("attack") || (player.targetCount > 0 && !Input.IsActionPressed("attack"))) {
-                            player.animationTree.Set("parameters/Walk/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
-                            gunBlendAmount = 0f;
-                        }
-                        if (action3JustPressed) {
-                            targetAnimation = "Fire01";
-                        }
+                    if (!isShooting && (Input.IsActionJustReleased("attack") || (player.targetCount > 0 && !Input.IsActionPressed("attack")))) {
+                        player.animationTree.Set("parameters/Walk/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
+                        gunBlendAmount = 0f;
                     }
                     if (gunBlendAmount == 1) {
                         for (int i = 0; i < enemyCount; i++) {
