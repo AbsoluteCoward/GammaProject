@@ -191,6 +191,7 @@ namespace Gamma {
             Vector3 rootVelocity = (player.node.Transform.Basis * rootPosition) / globalPhysicsDeltaFloat;
             string targetAnimation = player.animationState.GetCurrentNode();
             bool isAnimationSameAsPrevious = player.animationState.GetCurrentNode() == previousAnimationName;
+            bool isInTransition = player.animationState.GetTravelPath().Count > 0;
             if (player.animationState.GetCurrentNode() == "") { return; }
             AnimationNodeStateMachine stateMachine = (AnimationNodeStateMachine)player.animationTree.TreeRoot;
             bool isCurrentAnimationNodeABlendTree = stateMachine.GetNode(player.animationState.GetCurrentNode()).GetType() == typeof(AnimationNodeBlendTree);
@@ -216,6 +217,11 @@ namespace Gamma {
                         player.animationTree.Set("parameters/Walk/TeleportStartupBlend/blend_amount", 0.0f);
                         player.animationTree.Set("parameters/Walk/GunBlend/blend_amount", 0.0f);
                         break;
+                    }
+                    if (player.animationState.GetFadingFromNode() == "Run" && Input.IsActionJustPressed("action1")) {
+                        GD.Print("Run to Walk transition jump");
+                        player.animationState.Start("RunJump02", true);
+                        inputState.action3.isConsumed = true;
                     }
                     bool shouldWalkBlend = hasMovementInput;
                     float walkBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/WalkBlend/blend_amount"), shouldWalkBlend ? 1f : 0f, 0.1f);
@@ -342,6 +348,11 @@ namespace Gamma {
                     if (!isAnimationSameAsPrevious) { break; }
                     if (!action3Pressed || !hasMovementInput) {
                         targetAnimation = "Walk";
+                    }
+                    if (isInTransition && targetAnimation == "Walk" && action3JustPressed) {
+                        targetAnimation = "RunJump02";
+                        player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
+                        inputState.action3.isConsumed = true;
                     }
                     if (!player.isOnGround) {
                         GD.Print("Jump from Run");
@@ -541,7 +552,6 @@ namespace Gamma {
                 }
             }
             bool shouldChangeAnimation = player.animationState.GetCurrentNode() != targetAnimation;
-            bool isInTransition = player.animationState.GetTravelPath().Count > 0;
             if (shouldChangeAnimation && !isInTransition) {
                 GD.Print("changing animation to " + targetAnimation + " from " + player.animationState.GetCurrentNode());
                 for (int i = 0; i < player.animationPlaybackBlocks.Length; i++) {

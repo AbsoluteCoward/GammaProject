@@ -31,7 +31,7 @@ namespace Gamma {
             Projectile rocket = new Projectile();
             rocket.node = rocketScene.Instantiate<Node3D>();
             entitiesNode.AddChild(rocket.node);
-            TrailsCreate(trails, rocket.node, Vector3.Back, Colors.DarkGray, 0.05f, 0.5f, 256, true);
+            TrailsCreate(trails, rocket.node, Vector3.Back * 0.5f, Colors.DarkGray, 0.05f, 0.5f, 256, true);
             rocket.trailIndex = trails.Length - 1;
             for (int j = 0; j < trails.Length; j++) {
                 if (trails[j].node != null && trails[j].node.GetParent() == rocket.node) {
