@@ -13,7 +13,6 @@ namespace Gamma {
             public Node3D[] targets;
             public PlaybackPositionData[] animationPlaybackBlocks;
             public RayCast3D groundRayCast;
-            public string previousAnimationName;
             public Vector3 wishDirection;
             public float moveSpeed;
             public float turnAnticipation;
@@ -68,7 +67,6 @@ namespace Gamma {
                 player.animationPlaybackBlocks[i].previousPlaybackPosition = 0f;
                 player.animationPlaybackBlocks[i].currentPlaybackPosition = 0f;
             }
-            player.previousAnimationName = "";
             AnimationNodeOneShot fireShotNode = (AnimationNodeOneShot)
             ((AnimationNodeBlendTree)((AnimationNodeStateMachine)player.animationTree.TreeRoot)
             .GetNode("Walk")).GetNode("FireWalkOneShot");
@@ -154,6 +152,7 @@ namespace Gamma {
             PlayerCameraUpdate(ref inputCamera);
         }
         public void PlayerUpdate() {
+            string previousAnimationName = player.animationState.GetCurrentNode();
             player.animationTree.Advance(globalPhysicsDeltaFloat);
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
             player.wishDirection =
@@ -191,7 +190,7 @@ namespace Gamma {
             Vector3 rootPosition = player.animationTree.GetRootMotionPosition();
             Vector3 rootVelocity = (player.node.Transform.Basis * rootPosition) / globalPhysicsDeltaFloat;
             string targetAnimation = player.animationState.GetCurrentNode();
-            bool isAnimationSameAsPrevious = player.animationState.GetCurrentNode() == player.previousAnimationName;
+            bool isAnimationSameAsPrevious = player.animationState.GetCurrentNode() == previousAnimationName;
             if (player.animationState.GetCurrentNode() == "") { return; }
             AnimationNodeStateMachine stateMachine = (AnimationNodeStateMachine)player.animationTree.TreeRoot;
             bool isCurrentAnimationNodeABlendTree = stateMachine.GetNode(player.animationState.GetCurrentNode()).GetType() == typeof(AnimationNodeBlendTree);
@@ -394,7 +393,8 @@ namespace Gamma {
                     break;
                 case "Jump":
                     if (!isAnimationSameAsPrevious) {
-                        if (player.previousAnimationName == "TeleportShoot") {
+                        if (previousAnimationName == "TeleportShoot") {
+                            GD.Print("Jump from TeleportShoot");
                             player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.4f);
                         } else {
                             player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
@@ -540,7 +540,6 @@ namespace Gamma {
                     player.animationPlaybackBlocks[i].previousPlaybackPosition = player.animationPlaybackBlocks[i].currentPlaybackPosition;
                 }
             }
-            player.previousAnimationName = player.animationState.GetCurrentNode();
             bool shouldChangeAnimation = player.animationState.GetCurrentNode() != targetAnimation;
             bool isInTransition = player.animationState.GetTravelPath().Count > 0;
             if (shouldChangeAnimation && !isInTransition) {
