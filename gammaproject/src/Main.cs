@@ -43,6 +43,9 @@ namespace Gamma {
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public PackedScene targetReticleScene = GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
         public PackedScene rewardObjectScene = GD.Load<PackedScene>("res://scenes/entities/reward.tscn");
+        public Vector2 inputDirection;
+        public InputState inputState = new InputState();
+        public InputMode inputMode = InputMode.Game;
         public SceneState sceneState;
         public PendingSceneChange pendingSceneChange;
         public FadeRect fadeRect;
@@ -265,10 +268,7 @@ namespace Gamma {
             TargetReticlesUpdate();
             TrailUpdate(trails, 0.1f);
             if (prisonSpotlight.node != null) { PrisonSpotlightUpdate(ref prisonSpotlight); }
-            inputState.interact.isConsumed = false;
-            inputState.action1.isConsumed = false;
-            inputState.action2.isConsumed = false;
-            inputState.action3.isConsumed = false;
+            ResetInputState();
         }
         public override void _Process(double delta) {
             globalProcessDelta = delta;
