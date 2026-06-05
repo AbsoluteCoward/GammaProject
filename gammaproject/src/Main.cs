@@ -248,7 +248,7 @@ namespace Gamma {
             PlayerCameraUpdate(ref playerCamera);
             OrbUpdate();
             EnemyUpdate();
-            if (Input.IsActionJustPressed("interact")) { Interact(); }
+            if (InputJustPressed(ref inputState.interact, true, false)) { Interact(); }
             DialogueUpdate();
             RewardsUpdate();
             SubtitlesUpdate();

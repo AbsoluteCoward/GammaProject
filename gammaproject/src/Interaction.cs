@@ -30,8 +30,6 @@ namespace Gamma {
             GD.PrintErr("No space to add new interactable!");
         }
         public void Interact() {
-            if (inputState.interact.isConsumed) { return; }
-            inputState.interact.isConsumed = true;
             if (dialogueBox.node.Visible) {
                 if (dialogueBox.dialogueTextLabel.VisibleRatio >= 1f || dialogueBox.dialogueTextLabel.VisibleCharacters >= dialogueBox.dialogueTextLabel.Text.Length) { DialogueEnd(); return; }
                 dialogueBox.dialogueTextLabel.VisibleCharacters = dialogueBox.dialogueTextLabel.Text.Length;

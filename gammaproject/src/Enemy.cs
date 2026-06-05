@@ -27,6 +27,10 @@ namespace Gamma {
             public Vector3 wishDirection;
         }
         public void EnemyRemove(int inputIndex) {
+            if (inputIndex < 0 || inputIndex >= enemyCount) {
+                GD.PrintErr("Enemy Failed to remove: Invalid index!");
+                return;
+            }
             int rewardAmount = (int)GD.RandRange(1, 4);
             for (int i = 0; i < rewardAmount; i++) {
                 Vector3 RandomRewardposition = new Vector3(
@@ -35,10 +39,6 @@ namespace Gamma {
                     (float)GD.RandRange(-1f, 1f)
                 ).Normalized() * (float)GD.RandRange(2f, 4f);
                 SpawnReward(RewardType.BloodVial, enemies[inputIndex].node.GlobalPosition, enemies[inputIndex].node.GlobalPosition + RandomRewardposition);
-            }
-            if (inputIndex < 0 || inputIndex >= enemyCount) {
-                GD.PrintErr("Enemy Failed to remove: Invalid index!");
-                return;
             }
             for (int i = 0; i < player.targetCount; i++) {
                 if (player.targets[i] == enemies[inputIndex].node) {

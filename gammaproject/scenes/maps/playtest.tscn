@@ -453,11 +453,11 @@ collision_layer = 3
 size = Vector3(0.2, 0.90000004, 2)
 
 [node name="CSGBox3D47" type="CSGBox3D" parent="Geometry" unique_id=2023399281]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 14, 0.45, -15)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 14.95, 0.45, -15)
 material_override = SubResource("StandardMaterial3D_h1ish")
 use_collision = true
 collision_layer = 3
-size = Vector3(0.1, 0.90000004, 2)
+size = Vector3(2, 0.90000004, 2)
 
 [node name="CSGBox3D45" type="CSGBox3D" parent="Geometry" unique_id=225116230]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 9.9, 1, -19)
