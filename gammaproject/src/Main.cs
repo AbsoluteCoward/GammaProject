@@ -217,6 +217,7 @@ namespace Gamma {
         public override void _PhysicsProcess(double delta) {
             globalPhysicsDelta = delta;
             globalPhysicsDeltaFloat = (float)globalPhysicsDelta;
+            UpdateInputState();
             if (sceneState.isSceneLoaded == false) { 
                 InitializeScene(); 
                 return; 
@@ -226,19 +227,6 @@ namespace Gamma {
             if (sceneState.physicsFramesSinceSceneLoad % LoadingScreen.speed == 0) {
                 UpdateLoadingScreen();
             }
-            // switch (loadDelay) {
-            //     case > 2f:
-            //         float t = Mathf.Clamp((loadDelay) / 2f, 0f, 1f);
-            //         loadingScreen.node.Modulate = new Color(1f, 1f, 1f, Mathf.Pow(t, 1.5f));
-            //         break;
-            //     case > 0f:
-            //         loadDelay -= globalPhysicsDeltaFloat;
-            //          break;
-            //     case <= 0f:
-            //         loadingScreen.node.Visible = false;
-            //         loadingScreen.icon.Texture = null;
-            //         break;
-            // }
             if (loadDelay < 2f) {
                 float t = Mathf.Clamp((loadDelay) / 2f, 0f, 1f);
                 loadingScreen.node.Modulate = new Color(1f, 1f, 1f, Mathf.Pow(t, 1.5f));
@@ -273,6 +261,7 @@ namespace Gamma {
         public override void _Process(double delta) {
             globalProcessDelta = delta;
             globalProcessDeltaFloat = (float)globalProcessDelta;
+            UpdateInputState();
             ProcessPendingSceneChange();
         }
     }

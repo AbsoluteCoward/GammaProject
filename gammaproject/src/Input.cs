@@ -19,35 +19,8 @@ namespace Gamma {
             public InputAction action2;
             public InputAction action3;
         }
-        public void ResetInputState() {
-            inputState.interact.isConsumed = false;
-            inputState.attack.isConsumed = false;
-            inputState.action1.isConsumed = false;
-            inputState.action2.isConsumed = false;
-            inputState.action3.isConsumed = false;
-        }
-        public bool InputJustPressed(ref InputAction inputAction, bool ignoreConsumed = false) {
-            if (inputAction.isJustPressed && (ignoreConsumed || !inputAction.isConsumed)) {
-                if (!ignoreConsumed) { inputAction.isConsumed = true; }
-                return true;
-            }
-            return false;
-        }
-        public bool InputPressed(ref InputAction inputAction, bool ignoreConsumed = false) {
-            if (inputAction.isPressed && (ignoreConsumed || !inputAction.isConsumed)) {
-                if (!ignoreConsumed) { inputAction.isConsumed = true; }
-                return true;
-            }
-            return false;
-        }
-        public bool InputJustReleased(ref InputAction inputAction, bool ignoreConsumed = false) {
-            if (inputAction.isJustReleased && (ignoreConsumed || !inputAction.isConsumed)) {
-                if (!ignoreConsumed) { inputAction.isConsumed = true; }
-                return true;
-            }
-            return false;
-        }
         public void UpdateInputState() {
+            inputState.inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             inputState.interact.isJustPressed = Input.IsActionJustPressed("interact");
             inputState.interact.isPressed = Input.IsActionPressed("interact");
             inputState.interact.isJustReleased = Input.IsActionJustReleased("interact");
@@ -63,6 +36,34 @@ namespace Gamma {
             inputState.action3.isJustPressed = Input.IsActionJustPressed("action3");
             inputState.action3.isPressed = Input.IsActionPressed("action3");
             inputState.action3.isJustReleased = Input.IsActionJustReleased("action3");
+        }
+        public void ResetInputState() {
+            inputState.interact.isConsumed = false;
+            inputState.attack.isConsumed = false;
+            inputState.action1.isConsumed = false;
+            inputState.action2.isConsumed = false;
+            inputState.action3.isConsumed = false;
+        }
+        public bool InputJustPressed(ref InputAction inputAction, bool shouldConsume, bool shouldIgnoreConsumed) {
+            if (inputAction.isJustPressed && (shouldIgnoreConsumed || !inputAction.isConsumed)) {
+                if (shouldConsume) { inputAction.isConsumed = true; }
+                return true;
+            }
+            return false;
+        }
+        public bool InputPressed(ref InputAction inputAction, bool shouldConsume, bool shouldIgnoreConsumed) {
+            if (inputAction.isPressed && (shouldIgnoreConsumed || !inputAction.isConsumed)) {
+                if (shouldConsume) { inputAction.isConsumed = true; }
+                return true;
+            }
+            return false;
+        }
+        public bool InputJustReleased(ref InputAction inputAction, bool shouldConsume, bool shouldIgnoreConsumed) {
+            if (inputAction.isJustReleased && (shouldIgnoreConsumed || !inputAction.isConsumed)) {
+                if (shouldConsume) { inputAction.isConsumed = true; }
+                return true;
+            }
+            return false;
         }
     }
 }

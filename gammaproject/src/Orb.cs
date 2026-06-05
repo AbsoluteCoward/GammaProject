@@ -106,7 +106,7 @@ namespace Gamma {
             }
             float lift = 0.8f;
             orb.velocity = orb.velocity.Lerp(orbForward * currentSpeed, lift);
-            if (Input.IsActionJustPressed("action3")) { orb.velocity += orbForward * 2f; }
+            if (InputJustPressed(ref inputState.action3, true, false)) { orb.velocity += orbForward * 2f; }
             if (inputDirection != Vector2.Zero) {
                 float inputMagnitude = Mathf.Clamp(1f - (currentSpeed / 6f), 0.6f, 2f);
                 inputMagnitude *= Mathf.Clamp(orb.timeAlive / 2f, 0f, 1f);

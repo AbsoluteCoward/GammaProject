@@ -5,6 +5,7 @@ namespace Gamma {
         public struct Player {
             public TeleportOrb orb;
             public CharacterBody3D node;
+            public Node3D model;
             public Node3D gunBarrel;
             public AnimationPlayer animationPlayer;
             public AnimationTree animationTree;
@@ -41,6 +42,7 @@ namespace Gamma {
         }
         public void PlayerInitialize(CharacterBody3D inputPlayerNode) {
             player.node = inputPlayerNode;
+            player.model = player.node.GetNode<Node3D>("Slink");
             player.gunBarrel = player.node.GetNode<Node3D>("Slink/Skeleton3D/GunBone/GunBarrel");
             player.animationPlayer = inputPlayerNode.GetNode<AnimationPlayer>("Slink/AnimationPlayer");
             player.animationTree = inputPlayerNode.GetNode<AnimationTree>("AnimationTree");
@@ -73,29 +75,6 @@ namespace Gamma {
             SetOneShotFilters(true, "shoulder.R", player.skeleton, player.node, fireShotNode);
             player.groundRayCast = player.node.GetNode<RayCast3D>("GroundRay");
             GD.Print("Player Initialized");
-        }
-        public void Shoot(int inputRocketCount) {
-            for (int i = 0; i < inputRocketCount; i++) {
-                while (player.currentTargetIndex < player.targetCount && player.targets[player.currentTargetIndex] == null) { 
-                    player.currentTargetIndex++; 
-                }
-                bool hasTarget = player.currentTargetIndex < player.targetCount;
-                PlaySoundUI(shootSFX, 0.1f, (float)GD.Randfn(1.0, 0.05f), false);
-                ProjectilesCreate(
-                    inputStartPosition: player.gunBarrel.GlobalPosition,
-                    inputTarget: hasTarget ? player.targets[player.currentTargetIndex] : null,
-                    inputDirection: -player.node.GlobalTransform.Basis.Z,
-                    inputSpeed: 15f
-                );
-                if (!hasTarget) { continue; }
-                player.targets[player.currentTargetIndex] = null;
-                player.currentTargetIndex++;
-                if (player.currentTargetIndex >= player.targetCount) {
-                    for (int j = 0; j < player.targets.Length; j++) { player.targets[j] = null; }
-                    player.targetCount = 0;
-                    player.currentTargetIndex = 0;
-                } 
-            }
         }
         public void PlayerCameraInitialize(Camera3D inputCamera) {
             currentCamera = inputCamera;
@@ -130,6 +109,29 @@ namespace Gamma {
             playerCamera.rotationLerpSpeed = 0.1f;
             GD.Print("Player Camera Initialized");
         }
+        public void Shoot(int inputRocketCount) {
+            for (int i = 0; i < inputRocketCount; i++) {
+                while (player.currentTargetIndex < player.targetCount && player.targets[player.currentTargetIndex] == null) { 
+                    player.currentTargetIndex++; 
+                }
+                bool hasTarget = player.currentTargetIndex < player.targetCount;
+                PlaySoundUI(shootSFX, 0.1f, (float)GD.Randfn(1.0, 0.05f), false);
+                ProjectilesCreate(
+                    inputStartPosition: player.gunBarrel.GlobalPosition,
+                    inputTarget: hasTarget ? player.targets[player.currentTargetIndex] : null,
+                    inputDirection: -player.node.GlobalTransform.Basis.Z,
+                    inputSpeed: 15f
+                );
+                if (!hasTarget) { continue; }
+                player.targets[player.currentTargetIndex] = null;
+                player.currentTargetIndex++;
+                if (player.currentTargetIndex >= player.targetCount) {
+                    for (int j = 0; j < player.targets.Length; j++) { player.targets[j] = null; }
+                    player.targetCount = 0;
+                    player.currentTargetIndex = 0;
+                } 
+            }
+        }
         public void PlayerApplyDynamicBoneTransformations(float inputChestTwist, float inputChestRoll, float inputHeadTwist) {
             if (player.skeleton == null) { return; }
             float chestRotation = player.turnAnticipation * 0.6f;
@@ -151,6 +153,10 @@ namespace Gamma {
             player.node.Velocity = Vector3.Zero;
             PlayerCameraUpdate(ref inputCamera);
         }
+        public void PlayerSetCollision(bool inputEnabled) {
+            player.node.CollisionLayer = (uint)(inputEnabled ? 1 : 0);
+            player.node.CollisionMask = (uint)(inputEnabled ? 1 : 0);
+        }
         public void PlayerUpdate() {
             string previousAnimationName = player.animationState.GetCurrentNode();
             player.animationTree.Advance(globalPhysicsDeltaFloat);
@@ -163,6 +169,7 @@ namespace Gamma {
             bool action3Pressed = Input.IsActionPressed("action3");
             bool action3JustReleased = Input.IsActionJustReleased("action3");
             bool hasMovementInput = player.wishDirection.Length() > 0.1f;
+            bool shouldMoveAndSlide = true;
             Transform3D orbTarget = player.orb.node.Visible ?
                 player.skeleton.GetBoneGlobalPose(Player.miscObjectBoneIndex) : 
                 player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex);
@@ -182,9 +189,8 @@ namespace Gamma {
             bool shouldSnapToGround = distanceToGround <= PLAYER_LEG_LENGTH * 1.5f;
             bool isRayCollidingAtPlayerFeet = distanceToGround <= PLAYER_LEG_LENGTH;
             player.isOnGround = (player.node.IsOnFloor() || shouldSnapToGround) && player.node.Velocity.Y <= 0f;
-            float targetY = player.groundRayCast.GetCollisionPoint().Y;
-            Vector3 TargetPosition = new Vector3(player.node.GlobalPosition.X, targetY, player.node.GlobalPosition.Z);
-            if (player.isOnGround) {
+            Vector3 TargetPosition = new Vector3(player.node.GlobalPosition.X, player.groundRayCast.GetCollisionPoint().Y, player.node.GlobalPosition.Z);
+            if (player.isOnGround && player.node.CollisionMask > 0) {
                 player.node.GlobalPosition = player.node.GlobalPosition.Lerp(TargetPosition, 0.1f + (player.node.Velocity.Length() * globalPhysicsDeltaFloat));
             }
             Vector3 rootPosition = player.animationTree.GetRootMotionPosition();
@@ -253,6 +259,8 @@ namespace Gamma {
                         player.currentTargetIndex = 0;
                     }
                     if (!isShooting && (Input.IsActionJustReleased("attack") || (player.targetCount > 0 && !Input.IsActionPressed("attack")))) {
+                        GD.Print("Firing");
+                        GD.Print("Target count: " + player.targetCount);
                         player.animationTree.Set("parameters/Walk/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
                         gunBlendAmount = 0f;
                     }
@@ -302,14 +310,18 @@ namespace Gamma {
                     }
                     if (player.node.IsOnWall() && walkBlendAmount > 0.5f) {
                         RaycastWorldHitInfo findLedge = new RaycastWorldHitInfo();
-                        Vector3 collisionPosition = player.node.GetSlideCollision(0).GetPosition();
+                        Vector3 collisionPosition = player.node.GetSlideCollision(0).GetPosition() - player.node.GetSlideCollision(0).GetNormal() * 0.1f;
                         Vector3 rayStart = collisionPosition + Vector3.Up * 2f;
                         Vector3 rayEnd = collisionPosition;
                         if (RaycastWorld(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
-                            Vector3 offset = new Vector3(0, 1.3f, 0);
-                            player.node.GlobalPosition = findLedge.Position - offset;
+                            player.node.GlobalPosition = new Vector3(
+                                player.node.GlobalPosition.X,
+                                findLedge.Position.Y - 1f,
+                                player.node.GlobalPosition.Z
+                            );
                             RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 0.6f);
-                            targetAnimation = "Vault";
+                            targetAnimation = "Vault2";
+                            shouldMoveAndSlide = false;
                             break;
                         }
                     }
@@ -349,10 +361,22 @@ namespace Gamma {
                     if (!action3Pressed || !hasMovementInput) {
                         targetAnimation = "Walk";
                     }
-                    if (isInTransition && targetAnimation == "Walk" && action3JustPressed) {
-                        targetAnimation = "RunJump02";
-                        player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
-                        inputState.action3.isConsumed = true;
+                    if (player.node.IsOnWall()) {
+                        RaycastWorldHitInfo findLedge = new RaycastWorldHitInfo();
+                        Vector3 collisionPosition = player.node.GetSlideCollision(0).GetPosition() - player.node.GetSlideCollision(0).GetNormal() * 0.1f;
+                        Vector3 rayStart = collisionPosition + Vector3.Up * 2f;
+                        Vector3 rayEnd = collisionPosition;
+                        if (RaycastWorld(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
+                            player.node.GlobalPosition = new Vector3(
+                                player.node.GlobalPosition.X,
+                                findLedge.Position.Y - 1f,
+                                player.node.GlobalPosition.Z
+                            );
+                            RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 0.6f);
+                            targetAnimation = "Vault2";
+                            shouldMoveAndSlide = false;
+                            break;
+                        }
                     }
                     if (!player.isOnGround) {
                         GD.Print("Jump from Run");
@@ -366,9 +390,7 @@ namespace Gamma {
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.14f) ||
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.68f)
                     ) {
-                        if (player.isOnGround) {
-                            PlaySoundUI(footStepMetalSFX, 0.2f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
-                        }
+                        PlaySoundUI(footStepMetalSFX, 0.2f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true);
                     }
                     float targetAngleRun = Mathf.Atan2(playerForward.Cross(player.wishDirection).Y, playerForward.Dot(player.wishDirection));
                     targetAngle = Mathf.Clamp(targetAngleRun, -0.8f, 0.8f);
@@ -377,30 +399,34 @@ namespace Gamma {
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     PlayerApplyDynamicBoneTransformations(1.5f, 0.8f, 0.5f);
                     break;
-                case "Vault":
-                    if (!isAnimationSameAsPrevious) { break; }
-                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Vault/current_length") && isAnimationSameAsPrevious) {
-                        Vector3 pelvisGlobal = player.skeleton.ToGlobal(player.skeleton.GetBoneGlobalPose(1).Origin);
-                        RaycastWorldHitInfo vaultLandHit;
-                        Vector3 vaultrayStart = pelvisGlobal;
-                        Vector3 vaultRayEnd = pelvisGlobal + Vector3.Down * 2f;
-                        if (RaycastWorld(globalWorld3D, player.node, vaultrayStart, vaultRayEnd, out vaultLandHit)) {
-                            //DebugSpawnCube(vaultLandHit.Position, 0.3f, entitiesNode);
-                            GD.Print("Going from " + player.node.GlobalPosition);
-                            DebugSpawnCube(vaultLandHit.Position, 0.3f, entitiesNode);
-                            Vector3 previousOrbPosition = player.orb.node.GlobalPosition;
-                            player.node.GlobalPosition = vaultLandHit.Position;
-                            GD.Print("Vaulted to: " + player.node.GlobalPosition);
-                            player.animationState.Start("Walk", true);
-                            targetAnimation = "Walk";
-                            player.animationTree.Advance(globalPhysicsDeltaFloat);
-                            player.orb.node.GlobalPosition = previousOrbPosition;
+                case "Vault2":
+                    if (!isAnimationSameAsPrevious) {
+                        PlayerSetCollision(false);
+                        break;
+                    }
+                    float maxDistanceToGround = 1.5f;
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Vault2/current_length")) {
+                        if (distanceToGround < maxDistanceToGround) {
+                            GD.Print("Snap to ground from Vault2");
+                            player.node.GlobalPosition = player.groundRayCast.GetCollisionPoint();
+                            targetAnimation = action3Pressed ? "Run" : "Walk";
+                            player.node.Velocity = Vector3.Zero;
                         } else {
-                            player.animationState.Start("Fall", true);
                             targetAnimation = "Fall";
                         }
+                        PlayerSetCollision(true);
+                        break;
                     }
-                    player.node.Velocity = Vector3.Zero;
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition < 0.5f) {
+                        RotateTowards(player.wishDirection, player.node, 0.1f);
+                        player.node.Velocity = new Vector3(rootVelocity.X, rootVelocity.Y, rootVelocity.Z);
+                        break;
+                    }
+                    if (distanceToGround > maxDistanceToGround) {
+                        targetAnimation = "Fall";
+                        player.node.Velocity += Vector3.Down;
+                        PlayerSetCollision(true);
+                    }
                     break;
                 case "Jump":
                     if (!isAnimationSameAsPrevious) {
@@ -567,7 +593,7 @@ namespace Gamma {
             if (player.isOnGround && player.node.Velocity.Y < 0f) {
                 player.node.Velocity = new Vector3(player.node.Velocity.X, 0f, player.node.Velocity.Z);
             }
-            player.node.MoveAndSlide();
+            if (shouldMoveAndSlide) { player.node.MoveAndSlide(); }
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }
