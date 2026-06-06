@@ -12,6 +12,8 @@ namespace Gamma {
             public Panel portraitCoverPanel;
             public TextureRect gradient;
             public Control node;
+            public float portraitFrameAccumulator;
+            public float textAccumulator;
             public float textSpeed;
             public float delay;
         }
@@ -42,6 +44,8 @@ namespace Gamma {
             dialogueBox.dialogueTextLabel.Text = inputDialogue.text;
             dialogueBox.dialogueTextLabel.VisibleCharacters = 0;
             dialogueBox.textSpeed = inputDialogue.textSpeed;
+            dialogueBox.textAccumulator = 0f;
+            dialogueBox.portraitFrameAccumulator = 0f;
             dialogueBox.delay = 0f;
             if (inputDialogue.speakerPortrait != null) {
                 Vector2 textureSize = inputDialogue.speakerPortrait.GetSize();
@@ -95,8 +99,19 @@ namespace Gamma {
                 dialogueBox.portraitSprite.Modulate = new Color(1f, 1f, 1f, dialogueBox.portraitSprite.Modulate.A + 0.1f);
                 return;
             }
-            if (dialogueBox.portraitSprite.Frame < dialogueBox.portraitSprite.Hframes * dialogueBox.portraitSprite.Vframes - 1 && sceneState.physicsFramesSinceSceneLoad % 4 == 0) {
-                dialogueBox.portraitSprite.Frame += 1;
+            //12 fps
+            const float portraitFrameInterval = 1 / (12f * 3.15f);
+            int totalFrames = dialogueBox.portraitSprite.Hframes * dialogueBox.portraitSprite.Vframes - 1;
+            if (dialogueBox.portraitSprite.Frame < totalFrames && sceneState.physicsFramesSinceSceneLoad % 4 == 0) {
+                dialogueBox.portraitFrameAccumulator += globalPhysicsDeltaFloat;
+                if (dialogueBox.portraitFrameAccumulator >= portraitFrameInterval) {
+                    int frames = (int)(dialogueBox.portraitFrameAccumulator / portraitFrameInterval);
+                    dialogueBox.portraitFrameAccumulator -= frames * portraitFrameInterval;
+                    dialogueBox.portraitSprite.Frame += frames;
+                    if (dialogueBox.portraitSprite.Frame > totalFrames) {
+                        dialogueBox.portraitSprite.Frame = totalFrames;
+                    }
+                }
                 return;
             }
             if (dialogueBox.delay > 0f) {

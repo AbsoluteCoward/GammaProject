@@ -5,7 +5,7 @@ namespace Gamma {
         public struct RaycastWorldHitInfo {
             public Vector3 Position;
             public Vector3 Normal;
-            public object Collider;
+            public Node3D Collider;
             public Godot.Collections.Dictionary RawResult;
         }
         public const int AUDIO_POOL_SIZE = 8;
@@ -91,7 +91,7 @@ namespace Gamma {
             hitInfo.RawResult = rayResult;
             hitInfo.Position = (Vector3)rayResult["position"];
             hitInfo.Normal = (Vector3)rayResult["normal"];
-            hitInfo.Collider = rayResult["collider"];
+            hitInfo.Collider = (Node3D)rayResult["collider"];
             return true;
         }
         public void RotateTowards(Vector3 lookDirection, Node3D inputNode, float rotationSpeed) {

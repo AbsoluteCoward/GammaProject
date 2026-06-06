@@ -85,13 +85,13 @@ namespace Gamma {
                         currentDirection = -rocket.node.GlobalTransform.Basis.Z;
                     }
                 }
-                Vector3 newPos = rocket.node.GlobalPosition + currentDirection * rocket.speed * globalPhysicsDeltaFloat;
+                Vector3 newPosition = rocket.node.GlobalPosition + currentDirection * rocket.speed * globalPhysicsDeltaFloat;
                 rocket.node.TopLevel = true;
-                rocket.node.GlobalPosition = newPos;
+                rocket.node.GlobalPosition = newPosition;
                 rocket.collisionRaycast.GlobalPosition = rocket.positionLastFrame != Vector3.Zero
                     ? rocket.positionLastFrame
                     : rocket.node.GlobalPosition;
-                rocket.collisionRaycast.TargetPosition = rocket.collisionRaycast.ToLocal(newPos);
+                rocket.collisionRaycast.TargetPosition = rocket.collisionRaycast.ToLocal(newPosition);
                 rocket.collisionRaycast.TargetPosition *= 2f;
                 rocket.collisionRaycast.ForceRaycastUpdate();
                 rocket.positionLastFrame = rocket.node.GlobalPosition;

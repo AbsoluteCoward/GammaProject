@@ -208,10 +208,10 @@ use_collision = true
 size = Vector3(1, 24, 1)
 
 [node name="CSGBox3D11" type="CSGBox3D" parent="Geometry" unique_id=1821634872]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 9, -27)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 29, -27)
 material_override = SubResource("StandardMaterial3D_1odrk")
 use_collision = true
-size = Vector3(1, 24, 1)
+size = Vector3(1, 64, 1)
 
 [node name="CSGBox3D12" type="CSGBox3D" parent="Geometry" unique_id=330940078]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 6, -6)
@@ -226,16 +226,22 @@ use_collision = true
 size = Vector3(1, 10, 1)
 
 [node name="CSGBox3D14" type="CSGBox3D" parent="Geometry" unique_id=1661426890]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 8, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 8, -9)
 material_override = SubResource("StandardMaterial3D_1odrk")
 use_collision = true
 size = Vector3(1, 22, 1)
 
 [node name="CSGBox3D15" type="CSGBox3D" parent="Geometry" unique_id=1289687055]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 3, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 3, -2)
 material_override = SubResource("StandardMaterial3D_1odrk")
 use_collision = true
 size = Vector3(1, 12, 1)
+
+[node name="CSGBox3D17" type="CSGBox3D" parent="Geometry" unique_id=474381520]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1.5, -6)
+material_override = SubResource("StandardMaterial3D_1odrk")
+use_collision = true
+size = Vector3(1, 9, 1)
 
 [node name="CSGBox3D16" type="CSGBox3D" parent="Geometry" unique_id=1246737046]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.5, 7.5, -5)
@@ -643,7 +649,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 45)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 7, 11)
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("4_8d6xy")]
-transform = Transform3D(1.3113461e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113461e-07, 9.199999, 0, -14.700001)
+transform = Transform3D(1.3113461e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113461e-07, -22, 0, -23)
 
 [node name="PlayerCamera" parent="Entities" unique_id=29831598 instance=ExtResource("5_amgw8")]
 transform = Transform3D(-1, 4.8067232e-08, -7.30225e-08, 1.7763567e-15, 0.83527994, 0.549825, 8.7422784e-08, 0.549825, -0.83527994, -5.200001, 10.4183, 11.60695)

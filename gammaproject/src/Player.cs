@@ -120,9 +120,9 @@ namespace Gamma {
                     inputStartPosition: player.gunBarrel.GlobalPosition,
                     inputTarget: hasTarget ? player.targets[player.currentTargetIndex] : null,
                     inputDirection: -player.node.GlobalTransform.Basis.Z,
-                    inputSpeed: 10f
+                    inputSpeed: 20f
                 );
-                if (!hasTarget) { 
+                if (!hasTarget) {
                     player.currentTargetIndex = 0;
                     player.targetCount = 0;
                     continue; 
@@ -272,26 +272,30 @@ namespace Gamma {
                             float dotProduct = playerForward.Dot(toTargetFlat);
                             float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
                             float angleInDegrees = Mathf.RadToDeg(angleToTarget);
-                            if (angleInDegrees <= TARGETTING_ANGLE) {
-                                bool alreadyTargeted = false;
-                                for (int j = 0; j < player.targetCount; j++) {
-                                    if (player.targets[j] == potentialTarget) {
-                                        alreadyTargeted = true;
-                                        break;
-                                    }
+                            if (angleInDegrees > TARGETTING_ANGLE) { continue; }
+                            bool alreadyTargeted = false;
+                            for (int j = 0; j < player.targetCount; j++) {
+                                if (player.targets[j] == potentialTarget) {
+                                    alreadyTargeted = true;
+                                    break;
                                 }
-                                if (!alreadyTargeted && player.targetCount < player.targets.Length) {
-                                    player.targets[player.targetCount] = potentialTarget;
-                                    targetReticles[player.targetCount].node.Visible = true;
-                                    player.targetCount++;
-                                }
+                            }
+                            RaycastWorldHitInfo potentialTargetHitInfo;
+                            bool hitSomething = RaycastWorld(globalWorld3D, player.node, player.node.GlobalPosition + Vector3.Up, potentialTarget.GlobalPosition + Vector3.Up, out potentialTargetHitInfo);
+                            GD.Print("Collider: " + potentialTargetHitInfo.Collider + "\nPotential target: " + potentialTarget);
+                            if (hitSomething && potentialTargetHitInfo.Collider != potentialTarget) { continue; }
+                            if (!alreadyTargeted && player.targetCount < player.targets.Length) {
+                                player.targets[player.targetCount] = potentialTarget;
+                                targetReticles[player.targetCount].node.Visible = true;
+                                player.targetCount++;
                             }
                         }
                     }
                     bool shouldFallFromWalk = !player.isOnGround;
                     if (shouldFallFromWalk) { 
                         targetAnimation = "Fall";
-                        player.node.Velocity = playerForward * 0.5f + Vector3.Up * 5f;
+                        player.node.Velocity = Vector3.Down * 2 + playerForward;
+                        break;
                     }
                     bool shouldRunFromWalk = action3Pressed && hasMovementInput;
                     if (shouldRunFromWalk) {
@@ -489,11 +493,18 @@ namespace Gamma {
                     }
                     break;
                 case "WallGrab":
-                    if (!isAnimationSameAsPrevious) { break; }
-                    if (hasMovementInput && InputPressed(ref inputState.action3, false, false)) {
+                    if (!isAnimationSameAsPrevious) { 
+                        PlaySoundUI(GD.Load<AudioStream>("res://assets/sound/grab01.wav"), 0.05f, (float)GD.Randfn(1f, 0.01f), false);
+                        break; 
+                    }
+                    if (
+                        player.animationPlaybackBlocks[0].currentPlaybackPosition > 0.266f &&
+                        hasMovementInput && 
+                        InputPressed(ref inputState.action3, false, false)
+                    ) {
                         RotateTowards(player.wishDirection, player.node, 1f);
                         targetAnimation = "RunJump02";
-                        player.node.Velocity = player.wishDirection * 8f + Vector3.Up * 2f;
+                        player.node.Velocity = player.wishDirection * 12f + Vector3.Up * 4f;
                         break;
                     }
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/WallGrab/current_length")) {
@@ -507,9 +518,9 @@ namespace Gamma {
                         break;
                     }
                     RotateTowards(player.node.Velocity, player.node, 0.2f);
-                    if (player.node.IsOnWall()) {
+                    if (player.node.IsOnWall() && distanceToGround > 2f) {
                         targetAnimation = "WallGrab";
-                            RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 1);
+                        RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 1);
                     }
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/RunJump01/current_length") && isAnimationSameAsPrevious) {
                          targetAnimation = "Fall";
@@ -563,7 +574,14 @@ namespace Gamma {
                         if ((player.node.Velocity * Y_FLAT).Length() > 6f) {
                             player.animationState.Start("Roll", true);
                         } else {
-                            player.animationState.Start("FallToIdle", true); 
+                            player.animationState.Start("FallToIdle", true);
+                            float impactSpeed = -player.node.Velocity.Y;
+                            float animationScale = Mathf.Clamp(impactSpeed / 12.0f, 0.5f, 2.0f);
+                            float animationSpeed = Mathf.Clamp(2.0f - (impactSpeed / 10.0f), 0.5f, 1.5f);
+                            GD.Print("impactSpeed: " + impactSpeed + " animationScale: " + animationScale + " animationSpeed: " + animationSpeed);
+                            player.animationTree.Set("parameters/FallToIdle/FallToIdleTimeSeek/seek_request", 0.0f);
+                            player.animationTree.Set("parameters/FallToIdle/FallToIdleBlend/blend_amount", animationScale);
+                            player.animationTree.Set("parameters/FallToIdle/FallToIdleTimeScale/scale", animationSpeed);
                         }
                     }
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
@@ -574,12 +592,17 @@ namespace Gamma {
                     );
                     break;
                 case "FallToIdle":
+                    if (!isAnimationSameAsPrevious) {
+                        player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
+                        break;
+                    }
                     if (!player.isOnGround) { targetAnimation = "Fall"; }
-                    if (
-                        HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.2f) &&
-                        isAnimationSameAsPrevious
-                    ) {
+                    int FallToIdleBlockIndex = GetPlaybackBlockIndex("FallToIdle");
+                    if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[FallToIdleBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[FallToIdleBlockIndex].currentPlaybackPosition, 0.2f)) {
                         if (player.isOnGround) { PlaySoundUI(footStepMetalSFX, 0.4f, Mathf.Pow(2.0f, (float)GD.Randfn(0.0, 17.0f) / 1200.0f), true); }
+                    }
+                    if (player.animationPlaybackBlocks[FallToIdleBlockIndex].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/FallToIdle/FallToIdle/current_length")) {
+                        targetAnimation = "Walk";
                     }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.08f);
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
