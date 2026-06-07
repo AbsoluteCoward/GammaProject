@@ -2,6 +2,9 @@
 
 [ext_resource type="PackedScene" uid="uid://dtlupp71fs7om" path="res://assets/models/SurveillanceScanner01.glb" id="1_ql4jv"]
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_ql4jv"]
+radius = 0.2
+
 [sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_ql4jv"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xn1fg"]
@@ -25,30 +28,52 @@ advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_hvfql"]
 states/BlendTree/node = SubResource("AnimationNodeBlendTree_jixvi")
-states/BlendTree/position = Vector2(395, 109)
+states/BlendTree/position = Vector2(397, 100)
 transitions = ["Start", "BlendTree", SubResource("AnimationNodeStateMachineTransition_oe36g")]
 
-[node name="SurveillanceScanner01" type="Node3D" unique_id=1002891983]
+[node name="SurveillanceScanner01" type="CharacterBody3D" unique_id=1505433102]
+motion_mode = 1
 metadata/Type = "SurveillanceScanner01"
 
-[node name="SurveillanceScanner01" parent="." unique_id=176542877 instance=ExtResource("1_ql4jv")]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1331559318]
+shape = SubResource("SphereShape3D_ql4jv")
 
-[node name="Skeleton3D" parent="SurveillanceScanner01/Armature" parent_id_path=PackedInt32Array(176542877, 816511523) index="0" unique_id=410339298]
-bones/0/position = Vector3(0, -0.033788424, 0)
-bones/1/rotation = Quaternion(0, -0.30747417, 0, 0.95155644)
+[node name="SurveillanceScanner01" parent="." unique_id=1690118326 instance=ExtResource("1_ql4jv")]
 
-[node name="Top" parent="SurveillanceScanner01/Armature/Skeleton3D" index="0" unique_id=842072425]
-transform = Transform3D(0.8109193, 0, -0.58515805, 0, 1, 0, 0.58515805, 0, 0.8109193, 0, 0.066211596, 0)
+[node name="Skeleton3D" parent="SurveillanceScanner01" index="0" unique_id=1680222344]
+bones/0/position = Vector3(0, 0.028352138, 0)
+bones/1/rotation = Quaternion(0, -0.3296857, 0, 0.9440907)
 
-[node name="Base" parent="SurveillanceScanner01/Armature/Skeleton3D" index="1" unique_id=776471642]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.033788424, 0)
+[node name="Top" parent="SurveillanceScanner01/Skeleton3D" index="0" unique_id=2105690002]
+transform = Transform3D(0.7826147, 0, -0.62250644, 0, 1, 0, 0.62250644, 0, 0.7826147, 0, 0.12835217, 0)
 
-[node name="SpotLight3D" type="SpotLight3D" parent="SurveillanceScanner01/Armature/Skeleton3D/Base" index="0" unique_id=1680231869]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.559736, -0.51223516)
+[node name="Wings" parent="SurveillanceScanner01/Skeleton3D/Top" index="0" unique_id=536679484]
+cast_shadow = 0
+
+[node name="Lamp" parent="SurveillanceScanner01/Skeleton3D" index="1" unique_id=1973043574]
+transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.5116479, -0.010000005)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="SurveillanceScanner01/Skeleton3D/Lamp" index="0" unique_id=1680231869]
+transform = Transform3D(1, 0, 0, 0, 0.9623858, 0.2716868, 0, -0.2716868, 0.9623858, 0, 0.8032023, 0.50166816)
 shadow_enabled = true
-spot_range = 40.0
+spot_range = 80.0
 spot_angle = 66.0
 metadata/Type = ""
+
+[node name="Body_001" parent="SurveillanceScanner01/Skeleton3D/Lamp" index="1" unique_id=195127149]
+cast_shadow = 0
+
+[node name="Base" parent="SurveillanceScanner01/Skeleton3D" index="2" unique_id=1814497703]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.028352138, 0)
+
+[node name="Shell" parent="SurveillanceScanner01/Skeleton3D/Base" index="0" unique_id=1315187997]
+cast_shadow = 0
+
+[node name="Body" parent="SurveillanceScanner01/Skeleton3D" index="3" unique_id=1343492390]
+cast_shadow = 0
+
+[node name="String" parent="SurveillanceScanner01/Skeleton3D" index="4" unique_id=1712410458]
+cast_shadow = 0
 
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=2082400159]
 root_node = NodePath("../SurveillanceScanner01")

@@ -22,6 +22,7 @@ namespace Gamma {
         public const float DEFAULT_CAMERA_DISTANCE = 3.0f;
         public const float DEFAULT_CAMERA_HEIGHT = DEFAULT_CAMERA_DISTANCE * 0.4f;
         public const float ALMOST_ZERO = 0.00001f;
+        public const float ALMOST_ONE = 0.99999f;
         public const float GRAVITY_STRENGTH = 9.81f;
         public const float MAX_PROJECTILE_DISTANCE = 1000f;
         public const float MAX_PROJECTILE_LIFETIME = 10f;
@@ -104,14 +105,12 @@ namespace Gamma {
         public void InitializeScene() {
             GD.Print("Initializing scene");
             loadDelay = DEFAULT_LOAD_DELAY;
-            enemyCount = 0;
-            rewardsCount = 0;
-            sounds3DCount = 0;
-            soundsUICount = 0;
             player = new Player();
             playerCamera = new PlayerCamera();
             surveillanceScanners = new SurveillanceScanner[DEFAULT_MISCELLANEOUS_SIZE];
+            surveillanceScannerCount = 0;
             enemies = new Enemy[DEFAULT_ENEMIES_SIZE];
+            enemyCount = 0;
             interactables = new Interactable[DEFAULT_INTERACTABLES_SIZE];
             targetReticles = new TargetReticle[DEFAULT_TARGET_RETICLES_SIZE];
             projectiles = new Projectile[DEFAULT_PROJECTILES_SIZE];
@@ -149,7 +148,7 @@ namespace Gamma {
                         PlayerCameraInitialize((Camera3D)child);
                         break;
                     case "SurveillanceScanner01":
-                        SurveillanceScannerInitialize((Node3D)child);
+                        SurveillanceScannerInitialize((CharacterBody3D)child);
                         break;
                     case "DungeonExit":
                         InteractablesInitialize((Node3D)child, InteractableLookup.ExitDungeon);

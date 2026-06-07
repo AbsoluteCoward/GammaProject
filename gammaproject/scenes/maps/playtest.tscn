@@ -529,6 +529,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 0, 6)
 
 [node name="Entities" type="Node" parent="." unique_id=1339097609]
 
+[node name="Camera3D" type="Camera3D" parent="Entities" unique_id=662171203]
+transform = Transform3D(1.2666631e-07, 0.25881907, -0.9659258, -3.3940136e-08, 0.9659259, 0.25881907, 1, 0, 1.3113461e-07, -26, 5, -0.9999981)
+current = true
+
 [node name="Moe" parent="Entities" unique_id=2039105678 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 7, 12)
 
@@ -656,7 +660,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 45)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 7, 11)
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("4_8d6xy")]
-transform = Transform3D(1.3113461e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113461e-07, -6, 0, 2)
+transform = Transform3D(1.3113461e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113461e-07, -20, 0, -7)
 
 [node name="PlayerCamera" parent="Entities" unique_id=29831598 instance=ExtResource("5_amgw8")]
 transform = Transform3D(-1, 4.8067232e-08, -7.30225e-08, 1.7763567e-15, 0.83527994, 0.549825, 8.7422784e-08, 0.549825, -0.83527994, -5.200001, 10.4183, 11.60695)
@@ -689,7 +693,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -16)
 [node name="Crab01" parent="Entities" unique_id=1247901200 instance=ExtResource("21_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 7, 12)
 
-[node name="SurveillanceScanner01" parent="Entities" unique_id=1002891983 instance=ExtResource("28_h1ish")]
+[node name="SurveillanceScanner01" parent="Entities" unique_id=1505433102 instance=ExtResource("28_h1ish")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.1, 3, 0.20000005)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("18_rrwtf")]

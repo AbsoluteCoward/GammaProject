@@ -16,6 +16,7 @@ namespace Gamma {
             public RayCast3D groundRayCast;
             public Vector3 wishDirection;
             public Vector3 targetPosition;
+            public Vector3 targetCorrection;
             public float moveSpeed;
             public float turnAnticipation;
             public float maxTeleportDistance;
@@ -33,7 +34,6 @@ namespace Gamma {
             public Vector3 targetPosition;
             public Camera3D node;
             public RayCast3D WallRayCast;
-            public SpotLight3D SpotLight;
             public float offsetDistance;
             public float offsetHeight;
             public float targetAngle;
@@ -81,13 +81,9 @@ namespace Gamma {
             currentCamera = inputCamera;
             playerCamera.node = inputCamera;
             playerCamera.WallRayCast = inputCamera.GetChild<RayCast3D>(0);
-            playerCamera.SpotLight = inputCamera.GetChild<SpotLight3D>(1);
             playerCamera.WallRayCast.TopLevel = true;
             playerCamera.WallRayCast.AddException(player.node);
             playerCamera.WallRayCast.CollisionMask = 2;
-            playerCamera.SpotLight.SpotRange = 120;
-            playerCamera.SpotLight.SpotAngle = 120;
-            playerCamera.SpotLight.LightEnergy = GetTree().CurrentScene.Name == "Prison" ? 0f : 0f;
             playerCamera.offsetDistance = DEFAULT_CAMERA_DISTANCE;
             playerCamera.offsetHeight = DEFAULT_CAMERA_HEIGHT;
             playerCamera.node.Fov = 64;
@@ -318,17 +314,18 @@ namespace Gamma {
                             player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
                         }
                     }
-                    if (player.node.IsOnWall() && walkBlendAmount > 0.5f) {
+                    if (player.node.IsOnWall()) {
                         RaycastWorldHitInfo findLedge = new RaycastWorldHitInfo();
                         Vector3 collisionPosition = player.node.GetSlideCollision(0).GetPosition() - player.node.GetSlideCollision(0).GetNormal() * 0.1f;
                         Vector3 rayStart = collisionPosition + Vector3.Up * 2f;
                         Vector3 rayEnd = collisionPosition;
                         if (RaycastWorld(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
-                            player.node.GlobalPosition = new Vector3(
-                                player.node.GlobalPosition.X,
+                            player.targetPosition = new Vector3(
+                                findLedge.Position.X,
                                 findLedge.Position.Y - 1f,
-                                player.node.GlobalPosition.Z
+                                findLedge.Position.Z
                             );
+                            player.targetPosition -= playerForward * 0.3f;
                             RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 0.6f);
                             targetAnimation = "Vault";
                             shouldMoveAndSlide = false;
@@ -367,11 +364,12 @@ namespace Gamma {
                         Vector3 rayStart = collisionPosition + Vector3.Up * 2f;
                         Vector3 rayEnd = collisionPosition;
                         if (RaycastWorld(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
-                            player.node.GlobalPosition = new Vector3(
-                                player.node.GlobalPosition.X,
+                            player.targetPosition = new Vector3(
+                                findLedge.Position.X,
                                 findLedge.Position.Y - 1f,
-                                player.node.GlobalPosition.Z
+                                findLedge.Position.Z
                             );
+                            player.targetPosition -= playerForward * 0.3f;
                             RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 0.6f);
                             targetAnimation = "Vault";
                             shouldMoveAndSlide = false;
@@ -411,9 +409,12 @@ namespace Gamma {
                     break;
                 case "Vault":
                     if (!isAnimationSameAsPrevious) {
-                        PlayerSetCollision(false);
+                        PlayerSetCollision(false);                            
+                        player.targetCorrection = player.targetPosition - player.node.GlobalPosition;
                         break;
                     }
+                    const float correctionSpeed = 8f;
+                    const float footOnGroundTimeStamp = 0.55f;
                     float maxDistanceToGround = 1.5f;
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Vault/current_length")) {
                         if (distanceToGround < maxDistanceToGround) {
@@ -432,7 +433,13 @@ namespace Gamma {
                         PlayerSetCollision(true);
                         break;
                     }
-                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition < 0.5f) {
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition < footOnGroundTimeStamp && player.targetCorrection.LengthSquared() > ALMOST_ZERO) {
+                            Vector3 step = player.targetCorrection.Normalized() * correctionSpeed * globalPhysicsDeltaFloat;
+                            if (step.LengthSquared() > player.targetCorrection.LengthSquared()) {
+                                step = player.targetCorrection;
+                            }
+                            player.node.GlobalPosition += step;
+                            player.targetCorrection -= step;
                         RotateTowards(player.wishDirection, player.node, 0.1f);
                         player.node.Velocity = new Vector3(rootVelocity.X, rootVelocity.Y, rootVelocity.Z);
                         break;
@@ -512,7 +519,7 @@ namespace Gamma {
                         targetAnimation = "Fall";
                     }
                     player.node.Velocity = Vector3.Zero;
-                break;
+                    break;
                 case "RunJump01":
                     if (!isAnimationSameAsPrevious) {
                         player.node.Velocity += Vector3.Up * 5f;
@@ -562,14 +569,14 @@ namespace Gamma {
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
                     break;
                 case "Drop":
-                if (!isAnimationSameAsPrevious) {
+                    if (!isAnimationSameAsPrevious) {
+                        break;
+                    }
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Drop/current_length")) {
+                        targetAnimation = "Fall";
+                    }
+                    player.node.Velocity = rootVelocity;
                     break;
-                }
-                if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Drop/current_length")) {
-                    targetAnimation = "Fall";
-                }
-                player.node.Velocity = rootVelocity;
-                break;
                 case "Fall":
                     if (player.isOnGround) {
                         if ((player.node.Velocity * Y_FLAT).Length() > 6f) {
@@ -642,7 +649,7 @@ namespace Gamma {
                         player.orb.node.Visible = true;
                     }
                     break;
-                    case "OrbIdle":
+                case "OrbIdle":
                         if (!isAnimationSameAsPrevious) {
                             break;
                         }

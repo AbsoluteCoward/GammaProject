@@ -1,8 +1,5 @@
 using Godot;
 using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-
 namespace Gamma {
     public partial class Main : Node {
         public const float PRISON_SPOTLIGHT_HEIGHT = 5.0f;
@@ -21,8 +18,8 @@ namespace Gamma {
                 PRISON_SPOTLIGHT_HEIGHT,
                 Mathf.Clamp(player.node.GlobalPosition.Z, -30f, 50f)
             );
-            Vector3 directionToTarget = prisonSpotlight.targetPosition - prisonSpotlight.node.GlobalPosition;
-            prisonSpotlight.velocity += directionToTarget * prisonSpotlight.speed * globalPhysicsDeltaFloat;
+            Vector3 toTarget = prisonSpotlight.targetPosition - prisonSpotlight.node.GlobalPosition;
+            prisonSpotlight.velocity += toTarget * prisonSpotlight.speed * globalPhysicsDeltaFloat;
             prisonSpotlight.velocity *= 0.98f;
             switch (prisonSpotlight.node.GlobalPosition.Z) {
                 case < -32f:
