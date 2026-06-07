@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://4b3ysfnolshd"]
+
+[ext_resource type="PackedScene" uid="uid://dtlupp71fs7om" path="res://assets/models/SurveillanceScanner01.glb" id="1_ql4jv"]
+
+[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_ql4jv"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xn1fg"]
+animation = &"Fly"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_68tr6"]
+animation = &"Idle"
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_jixvi"]
+graph_offset = Vector2(-527, 20)
+nodes/Fly/node = SubResource("AnimationNodeAnimation_xn1fg")
+nodes/Fly/position = Vector2(-160, 140)
+nodes/Idle/node = SubResource("AnimationNodeAnimation_68tr6")
+nodes/Idle/position = Vector2(-160, 300)
+nodes/Add2/node = SubResource("AnimationNodeAdd2_ql4jv")
+nodes/Add2/position = Vector2(60, 140)
+node_connections = [&"output", 0, &"Add2", &"Add2", 0, &"Fly", &"Add2", 1, &"Idle"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_oe36g"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_hvfql"]
+states/BlendTree/node = SubResource("AnimationNodeBlendTree_jixvi")
+states/BlendTree/position = Vector2(395, 109)
+transitions = ["Start", "BlendTree", SubResource("AnimationNodeStateMachineTransition_oe36g")]
+
+[node name="SurveillanceScanner01" type="Node3D" unique_id=1002891983]
+metadata/Type = "SurveillanceScanner01"
+
+[node name="SurveillanceScanner01" parent="." unique_id=176542877 instance=ExtResource("1_ql4jv")]
+
+[node name="Skeleton3D" parent="SurveillanceScanner01/Armature" parent_id_path=PackedInt32Array(176542877, 816511523) index="0" unique_id=410339298]
+bones/0/position = Vector3(0, -0.033788424, 0)
+bones/1/rotation = Quaternion(0, -0.30747417, 0, 0.95155644)
+
+[node name="Top" parent="SurveillanceScanner01/Armature/Skeleton3D" index="0" unique_id=842072425]
+transform = Transform3D(0.8109193, 0, -0.58515805, 0, 1, 0, 0.58515805, 0, 0.8109193, 0, 0.066211596, 0)
+
+[node name="Base" parent="SurveillanceScanner01/Armature/Skeleton3D" index="1" unique_id=776471642]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.033788424, 0)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="SurveillanceScanner01/Armature/Skeleton3D/Base" index="0" unique_id=1680231869]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.559736, -0.51223516)
+shadow_enabled = true
+spot_range = 40.0
+spot_angle = 66.0
+metadata/Type = ""
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=2082400159]
+root_node = NodePath("../SurveillanceScanner01")
+tree_root = SubResource("AnimationNodeStateMachine_hvfql")
+anim_player = NodePath("../SurveillanceScanner01/AnimationPlayer")
+parameters/BlendTree/Add2/add_amount = 1.0
+
+[editable path="SurveillanceScanner01"]

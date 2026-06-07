@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://2rwuu2sj14ik"]
+[gd_scene format=3 uid="uid://2rwuu2sj14ik"]
 
 [ext_resource type="FontFile" uid="uid://xhdxc8yfkes2" path="res://assets/fonts/patheticbit.ttf" id="1_8hi1k"]
 [ext_resource type="Texture2D" uid="uid://dy343m1re8l67" path="res://assets/textures/FAB_HAMMERED01.JPG" id="1_hvmky"]
@@ -13,25 +13,25 @@ rings = 0
 cap_bottom = false
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1ywwd"]
-size = Vector3(1.2, 1, 1.2)
+size = Vector3(1, 1.6, 1)
 
-[node name="TestVideoPlayback" type="Node3D"]
+[node name="TestVideoPlayback" type="Node3D" unique_id=400084428]
 metadata/Type = "VideoTest"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=834307252]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
 material_override = SubResource("StandardMaterial3D_i3mph")
 mesh = SubResource("CylinderMesh_hvmky")
 
-[node name="Label3D" type="Label3D" parent="MeshInstance3D"]
+[node name="Label3D" type="Label3D" parent="MeshInstance3D" unique_id=2069369340]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 billboard = 2
 texture_filter = 0
 text = "TEST VIDEO!"
 font = ExtResource("1_8hi1k")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1051087976]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1580412655]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
 shape = SubResource("BoxShape3D_1ywwd")

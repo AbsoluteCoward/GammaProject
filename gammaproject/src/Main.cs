@@ -55,6 +55,8 @@ namespace Gamma {
         public VideoPlayer videoPlayer;
         public Player player;
         public PlayerCamera playerCamera;
+        public SurveillanceScanner[] surveillanceScanners;
+        public int surveillanceScannerCount = 0;
         public Enemy[] enemies;
         public int enemyCount = 0;
         public Interactable[] interactables;
@@ -108,6 +110,7 @@ namespace Gamma {
             soundsUICount = 0;
             player = new Player();
             playerCamera = new PlayerCamera();
+            surveillanceScanners = new SurveillanceScanner[DEFAULT_MISCELLANEOUS_SIZE];
             enemies = new Enemy[DEFAULT_ENEMIES_SIZE];
             interactables = new Interactable[DEFAULT_INTERACTABLES_SIZE];
             targetReticles = new TargetReticle[DEFAULT_TARGET_RETICLES_SIZE];
@@ -144,6 +147,9 @@ namespace Gamma {
                         break;
                     case "PlayerCamera":
                         PlayerCameraInitialize((Camera3D)child);
+                        break;
+                    case "SurveillanceScanner01":
+                        SurveillanceScannerInitialize((Node3D)child);
                         break;
                     case "DungeonExit":
                         InteractablesInitialize((Node3D)child, InteractableLookup.ExitDungeon);
@@ -246,6 +252,7 @@ namespace Gamma {
             ProjectilesUpdate();
             PlayerUpdate();
             PlayerCameraUpdate(ref playerCamera);
+            SurveillanceScannerUpdate();
             OrbUpdate();
             EnemyUpdate();
             if (InputJustPressed(ref inputState.interact, true, false)) { Interact(); }

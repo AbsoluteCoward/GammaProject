@@ -15,6 +15,7 @@ namespace Gamma {
             public PlaybackPositionData[] animationPlaybackBlocks;
             public RayCast3D groundRayCast;
             public Vector3 wishDirection;
+            public Vector3 targetPosition;
             public float moveSpeed;
             public float turnAnticipation;
             public float maxTeleportDistance;
