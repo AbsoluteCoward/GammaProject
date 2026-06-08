@@ -4,7 +4,7 @@ using System;
 namespace Gamma {
     public partial class Main : Node {
         public static DialogueData testDialogueData = new DialogueData {
-            speakerPortrait = GD.Load<Texture2D>("res://assets/textures/dialogueportraits/spritesheet.png"),
+            speakerPortrait = GD.Load<Texture2D>("res://assets/textures/dialogueportraits/CHR_SLINK_ANIMATIONSHEET_01.png"),
             speakerName = "TEST",
             text = "This is a test dialogue. This is a test dialogue. This is a test dialogue. This is a test dialogue.",
             onDialogueStart = new Action<Main>[] {
