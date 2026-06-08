@@ -29,6 +29,10 @@ boot_splash/minimum_display_time=1800
 
 Main="*res://src/Main.cs"
 
+[debug]
+
+settings/stdout/print_fps=true
+
 [display]
 
 window/size/viewport_width=320

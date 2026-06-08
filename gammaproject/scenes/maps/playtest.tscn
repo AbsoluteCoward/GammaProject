@@ -32,13 +32,14 @@
 
 [sub_resource type="Environment" id="Environment_lau34"]
 ambient_light_source = 2
-ambient_light_color = Color(0.06053035, 0.06053035, 0.060530342, 1)
+ambient_light_color = Color(0.32915837, 0.3291584, 0.3291584, 1)
+ambient_light_energy = 0.1
 ssr_fade_in = 1e-05
 fog_enabled = true
 fog_mode = 1
-fog_light_color = Color(0.29803923, 0.34509805, 0.26666668, 1)
+fog_light_color = Color(0, 0, 0, 1)
 fog_density = 1.0
-fog_depth_end = 50.0
+fog_depth_end = 80.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qtude"]
 albedo_texture = ExtResource("1_6xplv")
@@ -122,11 +123,10 @@ albedo_texture = ExtResource("8_iwdfl")
 environment = SubResource("Environment_lau34")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=704870207]
-transform = Transform3D(0.95226216, 0.120570354, -0.2804633, 0.26366407, 0.1382491, 0.95465624, 0.15387703, -0.98303103, 0.099859305, -6, 0, 1)
-light_color = Color(0.262932, 0.262932, 0.262932, 1)
-light_energy = 6.0
-light_angular_distance = 0.1
-shadow_enabled = true
+transform = Transform3D(1.9106855e-15, 1, 4.371139e-08, 4.371139e-08, -4.371139e-08, 1, 1, 0, -4.371139e-08, 0, 0, 0)
+light_color = Color(0.32915837, 0.3291584, 0.3291584, 1)
+directional_shadow_mode = 0
+directional_shadow_max_distance = 80.0
 sky_mode = 1
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Environment" unique_id=1298436146]
@@ -753,8 +753,26 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -16)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 7, 12)
 
 [node name="SurveillanceScanner01" parent="Entities" unique_id=1505433102 instance=ExtResource("28_h1ish")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.1, 3, 0.20000005)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9000001, 3, 18.2)
+
+[node name="Skeleton3D" parent="Entities/SurveillanceScanner01/SurveillanceScanner01" parent_id_path=PackedInt32Array(1505433102, 1690118326) index="0" unique_id=1680222344]
+bones/0/position = Vector3(0, -0.02529142, 0)
+bones/1/rotation = Quaternion(0, -0.6293531, 0, 0.7771195)
+
+[node name="Top" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="0" unique_id=2105690002]
+transform = Transform3D(0.20782936, 0, -0.97816515, 0, 1, 0, 0.97816515, 0, 0.20782936, 0, 0.0747086, 0)
+
+[node name="Lamp" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="1" unique_id=1973043574]
+transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.56529146, -0.010000005)
+
+[node name="SpotLight3D" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D/Lamp" index="0" unique_id=1680231869]
+shadow_bias = 0.08
+
+[node name="Base" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="2" unique_id=1814497703]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02529142, 0)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("18_rrwtf")]
 
+[editable path="Entities/SurveillanceScanner01"]
+[editable path="Entities/SurveillanceScanner01/SurveillanceScanner01"]
 [editable path="UI"]
