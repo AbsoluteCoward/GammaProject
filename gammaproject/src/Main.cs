@@ -233,7 +233,7 @@ namespace Gamma {
                 UpdateLoadingScreen();
             }
             if (loadDelay < 2f) {
-                float t = Mathf.Clamp((loadDelay) / 2f, 0f, 1f);
+                float t = Mathf.Clamp(loadDelay / 2f, 0f, 1f);
                 loadingScreen.node.Modulate = new Color(1f, 1f, 1f, Mathf.Pow(t, 1.5f));
             }
             if (loadDelay > 0f) {
@@ -247,9 +247,8 @@ namespace Gamma {
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             if (UpdateVideo(ref videoPlayer)) { return; }
             UpdateFadeInOut();
-            //if (GetTree().CurrentScene.Name == "Level") { entitiesNode.GetParent().GetChild(0).GetChild<DirectionalLight3D>(1).RotationDegrees += new Vector3(0f, 20f, 0f); }
             ProjectilesUpdate();            
-            GD.Print(Measure(PlayerUpdate));
+            PlayerUpdate();
             PlayerCameraUpdate(ref playerCamera);
             SurveillanceScannerUpdate();
             OrbUpdate();

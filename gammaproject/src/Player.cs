@@ -13,7 +13,8 @@ namespace Gamma {
             public Skeleton3D skeleton;
             public Node3D[] targets;
             public PlaybackPositionData[] animationPlaybackBlocks;
-            public RayCast3D groundRayCast;
+            public RayCast3D groundRay;
+            public RayCast3D ledgeRay;
             public Vector3 wishDirection;
             public Vector3 targetPosition;
             public Vector3 targetCorrection;
@@ -49,6 +50,8 @@ namespace Gamma {
             player.animationTree = inputPlayerNode.GetNode<AnimationTree>("AnimationTree");
             player.animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
             player.animationState = (AnimationNodeStateMachinePlayback)player.animationTree.Get("parameters/playback");
+            player.ledgeRay = player.node.GetNode<RayCast3D>("LedgeRay");
+            player.groundRay = player.node.GetNode<RayCast3D>("GroundRay");
             player.skeleton = inputPlayerNode.GetNode<Skeleton3D>("Slink/Skeleton3D");
             for (int i = 0; i < player.skeleton.GetBoneCount(); i++) {
                 if (player.skeleton.GetBoneName(i) == "Abdomen") { Player.chestBoneIndex = i; }
@@ -70,11 +73,9 @@ namespace Gamma {
                 player.animationPlaybackBlocks[i].previousPlaybackPosition = 0f;
                 player.animationPlaybackBlocks[i].currentPlaybackPosition = 0f;
             }
-            AnimationNodeOneShot fireShotNode = (AnimationNodeOneShot)
-            ((AnimationNodeBlendTree)((AnimationNodeStateMachine)player.animationTree.TreeRoot)
-            .GetNode("Walk")).GetNode("FireWalkOneShot");
-            SetOneShotFilters(true, "shoulder.R", player.skeleton, player.node, fireShotNode);
-            player.groundRayCast = player.node.GetNode<RayCast3D>("GroundRay");
+            AnimationNodeOneShot fireShotNode = (AnimationNodeOneShot)((AnimationNodeBlendTree)((AnimationNodeStateMachine)player.animationTree.TreeRoot).GetNode("Walk")).GetNode("FireWalkOneShot");
+            SetOneShotFilters(true, "shoulder.R", player.skeleton, player.node, fireShotNode); // Godot forces us to do this for some reason or else it will literally forget the filters we set for the oneshot in the editor
+
             GD.Print("Player Initialized");
         }
         public void PlayerCameraInitialize(Camera3D inputCamera) {
@@ -180,8 +181,13 @@ namespace Gamma {
             string previousAnimationName = player.animationState.GetCurrentNode();
             player.animationTree.Advance(globalPhysicsDeltaFloat);
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
-            player.wishDirection =
-                (currentCamera.GlobalTransform.Basis.Z.Normalized() * inputDirection.Y + currentCamera.GlobalTransform.Basis.X.Normalized() * inputDirection.X) *
+            player.wishDirection = 
+                (
+                    currentCamera.GlobalTransform.Basis.Z.Normalized() * 
+                    inputDirection.Y + 
+                    currentCamera.GlobalTransform.Basis.X.Normalized() * 
+                    inputDirection.X
+                ) *
                 Y_FLAT;
             Vector3 airControlDirection = player.wishDirection.Length() > 0.1f ? player.wishDirection : player.node.Velocity.Normalized();
             bool action3Pressed = Input.IsActionPressed("action3");
@@ -193,21 +199,13 @@ namespace Gamma {
                 player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex);
             Vector3 global_whatever = player.skeleton.ToGlobal(orbTarget.Origin);
             player.orb.node.GlobalPosition = player.orb.node.TopLevel ? player.orb.node.GlobalPosition : global_whatever;
-            if (sceneState.physicsFramesSinceSceneLoad % (int)GD.RandRange(20f, 100f) == 0) {
-                Vector3 playerPosition = player.node.GlobalPosition;
-                if (Mathf.Abs(playerPosition.X) > Player.maxDistance ||
-                    Mathf.Abs(playerPosition.Y) > Player.maxDistance ||
-                    Mathf.Abs(playerPosition.Z) > Player.maxDistance) {
-                    player.node.GlobalPosition = Vector3.Zero;
-                }
-            }
-            float distanceToGround = player.groundRayCast.IsColliding() ? 
-                player.groundRayCast.GlobalPosition.Y - player.groundRayCast.GetCollisionPoint().Y  : 
+            float distanceToGround = player.groundRay.IsColliding() ? 
+                player.groundRay.GlobalPosition.Y - player.groundRay.GetCollisionPoint().Y  : 
                 float.MaxValue;
             bool shouldSnapToGround = distanceToGround <= PLAYER_LEG_LENGTH * 1.5f;
             bool isRayCollidingAtPlayerFeet = distanceToGround <= PLAYER_LEG_LENGTH;
             player.isOnGround = (player.node.IsOnFloor() || shouldSnapToGround) && player.node.Velocity.Y <= 0f;
-            Vector3 TargetPosition = new Vector3(player.node.GlobalPosition.X, player.groundRayCast.GetCollisionPoint().Y, player.node.GlobalPosition.Z);
+            Vector3 TargetPosition = new Vector3(player.node.GlobalPosition.X, player.groundRay.GetCollisionPoint().Y, player.node.GlobalPosition.Z);
             if (player.isOnGround && player.node.CollisionMask > 0) {
                 player.node.GlobalPosition = player.node.GlobalPosition.Lerp(TargetPosition, 0.1f + (player.node.Velocity.Length() * globalPhysicsDeltaFloat));
             }
@@ -435,7 +433,7 @@ namespace Gamma {
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Vault/current_length")) {
                         if (distanceToGround < maxDistanceToGround) {
                             GD.Print("Snap to ground from Vault");
-                            player.node.GlobalPosition = player.groundRayCast.GetCollisionPoint();
+                            player.node.GlobalPosition = player.groundRay.GetCollisionPoint();
                             targetAnimation = action3Pressed ? "Run" : "Walk";
                             player.node.Velocity = Vector3.Zero;
                         } else if (InputPressed(ref inputState.action3, false, false)) {
@@ -686,6 +684,14 @@ namespace Gamma {
             } else { 
                 player.node.Velocity = Vector3.Zero; 
             }
+            if (sceneState.physicsFramesSinceSceneLoad % (int)GD.RandRange(20f, 100f) == 0) {
+                Vector3 playerPosition = player.node.GlobalPosition;
+                if (Mathf.Abs(playerPosition.X) > Player.maxDistance ||
+                    Mathf.Abs(playerPosition.Y) > Player.maxDistance ||
+                    Mathf.Abs(playerPosition.Z) > Player.maxDistance) {
+                    player.node.GlobalPosition = Vector3.Zero;
+                }
+            }
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }
@@ -697,8 +703,8 @@ namespace Gamma {
             }
             float targetHeight = 
                 DEFAULT_CAMERA_HEIGHT + 
-                (player.groundRayCast.IsColliding() ? 
-                    Mathf.Max(0f, player.node.GlobalPosition.Y - player.groundRayCast.GetCollisionPoint().Y) * 0.5f : 
+                (player.groundRay.IsColliding() ? 
+                    Mathf.Max(0f, player.node.GlobalPosition.Y - player.groundRay.GetCollisionPoint().Y) * 0.5f : 
                     8f
                 );
             inputCamera.offsetHeight = Mathf.Lerp(inputCamera.offsetHeight, targetHeight, 0.05f);
