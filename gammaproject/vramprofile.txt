@@ -1,0 +1,63 @@
+Resource Path,Type,Format,Usage
+,Texture2D,512x512 RGBA8,1.33 MiB
+,Texture2D,512x512 RGBA8,1.33 MiB
+res://assets/textures/ICO_TARGETRETICLE_SPRITESHEET.png,CompressedTexture2D,1024x684 DXT5 RGBA8,684.0 KiB
+res://assets/textures/MET_IRONINDUSTRAILPERFORATEGATE01_SEAMLESS.jpg,CompressedTexture2D,1024x1024 DXT1 RGB8,682.6 KiB
+res://assets/textures/CHR_SLINK_GUN.png,CompressedTexture2D,1024x1024 DXT1 RGB8,682.6 KiB
+res://assets/textures/MET_OLDDIRTYMETAL_SEAMLESS.jpg,CompressedTexture2D,1024x1024 DXT1 RGB8,682.6 KiB
+res://assets/textures/CHR_CRAB01.png,CompressedTexture2D,1024x1024 DXT1 RGB8,682.6 KiB
+res://assets/textures/MET_DARKIRON.jpg,CompressedTexture2D,1252x800 DXT1 RGB8,652.9 KiB
+res://assets/textures/MET_METALBEDRUSTWHITE.jpg,CompressedTexture2D,1024x768 DXT1 RGB8,512.0 KiB
+res://assets/textures/FAB_HAMMERED01.JPG,CompressedTexture2D,1024x728 DXT1 RGB8,485.7 KiB
+res://scenes/UI/dialogue_box.tscn::NoiseTexture2D_ife8n,NoiseTexture2D,320x240 RGBA8,399.9 KiB
+res://assets/textures/FAB_LINENBEIGE.jpg,CompressedTexture2D,1024x512 DXT1 RGB8,341.3 KiB
+res://assets/textures/WOD_DRIFTWOOD.JPG,CompressedTexture2D,756x512 DXT1 RGB8,252.5 KiB
+res://assets/textures/dialogueportraits/spritesheet.png,CompressedTexture2D,1152x384 DXT1 RGB8,216.0 KiB
+res://assets/textures/CHR_SLINK_LEATHER2.jpg,CompressedTexture2D,632x512 DXT1 RGB8,210.8 KiB
+res://assets/textures/STO_ANCIENTBRICK01.png,CompressedTexture2D,640x480 DXT1 RGB8,200.0 KiB
+res://assets/textures/WAL_WALKER.jpg,CompressedTexture2D,640x480 DXT1 RGB8,200.0 KiB
+res://assets/textures/STO_ANCIENTBRICK02.png,CompressedTexture2D,640x480 DXT1 RGB8,200.0 KiB
+res://assets/textures/WTR_WATER01.jpg,CompressedTexture2D,640x480 DXT1 RGB8,200.0 KiB
+res://assets/textures/OBJ_SLINKROCKET.png,CompressedTexture2D,512x512 DXT1 RGB8,170.6 KiB
+res://assets/textures/CHR_SLINK_GOLDHEAD.jpg,CompressedTexture2D,512x512 DXT1 RGB8,170.6 KiB
+res://assets/textures/CHR_SLINK_REDVELVET.jpg,CompressedTexture2D,512x512 DXT1 RGB8,170.6 KiB
+res://assets/textures/CHR_SLINK_FABRIC.jpg,CompressedTexture2D,512x512 DXT1 RGB8,170.6 KiB
+res://assets/textures/Grass_01.png,CompressedTexture2D,512x512 DXT1 RGB8,170.6 KiB
+res://assets/textures/CHR_MOE01.png,CompressedTexture2D,512x512 DXT1 RGB8,170.6 KiB
+res://assets/textures/Grass_04.png,CompressedTexture2D,512x512 DXT1 RGB8,170.6 KiB
+res://assets/models/SurveillanceScanner01_SurveillanceScanner01.png,CompressedTexture2D,512x512 DXT1 RGB8,170.6 KiB
+res://assets/textures/CarvedMarble.jpg,CompressedTexture2D,548x380 DXT1 RGB8,136.3 KiB
+res://assets/textures/dialogueportraits/slinkportrait01.png,CompressedTexture2D,192x192 RGB8,108.0 KiB
+res://assets/textures/MET_METALWEATHERED01.jpg,CompressedTexture2D,456x340 DXT1 RGB8,101.5 KiB
+,Texture2D,64x64 RGBAFloat,64.00 KiB
+res://assets/textures/CHR_BLACKBEAR_FUR.png,CompressedTexture2D,344x256 DXT1 RGB8,57.45 KiB
+,Texture2D,64x64 RGBFloat,48.00 KiB
+res://assets/textures/EFX_FIRE01.jpg,CompressedTexture2D,256x256 DXT1 RGB8,42.67 KiB
+res://assets/models/Vial_OBJ_VIAL.png,CompressedTexture2D,256x256 DXT1 RGB8,42.67 KiB
+res://assets/textures/WOD_CRATE.png,CompressedTexture2D,256x256 DXT1 RGB8,42.67 KiB
+res://assets/textures/STO_GRANITE2.png,CompressedTexture2D,252x252 DXT1 RGB8,41.67 KiB
+res://assets/textures/FLR_TILE10.JPG,CompressedTexture2D,184x184 DXT1 RGB8,22.18 KiB
+,Texture2D,800x6 RGBA8,18.75 KiB
+res://assets/textures/NA_MISSINGTEXTURE.png,CompressedTexture2D,160x160 DXT1 RGB8,16.71 KiB
+res://assets/textures/ICO_TARGETRETICLEARROW.png,CompressedTexture2D,32x32 DXT5 RGBA8,1.35 KiB
+res://assets/textures/ICO_ARROW01.png,CompressedTexture2D,32x32 DXT5 RGBA8,1.35 KiB
+,TextureLayered,4x4x6 RGBA8,504 B
+,TextureLayered,4x4x6 RGBA8,504 B
+,TextureLayered,4x4x6 RGBA8,504 B
+,Texture3D,4x4x4 RGBA8,256 B
+,Texture3D,4x4x4 RGBA8,256 B
+,Texture3D,4x4x4 RGBA8,256 B
+,Texture2D,4x4 RGBA8,84 B
+,TextureLayered,4x4x1 RGBA8,84 B
+,Texture2D,4x4 RGBA8,84 B
+,TextureLayered,4x4x1 RGBA8,84 B
+,Texture2D,4x4 RGBA8,84 B
+,TextureLayered,4x4x1 RGBA8,84 B
+,Texture2D,4x4 RGBA8,84 B
+,Texture2D,4x4 RGBA8,84 B
+,Texture2D,2x2 RGBA8,16 B
+,Texture2D,1x1 RGB8,3 B
+,Texture2D,0x0 RGBA8,0 B
+,Texture2D,0x0 RGBA8,0 B
+,Texture2D,426x240 RGBA8,0 B
+,Texture2D,0x0 Red8,0 B

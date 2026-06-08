@@ -149,6 +149,26 @@ namespace Gamma {
             headPose.Basis = headPose.Basis * new Basis(headTwist);
             player.skeleton.SetBoneGlobalPose(Player.headBoneIndex, headPose);
         }
+        public bool PlayerVault(ref string inputTargetAnimation, ref bool inputShouldMoveAndSlide) {
+            RaycastWorldHitInfo findLedge = new RaycastWorldHitInfo();
+            Vector3 collisionPosition = player.node.GetSlideCollision(0).GetPosition() - player.node.GetSlideCollision(0).GetNormal() * 0.1f;
+            Vector3 rayStart = collisionPosition + Vector3.Up * 2f;
+            Vector3 rayEnd = collisionPosition;
+            if (RaycastWorld(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
+                GD.Print("Vault please");
+                player.targetPosition = new Vector3(
+                    findLedge.Position.X,
+                    findLedge.Position.Y,
+                    findLedge.Position.Z
+                );
+                //RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 0.6f);
+                inputTargetAnimation = "Vault";
+                inputShouldMoveAndSlide = false;
+                DebugSpawnCube(findLedge.Position, 0.3f, entitiesNode);
+                return true;
+            }
+            return false;
+        }
         public void PlayerTeleportTo(Vector3 inputPosition, PlayerCamera inputCamera) {
             player.node.GlobalPosition = inputPosition;
             player.node.Velocity = Vector3.Zero;
@@ -314,23 +334,8 @@ namespace Gamma {
                             player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
                         }
                     }
-                    if (player.node.IsOnWall()) {
-                        RaycastWorldHitInfo findLedge = new RaycastWorldHitInfo();
-                        Vector3 collisionPosition = player.node.GetSlideCollision(0).GetPosition() - player.node.GetSlideCollision(0).GetNormal() * 0.1f;
-                        Vector3 rayStart = collisionPosition + Vector3.Up * 2f;
-                        Vector3 rayEnd = collisionPosition;
-                        if (RaycastWorld(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
-                            player.targetPosition = new Vector3(
-                                findLedge.Position.X,
-                                findLedge.Position.Y - 1f,
-                                findLedge.Position.Z
-                            );
-                            player.targetPosition -= playerForward * 0.3f;
-                            RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 0.6f);
-                            targetAnimation = "Vault";
-                            shouldMoveAndSlide = false;
-                            break;
-                        }
+                    if (player.node.IsOnWall() && walkBlendAmount > 0.3f) {
+                        if (!PlayerVault(ref targetAnimation, ref shouldMoveAndSlide)) { break; }
                     }
                     int walkBlockIndex = GetPlaybackBlockIndex("Walk");
                     if (
@@ -358,24 +363,6 @@ namespace Gamma {
                     if (!InputPressed(ref inputState.action3, true, false) || !hasMovementInput) {
                         targetAnimation = "Walk";
                     }
-                    if (player.node.IsOnWall()) {
-                        RaycastWorldHitInfo findLedge = new RaycastWorldHitInfo();
-                        Vector3 collisionPosition = player.node.GetSlideCollision(0).GetPosition() - player.node.GetSlideCollision(0).GetNormal() * 0.1f;
-                        Vector3 rayStart = collisionPosition + Vector3.Up * 2f;
-                        Vector3 rayEnd = collisionPosition;
-                        if (RaycastWorld(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
-                            player.targetPosition = new Vector3(
-                                findLedge.Position.X,
-                                findLedge.Position.Y - 1f,
-                                findLedge.Position.Z
-                            );
-                            player.targetPosition -= playerForward * 0.3f;
-                            RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 0.6f);
-                            targetAnimation = "Vault";
-                            shouldMoveAndSlide = false;
-                            break;
-                        }
-                    }
                     if (!player.isOnGround) {
                         GD.Print("Jump from Run");
                         if (distanceToGround < 6f) {
@@ -383,6 +370,9 @@ namespace Gamma {
                         } else {
                             targetAnimation = "RunJump02";
                         }
+                    }
+                    if (player.node.IsOnWall()) {
+                        if (!PlayerVault(ref targetAnimation, ref shouldMoveAndSlide)) { break; }
                     }
                     if (
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.14f) ||
@@ -408,14 +398,42 @@ namespace Gamma {
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     break;
                 case "Vault":
+                    const float distanceAnimationTravelsUp = 1f;
+                    const float distanceAnimationTravelsForward = 0.3f;
+                    const float footOnGroundTimeStamp = 0.55f;
                     if (!isAnimationSameAsPrevious) {
                         PlayerSetCollision(false);                            
                         player.targetCorrection = player.targetPosition - player.node.GlobalPosition;
+                        player.targetCorrection.Y -= distanceAnimationTravelsUp;
+                        player.targetCorrection = new Vector3(
+                            player.targetCorrection.Normalized().X * distanceAnimationTravelsForward,
+                            player.targetCorrection.Y,
+                            player.targetCorrection.Normalized().Z * distanceAnimationTravelsForward
+                        );
                         break;
                     }
-                    const float correctionSpeed = 8f;
-                    const float footOnGroundTimeStamp = 0.55f;
                     float maxDistanceToGround = 1.5f;
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition < footOnGroundTimeStamp && player.targetCorrection.LengthSquared() > ALMOST_ZERO) {
+                        Vector3 previous = player.targetCorrection;
+                        player.targetCorrection = player.targetCorrection.Lerp(Vector3.Zero, 8f * globalPhysicsDeltaFloat);
+                        player.node.GlobalPosition += previous - player.targetCorrection;
+                        if (player.targetCorrection.LengthSquared() < 0.001f) { player.targetCorrection = Vector3.Zero; }
+                        RotateTowards(player.wishDirection, player.node, 0.1f);
+                        player.node.Velocity = new Vector3(rootVelocity.X, rootVelocity.Y, rootVelocity.Z);
+                        break;
+                    }
+                    if (distanceToGround > maxDistanceToGround) {
+                        if (InputPressed(ref inputState.action3, false, false)) {
+                            GD.Print("Jump from Vault");
+                            player.node.Velocity = Vector3.Up + (playerForward * 8);
+                            player.animationState.Start("RunJump01", true);
+                            targetAnimation = "RunJump01";
+                        } else {
+                            targetAnimation = "Fall";
+                            player.node.Velocity += Vector3.Down;
+                        }
+                        PlayerSetCollision(true);
+                    }
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Vault/current_length")) {
                         if (distanceToGround < maxDistanceToGround) {
                             GD.Print("Snap to ground from Vault");
@@ -432,29 +450,6 @@ namespace Gamma {
                         }
                         PlayerSetCollision(true);
                         break;
-                    }
-                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition < footOnGroundTimeStamp && player.targetCorrection.LengthSquared() > ALMOST_ZERO) {
-                            Vector3 step = player.targetCorrection.Normalized() * correctionSpeed * globalPhysicsDeltaFloat;
-                            if (step.LengthSquared() > player.targetCorrection.LengthSquared()) {
-                                step = player.targetCorrection;
-                            }
-                            player.node.GlobalPosition += step;
-                            player.targetCorrection -= step;
-                        RotateTowards(player.wishDirection, player.node, 0.1f);
-                        player.node.Velocity = new Vector3(rootVelocity.X, rootVelocity.Y, rootVelocity.Z);
-                        break;
-                    }
-                    if (distanceToGround > maxDistanceToGround) {
-                        if (InputPressed(ref inputState.action3, false, false)) {
-                            GD.Print("Jump from Vault");
-                            player.node.Velocity = Vector3.Up + (playerForward * 8);
-                            player.animationState.Start("RunJump01", true);
-                            targetAnimation = "RunJump01";
-                        } else {
-                            targetAnimation = "Fall";
-                            player.node.Velocity += Vector3.Down;
-                        }
-                        PlayerSetCollision(true);
                     }
                     break;
                 case "Jump":
@@ -681,7 +676,11 @@ namespace Gamma {
             if (player.isOnGround && player.node.Velocity.Y < 0f) {
                 player.node.Velocity = new Vector3(player.node.Velocity.X, 0f, player.node.Velocity.Z);
             }
-            if (shouldMoveAndSlide) { player.node.MoveAndSlide(); }
+            if (shouldMoveAndSlide) { 
+                player.node.MoveAndSlide(); 
+            } else { 
+                player.node.Velocity = Vector3.Zero; 
+            }
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }

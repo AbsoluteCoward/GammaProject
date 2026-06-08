@@ -13,8 +13,8 @@
 [sub_resource type="Environment" id="Environment_0et32"]
 background_mode = 1
 ambient_light_source = 2
-ambient_light_color = Color(0.21950102, 0.21950102, 0.21950102, 1)
-fog_enabled = true
+ambient_light_color = Color(0.1377, 0.1377, 0.27, 1)
+ambient_light_energy = 0.5
 fog_mode = 1
 fog_light_color = Color(0, 0, 0, 1)
 fog_density = 1.0
