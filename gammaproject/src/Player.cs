@@ -155,16 +155,14 @@ namespace Gamma {
             Vector3 rayStart = collisionPosition + Vector3.Up * 2f;
             Vector3 rayEnd = collisionPosition;
             if (RaycastWorld(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
-                GD.Print("Vault please");
                 player.targetPosition = new Vector3(
                     findLedge.Position.X,
                     findLedge.Position.Y,
                     findLedge.Position.Z
                 );
-                //RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 0.6f);
+                RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 0.6f);
                 inputTargetAnimation = "Vault";
                 inputShouldMoveAndSlide = false;
-                DebugSpawnCube(findLedge.Position, 0.3f, entitiesNode);
                 return true;
             }
             return false;
@@ -334,8 +332,8 @@ namespace Gamma {
                             player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
                         }
                     }
-                    if (player.node.IsOnWall() && walkBlendAmount > 0.3f) {
-                        if (!PlayerVault(ref targetAnimation, ref shouldMoveAndSlide)) { break; }
+                    if (player.node.IsOnWall() && walkBlendAmount > 0.9f) {
+                        if (PlayerVault(ref targetAnimation, ref shouldMoveAndSlide)) { break; }
                     }
                     int walkBlockIndex = GetPlaybackBlockIndex("Walk");
                     if (
@@ -372,7 +370,7 @@ namespace Gamma {
                         }
                     }
                     if (player.node.IsOnWall()) {
-                        if (!PlayerVault(ref targetAnimation, ref shouldMoveAndSlide)) { break; }
+                        if (PlayerVault(ref targetAnimation, ref shouldMoveAndSlide)) { break; }
                     }
                     if (
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.14f) ||
@@ -528,7 +526,10 @@ namespace Gamma {
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/RunJump01/current_length") && isAnimationSameAsPrevious) {
                          targetAnimation = "Fall";
                     }
-                    if (player.isOnGround) { player.animationState.Start("Roll", true); }
+                    if (player.isOnGround) {
+                        string animationToPlay = playerForward.Dot(player.wishDirection) > -0.8f ? "Roll" : "FallToIdle";
+                        player.animationState.Start(animationToPlay, true); 
+                    }
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
                     break;
                 case "RunJump02":
@@ -545,14 +546,18 @@ namespace Gamma {
                     break;
                 case "Roll":
                     if (!isAnimationSameAsPrevious) {
-                        PlaySoundUI(GD.Load<AudioStream>("res://assets/sound/thud.ogg"), 0.05f, 1f, true);
+                        PlaySoundUI(rollSFX, 0.05f, 1f, true);
                         break;
                     }
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition < 0.5f) {
                         RotateTowards(player.wishDirection, player.node, 0.1f);
                         player.node.Velocity = playerForward * 8f;
                     }
-                    player.node.Velocity = playerForward * 5;
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Roll/current_length") - 0.4f) {
+                        if (inputDirection != Vector2.Zero && action3Pressed) { 
+                            targetAnimation = "Run";
+                        }
+                    }
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Roll/current_length") && isAnimationSameAsPrevious) {
                         if (inputDirection != Vector2.Zero && action3Pressed) { 
                             targetAnimation = "Run";

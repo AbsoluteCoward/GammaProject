@@ -40,6 +40,7 @@ namespace Gamma {
         public static AudioStream shootSFX = GD.Load<AudioStream>("res://assets/sound/rocket-launcher-shoot.wav");
         public static AudioStream explosionSFX = GD.Load<AudioStream>("res://assets/sound/explosion02.wav");
         public static AudioStream sloshSFX = GD.Load<AudioStream>("res://assets/sound/slosh.wav");
+        public static AudioStream rollSFX = GD.Load<AudioStream>("res://assets/sound/thud.ogg");
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public PackedScene targetReticleScene = GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
@@ -248,8 +249,8 @@ namespace Gamma {
             if (UpdateVideo(ref videoPlayer)) { return; }
             UpdateFadeInOut();
             //if (GetTree().CurrentScene.Name == "Level") { entitiesNode.GetParent().GetChild(0).GetChild<DirectionalLight3D>(1).RotationDegrees += new Vector3(0f, 20f, 0f); }
-            ProjectilesUpdate();
-            PlayerUpdate();
+            ProjectilesUpdate();            
+            GD.Print(Measure(PlayerUpdate));
             PlayerCameraUpdate(ref playerCamera);
             SurveillanceScannerUpdate();
             OrbUpdate();

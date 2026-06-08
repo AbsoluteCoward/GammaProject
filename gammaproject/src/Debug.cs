@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using System.Collections.Generic;
@@ -146,6 +147,13 @@ namespace Gamma {
                 line.LookAt(endPosition, Vector3.Up);
                 line.RotateObjectLocal(Vector3.Right, Mathf.Pi / 2);
             }
+        }
+
+        public static double Measure(Action action) {
+            var stopWatch = Stopwatch.StartNew();
+            action();
+            stopWatch.Stop();
+            return stopWatch.Elapsed.TotalMilliseconds;
         }
     }
 }
