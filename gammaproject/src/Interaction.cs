@@ -33,10 +33,10 @@ namespace Gamma {
             if (dialogueBox.node.Visible) {
                 if (dialogueBox.dialogueTextLabel.VisibleRatio >= 1f || dialogueBox.dialogueTextLabel.VisibleCharacters >= dialogueBox.dialogueTextLabel.Text.Length) { DialogueEnd(); return; }
                 dialogueBox.dialogueTextLabel.VisibleCharacters = dialogueBox.dialogueTextLabel.Text.Length;
-                dialogueBox.node.Modulate = new Color(1f, 1f, 1f, 1.0f);
-                dialogueBox.portraitCoverPanel.Modulate = new Color(1f, 1f, 1f, 1.0f);
-                dialogueBox.portraitSprite.Modulate = new Color(1f, 1f, 1f, 1.0f);
-                dialogueBox.speakerNameLabel.Modulate = new Color(1f, 1f, 1f, 1.0f);
+                dialogueBox.node.Modulate = FULL_COLOR;
+                dialogueBox.portraitCoverPanel.Modulate = FULL_COLOR;
+                dialogueBox.portraitSprite.Modulate = FULL_COLOR;
+                dialogueBox.speakerNameLabel.Modulate = FULL_COLOR;
                 return;
             }
             int interactBoxSize = 2;

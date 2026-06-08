@@ -80,7 +80,8 @@ namespace Gamma {
                         subtitleBox.activeSubtitles[i].dialogueTextLabel.Modulate.B,
                         subtitleBox.activeSubtitles[i].currentLifeTime < (subtitleBox.activeSubtitles[i].totalLifeTime / 2f) ?
                             subtitleBox.activeSubtitles[i].currentLifeTime / (subtitleBox.activeSubtitles[i].totalLifeTime / 2f) :
-                            1f);
+                            1f
+                    );
                 } else {
                     if (subtitleBox.activeSubtitles[i].onSubtitleComplete != null) {
                         for (int j = 0; j < subtitleBox.activeSubtitles[i].onSubtitleComplete.Length; j++) {

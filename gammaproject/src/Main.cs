@@ -19,7 +19,7 @@ namespace Gamma {
         public const int DEFAULT_ENEMIES_SIZE = 16;
         public const int DEFAULT_TARGET_RETICLES_SIZE = 16;
         public const float DEFAULT_LOAD_DELAY = 0.0f;
-        public const float DEFAULT_CAMERA_DISTANCE = 3.0f;
+        public const float DEFAULT_CAMERA_DISTANCE = 5.0f;
         public const float DEFAULT_CAMERA_HEIGHT = DEFAULT_CAMERA_DISTANCE * 0.4f;
         public const float ALMOST_ZERO = 0.00001f;
         public const float ALMOST_ONE = 0.99999f;
@@ -29,8 +29,7 @@ namespace Gamma {
         public const float TARGETTING_ANGLE = 12f;
         public const float PLAYER_LEG_LENGTH = 1;
         public static readonly Color NULL_COLOR = new Color(0f, 0f, 0f, 0f);
-        public static readonly Vector3 TELEPORT_VERTICAL_OFFSET = new Vector3(0, 0.1f, 0);
-        public static readonly Vector3 DEFAULT_UPWARD_CAMERA_OFFSET = new Vector3(0, 1.246f, 0);
+        public static readonly Color FULL_COLOR = new Color(1f, 1f, 1f, 1f);
         public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
         public static readonly Vector3 GRAVITY_VECTOR = new Vector3(0, -GRAVITY_STRENGTH, 0);
         public static AudioStream metalDinkSFX = GD.Load<AudioStream>("res://assets/sound/metalslam.wav");

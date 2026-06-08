@@ -62,10 +62,10 @@ namespace Gamma {
 
             }
             if (inputDialogue.shouldSkipAnimation) {
-                dialogueBox.node.Modulate = new Color(1f, 1f, 1f, 0.0f);
-                dialogueBox.portraitCoverPanel.Modulate = new Color(1f, 1f, 1f, 0.0f);
-                dialogueBox.portraitSprite.Modulate = new Color(1f, 1f, 1f, 0.0f);
-                dialogueBox.speakerNameLabel.Modulate = new Color(1f, 1f, 1f, 0.0f);
+                dialogueBox.node.Modulate = NULL_COLOR;
+                dialogueBox.portraitCoverPanel.Modulate = NULL_COLOR;
+                dialogueBox.portraitSprite.Modulate = NULL_COLOR;
+                dialogueBox.speakerNameLabel.Modulate = NULL_COLOR;
                 dialogueBox.delay = 1.5f;
             }
             dialogueBox.node.Visible = true;
