@@ -2,29 +2,30 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dxtorq2jtawn"
-path="res://.godot/imported/WOD_N010.JPG-5deac389a3986030d141e3c71c16df71.ctex"
+uid="uid://doddt5q2l1r8c"
+path.s3tc="res://.godot/imported/WOD_N010.JPG-5deac389a3986030d141e3c71c16df71.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/textures/WOD_N010.JPG"
-dest_files=["res://.godot/imported/WOD_N010.JPG-5deac389a3986030d141e3c71c16df71.ctex"]
+dest_files=["res://.godot/imported/WOD_N010.JPG-5deac389a3986030d141e3c71c16df71.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
-compress/uastc_level=0
+compress/uastc_level=4
 compress/rdo_quality_loss=0.0
-compress/hdr_compression=1
-compress/normal_map=0
-compress/channel_pack=0
-mipmaps/generate=false
-mipmaps/limit=-1
+compress/hdr_compression=2
+compress/normal_map=2
+compress/channel_pack=1
+mipmaps/generate=true
+mipmaps/limit=3
 roughness/mode=0
 roughness/src_normal=""
 process/channel_remap/red=0
@@ -34,7 +35,7 @@ process/channel_remap/alpha=3
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false
-process/hdr_as_srgb=false
-process/hdr_clamp_exposure=false
-process/size_limit=0
+process/hdr_as_srgb=true
+process/hdr_clamp_exposure=true
+process/size_limit=1024
 detect_3d/compress_to=1

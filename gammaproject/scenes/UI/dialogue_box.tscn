@@ -1,7 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://coytvcqlue4h2"]
+[gd_scene format=3 uid="uid://coytvcqlue4h2"]
 
 [ext_resource type="Texture2D" uid="uid://dvea8l6lipgxd" path="res://assets/textures/dialogueportraits/spritesheet.png" id="1_utthg"]
-[ext_resource type="Texture2D" uid="uid://nodktsu5kako" path="res://assets/textures/ICO_ARROW01.png" id="3_ife8n"]
+[ext_resource type="Texture2D" uid="uid://8043cilq0v2x" path="res://assets/textures/ICO_ARROW01.png" id="3_ife8n"]
 [ext_resource type="Theme" uid="uid://bomkalgxvri2f" path="res://assets/tres/texttheme.tres" id="3_utthg"]
 
 [sub_resource type="Gradient" id="Gradient_utthg"]
@@ -11,13 +11,14 @@ colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0.721569)
 noise_type = 2
 fractal_type = 2
 fractal_octaves = 2
+metadata/_preview_in_3d_space_ = true
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ife8n"]
 width = 320
 height = 240
-seamless = true
-color_ramp = SubResource("Gradient_utthg")
 noise = SubResource("FastNoiseLite_utthg")
+color_ramp = SubResource("Gradient_utthg")
+seamless = true
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t6yfi"]
 bg_color = Color(0, 0, 0, 0.556863)
@@ -30,7 +31,7 @@ border_blend = true
 corner_detail = 1
 anti_aliasing = false
 
-[node name="DialogueBox" type="Control"]
+[node name="DialogueBox" type="Control" unique_id=671347936]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -38,7 +39,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Gradient" type="TextureRect" parent="."]
+[node name="Gradient" type="TextureRect" parent="." unique_id=2006886706]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -48,7 +49,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 texture = SubResource("NoiseTexture2D_ife8n")
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1480117479]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -63,14 +64,14 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(80, 80)
 
-[node name="TextureRect" type="Sprite2D" parent="CenterContainer"]
+[node name="TextureRect" type="Sprite2D" parent="CenterContainer" unique_id=287401086]
 texture_filter = 1
 position = Vector2(96, 96)
 texture = ExtResource("1_utthg")
 hframes = 6
 vframes = 2
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=1699568361]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -85,7 +86,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_t6yfi")
 
-[node name="TextureRect" type="TextureRect" parent="Panel"]
+[node name="TextureRect" type="TextureRect" parent="Panel" unique_id=2080471112]
 texture_filter = 1
 layout_mode = 0
 offset_left = 164.0
@@ -96,7 +97,7 @@ scale = Vector2(0.4, 0.4)
 pivot_offset = Vector2(16, 16)
 texture = ExtResource("3_ife8n")
 
-[node name="NameLabel" type="Label" parent="."]
+[node name="NameLabel" type="Label" parent="." unique_id=747256341]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -106,10 +107,11 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 theme = ExtResource("3_utthg")
+theme_override_constants/outline_size = 4
 text = "Name"
 horizontal_alignment = 1
 
-[node name="TextLabel" type="Label" parent="."]
+[node name="TextLabel" type="Label" parent="." unique_id=369755429]
 texture_filter = 2
 texture_repeat = 1
 layout_mode = 1
@@ -128,10 +130,10 @@ scale = Vector2(0.8, 0.8)
 pivot_offset = Vector2(96, 96)
 size_flags_stretch_ratio = 0.0
 theme = ExtResource("3_utthg")
-theme_override_constants/paragraph_spacing = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
-text = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+text = "the quick brown fox jumps over the lazy dog. THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"
 horizontal_alignment = 1
 autowrap_mode = 3
 clip_text = true

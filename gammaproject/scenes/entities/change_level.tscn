@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bkuilqriq51he"]
 
-[ext_resource type="Texture2D" uid="uid://b47lirpcrf56m" path="res://assets/textures/Grass_04.png" id="1_2q8ei"]
-[ext_resource type="FontFile" uid="uid://xhdxc8yfkes2" path="res://assets/fonts/patheticbit.ttf" id="2_0r88i"]
+[ext_resource type="FontFile" uid="uid://c4hymn83l0sol" path="res://assets/fonts/Gorilla.ttf" id="1_0r88i"]
+[ext_resource type="Texture2D" uid="uid://bsqu6nnjqxe7t" path="res://assets/textures/Grass_04.png" id="1_2q8ei"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0r88i"]
 albedo_texture = ExtResource("1_2q8ei")
@@ -25,7 +25,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 billboard = 2
 texture_filter = 0
 text = "LOAD LEVEL"
-font = ExtResource("2_0r88i")
+font = ExtResource("1_0r88i")
+font_size = 48
+outline_size = 16
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1959206005]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)

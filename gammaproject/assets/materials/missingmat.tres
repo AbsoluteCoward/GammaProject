@@ -1,12 +1,13 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://bx8iuo3jx4u1s"]
 
-[ext_resource type="Texture2D" uid="uid://jah5ygnmea2w" path="res://assets/textures/NA_MISSINGTEXTURE.png" id="1_mgu0j"]
+[ext_resource type="Texture2D" uid="uid://dah50r7ijrydf" path="res://assets/textures/NA_MISSINGTEXTURE.png" id="1_mgu0j"]
 
 [resource]
 shading_mode = 0
 albedo_color = Color(0, 1, 1, 1)
 albedo_texture = ExtResource("1_mgu0j")
-uv1_scale = Vector3(0.25, 0.25, 0.25)
+uv1_scale = Vector3(-1.705, -1.705, -1.705)
 uv1_triplanar = true
+texture_filter = 0
 stencil_flags = 2
 stencil_outline_thickness = 0.02

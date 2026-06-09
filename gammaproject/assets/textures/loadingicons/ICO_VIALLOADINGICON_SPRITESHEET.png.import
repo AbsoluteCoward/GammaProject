@@ -3,19 +3,20 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cgjrvsfsx4p3j"
-path="res://.godot/imported/ICO_VIALLOADINGICON_SPRITESHEET.png-97f29c89a29b1cf01eac6740fd3e7e7f.ctex"
+path.s3tc="res://.godot/imported/ICO_VIALLOADINGICON_SPRITESHEET.png-97f29c89a29b1cf01eac6740fd3e7e7f.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/textures/loadingicons/ICO_VIALLOADINGICON_SPRITESHEET.png"
-dest_files=["res://.godot/imported/ICO_VIALLOADINGICON_SPRITESHEET.png-97f29c89a29b1cf01eac6740fd3e7e7f.ctex"]
+dest_files=["res://.godot/imported/ICO_VIALLOADINGICON_SPRITESHEET.png-97f29c89a29b1cf01eac6740fd3e7e7f.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

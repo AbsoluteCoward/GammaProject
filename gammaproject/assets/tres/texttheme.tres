@@ -1,6 +1,6 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bomkalgxvri2f"]
+[gd_resource type="Theme" format=3 uid="uid://bomkalgxvri2f"]
 
-[ext_resource type="FontFile" uid="uid://xhdxc8yfkes2" path="res://assets/fonts/patheticbit.ttf" id="1_2406k"]
+[ext_resource type="FontFile" uid="uid://c4hymn83l0sol" path="res://assets/fonts/Gorilla.ttf" id="1_2406k"]
 
 [resource]
 default_font = ExtResource("1_2406k")

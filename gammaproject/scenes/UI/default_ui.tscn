@@ -23,16 +23,15 @@ expand = true
 metadata/_edit_use_anchors_ = true
 
 [node name="Controls" type="Label" parent="." unique_id=333663813]
-visible = false
 texture_filter = 2
 texture_repeat = 1
 anchors_preset = -1
 anchor_right = 0.32500002
 anchor_bottom = 1.0
 offset_left = -11.199996
-offset_top = -11.199996
-offset_right = -5.20002
-offset_bottom = 28.799988
+offset_top = -11.199998
+offset_right = 24.79998
+offset_bottom = -71.20001
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.8, 0.8)
@@ -41,14 +40,14 @@ size_flags_stretch_ratio = 0.0
 theme = ExtResource("3_27lm4")
 theme_override_constants/paragraph_spacing = 0
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 8
 text = "WASD - Move
 
 J/L - Rotate Camera
 
 I - Charge Teleport Orb
 
-K
+K - Attack
 
 E - Interact/Self Reflect
 

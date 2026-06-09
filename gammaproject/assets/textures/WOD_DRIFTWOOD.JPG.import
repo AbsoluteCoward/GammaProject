@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctpm2c32lracc"
-path.s3tc="res://.godot/imported/WOD_DRIFTWOOD.JPG-28aed9564b7b50e6b3dd5818fd1fd235.s3tc.ctex"
+uid="uid://cpypyemo38sjw"
+path.s3tc="res://.godot/imported/WOD_DRIFTWOOD.jpg-7107c28626b8c8735ee0e118302e7194.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,21 +11,21 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/WOD_DRIFTWOOD.JPG"
-dest_files=["res://.godot/imported/WOD_DRIFTWOOD.JPG-28aed9564b7b50e6b3dd5818fd1fd235.s3tc.ctex"]
+source_file="res://assets/textures/WOD_DRIFTWOOD.jpg"
+dest_files=["res://.godot/imported/WOD_DRIFTWOOD.jpg-7107c28626b8c8735ee0e118302e7194.s3tc.ctex"]
 
 [params]
 
 compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
-compress/uastc_level=0
+compress/uastc_level=4
 compress/rdo_quality_loss=0.0
-compress/hdr_compression=1
-compress/normal_map=0
-compress/channel_pack=0
+compress/hdr_compression=2
+compress/normal_map=2
+compress/channel_pack=1
 mipmaps/generate=true
-mipmaps/limit=-1
+mipmaps/limit=3
 roughness/mode=0
 roughness/src_normal=""
 process/channel_remap/red=0
@@ -35,7 +35,7 @@ process/channel_remap/alpha=3
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false
-process/hdr_as_srgb=false
-process/hdr_clamp_exposure=false
-process/size_limit=0
+process/hdr_as_srgb=true
+process/hdr_clamp_exposure=true
+process/size_limit=1024
 detect_3d/compress_to=0

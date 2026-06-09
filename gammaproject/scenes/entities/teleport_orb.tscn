@@ -1,25 +1,10 @@
 [gd_scene format=3 uid="uid://dl4gt4ixoj7h3"]
 
-[ext_resource type="PackedScene" uid="uid://b2viy0s85pdop" path="res://assets/models/Mantaray.gltf" id="3_3qdhe"]
+[ext_resource type="PackedScene" uid="uid://ce5qmkel4wg2g" path="res://assets/models/Mantaray.gltf" id="3_3qdhe"]
 
 [node name="TeleportOrb" type="Node3D" unique_id=1002891983]
 
-[node name="Mantaray" parent="." unique_id=259857255 instance=ExtResource("3_3qdhe")]
-
-[node name="Skeleton3D" parent="Mantaray" index="0" unique_id=697718565]
-bones/0/rotation = Quaternion(-0.67962784, 1.5393755e-17, 1.1523354e-17, 0.73355716)
-bones/1/rotation = Quaternion(-0.045198876, -7.892519e-20, -2.258037e-17, 0.998978)
-bones/2/rotation = Quaternion(-0.051284503, -4.715511e-20, -2.1951937e-17, 0.99868417)
-bones/3/rotation = Quaternion(-0.046007227, 0.07054353, 0.31876114, 0.94408596)
-bones/4/rotation = Quaternion(-0.02319754, -0.023029687, -0.4089297, 0.9119803)
-bones/5/rotation = Quaternion(-0.046007227, -0.07054353, -0.31876114, 0.94408596)
-bones/6/rotation = Quaternion(-0.02319754, 0.023029687, 0.4089297, 0.9119803)
-bones/7/rotation = Quaternion(-0.02922289, -0.074181564, 0.7547261, 0.6511771)
-bones/8/rotation = Quaternion(-0.031794548, 0.20866182, 0.0434142, 0.9765064)
-bones/9/rotation = Quaternion(-0.03529602, 0.19376276, 0.13311568, 0.9713344)
-bones/10/rotation = Quaternion(-0.029222777, 0.07418139, -0.7547263, 0.6511769)
-bones/11/rotation = Quaternion(-0.0317948, -0.20866187, -0.04341439, 0.9765063)
-bones/12/rotation = Quaternion(-0.03529573, -0.19376278, -0.13311464, 0.97133446)
+[node name="Mantaray" parent="." unique_id=745298791 instance=ExtResource("3_3qdhe")]
 
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=832659772]
 
