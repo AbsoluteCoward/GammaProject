@@ -18,7 +18,7 @@ namespace Gamma {
         public const int DEFAULT_EXPLOSIONS_SIZE = 16;
         public const int DEFAULT_ENEMIES_SIZE = 16;
         public const int DEFAULT_TARGET_RETICLES_SIZE = 16;
-        public const float DEFAULT_LOAD_DELAY = 0.0f;
+        public const float DEFAULT_LOAD_DELAY = 4.0f;
         public const float DEFAULT_CAMERA_DISTANCE = 5.0f;
         public const float DEFAULT_CAMERA_HEIGHT = DEFAULT_CAMERA_DISTANCE * 0.4f;
         public const float ALMOST_ZERO = 0.00001f;
@@ -31,6 +31,7 @@ namespace Gamma {
         public static readonly Color NULL_COLOR = new Color(0f, 0f, 0f, 0f);
         public static readonly Color FULL_COLOR = new Color(1f, 1f, 1f, 1f);
         public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
+        public static readonly Vector3 XZ_FLAT = new Vector3(0, 1, 0);
         public static readonly Vector3 GRAVITY_VECTOR = new Vector3(0, -GRAVITY_STRENGTH, 0);
         public static AudioStream metalDinkSFX = GD.Load<AudioStream>("res://assets/sound/metalslam.wav");
         public static AudioStream metalSlamSFX = GD.Load<AudioStream>("res://assets/sound/metalslam1.wav");
@@ -112,10 +113,12 @@ namespace Gamma {
             enemies = new Enemy[DEFAULT_ENEMIES_SIZE];
             enemyCount = 0;
             interactables = new Interactable[DEFAULT_INTERACTABLES_SIZE];
+            Interactable.count = 0;
             targetReticles = new TargetReticle[DEFAULT_TARGET_RETICLES_SIZE];
             projectiles = new Projectile[DEFAULT_PROJECTILES_SIZE];
             explosions = new Explosion[DEFAULT_EXPLOSIONS_SIZE];
             trails = new Trail[DEFAULT_MISCELLANEOUS_SIZE];
+            Trail.count = 0;
             environmentNode = GetTree().CurrentScene.GetNode<Node>("Environment");
             worldEnvironment = environmentNode.GetNode<WorldEnvironment>("WorldEnvironment");
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
@@ -253,7 +256,7 @@ namespace Gamma {
             SurveillanceScannerUpdate();
             OrbUpdate();
             EnemyUpdate();
-            if (InputJustPressed(ref inputState.interact, true, false)) { Interact(); }
+            if (IsInputJustPressed(ref inputState.interact)) { Interact(); }
             DialogueUpdate();
             RewardsUpdate();
             SubtitlesUpdate();

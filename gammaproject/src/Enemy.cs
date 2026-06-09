@@ -102,7 +102,7 @@ namespace Gamma {
         }
         public void EnemyInitialize(CharacterBody3D inputNode) {
             if (enemyCount >= enemies.Length) {
-                Enemy[] newEnemies = new Enemy[enemies.Length * 2];
+                Enemy[] newEnemies = new Enemy[enemies.Length * ARRAY_GROWTH_FACTOR];
                 for (int i = 0; i < enemies.Length; i++) {
                     newEnemies[i] = enemies[i];
                 }

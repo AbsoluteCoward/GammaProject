@@ -11,7 +11,8 @@ namespace Gamma {
             public float[] lifeTimes;
             public float width;
             public float length;
-            public int count;
+            public int vertexCount;
+            public static int count;
         }
         public void TrailsCreate(Trail[] inputTrails, Node3D parent, Vector3 inputOffset, Color inputColor, float inputWidth, float inputLength, int maxCount, bool isFullbright) {
             int index = -1;
@@ -34,7 +35,7 @@ namespace Gamma {
             trail.lifeTimes = new float[maxCount];
             trail.width = inputWidth;
             trail.length = inputLength;
-            trail.count = 0;
+            trail.vertexCount = 0;
             trail.color = inputColor;
             StandardMaterial3D material = new StandardMaterial3D();
             material.RenderPriority = 1;
@@ -60,32 +61,32 @@ namespace Gamma {
         public void TrailUpdate(Trail[] inputTrails, float inputDistance) {
             for (int i = 0; i < inputTrails.Length; i++) {
                 if (inputTrails[i].node == null) { continue; }
-                for (int j = 0; j < inputTrails[i].count; j++) { inputTrails[i].lifeTimes[j] -= globalPhysicsDeltaFloat; }
-                while (inputTrails[i].count > 0 && inputTrails[i].lifeTimes[0] <= 0) {
-                    for (int k = 1; k < inputTrails[i].count; k++) {
+                for (int j = 0; j < inputTrails[i].vertexCount; j++) { inputTrails[i].lifeTimes[j] -= globalPhysicsDeltaFloat; }
+                while (inputTrails[i].vertexCount > 0 && inputTrails[i].lifeTimes[0] <= 0) {
+                    for (int k = 1; k < inputTrails[i].vertexCount; k++) {
                         inputTrails[i].points[k - 1] = inputTrails[i].points[k];
                         inputTrails[i].lifeTimes[k - 1] = inputTrails[i].lifeTimes[k];
                     }
-                    inputTrails[i].count--;
+                    inputTrails[i].vertexCount--;
                 }
                 Vector3 emitPosition = inputTrails[i].node.GetParent<Node3D>().GlobalPosition + inputTrails[i].node.GetParent<Node3D>().GlobalBasis * inputTrails[i].offset;
-                if ((emitPosition - inputTrails[i].lastEmitPosition).Length() >= inputDistance && inputTrails[i].count < inputTrails[i].points.Length) {
-                    inputTrails[i].points[inputTrails[i].count] = emitPosition;
-                    inputTrails[i].lifeTimes[inputTrails[i].count] = inputTrails[i].length;
-                    inputTrails[i].count++;
+                if ((emitPosition - inputTrails[i].lastEmitPosition).Length() >= inputDistance && inputTrails[i].vertexCount < inputTrails[i].points.Length) {
+                    inputTrails[i].points[inputTrails[i].vertexCount] = emitPosition;
+                    inputTrails[i].lifeTimes[inputTrails[i].vertexCount] = inputTrails[i].length;
+                    inputTrails[i].vertexCount++;
                     inputTrails[i].lastEmitPosition = emitPosition;
                 }
                 ImmediateMesh mesh = (ImmediateMesh)inputTrails[i].node.Mesh;
                 mesh.ClearSurfaces();
-                if (inputTrails[i].count < 2) { continue; }
+                if (inputTrails[i].vertexCount < 2) { continue; }
                 mesh.SurfaceBegin(Mesh.PrimitiveType.TriangleStrip);
-                for (int j = 0; j < inputTrails[i].count; j++) {
-                    float factor = j / (float)(inputTrails[i].count - 1);
+                for (int j = 0; j < inputTrails[i].vertexCount; j++) {
+                    float factor = j / (float)(inputTrails[i].vertexCount - 1);
                     float head = 0.2f;
                     float tail = 0.9f;
                     float taper = Mathf.Lerp(head, tail, Mathf.Pow(factor, 1f));
                     float width = inputTrails[i].width * taper;
-                    Vector3 pathDirection = j < inputTrails[i].count - 1 ?
+                    Vector3 pathDirection = j < inputTrails[i].vertexCount - 1 ?
                         (inputTrails[i].points[j + 1] - inputTrails[i].points[j]).Normalized() :
                         (inputTrails[i].points[j] - inputTrails[i].points[j - 1]).Normalized();
                     Vector3 toCamera = (inputTrails[i].points[j] - currentCamera.GlobalPosition).Normalized();

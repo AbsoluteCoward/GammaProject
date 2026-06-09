@@ -17,17 +17,22 @@ namespace Gamma {
         public struct Interactable {
             public Node3D node;
             public InteractableLookup interaction;
+            public static int count;
         }
         public void InteractablesInitialize(Node3D inputNode, InteractableLookup inputInteraction) {
-            for (int i = 0; i < interactables.Length; i++) {
-                if (interactables[i].node == null) {
-                    interactables[i].node = inputNode;
-                    interactables[i].interaction = inputInteraction;
-                    GD.Print($"{inputNode.Name} Initialized at index {i}");
-                    return;
+            if (Interactable.count >= interactables.Length) {
+                Interactable[] newInteractables = new Interactable[interactables.Length * ARRAY_GROWTH_FACTOR];
+                for (int i = 0; i < interactables.Length; i++) {
+                    newInteractables[i] = interactables[i];
                 }
+                interactables = newInteractables;
+                GD.Print("Interactables array resized to " + enemies.Length);
             }
-            GD.PrintErr("No space to add new interactable!");
+            int index = Interactable.count;
+            interactables[index].node = inputNode;
+            interactables[index].interaction = inputInteraction;
+            Interactable.count++;
+            GD.Print($"{inputNode.Name} Initialized at index {index}");
         }
         public void Interact() {
             if (dialogueBox.node.Visible) {
@@ -42,13 +47,14 @@ namespace Gamma {
             int interactBoxSize = 2;
             Vector3 interactBoxCenter = player.node.GlobalPosition - (player.node.GlobalTransform.Basis.Z * interactBoxSize / 2f);
             float halfSize = interactBoxSize / 2f;
-            for (int i = 0; i < interactables.Length; i++) {
-                if (interactables[i].node == null) continue;
+            for (int i = 0; i < Interactable.count; i++) {
+                if (interactables[i].node == null) { continue; }
                 Vector3 position = interactables[i].node.GlobalPosition;
                 if (position.X >= interactBoxCenter.X - halfSize &&
                     position.X <= interactBoxCenter.X + halfSize &&
                     position.Z >= interactBoxCenter.Z - halfSize &&
                     position.Z <= interactBoxCenter.Z + halfSize) {
+                    GD.Print("Interacting with " + interactables[i].node.Name + " (" + interactables[i].interaction + ")");
                     switch (interactables[i].interaction) {
                         case InteractableLookup.None:
                             // SubtitlesAdd(new SubtitleData() {

@@ -88,13 +88,12 @@ namespace Gamma {
             TeleportOrb orb = player.orb;
             orb.animationPlayer.Advance(globalPhysicsDeltaFloat);
             if (!orb.node.TopLevel || !orb.node.Visible) { return; }
+            if (IsInputJustPressed(ref inputState.action3)) { 
+                OrbReturn(false);
+                player.node.Velocity = orb.velocity;
+            }
             orb.timeAlive += globalPhysicsDeltaFloat;
             float currentSpeed = orb.velocity.Length();
-            // orb.node.Scale = new Vector3(
-            //     orb.node.Scale.X,
-            //     Mathf.Max(0.8f, 1f - currentSpeed * 0.05f),
-            //     orb.node.Scale.X + currentSpeed * 0.2f
-            // );
             player.orb.model.SetBlendShapeValue(0, MathF.Max(0f, 1 - currentSpeed * 0.1f));
             float clamp = Mathf.Clamp(9f / Mathf.Max(9f, currentSpeed), 0f, 1f);
             player.orb.animationPlayer.SpeedScale = 1f + 11f * Mathf.Pow(clamp, 3f);
@@ -106,7 +105,7 @@ namespace Gamma {
             }
             float lift = 0.8f;
             orb.velocity = orb.velocity.Lerp(orbForward * currentSpeed, lift);
-            if (InputJustPressed(ref inputState.action3, true, false)) { orb.velocity += orbForward * 2f; }
+            if (IsInputJustPressed(ref inputState.attack)) { orb.velocity += orbForward * 2f; }
             if (inputDirection != Vector2.Zero) {
                 float inputMagnitude = Mathf.Clamp(1f - (currentSpeed / 6f), 0.6f, 2f);
                 inputMagnitude *= Mathf.Clamp(orb.timeAlive / 2f, 0f, 1f);

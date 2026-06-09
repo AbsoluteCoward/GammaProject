@@ -314,7 +314,7 @@ namespace Gamma {
                     if (shouldRunFromWalk) {
                         targetAnimation = "Run";
                     }
-                    if (InputJustPressed(ref inputState.action3, true, false)) {
+                    if (IsInputJustPressed(ref inputState.action3)) {
                         if (hasMovementInput) {
                             if (player.animationState.GetFadingFromNode() == "Run") {
                                 GD.Print("Run to Walk transition jump");
@@ -356,7 +356,7 @@ namespace Gamma {
                     break;
                 case "Run":
                     if (!isAnimationSameAsPrevious) { break; }
-                    if (!InputPressed(ref inputState.action3, true, false) || !hasMovementInput) {
+                    if (!IsInputPressed(ref inputState.action3) || !hasMovementInput) {
                         targetAnimation = "Walk";
                     }
                     if (!player.isOnGround) {
@@ -419,7 +419,7 @@ namespace Gamma {
                         break;
                     }
                     if (distanceToGround > maxDistanceToGround) {
-                        if (InputPressed(ref inputState.action3, false, false)) {
+                        if (IsInputPressed(ref inputState.action3)) {
                             GD.Print("Jump from Vault");
                             player.node.Velocity = Vector3.Up + (playerForward * 8);
                             player.animationState.Start("RunJump01", true);
@@ -436,7 +436,7 @@ namespace Gamma {
                             player.node.GlobalPosition = player.groundRay.GetCollisionPoint();
                             targetAnimation = action3Pressed ? "Run" : "Walk";
                             player.node.Velocity = Vector3.Zero;
-                        } else if (InputPressed(ref inputState.action3, false, false)) {
+                        } else if (IsInputPressed(ref inputState.action3)) {
                                 GD.Print("Jump from Vault");
                                 player.node.Velocity = Vector3.Up + (playerForward * 8);
                                 player.animationState.Start("RunJump01", true);
@@ -499,7 +499,7 @@ namespace Gamma {
                     if (
                         player.animationPlaybackBlocks[0].currentPlaybackPosition > 0.266f &&
                         hasMovementInput && 
-                        InputPressed(ref inputState.action3, false, false)
+                        IsInputPressed(ref inputState.action3)
                     ) {
                         RotateTowards(player.wishDirection, player.node, 1f);
                         targetAnimation = "RunJump02";
@@ -526,7 +526,10 @@ namespace Gamma {
                     }
                     if (player.isOnGround) {
                         string animationToPlay = playerForward.Dot(player.wishDirection) > -0.8f ? "Roll" : "FallToIdle";
-                        player.animationState.Start(animationToPlay, true); 
+                        if (animationToPlay == "FallToIdle") {
+                            player.node.Velocity = XZ_FLAT;
+                        }
+                        player.animationState.Start(animationToPlay, true);
                     }
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
                     break;
@@ -624,7 +627,7 @@ namespace Gamma {
                         targetAnimation = "Fall";
                         OrbReturn(true);
                     }
-                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition > 0.8f && InputJustPressed(ref inputState.action3, true, false)) {
+                    if (player.animationPlaybackBlocks[0].currentPlaybackPosition > 0.8f && IsInputJustPressed(ref inputState.action3)) {
                         targetAnimation = "Jump";
                         player.node.Velocity = Vector3.Up * 12f;
                         player.node.GlobalPosition += Vector3.Up * 0.5f;
@@ -652,7 +655,7 @@ namespace Gamma {
                             break;
                         }
                         if (!player.orb.node.TopLevel) {
-                            targetAnimation = "Walk";
+                            targetAnimation = player.isOnGround ? "Walk" : "Fall";
                         }
                     break;
             }

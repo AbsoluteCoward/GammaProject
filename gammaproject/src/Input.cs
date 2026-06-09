@@ -44,21 +44,30 @@ namespace Gamma {
             inputState.action2.isConsumed = false;
             inputState.action3.isConsumed = false;
         }
-        public bool InputJustPressed(ref InputAction inputAction, bool shouldConsume, bool shouldIgnoreConsumed) {
+        public bool IsInputJustPressed(ref InputAction inputAction) {
+            return IsInputJustPressedEx(ref inputAction, true, false);
+        }
+        public bool IsInputJustPressedEx(ref InputAction inputAction, bool shouldConsume, bool shouldIgnoreConsumed) {
             if (inputAction.isJustPressed && (shouldIgnoreConsumed || !inputAction.isConsumed)) {
                 if (shouldConsume) { inputAction.isConsumed = true; }
                 return true;
             }
             return false;
         }
-        public bool InputPressed(ref InputAction inputAction, bool shouldConsume, bool shouldIgnoreConsumed) {
+        public bool IsInputPressed(ref InputAction inputAction) {
+            return IsInputPressedEx(ref inputAction, true, false);
+        }
+        public bool IsInputPressedEx(ref InputAction inputAction, bool shouldConsume, bool shouldIgnoreConsumed) {
             if (inputAction.isPressed && (shouldIgnoreConsumed || !inputAction.isConsumed)) {
                 if (shouldConsume) { inputAction.isConsumed = true; }
                 return true;
             }
             return false;
         }
-        public bool InputJustReleased(ref InputAction inputAction, bool shouldConsume, bool shouldIgnoreConsumed) {
+        public bool InputJustReleased(ref InputAction inputAction) {
+            return InputJustReleasedEx(ref inputAction, true, false);
+        }
+        public bool InputJustReleasedEx(ref InputAction inputAction, bool shouldConsume, bool shouldIgnoreConsumed) {
             if (inputAction.isJustReleased && (shouldIgnoreConsumed || !inputAction.isConsumed)) {
                 if (shouldConsume) { inputAction.isConsumed = true; }
                 return true;
