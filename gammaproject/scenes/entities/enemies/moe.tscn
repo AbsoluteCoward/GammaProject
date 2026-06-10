@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b2pnfis3dskio"]
 
-[ext_resource type="PackedScene" uid="uid://cfwlbtalbyryx" path="res://assets/models/Moe.gltf" id="1_ec151"]
+[ext_resource type="PackedScene" uid="uid://cuprua2sbiww3" path="res://assets/models/Moe.glb" id="1_ec151"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_pi8ka"]
 height = 1.575
@@ -39,18 +39,18 @@ graph_offset = Vector2(-175, 30)
 [node name="Moe" type="CharacterBody3D" unique_id=2039105678]
 metadata/Type = "EnemyGeneric"
 
-[node name="Moe" parent="." unique_id=1515932505 instance=ExtResource("1_ec151")]
+[node name="Moe" parent="." unique_id=1210604472 instance=ExtResource("1_ec151")]
 
-[node name="Skeleton3D" parent="Moe/Base" parent_id_path=PackedInt32Array(1515932505, 1489131178) index="0" unique_id=1437732716]
+[node name="Skeleton3D" parent="Moe" index="0" unique_id=686373578]
 bones/1/position = Vector3(-1.2309307e-15, 2.5689325e-22, 0.17326345)
 bones/1/rotation = Quaternion(0.912614, -4.7255874e-08, -1.137812e-07, 0.40882242)
-bones/2/rotation = Quaternion(-0.33121958, 0.0017425768, 0.004228891, 0.94354266)
-bones/3/rotation = Quaternion(-0.39668107, -0.0015882218, 0.004289259, 0.91794515)
-bones/4/rotation = Quaternion(-0.38833094, -0.0041957255, 0.0018208772, 0.9215086)
+bones/2/rotation = Quaternion(-0.33062038, -0.022974666, -0.05575388, 0.9418354)
+bones/3/rotation = Quaternion(-0.39596334, 0.020939626, -0.056549627, 0.9162842)
+bones/4/rotation = Quaternion(-0.38762838, 0.05531782, -0.024005733, 0.91984135)
 bones/6/rotation = Quaternion(-0.11311423, 0.13545205, 0.9607346, 0.21411915)
-bones/7/rotation = Quaternion(-0.75706494, -0.28145337, -0.35935283, 0.46744215)
+bones/7/rotation = Quaternion(-0.77441055, -0.24473934, -0.36290285, 0.4568288)
 bones/8/rotation = Quaternion(0.113114506, 0.13545196, 0.9607346, -0.2141191)
-bones/9/rotation = Quaternion(-0.75706506, 0.28145325, 0.3593528, 0.46744215)
+bones/9/rotation = Quaternion(-0.7744106, 0.24473926, 0.36290288, 0.45682883)
 
 [node name="CollisionCylinder" type="CollisionShape3D" parent="." unique_id=1604721726]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3375001, 0)

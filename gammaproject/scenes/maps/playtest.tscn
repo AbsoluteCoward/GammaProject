@@ -613,124 +613,124 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 0, 6)
 [node name="Moe" parent="Entities" unique_id=2039105678 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 7, 12)
 
-[node name="Moe2" parent="Entities" unique_id=424060868 instance=ExtResource("12_wel7t")]
+[node name="Moe2" parent="Entities" unique_id=1184729343 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1, 54)
 
-[node name="Moe3" parent="Entities" unique_id=870913384 instance=ExtResource("12_wel7t")]
+[node name="Moe3" parent="Entities" unique_id=299411728 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 54)
 
-[node name="Moe4" parent="Entities" unique_id=440914004 instance=ExtResource("12_wel7t")]
+[node name="Moe4" parent="Entities" unique_id=279587627 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1, 51)
 
-[node name="Moe5" parent="Entities" unique_id=960511835 instance=ExtResource("12_wel7t")]
+[node name="Moe5" parent="Entities" unique_id=944630412 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 51)
 
-[node name="Moe6" parent="Entities" unique_id=340021600 instance=ExtResource("12_wel7t")]
+[node name="Moe6" parent="Entities" unique_id=182115160 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1, 48)
 
-[node name="Moe7" parent="Entities" unique_id=1540603419 instance=ExtResource("12_wel7t")]
+[node name="Moe7" parent="Entities" unique_id=795605188 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 48)
 
-[node name="Moe8" parent="Entities" unique_id=1520960092 instance=ExtResource("12_wel7t")]
+[node name="Moe8" parent="Entities" unique_id=1251827760 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1, 45)
 
-[node name="Moe9" parent="Entities" unique_id=325326660 instance=ExtResource("12_wel7t")]
+[node name="Moe9" parent="Entities" unique_id=63699484 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 45)
 
-[node name="Moe10" parent="Entities" unique_id=397237275 instance=ExtResource("12_wel7t")]
+[node name="Moe10" parent="Entities" unique_id=196348063 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 54)
 
-[node name="Moe11" parent="Entities" unique_id=1898202705 instance=ExtResource("12_wel7t")]
+[node name="Moe11" parent="Entities" unique_id=725499872 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 54)
 
-[node name="Moe12" parent="Entities" unique_id=1825941635 instance=ExtResource("12_wel7t")]
+[node name="Moe12" parent="Entities" unique_id=844875472 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 51)
 
-[node name="Moe13" parent="Entities" unique_id=675275662 instance=ExtResource("12_wel7t")]
+[node name="Moe13" parent="Entities" unique_id=1221262502 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 51)
 
-[node name="Moe14" parent="Entities" unique_id=1116631874 instance=ExtResource("12_wel7t")]
+[node name="Moe14" parent="Entities" unique_id=533331142 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 48)
 
-[node name="Moe15" parent="Entities" unique_id=1526127248 instance=ExtResource("12_wel7t")]
+[node name="Moe15" parent="Entities" unique_id=351242512 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 48)
 
-[node name="Moe16" parent="Entities" unique_id=1768656299 instance=ExtResource("12_wel7t")]
+[node name="Moe16" parent="Entities" unique_id=1000286846 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 45)
 
-[node name="Moe17" parent="Entities" unique_id=159225765 instance=ExtResource("12_wel7t")]
+[node name="Moe17" parent="Entities" unique_id=1470967403 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 45)
 
-[node name="Moe18" parent="Entities" unique_id=189516672 instance=ExtResource("12_wel7t")]
+[node name="Moe18" parent="Entities" unique_id=1803850321 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 54)
 
-[node name="Moe19" parent="Entities" unique_id=1570488818 instance=ExtResource("12_wel7t")]
+[node name="Moe19" parent="Entities" unique_id=1331841327 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 54)
 
-[node name="Moe20" parent="Entities" unique_id=1774852529 instance=ExtResource("12_wel7t")]
+[node name="Moe20" parent="Entities" unique_id=1966661091 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 51)
 
-[node name="Moe21" parent="Entities" unique_id=13098463 instance=ExtResource("12_wel7t")]
+[node name="Moe21" parent="Entities" unique_id=541174271 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 51)
 
-[node name="Moe22" parent="Entities" unique_id=1286215297 instance=ExtResource("12_wel7t")]
+[node name="Moe22" parent="Entities" unique_id=495463498 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 48)
 
-[node name="Moe23" parent="Entities" unique_id=1357589812 instance=ExtResource("12_wel7t")]
+[node name="Moe23" parent="Entities" unique_id=1773664261 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 48)
 
-[node name="Moe24" parent="Entities" unique_id=909162682 instance=ExtResource("12_wel7t")]
+[node name="Moe24" parent="Entities" unique_id=38002972 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 45)
 
-[node name="Moe25" parent="Entities" unique_id=1467129002 instance=ExtResource("12_wel7t")]
+[node name="Moe25" parent="Entities" unique_id=1498339 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 45)
 
-[node name="Moe26" parent="Entities" unique_id=797170922 instance=ExtResource("12_wel7t")]
+[node name="Moe26" parent="Entities" unique_id=2042163369 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1, 54)
 
-[node name="Moe27" parent="Entities" unique_id=1936887876 instance=ExtResource("12_wel7t")]
+[node name="Moe27" parent="Entities" unique_id=1081481123 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, 54)
 
-[node name="Moe28" parent="Entities" unique_id=2018857257 instance=ExtResource("12_wel7t")]
+[node name="Moe28" parent="Entities" unique_id=1292828119 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1, 51)
 
-[node name="Moe29" parent="Entities" unique_id=2066913721 instance=ExtResource("12_wel7t")]
+[node name="Moe29" parent="Entities" unique_id=2054980636 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, 51)
 
-[node name="Moe30" parent="Entities" unique_id=1452337254 instance=ExtResource("12_wel7t")]
+[node name="Moe30" parent="Entities" unique_id=352988225 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1, 48)
 
-[node name="Moe31" parent="Entities" unique_id=1826719357 instance=ExtResource("12_wel7t")]
+[node name="Moe31" parent="Entities" unique_id=177549001 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, 48)
 
-[node name="Moe32" parent="Entities" unique_id=1900775268 instance=ExtResource("12_wel7t")]
+[node name="Moe32" parent="Entities" unique_id=1488165510 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1, 45)
 
-[node name="Moe33" parent="Entities" unique_id=719747032 instance=ExtResource("12_wel7t")]
+[node name="Moe33" parent="Entities" unique_id=1805956677 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, 45)
 
-[node name="Moe34" parent="Entities" unique_id=1407894413 instance=ExtResource("12_wel7t")]
+[node name="Moe34" parent="Entities" unique_id=2102796570 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 54)
 
-[node name="Moe35" parent="Entities" unique_id=2071899863 instance=ExtResource("12_wel7t")]
+[node name="Moe35" parent="Entities" unique_id=229043349 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 54)
 
-[node name="Moe36" parent="Entities" unique_id=488848193 instance=ExtResource("12_wel7t")]
+[node name="Moe36" parent="Entities" unique_id=1224361627 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 51)
 
-[node name="Moe37" parent="Entities" unique_id=1020935551 instance=ExtResource("12_wel7t")]
+[node name="Moe37" parent="Entities" unique_id=1441070069 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 51)
 
-[node name="Moe38" parent="Entities" unique_id=1026971617 instance=ExtResource("12_wel7t")]
+[node name="Moe38" parent="Entities" unique_id=142797564 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 48)
 
-[node name="Moe39" parent="Entities" unique_id=879586956 instance=ExtResource("12_wel7t")]
+[node name="Moe39" parent="Entities" unique_id=2036745451 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 48)
 
-[node name="Moe40" parent="Entities" unique_id=127218575 instance=ExtResource("12_wel7t")]
+[node name="Moe40" parent="Entities" unique_id=1986419814 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 45)
 
-[node name="Moe41" parent="Entities" unique_id=1993478076 instance=ExtResource("12_wel7t")]
+[node name="Moe41" parent="Entities" unique_id=1617636919 instance=ExtResource("12_wel7t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 45)
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("4_8d6xy")]
@@ -774,20 +774,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 7, 11)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9000001, 3, 18.2)
 
 [node name="Skeleton3D" parent="Entities/SurveillanceScanner01/SurveillanceScanner01" parent_id_path=PackedInt32Array(1505433102, 1690118326) index="0" unique_id=1659388111]
-bones/0/position = Vector3(0, 0.032237537, 0)
-bones/1/rotation = Quaternion(0, -0.5844579, 0, 0.811424)
+bones/0/position = Vector3(0, -0.009809739, 0)
+bones/1/rotation = Quaternion(0, -0.36730042, 0, 0.93010247)
 
 [node name="Top" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="0" unique_id=152551031]
-transform = Transform3D(0.31681794, 0, -0.9484864, 0, 1, 0, 0.9484864, 0, 0.31681794, 0, 0.13223755, 0)
+transform = Transform3D(0.73018086, 0, -0.6832539, 0, 1, 0, 0.6832539, 0, 0.73018086, 0, 0.090190284, 0)
 
 [node name="Lamp" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="1" unique_id=404657645]
-transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.5077625, -0.010000005)
+transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.54980975, -0.010000005)
 
 [node name="SpotLight3D" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D/Lamp" index="0" unique_id=1680231869]
 shadow_bias = 0.08
 
 [node name="Base" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="2" unique_id=804744811]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.032237537, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.009809739, 0)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("18_rrwtf")]
 

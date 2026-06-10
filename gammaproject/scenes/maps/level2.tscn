@@ -579,7 +579,7 @@ transform = Transform3D(-4.068e-08, -0.258819, 0.965926, -1.13133e-08, 0.965926,
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -11.9521, 1.3804, -24.8788)
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("1_0dihh")]
-transform = Transform3D(1, 0, 1.06581e-14, 0, 1, 0, -1.06581e-14, 0, 1, -5.26864, 1.46221, 62.2343)
+transform = Transform3D(1, 0, 1.06581e-14, 0, 1, 0, -1.06581e-14, 0, 1, -5.26864, 1.46221, 5.2342987)
 
 [node name="PlayerCamera" parent="Entities" unique_id=1744850958 instance=ExtResource("4_etjn4")]
 transform = Transform3D(1, 0, 0, 0, 0.83528, 0.549825, 0, -0.549825, 0.83528, -4.3, 4.23441, 62.5392)

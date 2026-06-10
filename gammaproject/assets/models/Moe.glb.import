@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cfwlbtalbyryx"
-path="res://.godot/imported/Moe.gltf-fdf0b39988db5edb8261d52442b90e81.scn"
+uid="uid://cuprua2sbiww3"
+path="res://.godot/imported/Moe.glb-3d2bb342f4666b9f052366eeefaf1e4b.scn"
 
 [deps]
 
-source_file="res://assets/models/Moe.gltf"
-dest_files=["res://.godot/imported/Moe.gltf-fdf0b39988db5edb8261d52442b90e81.scn"]
+source_file="res://assets/models/Moe.glb"
+dest_files=["res://.godot/imported/Moe.glb-3d2bb342f4666b9f052366eeefaf1e4b.scn"]
 
 [params]
 

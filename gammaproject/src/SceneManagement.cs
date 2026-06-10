@@ -19,9 +19,9 @@ namespace Gamma {
         }
         public struct SceneState {
             public Node currentScene;
+            public string CurrentScenePath;
             public float timeSinceSceneLoad;
             public int physicsFramesSinceSceneLoad;
-            public string CurrentScenePath;
             public bool isSceneLoaded;
         }
         public void InitializeLoadingScreen(Control inputLoadingScreen) {

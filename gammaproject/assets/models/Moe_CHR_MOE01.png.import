@@ -2,17 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://btv8lm2pb1tsc"
-path.s3tc="res://.godot/imported/interstellar_bk.tga-652d9f403fd08e8961de10af69986e6a.s3tc.ctex"
+uid="uid://ci5amc473bqux"
+path.s3tc="res://.godot/imported/Moe_CHR_MOE01.png-47524ec5b74d43e20a238e0306e9757a.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
+generator_parameters={
+"md5": "81f040a748099cf2817edc19e94e5def"
+}
 
 [deps]
 
-source_file="res://assets/textures/skyboxes/envmap_interstellar/interstellar_bk.tga"
-dest_files=["res://.godot/imported/interstellar_bk.tga-652d9f403fd08e8961de10af69986e6a.s3tc.ctex"]
+source_file="res://assets/models/Moe_CHR_MOE01.png"
+dest_files=["res://.godot/imported/Moe_CHR_MOE01.png-47524ec5b74d43e20a238e0306e9757a.s3tc.ctex"]
 
 [params]
 
@@ -38,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=true
 process/hdr_clamp_exposure=true
 process/size_limit=1024
-detect_3d/compress_to=1
+detect_3d/compress_to=0
