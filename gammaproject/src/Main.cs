@@ -18,7 +18,7 @@ namespace Gamma {
         public const int DEFAULT_EXPLOSIONS_SIZE = 16;
         public const int DEFAULT_ENEMIES_SIZE = 16;
         public const int DEFAULT_TARGET_RETICLES_SIZE = 16;
-        public const float DEFAULT_LOAD_DELAY = 4.0f;
+        public const float DEFAULT_LOAD_DELAY = 0.0f;
         public const float DEFAULT_CAMERA_DISTANCE = 5.0f;
         public const float DEFAULT_CAMERA_HEIGHT = DEFAULT_CAMERA_DISTANCE * 0.4f;
         public const float ALMOST_ZERO = 0.00001f;
@@ -215,7 +215,6 @@ namespace Gamma {
         public override void _Ready() {
             GD.Print("Setting up game...");
             ProcessMode = ProcessModeEnum.Always;
-            Engine.MaxFps = 999;
             globalPhysicsMaterial = new PhysicsMaterial {
                 Friction = 0.2f,
                 Bounce = 0f

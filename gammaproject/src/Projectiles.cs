@@ -56,7 +56,7 @@ namespace Gamma {
                 if (projectiles[i].node == null) { continue; }
                 Projectile rocket = projectiles[i];
                 Vector3 currentDirection = -rocket.node.GlobalTransform.Basis.Z;
-                if (rocket.targetNode != null && IsInstanceValid(rocket.targetNode) && rocket.targetNode.IsInsideTree()) {
+                if (rocket.targetNode != null && IsInstanceValid(rocket.targetNode)) {
                     Vector3 directionToTarget = ((rocket.targetNode.GlobalPosition + Vector3.Up) - rocket.node.GlobalPosition).Normalized();
                     float angleToTarget = currentDirection.AngleTo(directionToTarget);
                     if (angleToTarget > 0.001f) {
@@ -84,6 +84,15 @@ namespace Gamma {
                         );
                         currentDirection = -rocket.node.GlobalTransform.Basis.Z;
                     }
+                } else {
+                    Vector3 rotationAxis = currentDirection.Cross(Vector3.Down).Normalized();
+                    float rotationAmount = 0.4f * globalPhysicsDeltaFloat;
+                    Basis rotationBasis = new Basis(rotationAxis, rotationAmount);
+                    rocket.node.GlobalTransform = new Transform3D(
+                        rotationBasis * rocket.node.GlobalTransform.Basis,
+                        rocket.node.GlobalPosition
+                    );
+                    currentDirection = -rocket.node.GlobalTransform.Basis.Z;
                 }
                 Vector3 newPosition = rocket.node.GlobalPosition + currentDirection * rocket.speed * globalPhysicsDeltaFloat;
                 rocket.node.TopLevel = true;

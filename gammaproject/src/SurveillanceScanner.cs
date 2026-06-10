@@ -73,9 +73,11 @@ namespace Gamma {
                 }
                 Vector3 right = absoluteUp.Cross(forward).Normalized();
                 Vector3 up = forward.Cross(right).Normalized();
-                Basis targetBasis = new Basis(right, up, forward).Orthonormalized();
-                const float rotationSpeedMultiplier = 4f; 
-                lampPose.Basis = lampPose.Basis.Slerp(targetBasis.Orthonormalized(), Mathf.Min(0.3f, rotationSpeedMultiplier * globalPhysicsDeltaFloat));
+                Basis targetBasis = new Basis(right, up, forward);
+                Quaternion current = lampPose.Basis.GetRotationQuaternion();
+                Quaternion target = targetBasis.GetRotationQuaternion();
+                const float rotationSpeedMultiplier = 1f;
+                lampPose.Basis = new Basis(current.Slerp(target, rotationSpeedMultiplier * globalPhysicsDeltaFloat));
                 scanner.skeleton.SetBoneGlobalPose(SurveillanceScanner.lampBoneIndex, lampPose);
             }
             surveillanceScanners[0] = scanner;
