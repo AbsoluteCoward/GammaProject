@@ -758,20 +758,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 7, 12)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9000001, 3, 18.2)
 
 [node name="Skeleton3D" parent="Entities/SurveillanceScanner01/SurveillanceScanner01" parent_id_path=PackedInt32Array(1505433102, 1690118326) index="0" unique_id=849312546]
-bones/0/position = Vector3(0, 0.029678455, 0)
-bones/1/rotation = Quaternion(0, -0.41959584, 0, 0.907711)
+bones/0/position = Vector3(0, -0.020561868, 0)
+bones/1/rotation = Quaternion(0, -0.67572576, 0, 0.7371532)
 
 [node name="Top" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="0" unique_id=861252606]
-transform = Transform3D(0.64787865, 0, -0.76174355, 0, 1, 0, 0.76174355, 0, 0.64787865, 0, 0.12967847, 0)
+transform = Transform3D(0.08678949, 0, -0.99622667, 0, 1, 0, 0.99622667, 0, 0.08678949, 0, 0.07943816, 0)
 
 [node name="Lamp" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="1" unique_id=1398783105]
-transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.51032156, -0.010000005)
+transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.5605619, -0.010000005)
 
 [node name="SpotLight3D" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D/Lamp" index="0" unique_id=1680231869]
 shadow_bias = 0.08
 
 [node name="Base" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="2" unique_id=1124499009]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.029678455, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.020561868, 0)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("18_rrwtf")]
 
