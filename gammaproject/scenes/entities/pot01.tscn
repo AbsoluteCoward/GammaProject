@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://xwhnlvkm6lcs"]
 
-[ext_resource type="Texture2D" uid="uid://jk260qoii2em" path="res://assets/textures/STO_ANCIENTBRICK02.png" id="1_1ywwd"]
+[ext_resource type="Texture2D" uid="uid://cpmcxttumcwei" path="res://assets/textures/STO_ANCIENTBRICK02.png" id="1_1ywwd"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1l0n4"]
 resource_name = "Pot"
@@ -120,27 +120,25 @@ _data = {
 [sub_resource type="BoxShape3D" id="BoxShape3D_1ywwd"]
 size = Vector3(1.2, 1, 1.2)
 
-[node name="Pot01" type="Node3D"]
+[node name="Pot01" type="Node3D" unique_id=2048383986]
 metadata/Type = "Pot"
 
-[node name="pot" type="Node3D" parent="."]
+[node name="pot" type="Node3D" parent="." unique_id=293107474]
 
-[node name="Lid" type="MeshInstance3D" parent="pot"]
+[node name="Lid" type="MeshInstance3D" parent="pot" unique_id=754830716]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.83604e-08, 0.862382, -4.50418e-08)
 mesh = SubResource("ArrayMesh_epduc")
 skeleton = NodePath("")
 
-[node name="Body" type="MeshInstance3D" parent="pot"]
+[node name="Body" type="MeshInstance3D" parent="pot" unique_id=1610539489]
 mesh = SubResource("ArrayMesh_tajo5")
 skeleton = NodePath("")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="pot"]
-libraries = {
-&"": SubResource("AnimationLibrary_lhuof")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="pot" unique_id=975333065]
+libraries/ = SubResource("AnimationLibrary_lhuof")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1402401701]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=336046869]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("BoxShape3D_1ywwd")

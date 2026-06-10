@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b2pnfis3dskio"]
 
-[ext_resource type="PackedScene" uid="uid://chdtuqakpmpso" path="res://assets/models/Moe.gltf" id="1_ec151"]
+[ext_resource type="PackedScene" uid="uid://cfwlbtalbyryx" path="res://assets/models/Moe.gltf" id="1_ec151"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_pi8ka"]
 height = 1.575
@@ -41,16 +41,16 @@ metadata/Type = "EnemyGeneric"
 
 [node name="Moe" parent="." unique_id=1515932505 instance=ExtResource("1_ec151")]
 
-[node name="Skeleton3D" parent="Moe/Base" parent_id_path=PackedInt32Array(1515932505, 207482489) index="0" unique_id=2134033829]
+[node name="Skeleton3D" parent="Moe/Base" parent_id_path=PackedInt32Array(1515932505, 1489131178) index="0" unique_id=1437732716]
 bones/1/position = Vector3(-1.2309307e-15, 2.5689325e-22, 0.17326345)
 bones/1/rotation = Quaternion(0.912614, -4.7255874e-08, -1.137812e-07, 0.40882242)
-bones/2/rotation = Quaternion(-0.33120307, 0.0041948566, 0.010179978, 0.94349533)
-bones/3/rotation = Quaternion(-0.39666116, -0.0038232848, 0.010325287, 0.9178991)
-bones/4/rotation = Quaternion(-0.38831148, -0.010100261, 0.004383221, 0.9214625)
+bones/2/rotation = Quaternion(-0.33121958, 0.0017425768, 0.004228891, 0.94354266)
+bones/3/rotation = Quaternion(-0.39668107, -0.0015882218, 0.004289259, 0.91794515)
+bones/4/rotation = Quaternion(-0.38833094, -0.0041957255, 0.0018208772, 0.9215086)
 bones/6/rotation = Quaternion(-0.11311423, 0.13545205, 0.9607346, 0.21411915)
-bones/7/rotation = Quaternion(-0.8070325, -0.16437005, -0.36835134, 0.4312751)
+bones/7/rotation = Quaternion(-0.75706494, -0.28145337, -0.35935283, 0.46744215)
 bones/8/rotation = Quaternion(0.113114506, 0.13545196, 0.9607346, -0.2141191)
-bones/9/rotation = Quaternion(-0.8070326, 0.16437003, 0.36835137, 0.43127495)
+bones/9/rotation = Quaternion(-0.75706506, 0.28145325, 0.3593528, 0.46744215)
 
 [node name="CollisionCylinder" type="CollisionShape3D" parent="." unique_id=1604721726]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3375001, 0)

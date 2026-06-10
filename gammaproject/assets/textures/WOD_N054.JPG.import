@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b3h0m1lx4mnj"
-path.s3tc="res://.godot/imported/WOD_N054.JPG-90bf8342e2787edbffff0c626cb9721a.s3tc.ctex"
+uid="uid://bsew4dsobf3a7"
+path.s3tc="res://.godot/imported/WOD_N054.jpg-4d1cebc7bc6c38bedbd45a738220fb78.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/WOD_N054.JPG"
-dest_files=["res://.godot/imported/WOD_N054.JPG-90bf8342e2787edbffff0c626cb9721a.s3tc.ctex"]
+source_file="res://assets/textures/WOD_N054.jpg"
+dest_files=["res://.godot/imported/WOD_N054.jpg-4d1cebc7bc6c38bedbd45a738220fb78.s3tc.ctex"]
 
 [params]
 

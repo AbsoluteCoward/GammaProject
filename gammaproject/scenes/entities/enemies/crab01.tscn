@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dgbvqthwrtpuq"]
 
-[ext_resource type="PackedScene" uid="uid://bpi5sj81h7o1f" path="res://assets/models/Crab01.gltf" id="1_g01ac"]
+[ext_resource type="PackedScene" uid="uid://b4a5hoedv7v6f" path="res://assets/models/Crab01.gltf" id="1_g01ac"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_pi8ka"]
 height = 3.5
@@ -42,27 +42,27 @@ metadata/Type = "EnemyCrab01"
 
 [node name="Crab01" parent="." unique_id=2020262156 instance=ExtResource("1_g01ac")]
 
-[node name="Skeleton3D" parent="Crab01" index="0" unique_id=2041853527]
+[node name="Skeleton3D" parent="Crab01" index="0" unique_id=2122569804]
 bones/2/rotation = Quaternion(-0.71391624, 2.8950672e-11, -3.0101672e-09, 0.7002311)
-bones/3/rotation = Quaternion(-0.03032195, 0.02596974, -0.047354862, 0.99808)
-bones/4/rotation = Quaternion(-0.5502085, 0.0031397287, -0.020350406, 0.83477336)
-bones/8/rotation = Quaternion(-0.07771208, -0.04300192, -0.086316705, 0.992301)
-bones/9/rotation = Quaternion(-0.8442911, 0.0017987925, -0.0015727329, 0.5358797)
-bones/10/rotation = Quaternion(-0.3405005, 0.03612627, 0.09789548, 0.93443614)
-bones/11/rotation = Quaternion(-0.5229726, 0.0015376748, 0.021469736, 0.85207766)
+bones/3/rotation = Quaternion(-0.013234387, 0.0013090617, -0.042522084, 0.999007)
+bones/4/rotation = Quaternion(-0.40501758, -0.0016213334, -0.017471425, 0.9141405)
+bones/8/rotation = Quaternion(-0.13842262, -0.036422387, -0.0826938, 0.98624253)
+bones/9/rotation = Quaternion(-0.49511468, 0.0036153405, 0.0055242553, 0.86880267)
+bones/10/rotation = Quaternion(-0.24867095, 0.03402828, 0.08772924, 0.9640065)
+bones/11/rotation = Quaternion(-0.3270168, -0.0020098237, 0.0029005317, 0.94501203)
 bones/12/position = Vector3(0.6497148, 1.6020517, 0.4192155)
-bones/12/rotation = Quaternion(0.19636078, -0.34309983, -0.45472866, 0.7980895)
-bones/13/rotation = Quaternion(0.7731139, 0.6332112, -0.023551147, -0.027999407)
+bones/12/rotation = Quaternion(0.02606348, -0.064390436, -0.29568326, 0.95275706)
+bones/13/rotation = Quaternion(0.92395216, 0.3751728, 0.07243157, -0.017650837)
 bones/14/position = Vector3(0.4811063, -0.25080472, -0.48098624)
 bones/15/position = Vector3(0.4811063, -0.2506896, 0.48144725)
 bones/16/position = Vector3(-0.6497148, 1.6020517, 0.4192155)
-bones/16/rotation = Quaternion(0.1963642, 0.34310612, 0.45473152, 0.7980843)
-bones/17/rotation = Quaternion(0.77310693, -0.63321954, 0.023552192, -0.028001241)
+bones/16/rotation = Quaternion(0.026063498, 0.06439043, 0.2956831, 0.95275706)
+bones/17/rotation = Quaternion(0.92395216, -0.37517273, -0.0724316, -0.017650843)
 bones/18/position = Vector3(-0.4811063, -0.2508047, -0.48098627)
 bones/19/position = Vector3(-0.4811063, -0.25068957, 0.48144722)
 
-[node name="Head" parent="Crab01/Skeleton3D" index="0" unique_id=1561412319]
-transform = Transform3D(0.99078226, 0.016674716, 0.13443413, -0.02692299, -0.9483589, 0.31605402, 0.13276193, -0.31676006, -0.9391683, 0.11434539, 2.6438875, -2.8801076)
+[node name="Head" parent="Crab01/Skeleton3D" index="0" unique_id=1662629385]
+transform = Transform3D(0.99322957, 0.08737678, 0.076552, 0.018643646, -0.77033335, 0.6373685, 0.11466179, -0.63162607, -0.7667469, 0.10446991, 2.6886415, -2.8838687)
 
 [node name="CollisionCylinder" type="CollisionShape3D" parent="." unique_id=1604721726]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.077344, 1.4901161e-08)

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b2tkdd70043p5"]
 
-[ext_resource type="PackedScene" uid="uid://yhvitbq2vfhw" path="res://assets/models/Crate01.gltf" id="1_11vge"]
+[ext_resource type="PackedScene" uid="uid://pyputcgpqjf" path="res://assets/models/Crate01.gltf" id="1_11vge"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4qy43"]
 

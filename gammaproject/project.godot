@@ -18,12 +18,12 @@ config/name="GammaProject"
 run/main_scene="uid://b0pi1p7vaslco"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 run/flush_stdout_on_print.debug=false
+run/max_fps=240
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/stretch_mode=0
 boot_splash/use_filter=false
-boot_splash/image="uid://dpr6bi3f56fj1"
-config/icon="uid://ct17f02e6kuca"
-boot_splash/minimum_display_time=1800
+boot_splash/image="uid://bs8h0boqpr2pi"
+config/icon="uid://brs2i576a6t8l"
 
 [autoload]
 
@@ -32,6 +32,7 @@ Main="*res://src/Main.cs"
 [debug]
 
 settings/stdout/print_fps=true
+settings/stdout/verbose_stdout=true
 
 [display]
 
@@ -44,6 +45,7 @@ window/size/window_height_override=768
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 window/vsync/vsync_mode=0
+mouse_cursor/custom_image="uid://8043cilq0v2x"
 
 [dotnet]
 
@@ -12561,6 +12563,7 @@ lights_and_shadows/positional_shadow/atlas_16_bits=false
 shading/overrides/force_lambert_over_burley=true
 textures/default_filters/anisotropic_filtering_level=0
 scaling_3d/mode=5
+scaling_3d/mode.macos=5
 textures/decals/filter=0
 textures/light_projectors/filter=0
 lights_and_shadows/positional_shadow/atlas_size=6144

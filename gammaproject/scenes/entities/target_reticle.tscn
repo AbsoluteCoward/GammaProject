@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://dy2ca6d1emxwm"]
 
-[ext_resource type="Texture2D" uid="uid://b46uqcjeu8xui" path="res://assets/textures/ICO_TARGETRETICLE_SPRITESHEET.png" id="1_wufyg"]
-[ext_resource type="Texture2D" uid="uid://bq3kp7kd6er37" path="res://assets/textures/ICO_TARGETRETICLEARROW.png" id="2_ohsbu"]
+[ext_resource type="Texture2D" uid="uid://0x66cxhywgab" path="res://assets/textures/ICO_TARGETRETICLE_SPRITESHEET.png" id="1_wufyg"]
+[ext_resource type="Texture2D" uid="uid://cmqde8ic2id3s" path="res://assets/textures/ICO_TARGETRETICLEARROW.png" id="2_ohsbu"]
 
 [node name="TargetReticle" type="Node3D" unique_id=1692301948]
 metadata/Type = "DungeonExit"
 
 [node name="OnScreenReticle" type="Sprite2D" parent="." unique_id=556172695]
-scale = Vector2(0.1, 0.1)
+scale = Vector2(0.15, 0.15)
 texture = ExtResource("1_wufyg")
 hframes = 6
 vframes = 4

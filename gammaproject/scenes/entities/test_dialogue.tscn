@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://5mkchlnk6u3w"]
 
-[ext_resource type="Texture2D" uid="uid://d48pd0oi0rta" path="res://assets/textures/CHR_SLINK_FABRIC.jpg" id="1_d0wjy"]
-[ext_resource type="FontFile" uid="uid://xhdxc8yfkes2" path="res://assets/fonts/patheticbit.ttf" id="2_utrky"]
+[ext_resource type="Texture2D" uid="uid://cuf6as2osx6oq" path="res://assets/textures/CHR_SLINK_FABRIC.jpg" id="1_d0wjy"]
+[ext_resource type="FontFile" uid="uid://w36o8cm113" path="res://assets/fonts/patheticbit.ttf" id="2_utrky"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_utrky"]
 albedo_texture = ExtResource("1_d0wjy")

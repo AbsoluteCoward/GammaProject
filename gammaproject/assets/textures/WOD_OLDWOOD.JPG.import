@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dspk6meoxds5c"
-path.s3tc="res://.godot/imported/WOD_OLDWOOD.JPG-6cb47386709511ebb558ecf3e0df37e3.s3tc.ctex"
+uid="uid://c2gykgn5gn51a"
+path.s3tc="res://.godot/imported/WOD_OLDWOOD.jpg-108433405f0f56c1e5e93e732f29a176.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/WOD_OLDWOOD.JPG"
-dest_files=["res://.godot/imported/WOD_OLDWOOD.JPG-6cb47386709511ebb558ecf3e0df37e3.s3tc.ctex"]
+source_file="res://assets/textures/WOD_OLDWOOD.jpg"
+dest_files=["res://.godot/imported/WOD_OLDWOOD.jpg-108433405f0f56c1e5e93e732f29a176.s3tc.ctex"]
 
 [params]
 

@@ -1,8 +1,8 @@
-[gd_scene load_steps=12 format=4 uid="uid://cvgp5f0d7udpo"]
+[gd_scene format=4 uid="uid://cvgp5f0d7udpo"]
 
-[ext_resource type="Texture2D" uid="uid://dtxhwhugfombi" path="res://assets/textures/MET_OLDDIRTYMETAL_SEAMLESS.jpg" id="1_x1fop"]
-[ext_resource type="Texture2D" uid="uid://eoo80y33iknv" path="res://assets/textures/MET_DARKIRON.jpg" id="2_e8cd0"]
-[ext_resource type="Texture2D" uid="uid://ctlrgpm8kwnty" path="res://assets/textures/MET_METALWEATHERED01.jpg" id="3_eyhdg"]
+[ext_resource type="Texture2D" uid="uid://cd6utogwxqpkd" path="res://assets/textures/MET_OLDDIRTYMETAL_SEAMLESS.jpg" id="1_x1fop"]
+[ext_resource type="Texture2D" uid="uid://dn4lvyd0wsd1n" path="res://assets/textures/MET_DARKIRON.jpg" id="2_e8cd0"]
+[ext_resource type="Texture2D" uid="uid://k5jr57x3exf5" path="res://assets/textures/MET_METALWEATHERED01.jpg" id="3_eyhdg"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nmutt"]
 resource_name = "metal2"
@@ -137,21 +137,21 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_klm4j")
 
-[node name="DungeonExit" type="Node3D"]
+[node name="DungeonExit" type="Node3D" unique_id=312063585]
 metadata/Type = "DungeonExit"
 
-[node name="Ladder1" type="Node3D" parent="."]
+[node name="Ladder1" type="Node3D" parent="." unique_id=263207507]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.1, 0)
 
-[node name="Cylinder" type="MeshInstance3D" parent="Ladder1"]
+[node name="Cylinder" type="MeshInstance3D" parent="Ladder1" unique_id=673194154]
 mesh = SubResource("ArrayMesh_3df5i")
 skeleton = NodePath("")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Ladder1/Cylinder"]
+[node name="StaticBody3D" type="StaticBody3D" parent="Ladder1/Cylinder" unique_id=141332396]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ladder1/Cylinder/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ladder1/Cylinder/StaticBody3D" unique_id=1123678731]
 shape = SubResource("ConvexPolygonShape3D_x1fop")
 
-[node name="Cylinder_001" type="MeshInstance3D" parent="Ladder1"]
+[node name="Cylinder_001" type="MeshInstance3D" parent="Ladder1" unique_id=156391073]
 mesh = SubResource("ArrayMesh_pq8gh")
 skeleton = NodePath("")

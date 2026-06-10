@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://buwg0exmp75n"]
 
-[ext_resource type="PackedScene" uid="uid://drb8dgc5mkqy" path="res://assets/models/Vial.glb" id="1_fhbco"]
+[ext_resource type="PackedScene" uid="uid://x7jwb8ue3q2h" path="res://assets/models/Vial.glb" id="1_fhbco"]
 
 [node name="Reward" type="Node3D" unique_id=1138498779]
 

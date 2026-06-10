@@ -1,5 +1,0 @@
-[gd_scene format=3 uid="uid://b60elc8k7ygkg"]
-
-[ext_resource type="PackedScene" uid="uid://cr00aqfkdcfr8" path="res://assets/Slink.gltf" id="1_7ubw2"]
-
-[node name="Slink" unique_id=446956551 instance=ExtResource("1_7ubw2")]

@@ -1,15 +1,12 @@
 [gd_scene format=3 uid="uid://cm5wj3kb30762"]
 
-[ext_resource type="PackedScene" uid="uid://4j60w3ewvqan" path="res://assets/models/SlinkRocket.glb" id="1_rgp5e"]
+[ext_resource type="PackedScene" uid="uid://jsgva18qanct" path="res://assets/models/SlinkRocket.glb" id="1_rgp5e"]
 
 [node name="SlinkRocket" type="Node3D" unique_id=1333663311]
 
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=844085369]
 
-[node name="SlinkRocket" parent="." unique_id=535473470 instance=ExtResource("1_rgp5e")]
-transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0, -0.3)
-
-[node name="Rocket" parent="SlinkRocket" index="0" unique_id=496913580]
-cast_shadow = 0
+[node name="SlinkRocket" parent="." unique_id=1784949119 instance=ExtResource("1_rgp5e")]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, -0.3)
 
 [editable path="SlinkRocket"]

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://2rwuu2sj14ik"]
 
-[ext_resource type="FontFile" uid="uid://xhdxc8yfkes2" path="res://assets/fonts/patheticbit.ttf" id="1_8hi1k"]
-[ext_resource type="Texture2D" uid="uid://dy343m1re8l67" path="res://assets/textures/FAB_HAMMERED01.JPG" id="1_hvmky"]
+[ext_resource type="FontFile" uid="uid://w36o8cm113" path="res://assets/fonts/patheticbit.ttf" id="1_8hi1k"]
+[ext_resource type="Texture2D" uid="uid://7ybvm0ux5fj3" path="res://assets/textures/FAB_HAMMERED01.JPG" id="1_hvmky"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i3mph"]
 albedo_texture = ExtResource("1_hvmky")

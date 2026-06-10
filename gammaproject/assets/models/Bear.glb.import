@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dihfgxpbiuvpq"
-path="res://.godot/imported/Bear.gltf-8c7fdcb67796ecbbaec3553c8e1fd9cb.scn"
+uid="uid://gakd1g4fbxv2"
+path="res://.godot/imported/Bear.glb-f8a25d0ffa13ca70ad57aae0d5362e9f.scn"
 
 [deps]
 
-source_file="res://assets/models/Bear.gltf"
-dest_files=["res://.godot/imported/Bear.gltf-8c7fdcb67796ecbbaec3553c8e1fd9cb.scn"]
+source_file="res://assets/models/Bear.glb"
+dest_files=["res://.godot/imported/Bear.glb-f8a25d0ffa13ca70ad57aae0d5362e9f.scn"]
 
 [params]
 

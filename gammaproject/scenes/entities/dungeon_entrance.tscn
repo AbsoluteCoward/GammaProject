@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=4 uid="uid://qqrivbdx01fj"]
+[gd_scene format=4 uid="uid://qqrivbdx01fj"]
 
-[ext_resource type="Texture2D" uid="uid://brpo7en11np1b" path="res://assets/textures/MET_METALBEDRUSTWHITE.jpg" id="1_aouuj"]
+[ext_resource type="Texture2D" uid="uid://nf4t336fo1pq" path="res://assets/textures/MET_METALBEDRUSTWHITE.jpg" id="1_aouuj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cesvh"]
 resource_name = "Material"
@@ -46,19 +46,19 @@ shadow_mesh = SubResource("ArrayMesh_n51bd")
 [sub_resource type="BoxShape3D" id="BoxShape3D_frn54"]
 size = Vector3(2, 1, 4)
 
-[node name="DungeonEntrance" type="Node3D"]
+[node name="DungeonEntrance" type="Node3D" unique_id=158757037]
 metadata/Type = "DungeonEntrance"
 
-[node name="bed" type="Node3D" parent="."]
+[node name="bed" type="Node3D" parent="." unique_id=528895746]
 transform = Transform3D(0.845, 0, 0, 0, 0.845, 0, 0, 0, 0.845, 0, 0, 0)
 
-[node name="Cube" type="MeshInstance3D" parent="bed"]
+[node name="Cube" type="MeshInstance3D" parent="bed" unique_id=530169378]
 transform = Transform3D(1.19023, 0, 0, 0, 1.19023, 0, 0, 0, 1.19023, 0, 0, 0)
 mesh = SubResource("ArrayMesh_wtx1q")
 skeleton = NodePath("")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="bed/Cube"]
+[node name="StaticBody3D" type="StaticBody3D" parent="bed/Cube" unique_id=1453812829]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="bed/Cube/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="bed/Cube/StaticBody3D" unique_id=688068828]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.494386, 0)
 shape = SubResource("BoxShape3D_frn54")

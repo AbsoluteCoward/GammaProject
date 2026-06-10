@@ -1,8 +1,8 @@
-[gd_scene load_steps=16 format=4 uid="uid://bbxkn1att1lyd"]
+[gd_scene format=4 uid="uid://bbxkn1att1lyd"]
 
-[ext_resource type="Texture2D" uid="uid://d1rgykn0bn3hq" path="res://assets/textures/MET_ERODEDSCRATCHMETAL_SEAMLESS.jpg" id="1_15fwp"]
-[ext_resource type="Texture2D" uid="uid://dwqh1qc7k6tw3" path="res://assets/textures/MET_IRONINDUSTRAILPERFORATEGATE02_SEAMLESS.png" id="2_18p8y"]
-[ext_resource type="Texture2D" uid="uid://ctlrgpm8kwnty" path="res://assets/textures/MET_METALWEATHERED01.jpg" id="3_cgasu"]
+[ext_resource type="Texture2D" uid="uid://cawyx0o83u3ei" path="res://assets/textures/MET_ERODEDSCRATCHMETAL_SEAMLESS.jpg" id="1_15fwp"]
+[ext_resource type="Texture2D" uid="uid://ba25e8bup7f37" path="res://assets/textures/MET_IRONINDUSTRAILPERFORATEGATE02_SEAMLESS.png" id="2_18p8y"]
+[ext_resource type="Texture2D" uid="uid://k5jr57x3exf5" path="res://assets/textures/MET_METALWEATHERED01.jpg" id="3_cgasu"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_15fwp"]
 shading_mode = 0
@@ -155,27 +155,27 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_y1g6q")
 
-[node name="PrisonDoor" type="StaticBody3D"]
+[node name="PrisonDoor" type="StaticBody3D" unique_id=468283942]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 collision_layer = 3
 
-[node name="Light" type="MeshInstance3D" parent="."]
+[node name="Light" type="MeshInstance3D" parent="." unique_id=1409532718]
 transform = Transform3D(1, -4.37114e-08, 4.37114e-08, 4.37114e-08, -4.37114e-08, -1, 4.37114e-08, 1, -4.37114e-08, 8.74228e-09, 2.3, -0.2)
 material_override = SubResource("StandardMaterial3D_15fwp")
 mesh = SubResource("PlaneMesh_15fwp")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1994039608]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85, 0)
 shape = SubResource("BoxShape3D_fjhhs")
 
-[node name="Rim" type="MeshInstance3D" parent="."]
+[node name="Rim" type="MeshInstance3D" parent="." unique_id=897888810]
 mesh = SubResource("ArrayMesh_82xa3")
 skeleton = NodePath("")
 
-[node name="Door" type="MeshInstance3D" parent="."]
+[node name="Door" type="MeshInstance3D" parent="." unique_id=1526359628]
 mesh = SubResource("ArrayMesh_51wql")
 skeleton = NodePath("")
 
-[node name="Handle" type="MeshInstance3D" parent="."]
+[node name="Handle" type="MeshInstance3D" parent="." unique_id=2125124603]
 mesh = SubResource("ArrayMesh_bd63i")
 skeleton = NodePath("")
