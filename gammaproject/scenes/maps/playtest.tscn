@@ -150,6 +150,13 @@ light_energy = 2.0
 shadow_enabled = true
 spot_range = 10.0
 
+[node name="SpotLight3D3" type="SpotLight3D" parent="Environment" unique_id=449831652]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 34, 14.5, -16)
+light_color = Color(0, 1, 1, 1)
+light_energy = 16.0
+spot_range = 26.0
+spot_angle = 66.7466
+
 [node name="SpotLight3D2" type="SpotLight3D" parent="Environment" unique_id=1592687840]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -12, -2, -23)
 light_energy = 10.0
@@ -365,10 +372,10 @@ use_collision = true
 size = Vector3(1, 9, 1)
 
 [node name="CSGBox3D16" type="CSGBox3D" parent="Geometry" unique_id=1246737046]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.5, 7.5, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.5, 8, -16)
 material_override = ExtResource("5_4vflo")
 use_collision = true
-size = Vector3(12, 21, 1)
+size = Vector3(12, 16.2, 16)
 
 [node name="CSGBox3D18" type="CSGBox3D" parent="Geometry" unique_id=214016977]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 7, 12)
@@ -610,6 +617,15 @@ outer_radius = 6.0
 sides = 24
 ring_sides = 12
 
+[node name="CSGTorus3D4" type="CSGTorus3D" parent="Geometry" unique_id=1546362411]
+transform = Transform3D(5.9604645e-08, 3.0908613e-08, -1.0000001, 1.0000001, -5.3535306e-08, 8.940697e-08, -5.353533e-08, -0.99999994, -3.0908666e-08, -7, 33.2, -33)
+material_override = ExtResource("13_h1ish")
+use_collision = true
+inner_radius = 2.0
+outer_radius = 6.0
+sides = 24
+ring_sides = 12
+
 [node name="CSGTorus3D3" type="CSGTorus3D" parent="Geometry" unique_id=626222440]
 transform = Transform3D(-5.353533e-08, -0.99999994, 1.2802726e-08, 1.0000001, -5.3535306e-08, 8.940696e-08, -5.9604627e-08, 1.2802772e-08, 1.0000001, -11, 20.2, 20)
 material_override = ExtResource("13_h1ish")
@@ -764,7 +780,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 45)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 45)
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("4_8d6xy")]
-transform = Transform3D(1.3113461e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113461e-07, -2, 0, -32)
+transform = Transform3D(1.3113461e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113461e-07, -15, 0, -17)
 
 [node name="PlayerCamera" parent="Entities" unique_id=29831598 instance=ExtResource("5_amgw8")]
 transform = Transform3D(-1, 4.8067232e-08, -7.30225e-08, 1.7763567e-15, 0.83527994, 0.549825, 8.7422784e-08, 0.549825, -0.83527994, -5.200001, 10.4183, 11.60695)
@@ -804,20 +820,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 7, 11)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9000001, 3, 18.2)
 
 [node name="Skeleton3D" parent="Entities/SurveillanceScanner01/SurveillanceScanner01" parent_id_path=PackedInt32Array(1505433102, 1690118326) index="0" unique_id=1659388111]
-bones/0/position = Vector3(0, -0.014681823, 0)
-bones/1/rotation = Quaternion(0, -0.59496385, 0, 0.80375254)
+bones/0/position = Vector3(0, 0.044989888, 0)
+bones/1/rotation = Quaternion(0, -0.3164618, 0, 0.94860524)
 
 [node name="Top" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="0" unique_id=152551031]
-transform = Transform3D(0.29203612, 0, -0.9564073, 0, 1, 0, 0.9564073, 0, 0.29203612, 0, 0.0853182, 0)
+transform = Transform3D(0.79970384, 0, -0.60039467, 0, 1, 0, 0.60039467, 0, 0.79970384, 0, 0.14498991, 0)
 
 [node name="Lamp" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="1" unique_id=404657645]
-transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.55468184, -0.010000005)
+transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.49501014, -0.010000005)
 
 [node name="SpotLight3D" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D/Lamp" index="0" unique_id=1680231869]
 shadow_bias = 0.08
 
 [node name="Base" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="2" unique_id=804744811]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.014681823, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.044989888, 0)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("18_rrwtf")]
 
