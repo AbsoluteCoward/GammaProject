@@ -86,6 +86,18 @@ size = Vector3(4, 3, 4)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_7ckv1"]
 data = PackedVector3Array(-2, 1.5, 2, 2, 1.5, 2, -2, -1.5, 2, 2, 1.5, 2, 2, -1.5, 2, -2, -1.5, 2, 2, 1.5, -2, -2, 1.5, -2, 2, -1.5, -2, -2, 1.5, -2, -2, -1.5, -2, 2, -1.5, -2, 2, 1.5, 2, 2, 1.5, -2, 2, -1.5, 2, 2, 1.5, -2, 2, -1.5, -2, 2, -1.5, 2, -2, 1.5, -2, -2, 1.5, 2, -2, -1.5, -2, -2, 1.5, 2, -2, -1.5, 2, -2, -1.5, -2, 2, 1.5, 2, -2, 1.5, 2, 2, 1.5, -2, -2, 1.5, 2, -2, 1.5, -2, 2, 1.5, -2, -2, -1.5, 2, 2, -1.5, 2, -2, -1.5, -2, 2, -1.5, 2, 2, -1.5, -2, -2, -1.5, -2)
 
+[sub_resource type="BoxMesh" id="BoxMesh_qtude"]
+size = Vector3(4, 3.5, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qtude"]
+size = Vector3(4, 3.5, 4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7ckv1"]
+size = Vector3(4, 2.5, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gwp3y"]
+size = Vector3(4, 2.5, 4)
+
 [sub_resource type="BoxMesh" id="BoxMesh_fqogs"]
 size = Vector3(4, 1.5, 4)
 
@@ -209,7 +221,7 @@ mesh = SubResource("BoxMesh_jyhmb")
 shape = SubResource("ConcavePolygonShape3D_fqogs")
 
 [node name="MeshInstance3D5" type="MeshInstance3D" parent="Geometry/playtest" unique_id=643509521]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2, -46)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2, -54)
 mesh = SubResource("BoxMesh_22q3i")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Geometry/playtest/MeshInstance3D5" unique_id=1062149426]
@@ -218,13 +230,31 @@ mesh = SubResource("BoxMesh_22q3i")
 shape = SubResource("ConcavePolygonShape3D_drkh7")
 
 [node name="MeshInstance3D6" type="MeshInstance3D" parent="Geometry/playtest" unique_id=2055932646]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.5, -42)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.5, -46)
 mesh = SubResource("BoxMesh_drkh7")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Geometry/playtest/MeshInstance3D6" unique_id=2116976723]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/playtest/MeshInstance3D6/StaticBody3D" unique_id=178562773]
 shape = SubResource("ConcavePolygonShape3D_7ckv1")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="Geometry/playtest" unique_id=2146354500]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.75, -50)
+mesh = SubResource("BoxMesh_qtude")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Geometry/playtest/MeshInstance3D7" unique_id=88584867]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/playtest/MeshInstance3D7/StaticBody3D" unique_id=1777913851]
+shape = SubResource("BoxShape3D_qtude")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="Geometry/playtest" unique_id=1142306263]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.25, -42)
+mesh = SubResource("BoxMesh_7ckv1")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Geometry/playtest/MeshInstance3D8" unique_id=388728866]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/playtest/MeshInstance3D8/StaticBody3D" unique_id=201207428]
+shape = SubResource("BoxShape3D_gwp3y")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="Geometry/playtest" unique_id=900275666]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.75, -34)
@@ -774,20 +804,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 7, 11)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9000001, 3, 18.2)
 
 [node name="Skeleton3D" parent="Entities/SurveillanceScanner01/SurveillanceScanner01" parent_id_path=PackedInt32Array(1505433102, 1690118326) index="0" unique_id=1659388111]
-bones/0/position = Vector3(0, -0.009809739, 0)
-bones/1/rotation = Quaternion(0, -0.36730042, 0, 0.93010247)
+bones/0/position = Vector3(0, -0.014681823, 0)
+bones/1/rotation = Quaternion(0, -0.59496385, 0, 0.80375254)
 
 [node name="Top" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="0" unique_id=152551031]
-transform = Transform3D(0.73018086, 0, -0.6832539, 0, 1, 0, 0.6832539, 0, 0.73018086, 0, 0.090190284, 0)
+transform = Transform3D(0.29203612, 0, -0.9564073, 0, 1, 0, 0.9564073, 0, 0.29203612, 0, 0.0853182, 0)
 
 [node name="Lamp" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="1" unique_id=404657645]
-transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.54980975, -0.010000005)
+transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.55468184, -0.010000005)
 
 [node name="SpotLight3D" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D/Lamp" index="0" unique_id=1680231869]
 shadow_bias = 0.08
 
 [node name="Base" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="2" unique_id=804744811]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.009809739, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.014681823, 0)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("18_rrwtf")]
 
