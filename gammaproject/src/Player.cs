@@ -14,7 +14,7 @@ namespace Gamma {
             public Node3D[] targets;
             public PlaybackPositionData[] animationPlaybackBlocks;
             public RayCast3D groundRay;
-            public RayCast3D ledgeRay;
+            public ShapeCast3D ledgeRay;
             public Vector3 wishDirection;
             public Vector3 targetPosition;
             public Vector3 targetCorrection;
@@ -47,7 +47,7 @@ namespace Gamma {
             player.animationTree = inputPlayerNode.GetNode<AnimationTree>("AnimationTree");
             player.animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
             player.animationState = (AnimationNodeStateMachinePlayback)player.animationTree.Get("parameters/playback");
-            player.ledgeRay = player.node.GetNode<RayCast3D>("LedgeRay");
+            player.ledgeRay = player.node.GetNode<ShapeCast3D>("LedgeRay");
             player.groundRay = player.node.GetNode<RayCast3D>("GroundRay");
             player.skeleton = inputPlayerNode.GetNode<Skeleton3D>("Slink/Skeleton3D");
             for (int i = 0; i < player.skeleton.GetBoneCount(); i++) {
@@ -75,7 +75,6 @@ namespace Gamma {
             GD.Print("Player Initialized");
         }
         public void PlayerCameraInitialize(Camera3D inputCamera) {
-            currentCamera = inputCamera;
             playerCamera.node = inputCamera;
             playerCamera.WallRayCast = inputCamera.GetChild<RayCast3D>(0);
             playerCamera.WallRayCast.TopLevel = true;
@@ -591,7 +590,6 @@ namespace Gamma {
                         PlaySoundUI(rollSFX, 0.05f, 1f, true);
                         break;
                     }
-                    if (!player.isOnGround) { player.animationState.Start("Fall", true); }
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition < 0.5f) {
                         RotateTowards(player.wishDirection, player.node, 0.1f);
                         player.node.Velocity = playerForward * 8f;
@@ -608,6 +606,7 @@ namespace Gamma {
                             targetAnimation = "Walk";
                         }
                     }
+                    if (!player.isOnGround) { targetAnimation = "Fall"; }
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
                     break;
                 case "Fall":
@@ -732,7 +731,6 @@ namespace Gamma {
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }
-            currentCamera = inputCamera.node;
             if (Input.IsActionJustPressed("cameraRight")) {
                 inputCamera.targetAngle -= 90f;
             } else if (Input.IsActionJustPressed("cameraLeft")) {
