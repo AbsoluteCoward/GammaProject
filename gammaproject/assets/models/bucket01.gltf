@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.4.56",
+		"generator":"Khronos glTF Blender I/O v5.1.20",
 		"version":"2.0"
 	},
 	"scene":0,
@@ -37,19 +37,6 @@
 			"name":"Plane.001"
 		}
 	],
-	"materials":[
-		{
-			"doubleSided":true,
-			"name":"Material",
-			"pbrMetallicRoughness":{
-				"baseColorTexture":{
-					"index":0
-				},
-				"metallicFactor":0.9090908765792847,
-				"roughnessFactor":0.75
-			}
-		}
-	],
 	"meshes":[
 		{
 			"name":"Cube",
@@ -60,8 +47,7 @@
 						"NORMAL":1,
 						"TEXCOORD_0":2
 					},
-					"indices":3,
-					"material":0
+					"indices":3
 				}
 			]
 		},
@@ -74,23 +60,9 @@
 						"NORMAL":5,
 						"TEXCOORD_0":6
 					},
-					"indices":7,
-					"material":0
+					"indices":7
 				}
 			]
-		}
-	],
-	"textures":[
-		{
-			"sampler":0,
-			"source":0
-		}
-	],
-	"images":[
-		{
-			"mimeType":"image/jpeg",
-			"name":"MET_METALWEATHERED01",
-			"uri":"../textures/MET_METALWEATHERED01.jpg"
 		}
 	],
 	"accessors":[
@@ -131,7 +103,7 @@
 		{
 			"bufferView":4,
 			"componentType":5126,
-			"count":44,
+			"count":22,
 			"max":[
 				0.19009673595428467,
 				0.3757611811161041,
@@ -140,26 +112,26 @@
 			"min":[
 				-0.19009673595428467,
 				0.18939334154129028,
-				-0.0139274587854743
+				-0.013927455991506577
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":5,
 			"componentType":5126,
-			"count":44,
+			"count":22,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":6,
 			"componentType":5126,
-			"count":44,
+			"count":22,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":7,
 			"componentType":5123,
-			"count":252,
+			"count":60,
 			"type":"SCALAR"
 		}
 	],
@@ -190,38 +162,32 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":528,
+			"byteLength":264,
 			"byteOffset":3776,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":528,
+			"byteLength":264,
+			"byteOffset":4040,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":176,
 			"byteOffset":4304,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":352,
-			"byteOffset":4832,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":504,
-			"byteOffset":5184,
+			"byteLength":120,
+			"byteOffset":4480,
 			"target":34963
-		}
-	],
-	"samplers":[
-		{
-			"magFilter":9729,
-			"minFilter":9987
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":5688,
+			"byteLength":4600,
 			"uri":"bucket01.bin"
 		}
 	]
