@@ -18,15 +18,12 @@ namespace Gamma {
             public Vector3 wishDirection;
             public Vector3 targetPosition;
             public Vector3 targetCorrection;
-            public float moveSpeed;
             public float turnAnticipation;
-            public float maxTeleportDistance;
             public int targetCount;
             public int maxTargetCount;
             public int currentTargetIndex;
             public bool isOnGround;
             public static float maxDistance = 1000f;
-            public static int meatCount = 0;
             public static int chestBoneIndex;
             public static int headBoneIndex;
             public static int miscObjectBoneIndex;
@@ -41,11 +38,6 @@ namespace Gamma {
             public float angle;
             public float maxLerpDistance;
             public float rotationLerpSpeed;
-        }
-        public struct ClimbData {
-            public float climbHeight;
-            public float climbLateralDistance;
-            public float footOnGoundTimeStamp;
         }
         public void PlayerInitialize(CharacterBody3D inputPlayerNode) {
             player.node = inputPlayerNode;
@@ -72,7 +64,6 @@ namespace Gamma {
             player.wishDirection = Vector3.Zero;
             player.targetCount = 0;
             player.maxTargetCount = DEFAULT_PLAYER_MAX_TARGET_COUNT;
-            player.moveSpeed = 8.0f;
             player.turnAnticipation = 0f;
             for (int i = 0; i < player.animationPlaybackBlocks.Length; i++) {
                 player.animationPlaybackBlocks[i].previousPlaybackPosition = 0f;
@@ -185,11 +176,18 @@ namespace Gamma {
                 float distanceToTarget = (player.targetPosition - player.node.GlobalPosition).Length();
                 GD.Print("Distance to target: " + distanceToTarget);
                 switch (distanceToTarget) {
-                    case > 2f:
+                    case < 1.5f:
+                        inputTargetAnimation = "Climb01";
+                        break;
+                    case < 2.5f:
                         inputTargetAnimation = "Climb02";
                         break;
-                    case < 2f:
+                    case < 3.5f:
+                        inputTargetAnimation = "Climb03";
+                        break;
+                    default:
                         inputTargetAnimation = "Climb01";
+                        GD.Print("Climb distance too far");
                         break;
                 }
                 inputShouldMoveAndSlide = false;
@@ -219,6 +217,7 @@ namespace Gamma {
                 ) *
                 Y_FLAT;
             Vector3 airControlDirection = player.wishDirection.Length() > 0.1f ? player.wishDirection : player.node.Velocity.Normalized();
+            const float airControlSpeed = 8f;
             bool action3Pressed = Input.IsActionPressed("action3");
             bool action3JustReleased = Input.IsActionJustReleased("action3");
             bool hasMovementInput = player.wishDirection.Length() > 0.1f;
@@ -417,21 +416,27 @@ namespace Gamma {
                     }
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     break;
+                case "Climb03":
                 case "Climb02":
                 case "Climb01":
                     float distanceUp = 0f;
                     float distanceForward = 0f;
                     float landingTimeStamp = 0f;
                     switch (player.animationState.GetCurrentNode()) {
-                        case "Climb02":
+                        case "Climb03":
                             distanceUp = 2f;
                             distanceForward = 0.3f;
-                            landingTimeStamp = 0.6f;
+                            landingTimeStamp = 0.55f;
                             break;
-                        case "Climb01":
+                        case "Climb02":
                             distanceUp = 1f;
                             distanceForward = 0.3f;
                             landingTimeStamp = 0.55f;
+                            break;
+                        case "Climb01":
+                            distanceUp = 1f;
+                            distanceForward = 0.6f;
+                            landingTimeStamp = 0.3f;
                             break;
                     }
                     if (distanceUp == 0f || distanceForward == 0f || landingTimeStamp == 0f) { GD.PrintErr("Leap case: How"); }
@@ -524,9 +529,9 @@ namespace Gamma {
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
                     if (!player.isOnGround) {
                         player.node.Velocity = new Vector3(
-                            Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.01f),
+                            Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * airControlSpeed, 0.01f),
                             player.node.Velocity.Y,
-                            Mathf.Lerp(player.node.Velocity.Z, airControlDirection.Z * player.moveSpeed, 0.01f)
+                            Mathf.Lerp(player.node.Velocity.Z, airControlDirection.Z * airControlSpeed, 0.01f)
                         );
                     }
                     break;
@@ -610,7 +615,6 @@ namespace Gamma {
                         if ((player.node.Velocity * Y_FLAT).Length() > 6f) {
                             player.animationState.Start("Roll", true);
                         } else {
-                            player.animationState.Start("FallToIdle", true);
                             float impactSpeed = -player.node.Velocity.Y;
                             float animationScale = Mathf.Clamp(impactSpeed / 12.0f, 0.5f, 2.0f);
                             float animationSpeed = Mathf.Clamp(2.0f - (impactSpeed / 10.0f), 0.5f, 2f);
@@ -618,13 +622,14 @@ namespace Gamma {
                             player.animationTree.Set("parameters/FallToIdle/FallToIdleTimeSeek/seek_request", 0.0f);
                             player.animationTree.Set("parameters/FallToIdle/FallToIdleBlend/blend_amount", animationScale);
                             player.animationTree.Set("parameters/FallToIdle/FallToIdleTimeScale/scale", animationSpeed);
+                            player.animationState.Start("FallToIdle", true);
                         }
                     }
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
                     player.node.Velocity = new Vector3(
-                        Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * player.moveSpeed, 0.02f),
+                        Mathf.Lerp(player.node.Velocity.X, airControlDirection.X * airControlSpeed, 0.02f),
                         player.node.Velocity.Y,
-                        Mathf.Lerp(player.node.Velocity.Z, airControlDirection.Z * player.moveSpeed, 0.02f)
+                        Mathf.Lerp(player.node.Velocity.Z, airControlDirection.Z * airControlSpeed, 0.02f)
                     );
                     break;
                 case "FallToIdle":
