@@ -14,7 +14,7 @@ namespace Gamma {
             public Node3D[] targets;
             public PlaybackPositionData[] animationPlaybackBlocks;
             public RayCast3D groundRay;
-            public ShapeCast3D ledgeRay;
+            public ShapeCast3D ledgeShapeCast;
             public Vector3 wishDirection;
             public Vector3 targetPosition;
             public Vector3 targetCorrection;
@@ -47,7 +47,7 @@ namespace Gamma {
             player.animationTree = inputPlayerNode.GetNode<AnimationTree>("AnimationTree");
             player.animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
             player.animationState = (AnimationNodeStateMachinePlayback)player.animationTree.Get("parameters/playback");
-            player.ledgeRay = player.node.GetNode<ShapeCast3D>("LedgeRay");
+            player.ledgeShapeCast = player.node.GetNode<ShapeCast3D>("LedgeShapeCast");
             player.groundRay = player.node.GetNode<RayCast3D>("GroundRay");
             player.skeleton = inputPlayerNode.GetNode<Skeleton3D>("Slink/Skeleton3D");
             for (int i = 0; i < player.skeleton.GetBoneCount(); i++) {
@@ -71,7 +71,6 @@ namespace Gamma {
             }
             AnimationNodeOneShot fireShotNode = (AnimationNodeOneShot)((AnimationNodeBlendTree)((AnimationNodeStateMachine)player.animationTree.TreeRoot).GetNode("Walk")).GetNode("FireWalkOneShot");
             SetOneShotFilters(true, "shoulder.R", player.skeleton, player.node, fireShotNode); // Godot forces us to do this for some reason or else it will literally forget the filters we set for the oneshot in the editor
-
             GD.Print("Player Initialized");
         }
         public void PlayerCameraInitialize(Camera3D inputCamera) {
@@ -160,9 +159,9 @@ namespace Gamma {
         public bool PlayerClimb(ref string inputTargetAnimation, ref bool inputShouldMoveAndSlide) {
             RaycastWorldHitInfo findLedge = new RaycastWorldHitInfo();
             Vector3 collisionPosition = 
-                (player.node.GetSlideCollision(0).GetPosition() * Y_FLAT - 
-                player.node.GetSlideCollision(0).GetNormal() * 0.2f * Y_FLAT)
-                + player.node.GlobalPosition * XZ_FLAT;
+                player.ledgeShapeCast.GetCollisionPoint(0) * Y_FLAT - 
+                player.ledgeShapeCast.GetCollisionNormal(0) * 0.2f * Y_FLAT + 
+                player.node.GlobalPosition * XZ_FLAT;
             Vector3 rayStart = collisionPosition + Vector3.Up * 3f;
             Vector3 rayEnd = collisionPosition + Vector3.Up * 0.7f;
             if (RaycastWorld(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
@@ -171,10 +170,10 @@ namespace Gamma {
                     findLedge.Position.Y,
                     findLedge.Position.Z
                 );
-                RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 0.6f);
-                float distanceToTarget = (player.targetPosition - player.node.GlobalPosition).Length();
-                GD.Print("Distance to target: " + distanceToTarget);
-                switch (distanceToTarget) {
+                RotateTowards(-player.ledgeShapeCast.GetCollisionNormal(0), player.node, 0.6f);
+                float heightDistanceToTarget = player.targetPosition.Y - player.node.GlobalPosition.Y;
+                GD.Print("Distance to target: " + heightDistanceToTarget);
+                switch (heightDistanceToTarget) {
                     case < 1.5f:
                         inputTargetAnimation = "Climb01";
                         break;
@@ -185,8 +184,7 @@ namespace Gamma {
                         inputTargetAnimation = "Climb03";
                         break;
                     default:
-                        inputTargetAnimation = "Climb01";
-                        GD.Print("Climb distance too far");
+                        GD.PrintErr("Climb distance too far");
                         break;
                 }
                 inputShouldMoveAndSlide = false;
@@ -221,13 +219,15 @@ namespace Gamma {
             bool action3JustReleased = Input.IsActionJustReleased("action3");
             bool hasMovementInput = player.wishDirection.Length() > 0.1f;
             bool shouldMoveAndSlide = true;
+            Vector3 ledgeShapeCastDirection = player.wishDirection.LengthSquared() > ALMOST_ZERO ? player.wishDirection : playerForward;
+            player.ledgeShapeCast.LookAt(player.ledgeShapeCast.GlobalPosition + ledgeShapeCastDirection, Vector3.Up);
             Transform3D orbTarget = player.orb.node.Visible ?
-                player.skeleton.GetBoneGlobalPose(Player.miscObjectBoneIndex) : 
+                player.skeleton.GetBoneGlobalPose(Player.miscObjectBoneIndex) :
                 player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex);
             Vector3 global_whatever = player.skeleton.ToGlobal(orbTarget.Origin);
             player.orb.node.GlobalPosition = player.orb.node.TopLevel ? player.orb.node.GlobalPosition : global_whatever;
-            float distanceToGround = player.groundRay.IsColliding() ? 
-                player.groundRay.GlobalPosition.Y - player.groundRay.GetCollisionPoint().Y  : 
+            float distanceToGround = player.groundRay.IsColliding() ?
+                player.groundRay.GlobalPosition.Y - player.groundRay.GetCollisionPoint().Y  :
                 float.MaxValue;
             bool shouldSnapToGround = distanceToGround <= PLAYER_LEG_LENGTH * 1.5f;
             bool isRayCollidingAtPlayerFeet = distanceToGround <= PLAYER_LEG_LENGTH;
@@ -237,7 +237,7 @@ namespace Gamma {
                 player.node.GlobalPosition = player.node.GlobalPosition.Lerp(TargetPosition, 0.1f + (player.node.Velocity.Length() * globalPhysicsDeltaFloat));
             }
             Vector3 rootPosition = player.animationTree.GetRootMotionPosition();
-            Vector3 rootVelocity = (player.node.Transform.Basis * rootPosition) / globalPhysicsDeltaFloat;
+            Vector3 rootVelocity = player.node.Transform.Basis * rootPosition / globalPhysicsDeltaFloat;
             string targetAnimation = player.animationState.GetCurrentNode();
             bool isAnimationSameAsPrevious = player.animationState.GetCurrentNode() == previousAnimationName;
             bool isInTransition = player.animationState.GetTravelPath().Count > 0;
@@ -389,8 +389,11 @@ namespace Gamma {
                     if (!player.isOnGround) {
                         targetAnimation = "RunJump01";
                     }
-                    if (player.node.IsOnWall()) {
-                        if (PlayerClimb(ref targetAnimation, ref shouldMoveAndSlide)) { break; }
+                    if (player.ledgeShapeCast.IsColliding()) {
+                        bool shouldAttemptClimb = (player.ledgeShapeCast.GetCollisionPoint(0) - player.ledgeShapeCast.GlobalPosition).Length() < 2;
+                        if (shouldAttemptClimb) {
+                            if (PlayerClimb(ref targetAnimation, ref shouldMoveAndSlide)) { break; }
+                        }
                     }
                     if (
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[0].previousPlaybackPosition, player.animationPlaybackBlocks[0].currentPlaybackPosition, 0.14f) ||
@@ -433,30 +436,28 @@ namespace Gamma {
                             landingTimeStamp = 0.55f;
                             break;
                         case "Climb01":
-                            distanceUp = 1f;
-                            distanceForward = 0.6f;
-                            landingTimeStamp = 0.3f;
+                            distanceUp = 0.5f;
+                            distanceForward = 0.55f;
+                            landingTimeStamp = 0.33f;
                             break;
                     }
-                    if (distanceUp == 0f || distanceForward == 0f || landingTimeStamp == 0f) { GD.PrintErr("Leap case: How"); }
+                    if (distanceUp == 0f && distanceForward == 0f && landingTimeStamp == 0f) { GD.PrintErr("Leap case: How"); }
                     float animationLength = (float)player.animationTree.Get("parameters/" + player.animationState.GetCurrentNode() + "/current_length");
                     if (!isAnimationSameAsPrevious) {
                         PlayerSetCollision(false);
                         player.targetCorrection = player.targetPosition - player.node.GlobalPosition;
                         player.targetCorrection.Y -= distanceUp;
-                        player.targetCorrection = new Vector3(
-                            player.targetCorrection.Normalized().X * distanceForward,
-                            player.targetCorrection.Y,
-                            player.targetCorrection.Normalized().Z * distanceForward
-                        );
                         break;
                     }
                     float maxDistanceToGround = 1.5f;
                     if (player.animationPlaybackBlocks[0].currentPlaybackPosition < landingTimeStamp && player.targetCorrection.LengthSquared() > ALMOST_ZERO) {
-                        Vector3 previous = player.targetCorrection;
-                        player.targetCorrection = player.targetCorrection.Lerp(Vector3.Zero, 4f * globalPhysicsDeltaFloat);
-                        player.node.GlobalPosition += previous - player.targetCorrection;
-                        if (player.targetCorrection.LengthSquared() < 0.001f) { player.targetCorrection = Vector3.Zero; }
+                        float timeRemaining = Mathf.Max(
+                            (landingTimeStamp - player.animationPlaybackBlocks[0].currentPlaybackPosition) * animationLength,
+                            globalPhysicsDeltaFloat
+                        );
+                        Vector3 step = player.targetCorrection * (globalPhysicsDeltaFloat / timeRemaining);
+                        player.node.GlobalPosition += step;
+                        player.targetCorrection -= step;
                         RotateTowards(player.wishDirection, player.node, 0.1f);
                         player.node.Velocity = new Vector3(rootVelocity.X, rootVelocity.Y, rootVelocity.Z);
                         break;
