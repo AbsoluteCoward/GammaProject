@@ -27,7 +27,8 @@ namespace Gamma {
         public const float MAX_PROJECTILE_DISTANCE = 1000f;
         public const float MAX_PROJECTILE_LIFETIME = 10f;
         public const float TARGETTING_ANGLE = 12f;
-        public const float PLAYER_LEG_LENGTH = 1;
+        public const float PLAYER_LEG_LENGTH = 1f;
+        public const float PLAYER_RUN_SPEED = 8f;
         public static readonly Color NULL_COLOR = new Color(0f, 0f, 0f, 0f);
         public static readonly Color FULL_COLOR = new Color(1f, 1f, 1f, 1f);
         public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
@@ -82,6 +83,7 @@ namespace Gamma {
         public World3D globalWorld3D;
         public float cameraFarSetting = 100;
         public float loadDelay = DEFAULT_LOAD_DELAY;
+        public float globalSlightPitchVaration;
         public float globalPhysicsDeltaFloat;
         public float globalProcessDeltaFloat;
         public double globalPhysicsDelta;
@@ -227,8 +229,8 @@ namespace Gamma {
             globalPhysicsDeltaFloat = (float)globalPhysicsDelta;
             UpdateInputState();
             if (sceneState.isSceneLoaded == false) { 
-                InitializeScene(); 
-                return; 
+                InitializeScene();
+                return;
             }
             sceneState.timeSinceSceneLoad += (float)delta;
             sceneState.physicsFramesSinceSceneLoad++;
@@ -247,6 +249,7 @@ namespace Gamma {
                 loadingScreen.node.Visible = false;
                 loadingScreen.icon.Texture = null;
             }
+            globalSlightPitchVaration = (float)GD.Randfn(1.0, 0.015f);
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             if (UpdateVideo(ref videoPlayer)) { return; }
             UpdateFadeInOut();
