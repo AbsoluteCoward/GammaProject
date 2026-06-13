@@ -23,7 +23,7 @@ namespace Gamma {
             public AnimationTree animationTree;
             public AnimationNodeStateMachinePlayback animationState;
             public EnemyType type;
-            public EnemyState state;
+            public EnemyState behaviorState;
             public Vector3 wishDirection;
         }
         public void EnemyRemove(int inputIndex) {
@@ -57,6 +57,7 @@ namespace Gamma {
             }
             enemies[inputIndex].node.Visible = false;
             enemies[inputIndex].node.ProcessMode = ProcessModeEnum.Disabled;
+            enemies[inputIndex].node.QueueFree();
             enemies[inputIndex] = enemies[enemyCount - 1];
             enemies[enemyCount - 1] = new Enemy();
             enemyCount--;
@@ -64,7 +65,7 @@ namespace Gamma {
         public void EnemyGenericUpdate(ref Enemy inputEnemy) {
             Enemy enemy = inputEnemy;
             Vector3 enemyForward = -enemy.node.GlobalTransform.Basis.Z.Normalized();
-            switch (enemy.state) {
+            switch (enemy.behaviorState) {
                 case EnemyState.Wander:
                     if (enemy.animationState.GetCurrentNode() == "Move") {
                         if (sceneState.physicsFramesSinceSceneLoad % 64 == 0) {
@@ -90,7 +91,7 @@ namespace Gamma {
                     break;
             }
             switch (enemy.animationState.GetCurrentNode()) {
-                case "Move":                    
+                case "Move":            
                     break;
                 case "Idle":
                     break;
@@ -116,7 +117,7 @@ namespace Gamma {
             enemies[index].animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
             enemies[index].animationState = (AnimationNodeStateMachinePlayback)enemies[index].animationTree.Get("parameters/playback");
             enemies[index].animationState.Travel("Move");
-            enemies[index].state = EnemyState.Wander;
+            enemies[index].behaviorState = EnemyState.Wander;
             enemies[index].wishDirection = new Vector3((float)GD.RandRange(-1f, 1f), 0, (float)GD.RandRange(-1f, 1f));
             enemyCount++;
             GD.Print($"{inputNode.Name} Initialized at index {index}");
@@ -124,7 +125,7 @@ namespace Gamma {
         public void EnemyUpdate() {
             for (int i = 0; i < enemyCount; i++) {
                 if (!enemies[i].node.Visible) { continue; }
-                if (enemies[i].state == EnemyState.Dead) {
+                if (enemies[i].behaviorState == EnemyState.Dead) {
                     EnemyRemove(i);
                     i--;
                     continue; 

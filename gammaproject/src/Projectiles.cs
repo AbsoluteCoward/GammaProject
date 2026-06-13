@@ -140,7 +140,7 @@ namespace Gamma {
             for (int j = 0; j < enemies.Length; j++) {
                 if (enemies[j].node == null) { continue; }
                 if (enemies[j].node.GlobalPosition.DistanceTo(inputPosition) < 6) {
-                    enemies[j].state = EnemyState.Dead;
+                    enemies[j].behaviorState = EnemyState.Dead;
                 }
             }
             Explosion explosion = new Explosion();

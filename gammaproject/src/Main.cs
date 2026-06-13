@@ -19,8 +19,8 @@ namespace Gamma {
         public const int DEFAULT_ENEMIES_SIZE = 16;
         public const int DEFAULT_TARGET_RETICLES_SIZE = 16;
         public const float DEFAULT_LOAD_DELAY = 0.0f;
-        public const float DEFAULT_CAMERA_DISTANCE = 5.0f;
-        public const float DEFAULT_CAMERA_HEIGHT = DEFAULT_CAMERA_DISTANCE * 0.4f;
+        public const float DEFAULT_CAMERA_DISTANCE = 3.0f;
+        public const float DEFAULT_CAMERA_HEIGHT = DEFAULT_CAMERA_DISTANCE * 0.3f;
         public const float ALMOST_ZERO = 0.00001f;
         public const float ALMOST_ONE = 0.99999f;
         public const float GRAVITY_STRENGTH = 9.81f;
