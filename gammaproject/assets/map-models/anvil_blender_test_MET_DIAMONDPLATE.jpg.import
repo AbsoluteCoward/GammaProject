@@ -1,0 +1,44 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://d1y176jjp2hsy"
+path.s3tc="res://.godot/imported/anvil_blender_test_MET_DIAMONDPLATE.jpg-7244bcac2b118fd071813ace11e86789.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "6f0600a63f3b50203cbe3a69e437b740"
+}
+
+[deps]
+
+source_file="res://assets/map-models/anvil_blender_test_MET_DIAMONDPLATE.jpg"
+dest_files=["res://.godot/imported/anvil_blender_test_MET_DIAMONDPLATE.jpg-7244bcac2b118fd071813ace11e86789.s3tc.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/uastc_level=4
+compress/rdo_quality_loss=0.0
+compress/hdr_compression=2
+compress/normal_map=2
+compress/channel_pack=1
+mipmaps/generate=true
+mipmaps/limit=3
+roughness/mode=0
+roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=true
+process/hdr_clamp_exposure=true
+process/size_limit=1024
+detect_3d/compress_to=0

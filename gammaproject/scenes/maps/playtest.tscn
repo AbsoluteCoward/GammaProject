@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://oscw0rrbd7sp" path="res://assets/textures/FLR_TILE10.JPG" id="1_6xplv"]
 [ext_resource type="PackedScene" uid="uid://caxoj275di1y3" path="res://scenes/props/bucket01.tscn" id="1_ctw14"]
+[ext_resource type="Environment" uid="uid://duve65vd8qvjk" path="res://assets/godot-resources/worldenvironment_fullbright.res" id="1_h1ish"]
 [ext_resource type="Texture2D" uid="uid://cwl7je5fxj1yf" path="res://assets/textures/FAB_LINENBEIGE.jpg" id="1_lau34"]
 [ext_resource type="Texture2D" uid="uid://dw2yghr1m2cj8" path="res://assets/textures/MET_IRONINDUSTRAILPERFORATEGATE01_SEAMLESS.jpg" id="2_mfmdp"]
 [ext_resource type="Texture2D" uid="uid://dscb2q2icavkb" path="res://assets/textures/STO_ANCIENTBRICK01.png" id="3_tjgyd"]
@@ -28,16 +29,6 @@
 [ext_resource type="PackedScene" uid="uid://b2tkdd70043p5" path="res://scenes/props/crate01.tscn" id="26_1odrk"]
 [ext_resource type="PackedScene" uid="uid://4b3ysfnolshd" path="res://scenes/entities/surveillancescanner01.tscn" id="28_h1ish"]
 [ext_resource type="PackedScene" uid="uid://cxi5ilh6l1e1q" path="res://scenes/props/fountain01.tscn" id="28_qtude"]
-
-[sub_resource type="Environment" id="Environment_lau34"]
-ambient_light_source = 2
-ambient_light_color = Color(0.32915837, 0.3291584, 0.3291584, 1)
-ambient_light_energy = 0.1
-ssr_fade_in = 1e-05
-fog_mode = 1
-fog_light_color = Color(0, 0, 0, 1)
-fog_density = 1.0
-fog_depth_end = 80.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qtude"]
 albedo_texture = ExtResource("1_6xplv")
@@ -137,14 +128,7 @@ albedo_texture = ExtResource("8_iwdfl")
 [node name="Environment" type="Node" parent="." unique_id=1488914038]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=1760429321]
-environment = SubResource("Environment_lau34")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=704870207]
-transform = Transform3D(1.9106855e-15, 1, 4.371139e-08, 4.371139e-08, -4.371139e-08, 1, 1, 0, -4.371139e-08, 0, 0, 0)
-light_color = Color(0.32915837, 0.3291584, 0.3291584, 1)
-directional_shadow_mode = 0
-directional_shadow_max_distance = 80.0
-sky_mode = 1
+environment = ExtResource("1_h1ish")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Environment" unique_id=1298436146]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -3, 5.5, 9)
@@ -582,11 +566,18 @@ collision_layer = 3
 size = Vector3(0.2, 1.5, 2)
 
 [node name="CSGBox3D46" type="CSGBox3D" parent="Geometry" unique_id=537271335]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 9.9, 0.45000002, -15)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 9.9, 0.5, -15)
 material_override = SubResource("StandardMaterial3D_h1ish")
 use_collision = true
 collision_layer = 3
-size = Vector3(0.2, 0.90000004, 2)
+size = Vector3(0.2, 1, 2)
+
+[node name="CSGBox3D48" type="CSGBox3D" parent="Geometry" unique_id=1923038156]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 3.8999996, 4.5, -13)
+material_override = SubResource("StandardMaterial3D_h1ish")
+use_collision = true
+collision_layer = 3
+size = Vector3(0.2, 1, 2)
 
 [node name="CSGBox3D47" type="CSGBox3D" parent="Geometry" unique_id=2023399281]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 14.95, 0.45, -13)
@@ -602,8 +593,8 @@ use_collision = true
 collision_layer = 3
 size = Vector3(0.2, 2, 2)
 
-[node name="CSGBox3D48" type="CSGBox3D" parent="Geometry" unique_id=374353271]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 7.8999996, 1.5, -17)
+[node name="CSGBox3D49" type="CSGBox3D" parent="Geometry" unique_id=545622575]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 8, 1.5000001, -15)
 material_override = SubResource("StandardMaterial3D_h1ish")
 use_collision = true
 collision_layer = 3
@@ -791,7 +782,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 45)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 45)
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("4_8d6xy")]
-transform = Transform3D(1.3113461e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113461e-07, 12, 0, -26)
+transform = Transform3D(1.3113461e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113461e-07, 1, 7, 23)
 
 [node name="PlayerCamera" parent="Entities" unique_id=29831598 instance=ExtResource("5_amgw8")]
 transform = Transform3D(-1, 4.8067232e-08, -7.30225e-08, 1.7763567e-15, 0.83527994, 0.549825, 8.7422784e-08, 0.549825, -0.83527994, -5.200001, 10.4183, 11.60695)
@@ -831,20 +822,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 7, 11)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9000001, 3, 18.2)
 
 [node name="Skeleton3D" parent="Entities/SurveillanceScanner01/SurveillanceScanner01" parent_id_path=PackedInt32Array(1505433102, 1690118326) index="0" unique_id=1659388111]
-bones/0/position = Vector3(0, -0.0098159425, 0)
-bones/1/rotation = Quaternion(0, -0.1416337, 0, 0.9899192)
+bones/0/position = Vector3(0, 0.0013100542, 0)
+bones/1/rotation = Quaternion(0, -0.5491914, 0, 0.8356967)
 
 [node name="Top" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="0" unique_id=152551031]
-transform = Transform3D(0.9598798, 0, -0.2804118, 0, 1, 0, 0.2804118, 0, 0.9598798, 0, 0.09018408, 0)
+transform = Transform3D(0.3967777, 0, -0.9179147, 0, 1, 0, 0.9179147, 0, 0.3967777, 0, 0.101310074, 0)
 
 [node name="Lamp" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="1" unique_id=404657645]
-transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.54981595, -0.010000005)
+transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.53869, -0.010000005)
 
 [node name="SpotLight3D" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D/Lamp" index="0" unique_id=1680231869]
 shadow_bias = 0.08
 
 [node name="Base" parent="Entities/SurveillanceScanner01/SurveillanceScanner01/Skeleton3D" index="2" unique_id=804744811]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0098159425, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0013100542, 0)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("18_rrwtf")]
 

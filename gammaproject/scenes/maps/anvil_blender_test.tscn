@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://cahcp7ad0wp3"]
+
+[ext_resource type="Environment" uid="uid://duve65vd8qvjk" path="res://assets/godot-resources/worldenvironment_fullbright.res" id="1_1ub4u"]
+[ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="2_1ub4u"]
+[ext_resource type="PackedScene" uid="uid://bs1fdrb8eddtn" path="res://assets/map-models/anvil_blender_test.glb" id="2_qvqgy"]
+[ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="3_qvqgy"]
+[ext_resource type="PackedScene" uid="uid://cgbfcwwskitny" path="res://scenes/entities/enemies/bear.tscn" id="4_bs4cn"]
+[ext_resource type="PackedScene" uid="uid://dgbvqthwrtpuq" path="res://scenes/entities/enemies/crab01.tscn" id="5_bja16"]
+[ext_resource type="PackedScene" uid="uid://bkuilqriq51he" path="res://scenes/entities/change_level.tscn" id="6_xm4br"]
+[ext_resource type="PackedScene" uid="uid://qley5ny6m3l2" path="res://scenes/UI/default_ui.tscn" id="7_urjvw"]
+
+[node name="Level" type="Node3D" unique_id=500624464]
+
+[node name="Environment" type="Node" parent="." unique_id=1488914038]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=1760429321]
+environment = ExtResource("1_1ub4u")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Environment" unique_id=1298436146]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -3.3621635, 5.5, 5.567916)
+light_energy = 2.0
+shadow_enabled = true
+spot_range = 10.0
+
+[node name="Geometry" type="Node" parent="." unique_id=1112735005]
+
+[node name="anvil_blender_test" parent="Geometry" unique_id=1982045188 instance=ExtResource("2_qvqgy")]
+
+[node name="Entities" type="Node" parent="." unique_id=1339097609]
+
+[node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("2_1ub4u")]
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 6.655, 0, -4.539)
+
+[node name="PlayerCamera" parent="Entities" unique_id=29831598 instance=ExtResource("3_qvqgy")]
+transform = Transform3D(-4.37114e-08, -0.549825, 0.83527994, 0, 0.83527994, 0.549825, -1, 2.4033621e-08, -3.6511256e-08, 12.45527, 3.4183, -3.9316282)
+
+[node name="Bear118" parent="Entities" unique_id=770590102 instance=ExtResource("4_bs4cn")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.1552706, 0, 9.56142)
+
+[node name="Bear119" parent="Entities" unique_id=1248130514 instance=ExtResource("4_bs4cn")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.1552706, 0, 6.5614204)
+
+[node name="Crab01" parent="Entities" unique_id=2039105678 instance=ExtResource("5_bja16")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6552706, 0, 1.461422)
+
+[node name="ChangeLevel" parent="Entities" unique_id=148112684 instance=ExtResource("6_xm4br")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 10)
+
+[node name="UI" parent="." unique_id=1110879225 instance=ExtResource("7_urjvw")]
+
+[editable path="Geometry/anvil_blender_test"]
