@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bs1fdrb8eddtn"
-path="res://.godot/imported/anvil_blender_test.glb-653fac23ef7c5fab01648d4649a51eca.scn"
+uid="uid://bnntj786q7jqj"
+path="res://.godot/imported/anvil_blender_test.gltf-f20f74c2b9972d35f3ac4d6975250cdc.scn"
 
 [deps]
 
-source_file="res://assets/map-models/anvil_blender_test.glb"
-dest_files=["res://.godot/imported/anvil_blender_test.glb-653fac23ef7c5fab01648d4649a51eca.scn"]
+source_file="res://assets/map-models/anvil_blender_test.gltf"
+dest_files=["res://.godot/imported/anvil_blender_test.gltf-f20f74c2b9972d35f3ac4d6975250cdc.scn"]
 
 [params]
 
