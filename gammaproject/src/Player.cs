@@ -162,7 +162,7 @@ namespace Gamma {
             RaycastWorldHitInfo findLedge = new RaycastWorldHitInfo();
             Vector3 collisionPosition = 
                 player.ledgeShapeCast.GetCollisionPoint(0) * Y_FLAT - 
-                player.ledgeShapeCast.GetCollisionNormal(0) * 0.2f * Y_FLAT + 
+                player.ledgeShapeCast.GetCollisionNormal(0) * 0.1f * Y_FLAT + 
                 player.node.GlobalPosition * XZ_FLAT;
             Vector3 rayStart = collisionPosition + Vector3.Up * 3f;
             Vector3 rayEnd = collisionPosition + Vector3.Up * 0.7f;
@@ -207,9 +207,7 @@ namespace Gamma {
             AnimationNodeStateMachine stateMachine = (AnimationNodeStateMachine)player.animationTree.TreeRoot;
             string previousAnimationName = player.animationState.GetCurrentNode();
             float previousPlaybackPosition = player.animationPlaybackBlocks[0].previousPlaybackPosition;
-            GD.Print("before: " + player.animationState.GetCurrentNode());
             player.animationTree.Advance(globalPhysicsDeltaFloat);
-            GD.Print("after: " + player.animationState.GetCurrentNode());
             stateMachine = (AnimationNodeStateMachine)player.animationTree.TreeRoot;
             bool isCurrentAnimationNodeABlendTree = stateMachine.GetNode(player.animationState.GetCurrentNode()).GetType() == typeof(AnimationNodeBlendTree);
             if (!isCurrentAnimationNodeABlendTree) {
@@ -261,14 +259,7 @@ namespace Gamma {
             Vector3 rootVelocity = player.node.Transform.Basis * rootPosition / globalPhysicsDeltaFloat;
             string targetAnimation = player.animationState.GetCurrentNode();
             bool isAnimationSameAsPrevious = currentAnimationName == previousAnimationName;
-            if (!isAnimationSameAsPrevious) {
-                GD.Print("Animation changed to " + currentAnimationName + " from " + previousAnimationName);
-            }
-            //GD.Print(isAnimationSameAsPrevious);
             bool isInTransition = player.animationState.GetTravelPath().Count > 0;
-            if (player.animationState.GetFadingFromNode() == player.animationState.GetCurrentNode()) {
-                GD.PrintErr("Animation state is in transition from " + player.animationState.GetFadingFromNode() + " to " + player.animationState.GetCurrentNode());
-            }
             switch (player.animationState.GetCurrentNode()) {
                 case "Walk":
                     if (!isAnimationSameAsPrevious) {
@@ -276,7 +267,6 @@ namespace Gamma {
                         player.animationTree.Set("parameters/Walk/TeleportStartupBlend/blend_amount", 0.0f);
                         player.animationTree.Set("parameters/Walk/GunBlend/blend_amount", 0.0f);
                         player.animationTree.Set("parameters/Walk/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Abort);
-                        GD.Print("Walk begin");
                         break;
                     }
                     bool shouldWalkBlend = hasMovementInput;
@@ -310,7 +300,6 @@ namespace Gamma {
                     }
                     //GD.Print((bool)player.animationTree.Get("parameters/Walk/FireWalkOneShot/active"));
                     if (!isShooting && (Input.IsActionJustReleased("attack") || (player.targetCount > 0 && !Input.IsActionPressed("attack")))) {
-                        GD.Print("Playing FireWalkOneShot");
                         player.animationTree.Set("parameters/Walk/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
                         gunBlendAmount = 0f;
                     }
@@ -391,8 +380,6 @@ namespace Gamma {
                     }
                     int fireWalkBlockIndex = GetPlaybackBlockIndex("FireWalk");
                     if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[fireWalkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[fireWalkBlockIndex].currentPlaybackPosition, 0.1f) && (float)player.animationTree.Get("parameters/Walk/FireWalk/current_position") > 0.0f) {
-                        GD.Print("Shooting from " + player.animationPlaybackBlocks[fireWalkBlockIndex].previousPlaybackPosition + " to " + player.animationPlaybackBlocks[fireWalkBlockIndex].currentPlaybackPosition);
-                        GD.Print("Current animation: " + player.animationState.GetCurrentNode());
                         Shoot(1);
                     }
                     Vector3 direction = !hasMovementInput ? playerForward : player.wishDirection;
@@ -536,15 +523,17 @@ namespace Gamma {
                         break;
                     }
                     const float JUMP_PLAYBACK_POSITION = 0.5f;
-                    bool shouldJump =
-                        HasCrossedPlaybackPosition(
-                            inputPreviousPosition: previousPlaybackPosition,
-                            inputCurrentPosition: currentPlaybackPosition,
-                            inputEventPosition: JUMP_PLAYBACK_POSITION
-                        );
-                    if (shouldJump) {
-                        player.node.Velocity += Vector3.Up * 12f;
-                        player.node.Velocity += player.wishDirection.Length() > 0.1f ? player.wishDirection * 2f : player.node.Transform.Basis.Z.Normalized() * 2f;
+                    {
+                        bool shouldJump =
+                            HasCrossedPlaybackPosition(
+                                inputPreviousPosition: previousPlaybackPosition,
+                                inputCurrentPosition: currentPlaybackPosition,
+                                inputEventPosition: JUMP_PLAYBACK_POSITION
+                            );
+                        if (shouldJump) {
+                            player.node.Velocity += Vector3.Up * 12f;
+                            player.node.Velocity += player.wishDirection.Length() > 0.1f ? player.wishDirection * 2f : player.node.Transform.Basis.Z.Normalized() * 2f;
+                        }
                     }
                     if (
                         currentPlaybackPosition >= JUMP_PLAYBACK_POSITION &&
@@ -679,7 +668,7 @@ namespace Gamma {
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.08f);
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
                     if (!player.isOnGround) { 
-                        player.node.GlobalPosition -= playerForward;
+                        player.node.GlobalPosition -= player.node.Velocity * 1.2f * globalPhysicsDeltaFloat;
                         player.node.Velocity = Vector3.Zero;
                     }
                     break;
