@@ -127,18 +127,18 @@ namespace Gamma {
         /// This is useful for visualizing directions, raycasts, or connections between objects.
         /// example
         /// </summary>
-        public static void DebugDrawLine(Vector3 startPosition, Vector3 endPosition, float thickness, Node inputTarget, Color? color = null) {
+        public static void DebugSpawnLine(Vector3 startPosition, Vector3 endPosition, float inputRadius, Node inputTarget) {
             MeshInstance3D line = new MeshInstance3D();
             line.TopLevel = true;
             Vector3 direction = endPosition - startPosition;
             float length = direction.Length();
             CylinderMesh cylinder = new CylinderMesh();
-            cylinder.TopRadius = thickness;
-            cylinder.BottomRadius = thickness;
+            cylinder.TopRadius = inputRadius;
+            cylinder.BottomRadius = inputRadius;
             cylinder.Height = length;
             line.Mesh = cylinder;
             StandardMaterial3D material = new StandardMaterial3D();
-            material.AlbedoColor = color ?? Colors.Red;
+            material.AlbedoColor = Colors.Red;
             material.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
             line.MaterialOverride = material;
             inputTarget.AddChild(line);

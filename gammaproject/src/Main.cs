@@ -29,6 +29,8 @@ namespace Gamma {
         public const float TARGETTING_ANGLE = 12f;
         public const float PLAYER_LEG_LENGTH = 1f;
         public const float PLAYER_RUN_SPEED = 8f;
+        public const float PLAYER_LEDGESHAPECAST_MAX_DISTANCE = 6.37f;
+        const float PLAYER_AIR_SPEED = PLAYER_RUN_SPEED;
         public static readonly Color NULL_COLOR = new Color(0f, 0f, 0f, 0f);
         public static readonly Color FULL_COLOR = new Color(1f, 1f, 1f, 1f);
         public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
@@ -129,7 +131,7 @@ namespace Gamma {
             videoPlayer.node = uiNode.GetNode<VideoStreamPlayer>("VideoStreamPlayer");
             InitializeLoadingScreen(uiNode.GetNode<Control>("LoadingScreen"));
             globalWorld3D = entitiesNode.GetChild<Node3D>(0).GetWorld3D();
-            currentCamera = GetViewport().GetCamera3D();
+            //currentCamera = GetViewport().GetCamera3D().Current ? GetViewport().GetCamera3D() : null;
             int typelessEntityCount = 0;
             for (int i = 0; i < entitiesNode.GetChildCount(); i++) {
                 Node3D child = entitiesNode.GetChild<Node3D>(i);
