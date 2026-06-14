@@ -55,11 +55,14 @@ shadow_mesh = SubResource("ArrayMesh_k4yl5")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fs2jc"]
 resource_name = "Gate"
-transparency = 1
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
 cull_mode = 2
 albedo_texture = ExtResource("2_18p8y")
-metallic = 0.513636
+metallic = 1.0
 roughness = 0.290909
+uv1_scale = Vector3(1.825, 1.825, 1.825)
 texture_filter = 0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_ji6dp"]
