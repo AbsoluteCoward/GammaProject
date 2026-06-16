@@ -5,6 +5,8 @@ namespace Gamma {
         public struct Player {
             public TeleportOrb orb;
             public CharacterBody3D node;
+            public MeshInstance3D rocketIndicator;
+            public Area3D detectionArea;
             public Node3D model;
             public Node3D gunBarrel;
             public AnimationPlayer animationPlayer;
@@ -43,6 +45,9 @@ namespace Gamma {
         public void PlayerInitialize(CharacterBody3D inputPlayerNode) {
             player.node = inputPlayerNode;
             player.model = player.node.GetNode<Node3D>("Slink");
+            player.rocketIndicator = player.node.GetNode<MeshInstance3D>("RocketIndicator");
+            player.rocketIndicator.TopLevel = true;
+            player.detectionArea = player.node.GetNode<Area3D>("DetectionArea");
             player.gunBarrel = player.node.GetNode<Node3D>("Slink/Skeleton3D/GunBone/GunBarrel");
             player.animationPlayer = inputPlayerNode.GetNode<AnimationPlayer>("Slink/AnimationPlayer");
             player.animationTree = inputPlayerNode.GetNode<AnimationTree>("AnimationTree");
@@ -130,7 +135,7 @@ namespace Gamma {
                     inputStartPosition: player.gunBarrel.GlobalPosition,
                     inputTarget: didEverHaveTarget ? player.targets[player.currentTargetIndex] : null,
                     inputDirection: shootDirection,
-                    inputSpeed: 20f
+                    inputSpeed: PLAYER_ROCKET_SPEED
                 );
                 if (!hasTarget) {
                     player.currentTargetIndex = 0;
@@ -166,7 +171,7 @@ namespace Gamma {
             if (!player.ledgeShapeCast.IsColliding()) { return false; }
             Vector3 collisionPosition =
                 player.ledgeShapeCast.GetCollisionPoint(0) * Y_FLAT -
-                player.ledgeShapeCast.GetCollisionNormal(0) * 0.2f * Y_FLAT +
+                player.ledgeShapeCast.GetCollisionNormal(0) * 0.15f * Y_FLAT +
                 player.node.GlobalPosition * XZ_FLAT;
             Vector3 rayStart = collisionPosition + Vector3.Up * 3.1f;
             Vector3 rayEnd = collisionPosition + Vector3.Up * 0.7f;
@@ -224,6 +229,36 @@ namespace Gamma {
             player.node.CollisionLayer = (uint)(inputEnabled ? 1 : 0);
             player.node.CollisionMask = (uint)(inputEnabled ? 1 : 0);
         }
+        public void PlayerRocketIndicatorUpdate(bool inputShouldShow, Vector3 inputDirection) {
+            player.rocketIndicator.Visible = inputShouldShow;
+            Vector3 velocity = inputDirection * PLAYER_ROCKET_SPEED;
+            Vector3 position = player.gunBarrel.GlobalPosition;
+            Vector3 end = player.gunBarrel.GlobalPosition;
+            float time = globalPhysicsDeltaFloat * 12f;
+            bool curveHit = false;
+            for (int i = 0; i < 24; i++) {
+                Vector3 next = position + velocity * time;
+                velocity += GRAVITY_VECTOR * time;
+                RaycastWorldHitInfo hit;
+                if (RaycastWorld(globalWorld3D, player.node, position, next, out hit)) {
+                    end = hit.Position;
+                    curveHit = true;
+                    break;
+                }
+                end = next;
+                position = next;
+            }
+            if (!curveHit) {
+                RaycastWorldHitInfo hit;
+                if (RaycastWorld(globalWorld3D, player.node, position, end + Vector3.Down * 500, out hit)) {
+                    end = hit.Position;
+                    curveHit = true;
+                } else {
+                    player.rocketIndicator.Visible = false;
+                }
+            }
+            player.rocketIndicator.GlobalPosition = end;
+        }
         public void PlayerUpdate() {
             AnimationNodeStateMachine stateMachine = (AnimationNodeStateMachine)player.animationTree.TreeRoot;
             string previousAnimationName = player.animationState.GetCurrentNode();
@@ -268,6 +303,7 @@ namespace Gamma {
                 player.skeleton.GetBoneGlobalPose(Player.headBoneIndex);
             Vector3 global_whatever = player.skeleton.ToGlobal(orbTarget.Origin);
             player.orb.node.GlobalPosition = player.orb.node.TopLevel ? player.orb.node.GlobalPosition : global_whatever;
+            bool shouldShowRocketIndicator = false;
             float distanceToGround = player.groundRay.IsColliding() ?
                 player.groundRay.GlobalPosition.Y - player.groundRay.GetCollisionPoint().Y  :
                 float.MaxValue;
@@ -353,6 +389,9 @@ namespace Gamma {
                                 player.targetCount++;
                             }
                         }
+                    }
+                    if (gunBlendAmount > ALMOST_ONE || isShooting) {
+                        shouldShowRocketIndicator = true;
                     }
                     bool shouldFallFromWalk = !player.isOnGround;
                     if (shouldFallFromWalk) { 
@@ -799,6 +838,31 @@ namespace Gamma {
                     player.node.GlobalPosition = Vector3.Zero;
                 }
             }
+            //PlayerRocketIndicatorUpdate(shouldShowRocketIndicator, playerForward + player.node.GlobalTransform.Basis.Y.Normalized() * 0.2f);
+            CharacterBody3D target = null;
+            if (player.detectionArea.GetOverlappingBodies().Count > 0) {
+                for (int i = 0; i < player.detectionArea.GetOverlappingBodies().Count; i++) {
+                    //get closest enemy
+                    Node3D body = player.detectionArea.GetOverlappingBodies()[i];
+                    if (!(body.GetType() == typeof(CharacterBody3D))) {
+                        continue;
+                    }
+                    GD.Print(body.Name);
+                    if ((string)body.GetMeta("Type") != "EnemyGeneric") {
+                        continue;
+                    }
+                    CharacterBody3D enemy = (CharacterBody3D)body;
+                    if (target == null) {
+                        target = enemy;
+                    } else {
+                        if ((target.GlobalPosition - player.node.GlobalPosition).Length() > (enemy.GlobalPosition - player.node.GlobalPosition).Length()) {
+                            target = enemy;
+                        }
+                    }
+                }
+            }
+            player.rocketIndicator.GlobalPosition = target == null ? Vector3.Zero : target.GlobalPosition;
+            //GD.Print(player.rocketIndicator.GlobalPosition);
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }

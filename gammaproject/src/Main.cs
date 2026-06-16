@@ -30,6 +30,7 @@ namespace Gamma {
         public const float PLAYER_LEG_LENGTH = 1f;
         public const float PLAYER_RUN_SPEED = 8f;
         public const float PLAYER_LEDGESHAPECAST_MAX_DISTANCE = 6.37f;
+        public const float PLAYER_ROCKET_SPEED = 20f;
         const float PLAYER_AIR_SPEED = PLAYER_RUN_SPEED;
         public static readonly Color NULL_COLOR = new Color(0f, 0f, 0f, 0f);
         public static readonly Color FULL_COLOR = new Color(1f, 1f, 1f, 1f);
@@ -255,7 +256,7 @@ namespace Gamma {
             inputDirection = Input.GetVector("moveLeft", "moveRight", "moveUp", "moveBack");
             if (UpdateVideo(ref videoPlayer)) { return; }
             UpdateFadeInOut();
-            ProjectilesUpdate();            
+            ProjectilesUpdate();
             PlayerUpdate();
             PlayerCameraUpdate(ref playerCamera);
             SurveillanceScannerUpdate();
