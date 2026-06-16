@@ -1,0 +1,212 @@
+[gd_scene format=3 uid="uid://cd3em778ci2yg"]
+
+[ext_resource type="Environment" uid="uid://cnvi1r66250oo" path="res://assets/godot-resources/worldenvironment_default.res" id="1_h5kha"]
+[ext_resource type="PackedScene" uid="uid://b7uhdl4hex0l0" path="res://assets/map-models/playtest-new.gltf" id="2_o1fdq"]
+[ext_resource type="PackedScene" uid="uid://b2pnfis3dskio" path="res://scenes/entities/enemies/moe.tscn" id="16_tqp7r"]
+[ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="17_jk2w6"]
+[ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="18_blhdk"]
+[ext_resource type="PackedScene" uid="uid://cvgp5f0d7udpo" path="res://scenes/entities/dungeon_exit.tscn" id="19_vl47o"]
+[ext_resource type="PackedScene" uid="uid://qqrivbdx01fj" path="res://scenes/entities/dungeon_entrance.tscn" id="20_ryf25"]
+[ext_resource type="PackedScene" uid="uid://xwhnlvkm6lcs" path="res://scenes/entities/pot01.tscn" id="21_gcout"]
+[ext_resource type="PackedScene" uid="uid://2rwuu2sj14ik" path="res://scenes/entities/test_video_playback.tscn" id="22_jxfag"]
+[ext_resource type="PackedScene" uid="uid://5mkchlnk6u3w" path="res://scenes/entities/test_dialogue.tscn" id="23_dq2uq"]
+[ext_resource type="PackedScene" uid="uid://bkuilqriq51he" path="res://scenes/entities/change_level.tscn" id="24_vq7ly"]
+[ext_resource type="PackedScene" uid="uid://cjlahtne2e1ro" path="res://scenes/entities/oil_candle01.tscn" id="25_r40lw"]
+[ext_resource type="PackedScene" uid="uid://dgbvqthwrtpuq" path="res://scenes/entities/enemies/crab01.tscn" id="26_wqtii"]
+[ext_resource type="PackedScene" uid="uid://cgbfcwwskitny" path="res://scenes/entities/enemies/bear.tscn" id="27_u270h"]
+[ext_resource type="PackedScene" uid="uid://4b3ysfnolshd" path="res://scenes/entities/surveillancescanner01.tscn" id="28_5pdgu"]
+[ext_resource type="PackedScene" uid="uid://qley5ny6m3l2" path="res://scenes/UI/default_ui.tscn" id="29_wawa3"]
+
+[node name="Level" type="Node3D" unique_id=500624464]
+
+[node name="Environment" type="Node" parent="." unique_id=1488914038]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=1760429321]
+environment = ExtResource("1_h5kha")
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="Environment" unique_id=449831652]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 34, 14.5, -16)
+light_color = Color(0, 1, 1, 1)
+light_energy = 16.0
+spot_range = 26.0
+spot_angle = 66.7466
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Environment" unique_id=1592687840]
+transform = Transform3D(-0.2241439, 0.5, -0.83651626, -0.96592593, -1.4650191e-08, 0.25881913, 0.12940955, 0.8660254, 0.4829629, 2, 2, -23)
+light_energy = 10.0
+shadow_enabled = true
+spot_range = 20.0
+
+[node name="Geometry" type="Node" parent="." unique_id=1112735005]
+
+[node name="playtest-new" parent="Geometry" unique_id=164729859 instance=ExtResource("2_o1fdq")]
+
+[node name="Entities" type="Node" parent="." unique_id=1339097609]
+
+[node name="Moe" parent="Entities" unique_id=2039105678 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 7, 12)
+
+[node name="Moe2" parent="Entities" unique_id=1184729343 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1, 54)
+
+[node name="Moe3" parent="Entities" unique_id=299411728 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 54)
+
+[node name="Moe4" parent="Entities" unique_id=279587627 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1, 51)
+
+[node name="Moe5" parent="Entities" unique_id=944630412 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 51)
+
+[node name="Moe6" parent="Entities" unique_id=182115160 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1, 48)
+
+[node name="Moe7" parent="Entities" unique_id=795605188 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 48)
+
+[node name="Moe8" parent="Entities" unique_id=1251827760 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1, 45)
+
+[node name="Moe9" parent="Entities" unique_id=63699484 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, 45)
+
+[node name="Moe10" parent="Entities" unique_id=196348063 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 54)
+
+[node name="Moe11" parent="Entities" unique_id=725499872 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 54)
+
+[node name="Moe12" parent="Entities" unique_id=844875472 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 51)
+
+[node name="Moe13" parent="Entities" unique_id=1221262502 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 51)
+
+[node name="Moe14" parent="Entities" unique_id=533331142 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 48)
+
+[node name="Moe15" parent="Entities" unique_id=351242512 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 48)
+
+[node name="Moe16" parent="Entities" unique_id=1000286846 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 45)
+
+[node name="Moe17" parent="Entities" unique_id=1470967403 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 45)
+
+[node name="Moe18" parent="Entities" unique_id=1803850321 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 54)
+
+[node name="Moe19" parent="Entities" unique_id=1331841327 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 54)
+
+[node name="Moe20" parent="Entities" unique_id=1966661091 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 51)
+
+[node name="Moe21" parent="Entities" unique_id=541174271 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 51)
+
+[node name="Moe22" parent="Entities" unique_id=495463498 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 48)
+
+[node name="Moe23" parent="Entities" unique_id=1773664261 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 48)
+
+[node name="Moe24" parent="Entities" unique_id=38002972 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 45)
+
+[node name="Moe25" parent="Entities" unique_id=1498339 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 45)
+
+[node name="Moe26" parent="Entities" unique_id=2042163369 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1, 54)
+
+[node name="Moe27" parent="Entities" unique_id=1081481123 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, 54)
+
+[node name="Moe28" parent="Entities" unique_id=1292828119 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1, 51)
+
+[node name="Moe29" parent="Entities" unique_id=2054980636 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, 51)
+
+[node name="Moe30" parent="Entities" unique_id=352988225 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1, 48)
+
+[node name="Moe31" parent="Entities" unique_id=177549001 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, 48)
+
+[node name="Moe32" parent="Entities" unique_id=1488165510 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1, 45)
+
+[node name="Moe33" parent="Entities" unique_id=1805956677 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, 45)
+
+[node name="Moe34" parent="Entities" unique_id=2102796570 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 54)
+
+[node name="Moe35" parent="Entities" unique_id=229043349 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 54)
+
+[node name="Moe36" parent="Entities" unique_id=1224361627 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 51)
+
+[node name="Moe37" parent="Entities" unique_id=1441070069 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 51)
+
+[node name="Moe38" parent="Entities" unique_id=142797564 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 48)
+
+[node name="Moe39" parent="Entities" unique_id=2036745451 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 48)
+
+[node name="Moe40" parent="Entities" unique_id=1986419814 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 45)
+
+[node name="Moe41" parent="Entities" unique_id=1617636919 instance=ExtResource("16_tqp7r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 45)
+
+[node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("17_jk2w6")]
+transform = Transform3D(-2.1855739e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855739e-07, 36, 21.3, 26)
+
+[node name="PlayerCamera" parent="Entities" unique_id=29831598 instance=ExtResource("18_blhdk")]
+transform = Transform3D(-1, 4.8067232e-08, -7.30225e-08, 1.7763567e-15, 0.83527994, 0.549825, 8.7422784e-08, 0.549825, -0.83527994, -5.200001, 10.4183, 11.60695)
+
+[node name="DungeonExit" parent="Entities" unique_id=340140118 instance=ExtResource("19_vl47o")]
+transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -23, 0, -30.2)
+
+[node name="DungeonEntrance" parent="Entities" unique_id=549416669 instance=ExtResource("20_ryf25")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -26)
+
+[node name="Pot01" parent="Entities" unique_id=2002821025 instance=ExtResource("21_gcout")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -18)
+
+[node name="TestVideoPlayback" parent="Entities" unique_id=1320848521 instance=ExtResource("22_jxfag")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -22)
+
+[node name="TestDialogue" parent="Entities" unique_id=1964998030 instance=ExtResource("23_dq2uq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -20)
+
+[node name="ChangeLevel" parent="Entities" unique_id=148112684 instance=ExtResource("24_vq7ly")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -31.2)
+
+[node name="ChangeLevel2" parent="Entities" unique_id=1022458606 instance=ExtResource("24_vq7ly")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -31.2)
+metadata/LevelPath = "res://scenes/maps/fullbrightroom.tscn"
+
+[node name="OilCandle01" parent="Entities" unique_id=1181755276 instance=ExtResource("25_r40lw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -16)
+
+[node name="Crab01" parent="Entities" unique_id=140299591 instance=ExtResource("26_wqtii")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 7, 12)
+
+[node name="Bear" parent="Entities" unique_id=1186200802 instance=ExtResource("27_u270h")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 7, 11)
+
+[node name="SurveillanceScanner01" parent="Entities" unique_id=1505433102 instance=ExtResource("28_5pdgu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.099999905, 1, 1.2000008)
+
+[node name="UI" parent="." unique_id=1110879225 instance=ExtResource("29_wawa3")]
+
+[editable path="Geometry/playtest-new"]
+[editable path="UI"]

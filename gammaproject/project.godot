@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="GammaProject"
-run/main_scene="uid://b0pi1p7vaslco"
+run/main_scene="uid://cd3em778ci2yg"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 run/flush_stdout_on_print.debug=false
 run/max_fps=240

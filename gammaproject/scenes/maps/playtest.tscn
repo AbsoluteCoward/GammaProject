@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dw2yghr1m2cj8" path="res://assets/textures/MET_IRONINDUSTRAILPERFORATEGATE01_SEAMLESS.jpg" id="2_mfmdp"]
 [ext_resource type="Texture2D" uid="uid://dscb2q2icavkb" path="res://assets/textures/STO_ANCIENTBRICK01.png" id="3_tjgyd"]
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="4_8d6xy"]
-[ext_resource type="Material" uid="uid://bx8iuo3jx4u1s" path="res://assets/materials/missingmat.tres" id="5_4vflo"]
+[ext_resource type="Material" uid="uid://bx8iuo3jx4u1s" path="res://assets/materials/MAT_NA_MISSINGTEXTURE.tres" id="5_4vflo"]
 [ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="5_amgw8"]
 [ext_resource type="Texture2D" uid="uid://dg6ys7q675huj" path="res://assets/textures/WAL_WALKER.jpg" id="5_iwdfl"]
 [ext_resource type="PackedScene" uid="uid://qqrivbdx01fj" path="res://scenes/entities/dungeon_entrance.tscn" id="6_gxys6"]
