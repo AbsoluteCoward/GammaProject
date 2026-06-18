@@ -12,8 +12,11 @@ namespace Gamma {
             public int trailIndex;
         }
         public struct Explosion {
+            public Node3D node;
+            public MeshInstance3D mesh;
+            public CpuParticles3D fireParticles;
+            public CpuParticles3D smokeParticles;
             public Vector3 randomRotation;
-            public MeshInstance3D node;
             public float timeAlive;
         }
         public void ProjectilesCreate(Vector3 inputStartPosition, Node3D inputTarget, Vector3 inputDirection, float inputSpeed) {
@@ -25,13 +28,28 @@ namespace Gamma {
                 }
             }
             if (index == -1) {
-                GD.PrintErr("ProjectilesCreate: No available projectile slots");
-                return;
+                Projectile[] newProjectiles = new Projectile[projectiles.Length * ARRAY_GROWTH_FACTOR];
+                for (int i = 0; i < projectiles.Length; i++) {
+                    newProjectiles[i] = projectiles[i];
+                }
+                index = projectiles.Length;
+                projectiles = newProjectiles;
+                GD.Print("Projectiles array resized to " + projectiles.Length);
             }
-            Projectile rocket = new Projectile();
+            Projectile rocket;
             rocket.node = rocketScene.Instantiate<Node3D>();
             entitiesNode.AddChild(rocket.node);
-            TrailsCreate(trails, rocket.node, Vector3.Back * 0.5f, Colors.DarkGray, 0.05f, 0.5f, 256, true);
+            TrailsCreateParams trailParams = new TrailsCreateParams{
+                material = GD.Load<StandardMaterial3D>("res://assets/materials/trail-materials/MAT_TRAILROCKET.tres"),
+                parent = rocket.node, 
+                offset =Vector3.Back * 0.5f, 
+                color = Colors.DarkGray, 
+                width = 0.05f, 
+                length = 0.5f, 
+                maxCount = 256,
+                isFullBright = true
+            };
+            TrailsCreate(ref trails, trailParams);
             rocket.trailIndex = trails.Length - 1;
             for (int j = 0; j < trails.Length; j++) {
                 if (trails[j].node != null && trails[j].node.GetParent() == rocket.node) {
@@ -50,6 +68,13 @@ namespace Gamma {
             rocket.collisionRaycast.TargetPosition = inputDirection.Normalized();
             rocket.collisionRaycast.ForceRaycastUpdate();
             projectiles[index] = rocket;
+        }
+        public bool isProjectileTooFar(Vector3 inputPosition) {
+            return
+                inputPosition.X > MAX_PROJECTILE_DISTANCE ||
+                inputPosition.X < -MAX_PROJECTILE_DISTANCE ||
+                inputPosition.Z > MAX_PROJECTILE_DISTANCE ||
+                inputPosition.Z < -MAX_PROJECTILE_DISTANCE;
         }
         public void ProjectilesUpdate() {
             for (int i = 0; i < projectiles.Length; i++) {
@@ -106,7 +131,7 @@ namespace Gamma {
                 rocket.positionLastFrame = rocket.node.GlobalPosition;
                 rocket.timeAlive += globalPhysicsDeltaFloat;
                 if (rocket.collisionRaycast.IsColliding() || isProjectileTooFar(rocket.node.GlobalPosition) || rocket.timeAlive > MAX_PROJECTILE_LIFETIME) {
-                    SpawnExplosion(rocket.node.GlobalPosition, Mathf.Min(GD.Randf(), 0.8f));
+                    SpawnExplosion(rocket.node.GlobalPosition, Mathf.Min(GD.Randf(), 0.3f));
                     if (rocket.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(rocket.node); }
                     rocket.node.QueueFree();
                     projectiles[i].node = null;
@@ -118,14 +143,8 @@ namespace Gamma {
                 }
             }
         }
-        public bool isProjectileTooFar(Vector3 inputPosition) {
-            return
-                inputPosition.X > MAX_PROJECTILE_DISTANCE ||
-                inputPosition.X < -MAX_PROJECTILE_DISTANCE ||
-                inputPosition.Z > MAX_PROJECTILE_DISTANCE ||
-                inputPosition.Z < -MAX_PROJECTILE_DISTANCE;
-        }
         public void SpawnExplosion(Vector3 inputPosition, float inputTimeAlive) {
+            const float EXPLOSION_RADIUS = 12f;
             int index = -1;
             for (int i = 0; i < explosions.Length; i++) {
                 if (explosions[i].node == null) {
@@ -134,57 +153,79 @@ namespace Gamma {
                 }
             }
             if (index == -1) {
-                GD.PrintErr("SpawnExplosion: No available explosion slots");
-                return;
+                Explosion[] newExplosions = new Explosion[explosions.Length * ARRAY_GROWTH_FACTOR];
+                for (int i = 0; i < explosions.Length; i++) {
+                    newExplosions[i] = explosions[i];
+                }
+                index = explosions.Length;
+                explosions = newExplosions;
+                GD.Print("Explosions array resized to " + explosions.Length);
             }
             for (int j = 0; j < enemies.Length; j++) {
                 if (enemies[j].node == null) { continue; }
-                if (enemies[j].node.GlobalPosition.DistanceTo(inputPosition) < 6) {
+                if (enemies[j].node.GlobalPosition.DistanceTo(inputPosition) < EXPLOSION_RADIUS) {
                     enemies[j].behaviorState = EnemyState.Dead;
                 }
             }
-            Explosion explosion = new Explosion();
-            explosion.node = new MeshInstance3D();
-            explosion.node.CastShadow = GeometryInstance3D.ShadowCastingSetting.Off;
-            SphereMesh explosionMesh = new SphereMesh();
-            explosionMesh.Rings = 8;
-            explosionMesh.RadialSegments = 8;
-            explosionMesh.Radius = 1f;
-            explosionMesh.Height = 2f;
-            StandardMaterial3D explosionMaterial = new StandardMaterial3D();
-            explosionMaterial.AlbedoTexture = efxFire01;
-            explosionMaterial.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
+            Explosion explosion;
+            explosion.node = explosionScene.Instantiate<Node3D>();
+            explosion.mesh = explosion.node.GetChild<MeshInstance3D>(0);
+            explosion.fireParticles = explosion.node.GetChild<CpuParticles3D>(1);
+            explosion.smokeParticles = explosion.node.GetChild<CpuParticles3D>(2);
             entitiesNode.AddChild(explosion.node);
             explosion.randomRotation = new Vector3(
                 (float)GD.RandRange(-1f, 1f),
                 (float)GD.RandRange(-1f, 1f),
                 (float)GD.RandRange(-1f, 1f)
             );
-            explosion.node.Mesh = explosionMesh;
-            explosion.node.MaterialOverride = explosionMaterial;
             explosion.node.GlobalPosition = inputPosition;
+            explosion.fireParticles.Emitting = true;
+            RaycastWorldHitInfo hit;
+            if (RaycastWorld(globalWorld3D, player.node, inputPosition, inputPosition + Vector3.Down * 10, out hit)) {
+                explosion.smokeParticles.GlobalPosition = hit.Position;
+            }
+            explosion.smokeParticles.Emitting = true;
             explosion.timeAlive = inputTimeAlive;
             explosions[index] = explosion;
-            PlaySound3D(explosionSFX, inputPosition, 0.5f, 0.8f + GD.Randf() * 0.4f, true);
+            PlaySound3D(explosionSFX, inputPosition, 1f, 0.8f + GD.Randf() * 0.4f, true);
+            if (directionalLight != null) {
+                directionalLight.LightColor += new Color(1f, 0.4f, 0f);
+                directionalLight.LightEnergy += 40f;
+                worldEnvironment.Environment.AmbientLightColor += new Color(1f, 0.4f, 0f);
+                worldEnvironment.Environment.AmbientLightEnergy += 1f;
+                directionalLight.LookAt(player.node.GlobalPosition - (inputPosition + Vector3.Up * 2), Vector3.Up);
+            }
         }
         public void UpdateExplosions() {
+            const float LIGHT_FADE_SPEED = 0.5f;
+            bool shouldFadeLight = true;
             for (int i = 0; i < explosions.Length; i++) {
                 if (explosions[i].node == null) { continue; }
                 Explosion explosion = explosions[i];
                 explosion.timeAlive += globalPhysicsDeltaFloat;
-                float scaleAmount = 2f + explosion.timeAlive * 6f;
-                explosion.node.Scale = new Vector3(scaleAmount, scaleAmount, scaleAmount);
-                explosion.node.Rotation += explosion.randomRotation * 2 * globalPhysicsDeltaFloat;
-                float maxLifetime = 1f;
-                if (explosion.timeAlive >= maxLifetime) {
+                float scaleAmount = explosion.timeAlive * 6f;
+                explosion.mesh.Scale = new Vector3(scaleAmount, scaleAmount, scaleAmount);
+                explosion.mesh.Rotation += explosion.randomRotation * 6 * globalPhysicsDeltaFloat;
+                const float MAX_LIFETIME = 4f;
+                if (explosion.timeAlive > MAX_LIFETIME/2) { 
+                    explosion.mesh.Visible = false;
+                    explosion.fireParticles.Color = explosion.fireParticles.Color.Lerp(NULL_COLOR, 1 * globalPhysicsDeltaFloat);
+                } else {
+                    shouldFadeLight = false;
+                }
+                if (explosion.timeAlive >= MAX_LIFETIME) {
                     if (explosion.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(explosion.node); }
-                    //remove trail
-
                     explosion.node.QueueFree();
                     explosions[i].node = null;
                 } else {
                     explosions[i] = explosion;
                 }
+            }
+            if (shouldFadeLight) {
+                directionalLight.LightColor = directionalLight.LightColor.Lerp(directionalLightOriginal.LightColor, LIGHT_FADE_SPEED * globalPhysicsDeltaFloat);
+                directionalLight.LightEnergy = Mathf.Lerp(directionalLight.LightEnergy, directionalLightOriginal.LightEnergy, LIGHT_FADE_SPEED * 8 * globalPhysicsDeltaFloat);
+                worldEnvironment.Environment.AmbientLightColor = worldEnvironment.Environment.AmbientLightColor.Lerp(worldEnvironmentOriginal.Environment.AmbientLightColor, LIGHT_FADE_SPEED * globalPhysicsDeltaFloat);
+                worldEnvironment.Environment.AmbientLightEnergy = Mathf.Lerp(worldEnvironment.Environment.AmbientLightEnergy, worldEnvironmentOriginal.Environment.AmbientLightEnergy, LIGHT_FADE_SPEED * globalPhysicsDeltaFloat);
             }
         }
     }

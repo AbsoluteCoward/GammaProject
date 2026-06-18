@@ -82,6 +82,7 @@ namespace Gamma {
         public void ClearScene() {
             GD.Print("Clearing scene");
             prisonSpotlight.node = null;
+            currentCamera = null;
             sceneState.physicsFramesSinceSceneLoad = 0;
             sceneState.timeSinceSceneLoad = 0f;
         }

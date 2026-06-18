@@ -35,7 +35,16 @@ namespace Gamma {
             player.orb.animationPlayer.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
             player.orb.animationPlayer.Play("Fly");
             float orbRadius = 0.1f;
-            TrailsCreate(trails, player.orb.node, Vector3.Forward * orbRadius, Colors.Cyan, orbRadius, 2f, 256, true);
+            TrailsCreateParams trailParams = new TrailsCreateParams{
+                parent = player.orb.node,
+                offset = Vector3.Forward * orbRadius,
+                color = Colors.Cyan,
+                width = 0.05f,
+                length = 0.5f,
+                maxCount = 256,
+                isFullBright = true
+            };
+            TrailsCreate(ref trails, trailParams);
         }
         public void OrbShoot() {
             GD.Print("Orb shoot");

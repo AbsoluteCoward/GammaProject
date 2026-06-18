@@ -10,7 +10,7 @@ namespace Gamma {
         }
         public const int AUDIO_POOL_SIZE = 8;
         public const int ARRAY_GROWTH_FACTOR = 2;
-        public const int DEFAULT_PLAYER_MAX_TARGET_COUNT = 4;
+        public const int DEFAULT_PLAYER_MAX_TARGET_COUNT = 16;
         public const int DEFAULT_MISCELLANEOUS_SIZE = 16;
         public const int DIALOGUE_PORTRAIT_SIZE = 192;
         public const int DEFAULT_INTERACTABLES_SIZE = 16;
@@ -47,6 +47,7 @@ namespace Gamma {
         public static AudioStream rollSFX = GD.Load<AudioStream>("res://assets/sound/thud.ogg");
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
+        public PackedScene explosionScene = GD.Load<PackedScene>("res://scenes/entities/explosion.tscn");
         public PackedScene targetReticleScene = GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
         public PackedScene rewardObjectScene = GD.Load<PackedScene>("res://scenes/entities/reward.tscn");
         public Vector2 inputDirection;
@@ -78,6 +79,9 @@ namespace Gamma {
         public int soundsUICount = 0;
         public PrisonSpotLight prisonSpotlight;
         public WorldEnvironment worldEnvironment;
+        public WorldEnvironment worldEnvironmentOriginal;
+        public DirectionalLight3D directionalLight;
+        public DirectionalLight3D directionalLightOriginal;
         public Node environmentNode;
         public Node entitiesNode;
         public Node uiNode;
@@ -126,6 +130,9 @@ namespace Gamma {
             Trail.count = 0;
             environmentNode = GetTree().CurrentScene.GetNode<Node>("Environment");
             worldEnvironment = environmentNode.GetNode<WorldEnvironment>("WorldEnvironment");
+            worldEnvironmentOriginal = (WorldEnvironment)worldEnvironment.Duplicate(0);
+            directionalLight = environmentNode.GetNode<DirectionalLight3D>("DirectionalLight3D");
+            directionalLightOriginal = (DirectionalLight3D)directionalLight.Duplicate(0);
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");
             uiNode = GetTree().CurrentScene.GetNode<Node>("UI");
             fadeRect.node = uiNode.GetNode<ColorRect>("FadeRect");

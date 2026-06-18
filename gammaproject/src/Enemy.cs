@@ -26,6 +26,27 @@ namespace Gamma {
             public EnemyState behaviorState;
             public Vector3 wishDirection;
         }
+        public void EnemyInitialize(CharacterBody3D inputNode) {
+            if (enemyCount >= enemies.Length) {
+                Enemy[] newEnemies = new Enemy[enemies.Length * ARRAY_GROWTH_FACTOR];
+                for (int i = 0; i < enemies.Length; i++) {
+                    newEnemies[i] = enemies[i];
+                }
+                enemies = newEnemies;
+                GD.Print("Enemy array resized to " + enemies.Length);
+            }
+            int index = enemyCount;
+            enemies[index].node = inputNode;
+            enemies[index].animationPlayer = inputNode.GetChild<Node3D>(0).GetNode<AnimationPlayer>("AnimationPlayer");
+            enemies[index].animationTree = inputNode.GetNode<AnimationTree>("AnimationTree");
+            enemies[index].animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
+            enemies[index].animationState = (AnimationNodeStateMachinePlayback)enemies[index].animationTree.Get("parameters/playback");
+            enemies[index].animationState.Travel("Move");
+            enemies[index].behaviorState = EnemyState.Wander;
+            enemies[index].wishDirection = new Vector3((float)GD.RandRange(-1f, 1f), 0, (float)GD.RandRange(-1f, 1f));
+            enemyCount++;
+            GD.Print($"{inputNode.Name} Initialized at index {index}");
+        }
         public void EnemyRemove(int inputIndex) {
             if (inputIndex < 0 || inputIndex >= enemyCount) {
                 GD.PrintErr("Enemy Failed to remove: Invalid index!");
@@ -100,27 +121,6 @@ namespace Gamma {
             RotateTowards(enemy.wishDirection, enemy.node, 0.01f);
             enemy.node.Velocity += Vector3.Down * 9.8f * globalPhysicsDeltaFloat;
             inputEnemy = enemy;
-        }
-        public void EnemyInitialize(CharacterBody3D inputNode) {
-            if (enemyCount >= enemies.Length) {
-                Enemy[] newEnemies = new Enemy[enemies.Length * ARRAY_GROWTH_FACTOR];
-                for (int i = 0; i < enemies.Length; i++) {
-                    newEnemies[i] = enemies[i];
-                }
-                enemies = newEnemies;
-                GD.Print("Enemy array resized to " + enemies.Length);
-            }
-            int index = enemyCount;
-            enemies[index].node = inputNode;
-            enemies[index].animationPlayer = inputNode.GetChild<Node3D>(0).GetNode<AnimationPlayer>("AnimationPlayer");
-            enemies[index].animationTree = inputNode.GetNode<AnimationTree>("AnimationTree");
-            enemies[index].animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
-            enemies[index].animationState = (AnimationNodeStateMachinePlayback)enemies[index].animationTree.Get("parameters/playback");
-            enemies[index].animationState.Travel("Move");
-            enemies[index].behaviorState = EnemyState.Wander;
-            enemies[index].wishDirection = new Vector3((float)GD.RandRange(-1f, 1f), 0, (float)GD.RandRange(-1f, 1f));
-            enemyCount++;
-            GD.Print($"{inputNode.Name} Initialized at index {index}");
         }
         public void EnemyUpdate() {
             for (int i = 0; i < enemyCount; i++) {

@@ -14,7 +14,17 @@ namespace Gamma {
             public int vertexCount;
             public static int count;
         }
-        public void TrailsCreate(Trail[] inputTrails, Node3D parent, Vector3 inputOffset, Color inputColor, float inputWidth, float inputLength, int maxCount, bool isFullbright) {
+        public struct TrailsCreateParams {
+            public StandardMaterial3D material;
+            public Node3D parent;
+            public Vector3 offset;
+            public Color color;
+            public float width;
+            public float length;
+            public int maxCount;
+            public bool isFullBright;
+        }
+        public void TrailsCreate(ref Trail[] inputTrails, TrailsCreateParams inputParams) {
             int index = -1;
             for (int i = 0; i < inputTrails.Length; i++) {
                 if (inputTrails[i].node == null) {
@@ -23,28 +33,32 @@ namespace Gamma {
                 }
             }
             if (index == -1) {
-                GD.PrintErr("TrailsCreate: No available trail slots");
-                return;
+                Trail[] newTrails = new Trail[inputTrails.Length * ARRAY_GROWTH_FACTOR];
+                for (int i = 0; i < inputTrails.Length; i++) {
+                    newTrails[i] = inputTrails[i];
+                }
+                index = inputTrails.Length;
+                inputTrails = newTrails;
+                GD.Print("Trails array resized to " + inputTrails.Length);
             }
             Trail trail = new Trail();
             trail.node = new MeshInstance3D();
             trail.node.Mesh = new ImmediateMesh();
-            trail.points = new Vector3[maxCount];
-            trail.lastEmitPosition = inputOffset;
-            trail.offset = inputOffset;
-            trail.lifeTimes = new float[maxCount];
-            trail.width = inputWidth;
-            trail.length = inputLength;
+            trail.points = new Vector3[inputParams.maxCount];
+            trail.lastEmitPosition = inputParams.offset;
+            trail.offset = inputParams.offset;
+            trail.lifeTimes = new float[inputParams.maxCount];
+            trail.width = inputParams.width;
+            trail.length = inputParams.length;
             trail.vertexCount = 0;
-            trail.color = inputColor;
-            StandardMaterial3D material = new StandardMaterial3D();
-            material.RenderPriority = 1;
-            material.AlbedoColor = inputColor;
-            material.ShadingMode = isFullbright ? StandardMaterial3D.ShadingModeEnum.Unshaded : StandardMaterial3D.ShadingModeEnum.PerVertex;
+            trail.color = inputParams.color;
+            StandardMaterial3D material = inputParams.material != null ? 
+                inputParams.material : 
+                GD.Load<StandardMaterial3D>("res://assets/materials/trail-materials/MAT_DEFAULTTRAIL.tres");
             trail.node.MaterialOverride = material;
             trail.node.TopLevel = true;
             trail.node.CastShadow = GeometryInstance3D.ShadowCastingSetting.Off;
-            parent.AddChild(trail.node);
+            inputParams.parent.AddChild(trail.node);
             inputTrails[index] = trail;
         }
         public void TrailsRemove(Trail[] inputTrails, int index) {

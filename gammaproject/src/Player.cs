@@ -496,7 +496,7 @@ namespace Gamma {
                         targetAnimation = "Walk";
                     }
                     if (HasCrossedPlaybackPosition(previousPlaybackPosition, currentPlaybackPosition, 0.66f)) {
-                        Shoot(3);
+                        Shoot(16);
                     }
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     break;
@@ -840,29 +840,34 @@ namespace Gamma {
             }
             //PlayerRocketIndicatorUpdate(shouldShowRocketIndicator, playerForward + player.node.GlobalTransform.Basis.Y.Normalized() * 0.2f);
             CharacterBody3D target = null;
-            if (player.detectionArea.GetOverlappingBodies().Count > 0) {
-                for (int i = 0; i < player.detectionArea.GetOverlappingBodies().Count; i++) {
-                    //get closest enemy
-                    Node3D body = player.detectionArea.GetOverlappingBodies()[i];
-                    if (!(body.GetType() == typeof(CharacterBody3D))) {
-                        continue;
-                    }
-                    GD.Print(body.Name);
-                    if ((string)body.GetMeta("Type") != "EnemyGeneric") {
-                        continue;
-                    }
-                    CharacterBody3D enemy = (CharacterBody3D)body;
-                    if (target == null) {
+            float best = float.MaxValue;
+            Godot.Collections.Array<Node3D> bodies = player.detectionArea.GetOverlappingBodies();
+            if (bodies.Count > 0) {
+                for (int i = 0; i < bodies.Count; i++) {
+                    Node3D potentialTarget = bodies[i];
+                    if (!(potentialTarget.GetType() == typeof(CharacterBody3D))) { continue; }
+                    if ((string)potentialTarget.GetMeta("Type") != "EnemyGeneric") { continue; }
+                    RaycastWorldHitInfo potentialTargetHitInfo;
+                    bool hitSomething = RaycastWorld(globalWorld3D, player.node, player.node.GlobalPosition + Vector3.Up, potentialTarget.GlobalPosition + Vector3.Up, out potentialTargetHitInfo);
+                    if (!hitSomething || potentialTargetHitInfo.Collider != potentialTarget) { continue; }
+                    CharacterBody3D enemy = (CharacterBody3D)potentialTarget;
+                    Vector3 toEnemy = enemy.GlobalPosition - player.node.GlobalPosition;
+                    float distance = toEnemy.Length();
+                    float angleToPlayer = Mathf.Acos(Mathf.Clamp(playerForward.Dot(toEnemy.Normalized()), -1f, 1f));
+                    float angleToCamera = Mathf.Acos(Mathf.Clamp(-currentCamera.GlobalTransform.Basis.Z.Dot(toEnemy.Normalized()), -1f, 1f));
+                    float score = distance + angleToPlayer * 10f;
+                    if (score < best) {
+                        best = score;
                         target = enemy;
-                    } else {
-                        if ((target.GlobalPosition - player.node.GlobalPosition).Length() > (enemy.GlobalPosition - player.node.GlobalPosition).Length()) {
-                            target = enemy;
-                        }
                     }
                 }
             }
-            player.rocketIndicator.GlobalPosition = target == null ? Vector3.Zero : target.GlobalPosition;
-            //GD.Print(player.rocketIndicator.GlobalPosition);
+            if (!(target == null)) {
+                player.rocketIndicator.Visible = true;
+                player.rocketIndicator.GlobalPosition = target.GlobalPosition;
+            } else {
+                player.rocketIndicator.Visible = false;
+            }
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }
