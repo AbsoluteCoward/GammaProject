@@ -1,0 +1,21 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dkpa1hmb1gtjr"]
+
+[ext_resource type="Texture2D" uid="uid://p2do0cjgkack" path="res://assets/textures/EFX_FIRE01_SPRITESHEET.png" id="1_shay8"]
+
+[resource]
+transparency = 1
+cull_mode = 2
+depth_draw_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_shay8")
+texture_filter = 1
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 4
+particles_anim_v_frames = 2
+particles_anim_loop = true
+point_size = 128.0
+fov_override = 150.8
+stencil_flags = 2
+stencil_outline_thickness = 0.02

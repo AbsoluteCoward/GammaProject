@@ -78,11 +78,6 @@ animation = &"RunJump02"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_42nxq"]
 animation = &"TeleportShoot"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0ji64"]
-animation = &"Run"
-
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_kdkla"]
-
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_7ix2x"]
 animation = &"FireWalk"
 
@@ -121,7 +116,7 @@ filters = ["", "Skeleton3D:Abdomen", "Skeleton3D:Base", "Skeleton3D:Chest", "Ske
 graph_offset = Vector2(-492.37814, 312.0076)
 nodes/output/position = Vector2(1300, 840)
 nodes/Walk/node = SubResource("AnimationNodeAnimation_08t41")
-nodes/Walk/position = Vector2(-360, 1040)
+nodes/Walk/position = Vector2(20, 1120)
 nodes/WalkBlend/node = SubResource("AnimationNodeBlend2_08t41")
 nodes/WalkBlend/position = Vector2(300, 840)
 nodes/TeleportStartupBlend/node = SubResource("AnimationNodeBlend2_ucweq")
@@ -140,11 +135,7 @@ nodes/FireWalkOneShot/node = SubResource("AnimationNodeOneShot_ogpgs")
 nodes/FireWalkOneShot/position = Vector2(1100, 840)
 nodes/FireWalk/node = SubResource("AnimationNodeAnimation_7ix2x")
 nodes/FireWalk/position = Vector2(880, 1120)
-nodes/Blend2/node = SubResource("AnimationNodeBlend2_kdkla")
-nodes/Blend2/position = Vector2(-80, 1160)
-nodes/Animation/node = SubResource("AnimationNodeAnimation_0ji64")
-nodes/Animation/position = Vector2(-400.94135, 1382.7185)
-node_connections = [&"output", 0, &"FireWalkOneShot", &"WalkBlend", 0, &"Idle", &"WalkBlend", 1, &"Blend2", &"TeleportStartupBlend", 0, &"WalkBlend", &"TeleportStartupBlend", 1, &"TeleportStartupSeek", &"TeleportStartupSeek", 0, &"TeleportStartup", &"GunBlend", 0, &"TeleportStartupBlend", &"GunBlend", 1, &"GunStartup", &"FireWalkOneShot", 0, &"GunBlend", &"FireWalkOneShot", 1, &"FireWalk", &"Blend2", 0, &"Walk", &"Blend2", 1, &"Animation"]
+node_connections = [&"output", 0, &"FireWalkOneShot", &"WalkBlend", 0, &"Idle", &"WalkBlend", 1, &"Walk", &"TeleportStartupBlend", 0, &"WalkBlend", &"TeleportStartupBlend", 1, &"TeleportStartupSeek", &"TeleportStartupSeek", 0, &"TeleportStartup", &"GunBlend", 0, &"TeleportStartupBlend", &"GunBlend", 1, &"GunStartup", &"FireWalkOneShot", 0, &"GunBlend", &"FireWalkOneShot", 1, &"FireWalk"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_b4o2o"]
 animation = &"WallGrab"

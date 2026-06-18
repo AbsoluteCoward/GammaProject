@@ -24,6 +24,13 @@
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=1760429321]
 environment = ExtResource("1_h5kha")
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=555029377]
+transform = Transform3D(1, 0, 0, 0, 0.9659259, 0.25881907, 0, -0.25881907, 0.9659258, 0, 0, 0)
+light_energy = 0.0
+shadow_enabled = true
+directional_shadow_mode = 0
+sky_mode = 1
+
 [node name="SpotLight3D3" type="SpotLight3D" parent="Environment" unique_id=449831652]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 34, 14.5, -16)
 light_color = Color(0, 1, 1, 1)
@@ -167,7 +174,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 45)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 45)
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("17_jk2w6")]
-transform = Transform3D(-2.1855739e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855739e-07, 36, 21.3, 26)
+transform = Transform3D(-2.1855739e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855739e-07, 3, 7.299999, 18)
 
 [node name="PlayerCamera" parent="Entities" unique_id=29831598 instance=ExtResource("18_blhdk")]
 transform = Transform3D(-1, 4.8067232e-08, -7.30225e-08, 1.7763567e-15, 0.83527994, 0.549825, 8.7422784e-08, 0.549825, -0.83527994, -5.200001, 10.4183, 11.60695)
@@ -204,7 +211,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 7, 12)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 7, 11)
 
 [node name="SurveillanceScanner01" parent="Entities" unique_id=1505433102 instance=ExtResource("28_5pdgu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.099999905, 1, 1.2000008)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.9, 12, 1.2000008)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("29_wawa3")]
 

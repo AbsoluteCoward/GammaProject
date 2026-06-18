@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://cwe6nygma3nq5"]
+
+[ext_resource type="Material" uid="uid://b1pqrjsgou3m2" path="res://assets/materials/MAT_EXPLOSION01.res" id="1_dndvl"]
+[ext_resource type="Material" uid="uid://dkpa1hmb1gtjr" path="res://assets/materials/MAT_EXPLOSION01_FIRE.tres" id="2_j1vcx"]
+[ext_resource type="Material" uid="uid://cs4s74bfgmkrt" path="res://assets/materials/MAT_EXPLOSION01_SMOKE.res" id="3_3gcxd"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_j1vcx"]
+material = ExtResource("1_dndvl")
+radial_segments = 16
+rings = 16
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_3gcxd"]
+material = ExtResource("2_j1vcx")
+size = Vector2(12, 24)
+subdivide_width = 1
+subdivide_depth = 1
+center_offset = Vector3(0, 2, 0)
+orientation = 2
+
+[sub_resource type="QuadMesh" id="QuadMesh_3gcxd"]
+material = ExtResource("3_3gcxd")
+size = Vector2(6, 2)
+orientation = 1
+
+[node name="Explosion" type="Node3D" unique_id=752453982]
+
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=1897035331]
+cast_shadow = 0
+mesh = SubResource("SphereMesh_j1vcx")
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="." unique_id=1621371044]
+emitting = false
+lifetime = 4.0
+one_shot = true
+explosiveness = 0.9
+mesh = SubResource("PlaneMesh_3gcxd")
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 1.0
+emission_ring_radius = 6.0
+emission_ring_inner_radius = 0.0
+emission_ring_cone_angle = 90.0
+direction = Vector3(0, 1, 0)
+spread = 10.0
+gravity = Vector3(0, -1, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 16.0
+anim_speed_min = 1.0
+anim_speed_max = 2.0
+anim_offset_max = 1.0
+
+[node name="CPUParticles3D2" type="CPUParticles3D" parent="." unique_id=897180336]
+visible = false
+emitting = false
+amount = 24
+lifetime = 4.0
+one_shot = true
+explosiveness = 1.0
+mesh = SubResource("QuadMesh_3gcxd")
+particle_flag_align_y = true
+spread = 180.0
+flatness = 1.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 12.0
+initial_velocity_max = 12.0
