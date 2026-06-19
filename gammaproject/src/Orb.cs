@@ -36,13 +36,12 @@ namespace Gamma {
             player.orb.animationPlayer.Play("Fly");
             float orbRadius = 0.1f;
             TrailsCreateParams trailParams = new TrailsCreateParams{
+                material = GD.Load<StandardMaterial3D>("res://assets/materials/trail-materials/MAT_TRAILTELEPORT.tres"),
                 parent = player.orb.node,
                 offset = Vector3.Forward * orbRadius,
-                color = Colors.Cyan,
-                width = 0.05f,
-                length = 0.5f,
+                width = 0.1f,
+                length = 1f,
                 maxCount = 256,
-                isFullBright = true
             };
             TrailsCreate(ref trails, trailParams);
         }

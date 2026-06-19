@@ -22,7 +22,6 @@ namespace Gamma {
             public float width;
             public float length;
             public int maxCount;
-            public bool isFullBright;
         }
         public void TrailsCreate(ref Trail[] inputTrails, TrailsCreateParams inputParams) {
             int index = -1;
@@ -51,7 +50,6 @@ namespace Gamma {
             trail.width = inputParams.width;
             trail.length = inputParams.length;
             trail.vertexCount = 0;
-            trail.color = inputParams.color;
             StandardMaterial3D material = inputParams.material != null ? 
                 inputParams.material : 
                 GD.Load<StandardMaterial3D>("res://assets/materials/trail-materials/MAT_DEFAULTTRAIL.tres");

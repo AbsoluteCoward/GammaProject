@@ -130,7 +130,8 @@ namespace Gamma {
             Trail.count = 0;
             environmentNode = GetTree().CurrentScene.GetNode<Node>("Environment");
             worldEnvironment = environmentNode.GetNode<WorldEnvironment>("WorldEnvironment");
-            worldEnvironmentOriginal = (WorldEnvironment)worldEnvironment.Duplicate(0);
+            worldEnvironmentOriginal = (WorldEnvironment)worldEnvironment.Duplicate();
+            worldEnvironmentOriginal.Environment = (Godot.Environment)worldEnvironment.Environment.Duplicate();
             directionalLight = environmentNode.GetNode<DirectionalLight3D>("DirectionalLight3D");
             directionalLightOriginal = (DirectionalLight3D)directionalLight.Duplicate(0);
             entitiesNode = GetTree().CurrentScene.GetNode<Node>("Entities");

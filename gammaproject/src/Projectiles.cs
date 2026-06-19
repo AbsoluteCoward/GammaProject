@@ -43,11 +43,9 @@ namespace Gamma {
                 material = GD.Load<StandardMaterial3D>("res://assets/materials/trail-materials/MAT_TRAILROCKET.tres"),
                 parent = rocket.node, 
                 offset =Vector3.Back * 0.5f, 
-                color = Colors.DarkGray, 
                 width = 0.05f, 
                 length = 0.5f, 
                 maxCount = 256,
-                isFullBright = true
             };
             TrailsCreate(ref trails, trailParams);
             rocket.trailIndex = trails.Length - 1;
@@ -191,13 +189,13 @@ namespace Gamma {
             if (directionalLight != null) {
                 directionalLight.LightColor += new Color(1f, 0.4f, 0f);
                 directionalLight.LightEnergy += 40f;
+                directionalLight.LookAt(player.node.GlobalPosition - (inputPosition + Vector3.Up * 2), Vector3.Up);
                 worldEnvironment.Environment.AmbientLightColor += new Color(1f, 0.4f, 0f);
                 worldEnvironment.Environment.AmbientLightEnergy += 1f;
-                directionalLight.LookAt(player.node.GlobalPosition - (inputPosition + Vector3.Up * 2), Vector3.Up);
             }
         }
         public void UpdateExplosions() {
-            const float LIGHT_FADE_SPEED = 0.5f;
+            const float LIGHT_FADE_SPEED = 1f;
             bool shouldFadeLight = true;
             for (int i = 0; i < explosions.Length; i++) {
                 if (explosions[i].node == null) { continue; }
