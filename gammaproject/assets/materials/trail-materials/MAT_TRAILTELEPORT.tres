@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://d0ix6ktw3l7jk"]
+
+[ext_resource type="Texture2D" uid="uid://b4pi07f38e2rj" path="res://assets/textures/OrbFront.png" id="1_5ciei"]
+
+[resource]
+render_priority = 1
+shading_mode = 0
+albedo_color = Color(0, 1, 1, 1)
+albedo_texture = ExtResource("1_5ciei")
+stencil_flags = 2
+stencil_outline_thickness = 0.02

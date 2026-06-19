@@ -26,7 +26,17 @@
 					},
 					"type":"spot",
 					"range":40,
-					"name":"Spot.003"
+					"name":"Spot.006"
+				},
+				{
+					"color":[
+						1,
+						1,
+						1
+					],
+					"intensity":683,
+					"type":"directional",
+					"name":"Sun.003"
 				}
 			]
 		}
@@ -52,19 +62,23 @@
 					"default_specular":0.5,
 					"anvil_grid_scale":1.0,
 					"texture_scale_u":4.0,
-					"texture_scale_v":3.999999761581421,
-					"texture_rotation":90.0,
-					"texture_offset_x":0.0,
-					"texture_offset_y":0.800000011920929,
+					"texture_scale_v":4.0,
+					"texture_rotation":180.0,
+					"texture_offset_x":0.40000009536743164,
+					"texture_offset_y":0.6666655540466309,
 					"last_export_filepath":"C:\\Users\\lil ktg\\Documents\\GitHub\\gamma\\gammaproject\\assets\\map-models\\level4.gltf",
-					"projection_scale":4.0
+					"projection_scale":4.0,
+					"show_experimental_settings":1
 				},
-				"hotspot_mapping_props":{}
+				"hotspot_mapping_props":{},
+				"VDMBrushBakerAddonData":{},
+				"power_sequencer":{}
 			},
 			"name":"Scene",
 			"nodes":[
 				0,
-				1
+				1,
+				2
 			]
 		}
 	],
@@ -103,6 +117,25 @@
 				12.428668975830078,
 				-11.589716911315918
 			]
+		},
+		{
+			"extensions":{
+				"KHR_lights_punctual":{
+					"light":1
+				}
+			},
+			"name":"Sun",
+			"rotation":[
+				-0.44942933320999146,
+				0.2724635899066925,
+				-0.4619130790233612,
+				0.7144321203231812
+			],
+			"translation":[
+				10.899998664855957,
+				7.800000190734863,
+				-14.400001525878906
+			]
 		}
 	],
 	"materials":[
@@ -126,8 +159,7 @@
 				"baseColorTexture":{
 					"index":1
 				},
-				"metallicFactor":0,
-				"roughnessFactor":0.800000011920929
+				"metallicFactor":0
 			}
 		}
 	],
@@ -234,49 +266,49 @@
 		{
 			"bufferView":6,
 			"componentType":5126,
-			"count":213,
+			"count":315,
 			"max":[
-				17,
-				21,
-				4
+				28.388877868652344,
+				84.99998474121094,
+				16.666664123535156
 			],
 			"min":[
 				-40,
-				-5,
-				-56.36652374267578
+				-49.999996185302734,
+				-228.3333282470703
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":7,
 			"componentType":5126,
-			"count":213,
+			"count":315,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":8,
 			"componentType":5126,
-			"count":213,
+			"count":315,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":9,
 			"componentType":5121,
-			"count":213,
+			"count":315,
 			"normalized":true,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":10,
 			"componentType":5123,
-			"count":213,
+			"count":315,
 			"normalized":true,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":11,
 			"componentType":5123,
-			"count":549,
+			"count":762,
 			"type":"SCALAR"
 		}
 	],
@@ -319,38 +351,38 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":2556,
+			"byteLength":3780,
 			"byteOffset":6792,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":2556,
-			"byteOffset":9348,
+			"byteLength":3780,
+			"byteOffset":10572,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1704,
-			"byteOffset":11904,
+			"byteLength":2520,
+			"byteOffset":14352,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":852,
-			"byteOffset":13608,
+			"byteLength":1260,
+			"byteOffset":16872,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1704,
-			"byteOffset":14460,
+			"byteLength":2520,
+			"byteOffset":18132,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1098,
-			"byteOffset":16164,
+			"byteLength":1524,
+			"byteOffset":20652,
 			"target":34963
 		}
 	],
@@ -362,7 +394,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":17264,
+			"byteLength":22176,
 			"uri":"level4.bin"
 		}
 	]
