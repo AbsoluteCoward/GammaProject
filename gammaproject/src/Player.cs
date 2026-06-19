@@ -89,6 +89,7 @@ namespace Gamma {
             playerCamera.offsetHeight = DEFAULT_CAMERA_HEIGHT;
             playerCamera.node.Fov = 64;
             playerCamera.node.Far = cameraFarSetting;
+            playerCamera.targetAngle = Mathf.Round(inputCamera.Rotation.Y / 90f) * 90f;
             if (currentCamera == null) {
                 currentCamera = inputCamera;
                 inputCamera.Current = true;
@@ -331,6 +332,9 @@ namespace Gamma {
                     bool shouldWalkBlend = hasMovementInput;
                     float walkBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/WalkBlend/blend_amount"), shouldWalkBlend ? 1f : 0f, 0.1f);
                     player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", walkBlendAmount);
+                    bool shouldRunBlend = Input.IsActionPressed("mod");
+                    float runBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/RunBlend/blend_amount"), shouldRunBlend ? 1f : 0f, 0.1f);
+                    player.animationTree.Set("parameters/Walk/RunBlend/blend_amount", runBlendAmount);
                     bool shouldTeleportBlend = Input.IsActionPressed("action2");
                     float teleportBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount"), shouldTeleportBlend ? 1f : 0f, 0.1f);
                     player.animationTree.Set("parameters/Walk/TeleportStartupBlend/blend_amount", teleportBlendAmount);
@@ -673,8 +677,11 @@ namespace Gamma {
                          targetAnimation = "Fall";
                     }
                     if (player.isOnGround) {
-                        string animationToPlay = playerForward.Dot(player.wishDirection) > -0.6f ? "Roll" : "FallToIdle";
-                        player.animationState.Start(animationToPlay, true);
+                        if (playerForward.Dot(player.wishDirection) > -0.6f) {
+                            player.animationState.Start("Roll", true);
+                        } else {
+                            targetAnimation = "FallToIdle";
+                        }
                     }
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
                     break;
@@ -722,14 +729,7 @@ namespace Gamma {
                         if ((player.node.Velocity * Y_FLAT).Length() > 6f) {
                             player.animationState.Start("Roll", true);
                         } else {
-                            float impactSpeed = -player.node.Velocity.Y;
-                            float animationScale = Mathf.Clamp(impactSpeed / 12.0f, 0.5f, 2.0f);
-                            float animationSpeed = Mathf.Clamp(2.0f - (impactSpeed / 10.0f), 0.5f, 2f);
-                            GD.Print("impactSpeed: " + impactSpeed + " animationScale: " + animationScale + " animationSpeed: " + animationSpeed);
-                            player.animationTree.Set("parameters/FallToIdle/FallToIdleTimeSeek/seek_request", 0.0f);
-                            player.animationTree.Set("parameters/FallToIdle/FallToIdleBlend/blend_amount", animationScale);
-                            player.animationTree.Set("parameters/FallToIdle/FallToIdleTimeScale/scale", animationSpeed);
-                            player.animationState.Start("FallToIdle", true);
+                            targetAnimation = "FallToIdle";
                         }
                     }
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
@@ -741,8 +741,8 @@ namespace Gamma {
                     break;
                 }
                 case "FallToIdle": {
-                    if (!isAnimationSameAsPrevious) {
-                        break;
+                    if ((float)player.animationTree.Get("parameters/FallToIdle/FallToIdleBlend/blend_amount") < 0.05f) {
+                        player.animationTree.Set("parameters/FallToIdle/FallToIdleBlend/blend_amount", 0.05f);
                     }
                     int FallToIdleBlockIndex = GetPlaybackBlockIndex("FallToIdle");
                     if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[FallToIdleBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[FallToIdleBlockIndex].currentPlaybackPosition, 0.2f)) {
@@ -814,6 +814,17 @@ namespace Gamma {
                 for (int i = 0; i < player.animationPlaybackBlocks.Length; i++) {
                     player.animationPlaybackBlocks[i].currentPlaybackPosition = 0f;
                 }
+                switch (targetAnimation) {
+                    case "FallToIdle":
+                        float impactSpeed = -player.node.Velocity.Y;
+                        float animationScale = Mathf.Clamp(impactSpeed / 12.0f, 0.5f, 2.0f);
+                        float animationSpeed = Mathf.Clamp(2.0f - (impactSpeed / 10.0f), 0.5f, 2f);
+                        GD.Print("impactSpeed: " + impactSpeed + " animationScale: " + animationScale + " animationSpeed: " + animationSpeed);
+                        player.animationTree.Set("parameters/FallToIdle/FallToIdleTimeSeek/seek_request", 0.0f);
+                        player.animationTree.Set("parameters/FallToIdle/FallToIdleBlend/blend_amount", animationScale);
+                        player.animationTree.Set("parameters/FallToIdle/FallToIdleTimeScale/scale", animationSpeed);
+                        break;
+                }
                 switch (player.animationState.GetCurrentNode()) {
                     case "Walk":
                         if (!player.orb.node.TopLevel) { player.orb.node.Visible = false; }
@@ -871,18 +882,17 @@ namespace Gamma {
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }
-            if (Input.IsActionJustPressed("cameraRight")) {
-                inputCamera.targetAngle -= 90f;
-            } else if (Input.IsActionJustPressed("cameraLeft")) {
-                inputCamera.targetAngle += 90f;
+            if (Input.IsActionJustPressed("cameraRight") || Input.IsActionJustPressed("cameraLeft")) {
+                float x = Input.GetActionStrength("cameraLeft") - Input.GetActionStrength("cameraRight");
+                inputCamera.targetAngle += x * 90f;
             }
             float targetHeight = 
-                DEFAULT_CAMERA_HEIGHT + 
-                (player.groundRay.IsColliding() ? 
-                    Mathf.Max(0f, player.node.GlobalPosition.Y - player.groundRay.GetCollisionPoint().Y) * 0.5f : 
+                DEFAULT_CAMERA_HEIGHT +
+                (player.groundRay.IsColliding() ?
+                    Mathf.Max(0f, player.node.GlobalPosition.Y - player.groundRay.GetCollisionPoint().Y) * 0.5f :
                     8f
                 );
-            inputCamera.offsetHeight = Mathf.Lerp(inputCamera.offsetHeight, targetHeight, 0.05f);
+            inputCamera.offsetHeight = Mathf.Lerp(inputCamera.offsetHeight, targetHeight, 0.1f);
             Vector3 medianPosition = inputCamera.WallRayCast.GlobalPosition.Lerp(player.orb.node.GlobalPosition, 0.1f);
             inputCamera.targetAngle = Mathf.PosMod(inputCamera.targetAngle, 360f);
             float angleDifference = Mathf.PosMod(inputCamera.targetAngle - inputCamera.angle + 180f, 360f) - 180f;
@@ -890,7 +900,6 @@ namespace Gamma {
             float cameraAngleRadians = Mathf.DegToRad(inputCamera.angle);
             Vector3 offsetDirection = new Vector3(Mathf.Sin(cameraAngleRadians), 0, Mathf.Cos(cameraAngleRadians));
             float breathe = Mathf.Sin(sceneState.timeSinceSceneLoad * 0.8f) * 0.04f;
-            float speed = (player.node.Velocity * Y_FLAT).LengthSquared();
             inputCamera.WallRayCast.TargetPosition = inputCamera.WallRayCast.ToLocal(
                 medianPosition +
                 (offsetDirection * (inputCamera.offsetDistance)) +
@@ -903,7 +912,8 @@ namespace Gamma {
                 inputCamera.WallRayCast.ToGlobal(inputCamera.WallRayCast.TargetPosition);
             inputCamera.targetPosition = medianPosition;
             inputCamera.node.LookAt(inputCamera.targetPosition);
-            inputCamera.node.Fov = Mathf.Lerp(inputCamera.node.Fov, 50 + Mathf.Min(player.node.Velocity.LengthSquared() * 0.2f, 30f), 0.02f);
+            float speed = player.node.Velocity.LengthSquared();
+            inputCamera.node.Fov = Mathf.Lerp(inputCamera.node.Fov, 70 + Mathf.Min(speed * 0.2f, 30f), 0.02f);
         }
     }
 }

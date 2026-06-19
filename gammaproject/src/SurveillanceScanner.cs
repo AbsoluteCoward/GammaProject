@@ -6,6 +6,7 @@ namespace Gamma {
             public CharacterBody3D node;
             public Skeleton3D skeleton;
             public SpotLight3D fillLight;
+            public float timeUntilSleep;
             public static int lampBoneIndex;
         }
         public void SurveillanceScannerInitialize(CharacterBody3D inputNode) {
@@ -19,8 +20,7 @@ namespace Gamma {
             int index = surveillanceScannerCount;
             surveillanceScanners[index].node = inputNode;
             surveillanceScanners[index].skeleton = inputNode.GetNode<Skeleton3D>("SurveillanceScanner01/Skeleton3D");
-            //surveillanceScanners[index].fillLight = inputNode.GetNode<SpotLight3D>("SpringArm3D/FillLight");
-            //surveillanceScanners[index].fillLight.TopLevel = true;
+            surveillanceScanners[index].timeUntilSleep = 0f;
             for (int i = 0; i < surveillanceScanners[index].skeleton.GetBoneCount(); i++) {
                 if (surveillanceScanners[index].skeleton.GetBoneName(i) == "Lamp") {
                     SurveillanceScanner.lampBoneIndex = i;
@@ -33,7 +33,7 @@ namespace Gamma {
         }
         public void SurveillanceScannerUpdate() {
             SurveillanceScanner scanner = surveillanceScanners[0];
-            if (scanner.node == null) { return; }
+            Vector3 scannerForward = -scanner.node.Transform.Basis.Z.Normalized();
             Vector3 targetposition = 
                 playerCamera.WallRayCast.TargetPosition + 
                 playerCamera.WallRayCast.GlobalPosition +
@@ -41,6 +41,18 @@ namespace Gamma {
                 -playerCamera.node.Transform.Basis.Z.Normalized() * 3f +
                 playerCamera.node.Transform.Basis.X.Normalized() * 3f;
             Vector3 toTarget = targetposition - scanner.node.GlobalPosition;
+            Vector3 toTargetFlat = (toTarget * Y_FLAT).Normalized();
+            if (scanner.timeUntilSleep <= 0f) {
+                float dotProduct = scannerForward.Dot(toTargetFlat);
+                float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
+                float angleInDegrees = Mathf.RadToDeg(angleToTarget);
+                if (angleInDegrees > 66f) { return; }
+                RaycastWorldHitInfo hit;
+                bool hitSomething = RaycastWorld(globalWorld3D, scanner.node, scanner.node.GlobalPosition, player.node.GlobalPosition + Vector3.Up, out hit);
+                if (hitSomething && hit.Collider != player.node) { return; }
+            }
+            scanner.timeUntilSleep = 12f;
+            scanner.timeUntilSleep -= globalPhysicsDeltaFloat;
             const float speed = 4f;
             scanner.node.Velocity += toTarget * speed * globalPhysicsDeltaFloat;
             scanner.node.Velocity *= 0.9f;
@@ -49,18 +61,6 @@ namespace Gamma {
                 scanner.node.Velocity += scanner.node.GetWallNormal() * 15f;
             }
             scanner.node.MoveAndSlide();
-            //scanner.fillLight.LookAt(player.node.GlobalPosition, Vector3.Up);
-            // RaycastWorldHitInfo fillLightHitInfo;
-            // if (RaycastWorld(
-            //         globalWorld3D, 
-            //         player.node, 
-            //         scanner.node.GlobalPosition + scanner.node.Transform.Basis.Z, 
-            //         ((scanner.node.GlobalPosition + scanner.node.Transform.Basis.Z) - targetposition).Normalized() * 20f,
-            //         out fillLightHitInfo
-            //     )
-            // ) {
-            //     scanner.fillLight.GlobalPosition = fillLightHitInfo.Position;
-            // }
             Transform3D lampPose = scanner.skeleton.GetBoneGlobalPose(SurveillanceScanner.lampBoneIndex);
             Vector3 globalTargetPosition = player.node.GlobalPosition + Vector3.Up - playerCamera.node.Transform.Basis.Z.Normalized() * 3f;
             Vector3 skeletonLocalTargetPos = scanner.skeleton.ToLocal(globalTargetPosition);
