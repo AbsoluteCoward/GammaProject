@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="2_p0euy"]
 [ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="3_6mtxo"]
 [ext_resource type="PackedScene" uid="uid://qley5ny6m3l2" path="res://scenes/UI/default_ui.tscn" id="4_yknqd"]
+[ext_resource type="PackedScene" uid="uid://4b3ysfnolshd" path="res://scenes/entities/surveillancescanner01.tscn" id="5_p0euy"]
 
 [sub_resource type="Environment" id="Environment_4duau"]
 ambient_light_source = 2
@@ -24,33 +25,45 @@ fog_depth_begin = 40.0
 environment = SubResource("Environment_4duau")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=815317633]
-transform = Transform3D(0.5, -3.7855173e-08, 0.8660253, -0.8660253, -2.1855694e-08, 0.5, 0, -1, -4.371139e-08, 0, 0, 0)
-visible = false
+transform = Transform3D(0.42261833, 3.096562e-08, -0.9063078, 0.9063078, -1.4439505e-08, 0.42261833, 2.2317946e-15, -1, -3.4166778e-08, 0, 4, -7)
 shadow_enabled = true
-directional_shadow_mode = 0
+shadow_bias = 0.3
+directional_shadow_mode = 1
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Environment" unique_id=2017551366]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 6.7000003, -7.7000003)
+spot_range = 12.0
+spot_attenuation = -0.34
+spot_angle = 60.0
 
 [node name="Geometry" type="Node" parent="." unique_id=1112735005]
 
-[node name="level4" parent="Geometry" unique_id=577837729 instance=ExtResource("1_4duau")]
+[node name="level4" parent="Geometry" unique_id=275621271 instance=ExtResource("1_4duau")]
 
-[node name="Spot" parent="Geometry/level4" index="1" unique_id=1695456690]
+[node name="level" parent="Geometry/level4" index="0" unique_id=220214380]
+cast_shadow = 2
+
+[node name="level_001_002" parent="Geometry/level4" index="1" unique_id=313176475]
+cast_shadow = 2
+
+[node name="level_002" parent="Geometry/level4" index="2" unique_id=219678824]
+cast_shadow = 2
+
+[node name="level_001-col_001" parent="Geometry/level4" index="4" unique_id=1338299146]
 visible = false
 shadow_enabled = true
-shadow_bias = 0.296
-shadow_normal_bias = 0.0
-
-[node name="Sun" parent="Geometry/level4" index="2" unique_id=1270692701]
-light_energy = 1.0
-shadow_enabled = true
-directional_shadow_mode = 0
 
 [node name="Entities" type="Node" parent="." unique_id=1339097609]
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("2_p0euy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.100000024, -9.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="PlayerCamera" parent="Entities" unique_id=1338417485 instance=ExtResource("3_6mtxo")]
 transform = Transform3D(1, 0, 0, 0, 0.83527994, 0.549825, 0, -0.549825, 0.83527994, 1, 4, -12)
+current = true
+
+[node name="SurveillanceScanner01" parent="Entities" unique_id=1505433102 instance=ExtResource("5_p0euy")]
+transform = Transform3D(0, 0, -1.0000001, 0, 1, 0, 1.0000001, 0, 0, -30, 8, -23)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("4_yknqd")]
 
