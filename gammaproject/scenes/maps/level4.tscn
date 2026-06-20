@@ -26,7 +26,7 @@ environment = SubResource("Environment_4duau")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=815317633]
 transform = Transform3D(0.42261833, 3.096562e-08, -0.9063078, 0.9063078, -1.4439505e-08, 0.42261833, 2.2317946e-15, -1, -3.4166778e-08, 0, 4, -7)
-shadow_enabled = true
+light_energy = 0.0
 shadow_bias = 0.3
 directional_shadow_mode = 1
 
@@ -38,18 +38,15 @@ spot_angle = 60.0
 
 [node name="Geometry" type="Node" parent="." unique_id=1112735005]
 
-[node name="level4" parent="Geometry" unique_id=275621271 instance=ExtResource("1_4duau")]
+[node name="level4" parent="Geometry" unique_id=294048965 instance=ExtResource("1_4duau")]
 
-[node name="level" parent="Geometry/level4" index="0" unique_id=220214380]
+[node name="level" parent="Geometry/level4" index="0" unique_id=1051749740]
 cast_shadow = 2
 
-[node name="level_001_002" parent="Geometry/level4" index="1" unique_id=313176475]
+[node name="level_001_002" parent="Geometry/level4" index="1" unique_id=629902415]
 cast_shadow = 2
 
-[node name="level_002" parent="Geometry/level4" index="2" unique_id=219678824]
-cast_shadow = 2
-
-[node name="level_001-col_001" parent="Geometry/level4" index="4" unique_id=1338299146]
+[node name="level_001-col_001" parent="Geometry/level4" index="6" unique_id=1191707038]
 visible = false
 shadow_enabled = true
 

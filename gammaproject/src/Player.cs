@@ -75,7 +75,7 @@ namespace Gamma {
                 player.animationPlaybackBlocks[i].previousPlaybackPosition = 0f;
                 player.animationPlaybackBlocks[i].currentPlaybackPosition = 0f;
             }
-            AnimationNodeOneShot fireShotNode = (AnimationNodeOneShot)((AnimationNodeBlendTree)((AnimationNodeStateMachine)player.animationTree.TreeRoot).GetNode("Walk")).GetNode("FireWalkOneShot");
+            AnimationNodeOneShot fireShotNode = (AnimationNodeOneShot)((AnimationNodeBlendTree)((AnimationNodeStateMachine)player.animationTree.TreeRoot).GetNode("Move")).GetNode("FireWalkOneShot");
             SetOneShotFilters(true, "shoulder.R", player.skeleton, player.node, fireShotNode); // Godot forces us to do this for some reason or else it will literally forget the filters we set for the oneshot in the editor
             GD.Print("Player Initialized");
         }
@@ -84,7 +84,7 @@ namespace Gamma {
             playerCamera.WallRayCast = inputCamera.GetChild<RayCast3D>(0);
             playerCamera.WallRayCast.TopLevel = true;
             playerCamera.WallRayCast.AddException(player.node);
-            playerCamera.WallRayCast.CollisionMask = 2;
+            playerCamera.WallRayCast.CollisionMask = 1;
             playerCamera.offsetDistance = DEFAULT_CAMERA_DISTANCE;
             playerCamera.offsetHeight = DEFAULT_CAMERA_HEIGHT;
             playerCamera.node.Fov = 64;
@@ -321,48 +321,51 @@ namespace Gamma {
             bool isAnimationSameAsPrevious = currentAnimation == previousAnimationName;
             bool isInTransition = player.animationState.GetTravelPath().Count > 0;
             switch (player.animationState.GetCurrentNode()) {
-                case "Walk": {
+                case "Move": {
                     if (!isAnimationSameAsPrevious) {
-                        player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", 0.0f);
-                        player.animationTree.Set("parameters/Walk/TeleportStartupBlend/blend_amount", 0.0f);
-                        player.animationTree.Set("parameters/Walk/GunBlend/blend_amount", 0.0f);
-                        player.animationTree.Set("parameters/Walk/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Abort);
+                        player.animationTree.Set("parameters/Move/WalkBlend/blend_amount", 0.0f);
+                        player.animationTree.Set("parameters/Move/TeleportStartupBlend/blend_amount", 0.0f);
+                        player.animationTree.Set("parameters/Move/GunBlend/blend_amount", 0.0f);
+                        player.animationTree.Set("parameters/Move/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Abort);
                         break;
                     }
-                    bool shouldWalkBlend = hasMovementInput;
-                    float walkBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/WalkBlend/blend_amount"), shouldWalkBlend ? 1f : 0f, 0.1f);
-                    player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", walkBlendAmount);
-                    bool shouldRunBlend = Input.IsActionPressed("mod");
-                    float runBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/RunBlend/blend_amount"), shouldRunBlend ? 1f : 0f, 0.1f);
+                    bool shouldWalkBlend = Input.IsActionPressed("mod");
+                    float walkBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/WalkBlend/blend_amount"), shouldWalkBlend ? 1f : 0f, 0.1f);
+                    player.animationTree.Set("parameters/Move/WalkBlend/blend_amount", walkBlendAmount);
+                    bool shouldRunBlend = hasMovementInput;
+                    player.animationTree.Set("parameters/Move/RunTimeScale/scale", 1);
+                    float runBlendAmount = 
+                        Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/RunBlend/blend_amount"), shouldRunBlend ? 1 : 0f, 0.1f);
+                    player.animationTree.Set("parameters/Move/RunBlend/blend_amount", runBlendAmount);
                     bool shouldTeleportBlend = Input.IsActionPressed("action2");
-                    float teleportBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount"), shouldTeleportBlend ? 1f : 0f, 0.1f);
-                    player.animationTree.Set("parameters/Walk/TeleportStartupBlend/blend_amount", teleportBlendAmount);
-                    if ((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount") <= ALMOST_ZERO && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.0f) {
-                        player.animationTree.Set("parameters/Walk/TeleportStartupSeek/seek_request", 0.0f);
+                    float teleportBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/TeleportStartupBlend/blend_amount"), shouldTeleportBlend ? 1f : 0f, 0.1f);
+                    player.animationTree.Set("parameters/Move/TeleportStartupBlend/blend_amount", teleportBlendAmount);
+                    if ((float)player.animationTree.Get("parameters/Move/TeleportStartupBlend/blend_amount") <= ALMOST_ZERO && (float)player.animationTree.Get("parameters/Move/TeleportStartup/current_position") > 0.0f) {
+                        player.animationTree.Set("parameters/Move/TeleportStartupSeek/seek_request", 0.0f);
                     }
-                    if ((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount") <= ALMOST_ZERO && !player.orb.node.TopLevel) {
+                    if ((float)player.animationTree.Get("parameters/Move/TeleportStartupBlend/blend_amount") <= ALMOST_ZERO && !player.orb.node.TopLevel) {
                         player.orb.node.Visible = false;
                     } else {
                         player.orb.node.Visible = true;
                     }
-                    bool shouldFireLeviathan = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Walk/TeleportStartup/current_position") > 0.8f;
+                    bool shouldFireLeviathan = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Move/TeleportStartup/current_position") > 0.8f;
                     if (shouldFireLeviathan) {
                         targetAnimation = "TeleportShoot";
                     }
                     bool isShooting = 
-                        (bool)player.animationTree.Get("parameters/Walk/FireWalkOneShot/active") &&
-                        (float)player.animationTree.Get("parameters/Walk/FireWalk/current_position") < 0.36f;
+                        (bool)player.animationTree.Get("parameters/Move/FireWalkOneShot/active") &&
+                        (float)player.animationTree.Get("parameters/Move/FireWalk/current_position") < 0.36f;
                     bool shouldGunBlend = !isShooting && (Input.IsActionPressed("attack") || player.targetCount > 0);
-                    float gunBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/GunBlend/blend_amount"), shouldGunBlend ? 1f : 0f, 0.1f);
-                    player.animationTree.Set("parameters/Walk/GunBlend/blend_amount", gunBlendAmount);
+                    float gunBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/GunBlend/blend_amount"), shouldGunBlend ? 1f : 0f, 0.1f);
+                    player.animationTree.Set("parameters/Move/GunBlend/blend_amount", gunBlendAmount);
                     if (Input.IsActionJustPressed("attack")) {
                         for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
                         player.targetCount = 0;
                         player.currentTargetIndex = 0;
                     }
-                    //GD.Print((bool)player.animationTree.Get("parameters/Walk/FireWalkOneShot/active"));
+                    //GD.Print((bool)player.animationTree.Get("parameters/Move/FireWalkOneShot/active"));
                     if (!isShooting && (Input.IsActionJustReleased("attack") || (player.targetCount > 0 && !Input.IsActionPressed("attack")))) {
-                        player.animationTree.Set("parameters/Walk/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
+                        player.animationTree.Set("parameters/Move/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
                         gunBlendAmount = 0f;
                     }
                     if (gunBlendAmount == 1) {
@@ -396,15 +399,11 @@ namespace Gamma {
                     if (gunBlendAmount > ALMOST_ONE || isShooting) {
                         shouldShowRocketIndicator = true;
                     }
-                    bool shouldFallFromWalk = !player.isOnGround;
-                    if (shouldFallFromWalk) { 
+                    bool shouldFall = !player.isOnGround;
+                    if (shouldFall) { 
                         targetAnimation = "Fall";
                         player.node.Velocity = Vector3.Down * 2 + playerForward;
                         break;
-                    }
-                    bool shouldRunFromWalk = action3Pressed && hasMovementInput;
-                    if (shouldRunFromWalk) {
-                        targetAnimation = "Run";
                     }
                     if (IsInputJustPressed(ref inputState.action3)) {
                         if (hasMovementInput) {
@@ -445,7 +444,7 @@ namespace Gamma {
                         }
                     }
                     int fireWalkBlockIndex = GetPlaybackBlockIndex("FireWalk");
-                    if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[fireWalkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[fireWalkBlockIndex].currentPlaybackPosition, 0.1f) && (float)player.animationTree.Get("parameters/Walk/FireWalk/current_position") > 0.0f) {
+                    if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[fireWalkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[fireWalkBlockIndex].currentPlaybackPosition, 0.1f) && (float)player.animationTree.Get("parameters/Move/FireWalk/current_position") > 0.0f) {
                         Shoot(1);
                     }
                     turnAnticipationTargetAngle = Mathf.Clamp(turnAnticipationTargetAngle, -0.8f, 0.8f);
@@ -458,7 +457,7 @@ namespace Gamma {
                 case "Run": {
                     if (!isAnimationSameAsPrevious) { break; }
                     if (!IsInputPressed(ref inputState.action3) || !hasMovementInput) {
-                        targetAnimation = "Walk";
+                        targetAnimation = "Move";
                     }
                     if (!player.isOnGround) {
                         Vector3 toLedge = Vector3.Zero;
@@ -496,7 +495,7 @@ namespace Gamma {
                 case "Fire01": {
                     if (!isAnimationSameAsPrevious) { break; }
                     if (currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Fire01/current_length")) {
-                        targetAnimation = "Walk";
+                        targetAnimation = "Move";
                     }
                     if (HasCrossedPlaybackPosition(previousPlaybackPosition, currentPlaybackPosition, 0.66f)) {
                         Shoot(16);
@@ -592,7 +591,7 @@ namespace Gamma {
                             targetAnimation = "Run";
                         }
                     } else {
-                        targetAnimation = "Walk";
+                        targetAnimation = "Move";
                     }
                     player.node.Velocity *= Y_FLAT;
                     break;
@@ -716,7 +715,7 @@ namespace Gamma {
                         if (inputDirection != Vector2.Zero && action3Pressed) { 
                             targetAnimation = "Run";
                         } else {
-                            targetAnimation = "Walk";
+                            targetAnimation = "Move";
                         }
                     }
                     if (!player.isOnGround) { targetAnimation = "Fall"; }
@@ -748,7 +747,7 @@ namespace Gamma {
                         if (player.isOnGround) { PlaySoundUI(footStepMetalSFX, 0.4f, globalSlightPitchVaration, true); }
                     }
                     if (player.animationPlaybackBlocks[FallToIdleBlockIndex].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/FallToIdle/FallToIdle/current_length")) {
-                        targetAnimation = "Walk";
+                        targetAnimation = "Move";
                     }
                     player.node.Velocity = player.node.Velocity.Lerp(Vector3.Zero, 0.08f);
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
@@ -795,7 +794,7 @@ namespace Gamma {
                         break;
                     }
                     if (!player.orb.node.TopLevel) {
-                        targetAnimation = player.isOnGround ? "Walk" : "Fall";
+                        targetAnimation = player.isOnGround ? "Move" : "Fall";
                     }
                     break;
                 }
@@ -825,7 +824,7 @@ namespace Gamma {
                         break;
                 }
                 switch (player.animationState.GetCurrentNode()) {
-                    case "Walk":
+                    case "Move":
                         if (!player.orb.node.TopLevel) { player.orb.node.Visible = false; }
                         break;
                 }
@@ -881,6 +880,7 @@ namespace Gamma {
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }
+            Vector3 cameraForward = -inputCamera.node.GlobalTransform.Basis.Z.Normalized();
             if (Input.IsActionJustPressed("cameraRight") || Input.IsActionJustPressed("cameraLeft")) {
                 float x = Input.GetActionStrength("cameraLeft") - Input.GetActionStrength("cameraRight");
                 inputCamera.targetAngle += x * 90f;
@@ -892,7 +892,7 @@ namespace Gamma {
                     8f
                 );
             inputCamera.offsetHeight = Mathf.Lerp(inputCamera.offsetHeight, targetHeight, 0.1f);
-            Vector3 medianPosition = inputCamera.WallRayCast.GlobalPosition.Lerp(player.orb.node.GlobalPosition, 0.1f);
+            Vector3 medianPosition = inputCamera.WallRayCast.GlobalPosition.Lerp(player.orb.node.GlobalPosition + cameraForward * Y_FLAT * 4f, 0.1f);
             inputCamera.targetAngle = Mathf.PosMod(inputCamera.targetAngle, 360f);
             float angleDifference = Mathf.PosMod(inputCamera.targetAngle - inputCamera.angle + 180f, 360f) - 180f;
             inputCamera.angle += angleDifference * inputCamera.rotationLerpSpeed;
