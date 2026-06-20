@@ -123,6 +123,8 @@ uv1_triplanar = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iwdfl"]
 albedo_texture = ExtResource("8_iwdfl")
 
+[sub_resource type="MultiMesh" id="MultiMesh_jyhmb"]
+
 [node name="Level" type="Node3D" unique_id=500624464]
 
 [node name="Environment" type="Node" parent="." unique_id=1488914038]
@@ -836,6 +838,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 7, 11)
 
 [node name="SurveillanceScanner01" parent="Entities" unique_id=1505433102 instance=ExtResource("28_h1ish")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.099999905, 1, 1.2000008)
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="Entities" unique_id=204158834]
+multimesh = SubResource("MultiMesh_jyhmb")
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("18_rrwtf")]
 

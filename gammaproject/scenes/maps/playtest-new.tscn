@@ -46,7 +46,7 @@ spot_range = 20.0
 
 [node name="Geometry" type="Node" parent="." unique_id=1112735005]
 
-[node name="playtest-new" parent="Geometry" unique_id=164729859 instance=ExtResource("2_o1fdq")]
+[node name="playtest-new" parent="Geometry" unique_id=1279327924 instance=ExtResource("2_o1fdq")]
 
 [node name="Entities" type="Node" parent="." unique_id=1339097609]
 
@@ -178,6 +178,7 @@ transform = Transform3D(-2.1855739e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855739e-07, 3,
 
 [node name="PlayerCamera" parent="Entities" unique_id=29831598 instance=ExtResource("18_blhdk")]
 transform = Transform3D(1, -1.0619696e-07, 1.3889986e-07, 0, 0.79441464, 0.6073758, -1.7484555e-07, -0.6073758, 0.79441464, 2.7999992, 10.4183, 21.606949)
+current = true
 
 [node name="DungeonExit" parent="Entities" unique_id=340140118 instance=ExtResource("19_vl47o")]
 transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -23, 0, -30.2)
