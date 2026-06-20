@@ -334,7 +334,6 @@ namespace Gamma {
                     player.animationTree.Set("parameters/Walk/WalkBlend/blend_amount", walkBlendAmount);
                     bool shouldRunBlend = Input.IsActionPressed("mod");
                     float runBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/RunBlend/blend_amount"), shouldRunBlend ? 1f : 0f, 0.1f);
-                    player.animationTree.Set("parameters/Walk/RunBlend/blend_amount", runBlendAmount);
                     bool shouldTeleportBlend = Input.IsActionPressed("action2");
                     float teleportBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Walk/TeleportStartupBlend/blend_amount"), shouldTeleportBlend ? 1f : 0f, 0.1f);
                     player.animationTree.Set("parameters/Walk/TeleportStartupBlend/blend_amount", teleportBlendAmount);

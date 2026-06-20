@@ -5,7 +5,7 @@ namespace Gamma {
         public struct SurveillanceScanner {
             public CharacterBody3D node;
             public Skeleton3D skeleton;
-            public SpotLight3D fillLight;
+            public Area3D detectionArea;
             public float timeUntilSleep;
             public static int lampBoneIndex;
         }
@@ -19,6 +19,7 @@ namespace Gamma {
             }
             int index = surveillanceScannerCount;
             surveillanceScanners[index].node = inputNode;
+            surveillanceScanners[index].detectionArea = inputNode.GetNode<Area3D>("Area3D");
             surveillanceScanners[index].skeleton = inputNode.GetNode<Skeleton3D>("SurveillanceScanner01/Skeleton3D");
             surveillanceScanners[index].timeUntilSleep = 0f;
             for (int i = 0; i < surveillanceScanners[index].skeleton.GetBoneCount(); i++) {
@@ -53,12 +54,27 @@ namespace Gamma {
             }
             scanner.timeUntilSleep = 12f;
             scanner.timeUntilSleep -= globalPhysicsDeltaFloat;
+            Godot.Collections.Array<Node3D> bodies = scanner.detectionArea.GetOverlappingBodies();
+            Vector3 averageAreaNormal = Vector3.Zero;
+            int areaHitCount = 0;
+            for (int i = 0; i < bodies.Count; i++) {
+                if (bodies[i].GetType() == typeof(CharacterBody3D)) { continue; }
+                RaycastWorldHitInfo hit;
+                if (RaycastWorld(globalWorld3D, scanner.node, scanner.node.GlobalPosition, bodies[i].GlobalPosition, out hit)) {
+                    averageAreaNormal += hit.Normal;
+                    areaHitCount++;
+                }
+            }
+            if (areaHitCount > 0) {
+                averageAreaNormal /= areaHitCount;
+                scanner.node.Velocity += averageAreaNormal * 10f * globalPhysicsDeltaFloat;
+            }
             const float speed = 4f;
             scanner.node.Velocity += toTarget * speed * globalPhysicsDeltaFloat;
             scanner.node.Velocity *= 0.9f;
             if (scanner.node.IsOnWall()) {
                 scanner.node.Velocity = scanner.node.Velocity.Bounce(scanner.node.GetWallNormal());
-                scanner.node.Velocity += scanner.node.GetWallNormal() * 15f;
+                scanner.node.Velocity += scanner.node.GetWallNormal() * 5f;
             }
             scanner.node.MoveAndSlide();
             Transform3D lampPose = scanner.skeleton.GetBoneGlobalPose(SurveillanceScanner.lampBoneIndex);

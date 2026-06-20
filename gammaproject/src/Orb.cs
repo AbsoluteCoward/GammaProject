@@ -22,7 +22,6 @@ namespace Gamma {
             player.orb.model.CastShadow = GeometryInstance3D.ShadowCastingSetting.Off;
             player.orb.skeleton = player.orb.node.GetNode<Skeleton3D>("Mantaray/Skeleton3D");
             for (int i = 0; i < player.orb.skeleton.GetBoneCount() - 1; i++) {
-                if (player.orb.skeleton.GetBoneName(i) == "Head") { GD.Print("Head bone index is " + i); }
                 if (player.orb.skeleton.GetBoneName(i) == "Spine.001") { TeleportOrb.chestBoneIndex = i; }
                 if (player.orb.skeleton.GetBoneName(i) == "Arm.L") { TeleportOrb.leftArmBoneIndex = i; }
                 if (player.orb.skeleton.GetBoneName(i) == "Arm.R") { TeleportOrb.rightArmBoneIndex = i; }

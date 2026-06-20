@@ -185,7 +185,7 @@ namespace Gamma {
             explosion.smokeParticles.Emitting = true;
             explosion.timeAlive = inputTimeAlive;
             explosions[index] = explosion;
-            PlaySound3D(explosionSFX, inputPosition, 1f, 0.8f + GD.Randf() * 0.4f, true);
+            PlaySound3D(explosionSFX, inputPosition, 0.5f, 0.8f + GD.Randf() * 0.4f, true);
             if (directionalLight != null) {
                 directionalLight.LightColor += new Color(1f, 0.4f, 0f);
                 directionalLight.LightEnergy += 40f;
