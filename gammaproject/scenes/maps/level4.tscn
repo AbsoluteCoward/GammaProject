@@ -38,22 +38,22 @@ spot_angle = 60.0
 
 [node name="Geometry" type="Node" parent="." unique_id=1112735005]
 
-[node name="level4" parent="Geometry" unique_id=294048965 instance=ExtResource("1_4duau")]
+[node name="level4" parent="Geometry" unique_id=469796460 instance=ExtResource("1_4duau")]
 
-[node name="level" parent="Geometry/level4" index="0" unique_id=1051749740]
+[node name="level" parent="Geometry/level4" index="0" unique_id=1462361881]
 cast_shadow = 2
 
-[node name="level_001_002" parent="Geometry/level4" index="1" unique_id=629902415]
+[node name="level_001_002" parent="Geometry/level4" index="1" unique_id=1617261518]
 cast_shadow = 2
 
-[node name="level_001-col_001" parent="Geometry/level4" index="6" unique_id=1191707038]
+[node name="level_001-col_001" parent="Geometry/level4" index="11" unique_id=124514829]
 visible = false
 shadow_enabled = true
 
 [node name="Entities" type="Node" parent="." unique_id=1339097609]
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("2_p0euy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -39)
 
 [node name="PlayerCamera" parent="Entities" unique_id=1338417485 instance=ExtResource("3_6mtxo")]
 transform = Transform3D(1, 0, 0, 0, 0.83527994, 0.549825, 0, -0.549825, 0.83527994, 1, 4, -12)

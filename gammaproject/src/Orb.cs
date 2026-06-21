@@ -94,7 +94,7 @@ namespace Gamma {
             TeleportOrb orb = player.orb;
             orb.animationPlayer.Advance(globalPhysicsDeltaFloat);
             if (!orb.node.TopLevel || !orb.node.Visible) { return; }
-            if (IsInputJustPressed(ref inputState.action3)) { 
+            if (InputIsJustPressed(ref inputState.action3)) { 
                 OrbReturn(false);
                 player.node.Velocity = orb.velocity;
             }
@@ -111,7 +111,7 @@ namespace Gamma {
             }
             float lift = 0.8f;
             orb.velocity = orb.velocity.Lerp(orbForward * currentSpeed, lift);
-            if (IsInputJustPressed(ref inputState.attack)) { orb.velocity += orbForward * 2f; }
+            if (InputIsJustPressed(ref inputState.attack)) { orb.velocity += orbForward * 2f; }
             if (inputDirection != Vector2.Zero) {
                 float inputMagnitude = Mathf.Clamp(1f - (currentSpeed / 6f), 0.6f, 2f);
                 inputMagnitude *= Mathf.Clamp(orb.timeAlive / 2f, 0f, 1f);
