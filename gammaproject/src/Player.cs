@@ -329,13 +329,24 @@ namespace Gamma {
                         player.animationTree.Set("parameters/Move/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Abort);
                         break;
                     }
-                    bool shouldWalkBlend = Input.IsActionPressed("mod");
-                    float walkBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/WalkBlend/blend_amount"), shouldWalkBlend ? 1f : 0f, 0.1f);
+                    bool hyper = false;
+                    float isHyper = hyper ? 1.6f : 1f;
+                    bool isShooting = 
+                        (bool)player.animationTree.Get("parameters/Move/FireWalkOneShot/active") &&
+                        (float)player.animationTree.Get("parameters/Move/FireWalk/current_position") < 0.36f;
+                    bool shouldGunBlend = !isShooting && (Input.IsActionPressed("attack") || player.targetCount > 0);
+                    float gunBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/GunBlend/blend_amount"), shouldGunBlend ? 1f : 0f, 0.1f);
+                    player.animationTree.Set("parameters/Move/GunBlend/blend_amount", gunBlendAmount);
+                    bool shouldWalkBlend = Input.IsActionPressed("mod") || (hasMovementInput && (isShooting));
+                    float walkCap = Input.IsActionPressed("action3") ? 1.3f : 1f;
+                    player.animationTree.Set("parameters/Move/WalkTimeScale/scale", walkCap);
+                    float walkBlendAmount = 
+                        Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/WalkBlend/blend_amount"), shouldWalkBlend ? 1 : 0f, 0.1f);
                     player.animationTree.Set("parameters/Move/WalkBlend/blend_amount", walkBlendAmount);
-                    bool shouldRunBlend = hasMovementInput;
-                    player.animationTree.Set("parameters/Move/RunTimeScale/scale", 1);
+                    bool shouldRunBlend = hasMovementInput && !(isShooting);
+                    player.animationTree.Set("parameters/Move/RunTimeScale/scale", isHyper);
                     float runBlendAmount = 
-                        Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/RunBlend/blend_amount"), shouldRunBlend ? 1 : 0f, 0.1f);
+                        Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/RunBlend/blend_amount"), shouldRunBlend ? isHyper : 0f, 0.1f);
                     player.animationTree.Set("parameters/Move/RunBlend/blend_amount", runBlendAmount);
                     bool shouldTeleportBlend = Input.IsActionPressed("action2");
                     float teleportBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/TeleportStartupBlend/blend_amount"), shouldTeleportBlend ? 1f : 0f, 0.1f);
@@ -352,12 +363,6 @@ namespace Gamma {
                     if (shouldFireLeviathan) {
                         targetAnimation = "TeleportShoot";
                     }
-                    bool isShooting = 
-                        (bool)player.animationTree.Get("parameters/Move/FireWalkOneShot/active") &&
-                        (float)player.animationTree.Get("parameters/Move/FireWalk/current_position") < 0.36f;
-                    bool shouldGunBlend = !isShooting && (Input.IsActionPressed("attack") || player.targetCount > 0);
-                    float gunBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/GunBlend/blend_amount"), shouldGunBlend ? 1f : 0f, 0.1f);
-                    player.animationTree.Set("parameters/Move/GunBlend/blend_amount", gunBlendAmount);
                     if (Input.IsActionJustPressed("attack")) {
                         for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
                         player.targetCount = 0;
@@ -405,28 +410,26 @@ namespace Gamma {
                         player.node.Velocity = Vector3.Down * 2 + playerForward;
                         break;
                     }
-                    if (IsInputJustPressed(ref inputState.action3)) {
+                    if (InputIsJustReleased(ref inputState.action3)) {
                         if (hasMovementInput) {
-                            if (player.animationState.GetFadingFromNode() == "Run") {
-                                Vector3 toLedge = Vector3.Zero;
-                                if (PlayerCanLeap(ref toLedge, 0)) {
-                                    string climbAnimation = PlayerMatchLeapAnimation(toLedge, currentAnimation);
-                                    targetAnimation = climbAnimation;
-                                    break;
-                                } else {
-                                    RotateTowards(player.wishDirection, player.node, 0.1f);
-                                    player.animationState.Start("RunJump01", true);
-                                    targetAnimation = "RunJump01";
-                                }
+                            Vector3 toLedge = Vector3.Zero;
+                            if (PlayerCanLeap(ref toLedge, 0)) {
+                                string climbAnimation = PlayerMatchLeapAnimation(toLedge, currentAnimation);
+                                targetAnimation = climbAnimation;
+                                break;
+                            } else {
+                                RotateTowards(player.wishDirection, player.node, 0.1f);
+                                player.animationState.Start("RunJump01", true);
+                                targetAnimation = "RunJump01";
                             }
-                        } else if (player.targetCount > 0 || IsInputPressedEx(ref inputState.attack, true, true)) {
+                        } else if (player.targetCount > 0 || InputIsPressedEx(ref inputState.attack, true, true)) {
                             targetAnimation = "Fire01";
-                        } else {
+                        } else if (runBlendAmount <= 0) {
                             targetAnimation = "Jump";
                             player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
                         }
                     }
-                    if (player.node.IsOnWall() && walkBlendAmount > 0.8f) {
+                    if (player.node.IsOnWall() && (walkBlendAmount > 0.8f || runBlendAmount > 0.8f)) {
                         Vector3 toLedge = Vector3.Zero;
                         if (PlayerCanLeap(ref toLedge, 1)) {
                             string climbAnimation = PlayerMatchLeapAnimation(toLedge, targetAnimation);
@@ -452,44 +455,6 @@ namespace Gamma {
                     RotateTowards(movementDirection, player.node, 0.2f);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     PlayerApplyDynamicBoneTransformations(1, 0.15f, 0.5f);
-                    break;
-                }
-                case "Run": {
-                    if (!isAnimationSameAsPrevious) { break; }
-                    if (!IsInputPressed(ref inputState.action3) || !hasMovementInput) {
-                        targetAnimation = "Move";
-                    }
-                    if (!player.isOnGround) {
-                        Vector3 toLedge = Vector3.Zero;
-                        if (PlayerCanLeap(ref toLedge, 6)) {
-                            string climbAnimation = PlayerMatchLeapAnimation(toLedge, targetAnimation);
-                            player.animationState.Start(climbAnimation, true);
-                            break;
-                        } else {
-                            targetAnimation = "RunJump01";
-                        }
-                    }
-                    float leapMaxDistance = 2 * player.node.Velocity.Normalized().Dot(player.wishDirection);
-                    if (leapMaxDistance > 0f) {
-                        Vector3 toLedge = Vector3.Zero;
-                        if (PlayerCanLeap(ref toLedge, leapMaxDistance)) {
-                            string climbAnimation = PlayerMatchLeapAnimation(toLedge, targetAnimation);
-                            player.animationState.Start(climbAnimation, true);
-                            break;
-                        }
-                    }
-                    if (
-                        HasCrossedPlaybackPosition(previousPlaybackPosition, currentPlaybackPosition, 0.14f) ||
-                        HasCrossedPlaybackPosition(previousPlaybackPosition, currentPlaybackPosition, 0.68f)
-                    ) {
-                        PlaySoundUI(footStepMetalSFX, 0.2f, globalSlightPitchVaration, true);
-                    }
-                    float targetAngleRun = Mathf.Atan2(playerForward.Cross(player.wishDirection).Y, playerForward.Dot(player.wishDirection));
-                    turnAnticipationTargetAngle = Mathf.Clamp(targetAngleRun, -0.8f, 0.8f);
-                    player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, turnAnticipationTargetAngle, 0.2f);
-                    RotateTowards(player.wishDirection, player.node, 0.2f);
-                    player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
-                    PlayerApplyDynamicBoneTransformations(1.5f, 0.8f, 0.5f);
                     break;
                 }
                 case "Fire01": {
@@ -532,12 +497,14 @@ namespace Gamma {
                     float animationLength = (float)player.animationTree.Get("parameters/" + player.animationState.GetCurrentNode() + "/current_length");
                     if (!isAnimationSameAsPrevious) {
                         player.targetCorrection = player.targetPosition - player.node.GlobalPosition;
-                        player.targetCorrection.Y -= distanceUp;
+                        player.targetCorrection.Y -= distanceUp;  
+                        GD.Print("Collision: OFF");
                         PlayerSetCollision(false);
                         player.node.Velocity = Vector3.Zero;
                         break;
                     }
-                    if (HasCrossedPlaybackPosition(previousPlaybackPosition, currentPlaybackPosition, landingTimeStamp)) {                   
+                    if (HasCrossedPlaybackPosition(previousPlaybackPosition, currentPlaybackPosition, landingTimeStamp)) {   
+                        GD.Print("Collision: ON");
                         PlayerSetCollision(true);
                     }
                     if (currentPlaybackPosition < landingTimeStamp && player.targetCorrection.LengthSquared() > ALMOST_ZERO) {
@@ -554,7 +521,7 @@ namespace Gamma {
                     }
                     bool isAnimationComplete = currentPlaybackPosition >= animationLength;
                     if (!isAnimationComplete) {
-                        if (IsInputJustPressed(ref inputState.action3)) {
+                        if (InputIsJustPressed(ref inputState.action3)) {
                             Vector3 toLedge = Vector3.Zero;
                             if (PlayerCanLeap(ref toLedge, 6)) {
                                 string climbAnimation = PlayerMatchLeapAnimation(toLedge, targetAnimation);
@@ -564,12 +531,13 @@ namespace Gamma {
                                 player.node.Velocity = Vector3.Up + (player.wishDirection * PLAYER_RUN_SPEED); 
                                 player.animationState.Start("RunJump01", true); 
                                 targetAnimation = "RunJump01"; }
+                                PlayerSetCollision(true);
                         }
                         break;
                     }
                     const float MAX_DISTANCE_TO_GROUND = 1.5f;
                     if (distanceToGround > MAX_DISTANCE_TO_GROUND) {
-                        if (!IsInputPressed(ref inputState.action3)) { targetAnimation = "Fall"; break; }
+                        if (!InputIsPressed(ref inputState.action3)) { targetAnimation = "Fall"; break; }
                         Vector3 toLedge = Vector3.Zero;
                         if (PlayerCanLeap(ref toLedge, 3)) {
                             string climbAnimation = PlayerMatchLeapAnimation(toLedge, targetAnimation);
@@ -588,7 +556,7 @@ namespace Gamma {
                             string climbAnimation = PlayerMatchLeapAnimation(toLedge, targetAnimation);
                             player.animationState.Start(climbAnimation, true);
                         } else {
-                            targetAnimation = "Run";
+                            targetAnimation = "Move";
                         }
                     } else {
                         targetAnimation = "Move";
@@ -648,7 +616,7 @@ namespace Gamma {
                     if (
                         currentPlaybackPosition > 0.266f &&
                         hasMovementInput && 
-                        IsInputPressed(ref inputState.action3)
+                        InputIsPressed(ref inputState.action3)
                     ) {
                         RotateTowards(player.wishDirection, player.node, 1f);
                         targetAnimation = "RunJump02";
@@ -675,7 +643,7 @@ namespace Gamma {
                          targetAnimation = "Fall";
                     }
                     if (player.isOnGround) {
-                        if (playerForward.Dot(player.wishDirection) > -0.6f) {
+                        if (playerForward.Dot(player.wishDirection) > 0.6f) {
                             player.animationState.Start("Roll", true);
                         } else {
                             targetAnimation = "FallToIdle";
@@ -707,16 +675,12 @@ namespace Gamma {
                         player.node.Velocity = playerForward * 8f;
                     }
                     if (currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Roll/current_length") - 0.4f) {
-                        if (inputDirection != Vector2.Zero && action3Pressed) { 
-                            targetAnimation = "Run";
-                        }
-                    }
-                    if (currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Roll/current_length") && isAnimationSameAsPrevious) {
-                        if (inputDirection != Vector2.Zero && action3Pressed) { 
-                            targetAnimation = "Run";
-                        } else {
+                        if (inputDirection != Vector2.Zero) { 
                             targetAnimation = "Move";
                         }
+                    }
+                    if (currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Roll/current_length")) {
+                        targetAnimation = "Move";
                     }
                     if (!player.isOnGround) { targetAnimation = "Fall"; }
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
@@ -768,7 +732,7 @@ namespace Gamma {
                         player.animationState.Start("Fall", true);
                         OrbReturn(false);
                     }
-                    if (currentPlaybackPosition > 0.8f && currentPlaybackPosition < 1f && IsInputJustPressed(ref inputState.action3)) {
+                    if (currentPlaybackPosition > 0.8f && currentPlaybackPosition < 1f && InputIsJustPressed(ref inputState.action3)) {
                         targetAnimation = "Jump";
                         player.node.Velocity = Vector3.Up * 12f;
                         player.node.GlobalPosition += Vector3.Up * 0.5f;
@@ -813,6 +777,11 @@ namespace Gamma {
                     player.animationPlaybackBlocks[i].currentPlaybackPosition = 0f;
                 }
                 switch (targetAnimation) {
+                    case "Move":
+                        if (!hasMovementInput) { 
+                            player.animationTree.Set("parameters/Move/RunBlend/blend_amount", 0.0f);
+                        }
+                        break;
                     case "FallToIdle":
                         float impactSpeed = -player.node.Velocity.Y;
                         float animationScale = Mathf.Clamp(impactSpeed / 12.0f, 0.5f, 2.0f);

@@ -270,7 +270,7 @@ namespace Gamma {
             SurveillanceScannerUpdate();
             OrbUpdate();
             EnemyUpdate();
-            if (IsInputJustPressed(ref inputState.interact)) { Interact(); }
+            if (InputIsJustPressed(ref inputState.interact)) { Interact(); }
             DialogueUpdate();
             RewardsUpdate();
             SubtitlesUpdate();
