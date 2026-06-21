@@ -286,6 +286,8 @@ namespace Gamma {
             float currentPlaybackPosition = player.animationPlaybackBlocks[0].currentPlaybackPosition;
             Vector3 playerForward = -player.node.Transform.Basis.Z.Normalized();
             Vector3 playerRight = player.node.Transform.Basis.X.Normalized();
+            float velocityLength = player.node.Velocity.Length();
+            float velocityLengthFlat = (velocityLength * Y_FLAT).Length();
             Vector3 currentCameraForward = -currentCamera.Transform.Basis.Z.Normalized();
             Vector3 currentCameraRight = currentCamera.Transform.Basis.X.Normalized();
             player.wishDirection = (-currentCameraForward * inputDirection.Y + currentCameraRight * inputDirection.X) * Y_FLAT;
@@ -337,13 +339,17 @@ namespace Gamma {
                     bool shouldGunBlend = !isShooting && (Input.IsActionPressed("attack") || player.targetCount > 0);
                     float gunBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/GunBlend/blend_amount"), shouldGunBlend ? 1f : 0f, 0.1f);
                     player.animationTree.Set("parameters/Move/GunBlend/blend_amount", gunBlendAmount);
-                    bool shouldWalkBlend = Input.IsActionPressed("mod") || (hasMovementInput && (isShooting));
-                    float walkCap = Input.IsActionPressed("action3") ? 1.3f : 1f;
+                    bool shouldWalkBlend = Input.IsActionPressed("mod") || (hasMovementInput && isShooting);
+                    const float WALK_MIN = 1f;
+                    const float WALK_MAX = 1.5f;
+                    const float WALK_CAP_LERP_SPEED = 0.05f;
+                    float walkCap = 
+                        Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/WalkTimeScale/scale"), Input.IsActionPressed("action3") ? WALK_MAX : WALK_MIN, WALK_CAP_LERP_SPEED);
                     player.animationTree.Set("parameters/Move/WalkTimeScale/scale", walkCap);
                     float walkBlendAmount = 
                         Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/WalkBlend/blend_amount"), shouldWalkBlend ? 1 : 0f, 0.1f);
                     player.animationTree.Set("parameters/Move/WalkBlend/blend_amount", walkBlendAmount);
-                    bool shouldRunBlend = hasMovementInput && !(isShooting);
+                    bool shouldRunBlend = hasMovementInput && !isShooting && !Input.IsActionPressed("mod");
                     player.animationTree.Set("parameters/Move/RunTimeScale/scale", isHyper);
                     float runBlendAmount = 
                         Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/RunBlend/blend_amount"), shouldRunBlend ? isHyper : 0f, 0.1f);
@@ -368,7 +374,6 @@ namespace Gamma {
                         player.targetCount = 0;
                         player.currentTargetIndex = 0;
                     }
-                    //GD.Print((bool)player.animationTree.Get("parameters/Move/FireWalkOneShot/active"));
                     if (!isShooting && (Input.IsActionJustReleased("attack") || (player.targetCount > 0 && !Input.IsActionPressed("attack")))) {
                         player.animationTree.Set("parameters/Move/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
                         gunBlendAmount = 0f;
@@ -404,14 +409,17 @@ namespace Gamma {
                     if (gunBlendAmount > ALMOST_ONE || isShooting) {
                         shouldShowRocketIndicator = true;
                     }
-                    bool shouldFall = !player.isOnGround;
-                    if (shouldFall) { 
-                        targetAnimation = "Fall";
-                        player.node.Velocity = Vector3.Down * 2 + playerForward;
-                        break;
+                    if (!player.isOnGround) { 
+                        if (InputIsPressed(ref inputState.action3)) {
+                            targetAnimation = "RunJump01";
+                        } else {
+                            targetAnimation = "Fall";
+                            player.node.Velocity = Vector3.Down * 2 + playerForward;
+                            break;
+                        }
                     }
                     if (InputIsJustReleased(ref inputState.action3)) {
-                        if (hasMovementInput) {
+                        if (hasMovementInput && walkCap < WALK_MAX - WALK_CAP_LERP_SPEED && walkBlendAmount <= ALMOST_ZERO) {
                             Vector3 toLedge = Vector3.Zero;
                             if (PlayerCanLeap(ref toLedge, 0)) {
                                 string climbAnimation = PlayerMatchLeapAnimation(toLedge, currentAnimation);
@@ -424,7 +432,7 @@ namespace Gamma {
                             }
                         } else if (player.targetCount > 0 || InputIsPressedEx(ref inputState.attack, true, true)) {
                             targetAnimation = "Fire01";
-                        } else if (runBlendAmount <= 0) {
+                        } else if (runBlendAmount <= 0 && walkBlendAmount <= 0.1f) {
                             targetAnimation = "Jump";
                             player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
                         }
@@ -452,7 +460,9 @@ namespace Gamma {
                     }
                     turnAnticipationTargetAngle = Mathf.Clamp(turnAnticipationTargetAngle, -0.8f, 0.8f);
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, turnAnticipationTargetAngle, 0.2f);
-                    RotateTowards(movementDirection, player.node, 0.2f);
+                    float speed = Mathf.Lerp(1.0f, 0.2f, (velocityLengthFlat) / (WALK_MAX));
+                    GD.Print("Speed: " + speed);
+                    RotateTowards(movementDirection, player.node, speed);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     PlayerApplyDynamicBoneTransformations(1, 0.15f, 0.5f);
                     break;
@@ -813,7 +823,7 @@ namespace Gamma {
                 if (Mathf.Abs(playerPosition.X) > Player.maxDistance ||
                     Mathf.Abs(playerPosition.Y) > Player.maxDistance ||
                     Mathf.Abs(playerPosition.Z) > Player.maxDistance) {
-                    player.node.GlobalPosition = Vector3.Zero;
+                    PlayerTeleportTo(Vector3.Zero, playerCamera);
                 }
             }
             //PlayerRocketIndicatorUpdate(shouldShowRocketIndicator, playerForward + player.node.GlobalTransform.Basis.Y.Normalized() * 0.2f);
