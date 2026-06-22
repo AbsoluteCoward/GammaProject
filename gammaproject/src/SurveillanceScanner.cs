@@ -36,10 +36,9 @@ namespace Gamma {
             SurveillanceScanner scanner = surveillanceScanners[0];
             Vector3 scannerForward = -scanner.node.Transform.Basis.Z.Normalized();
             Vector3 targetposition = 
-                playerCamera.WallRayCast.TargetPosition + 
                 playerCamera.WallRayCast.GlobalPosition +
-                Vector3.Up * 4f +
-                -playerCamera.node.Transform.Basis.Z.Normalized() * 3f +
+                Vector3.Up * 3f +
+                playerCamera.node.Transform.Basis.Z.Normalized() * 3f +
                 playerCamera.node.Transform.Basis.X.Normalized() * 3f;
             Vector3 toTarget = targetposition - scanner.node.GlobalPosition;
             Vector3 toTargetFlat = (toTarget * Y_FLAT).Normalized();

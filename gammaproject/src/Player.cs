@@ -331,8 +331,8 @@ namespace Gamma {
                         player.animationTree.Set("parameters/Move/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Abort);
                         break;
                     }
-                    bool hyper = false;
-                    float isHyper = hyper ? 1.6f : 1f;
+                    bool hyper = Input.IsActionPressed("action3");
+                    float isHyper = hyper ? 1.3f : 1f;
                     bool isShooting = 
                         (bool)player.animationTree.Get("parameters/Move/FireWalkOneShot/active") &&
                         (float)player.animationTree.Get("parameters/Move/FireWalk/current_position") < 0.36f;
@@ -342,7 +342,7 @@ namespace Gamma {
                     bool shouldWalkBlend = Input.IsActionPressed("mod") || (hasMovementInput && isShooting);
                     const float WALK_MIN = 1f;
                     const float WALK_MAX = 1.5f;
-                    const float WALK_CAP_LERP_SPEED = 0.05f;
+                    const float WALK_CAP_LERP_SPEED = 0.1f;
                     float walkCap = 
                         Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/WalkTimeScale/scale"), Input.IsActionPressed("action3") ? WALK_MAX : WALK_MIN, WALK_CAP_LERP_SPEED);
                     player.animationTree.Set("parameters/Move/WalkTimeScale/scale", walkCap);
@@ -460,9 +460,9 @@ namespace Gamma {
                     }
                     turnAnticipationTargetAngle = Mathf.Clamp(turnAnticipationTargetAngle, -0.8f, 0.8f);
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, turnAnticipationTargetAngle, 0.2f);
-                    float speed = Mathf.Lerp(1.0f, 0.2f, (velocityLengthFlat) / (WALK_MAX));
-                    GD.Print("Speed: " + speed);
-                    RotateTowards(movementDirection, player.node, speed);
+                    float turnSpeed = Mathf.Lerp(1f, 0.15f, Mathf.Clamp((velocityLengthFlat - PLAYER_WALK_SPEED) / (PLAYER_RUN_SPEED - PLAYER_WALK_SPEED), 0f, 1f));
+                    GD.Print("Speed: " + turnSpeed);
+                    RotateTowards(movementDirection, player.node, turnSpeed);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     PlayerApplyDynamicBoneTransformations(1, 0.15f, 0.5f);
                     break;
@@ -547,7 +547,11 @@ namespace Gamma {
                     }
                     const float MAX_DISTANCE_TO_GROUND = 1.5f;
                     if (distanceToGround > MAX_DISTANCE_TO_GROUND) {
-                        if (!InputIsPressed(ref inputState.action3)) { targetAnimation = "Fall"; break; }
+                        if (!InputIsPressed(ref inputState.action3)) {
+                            PlayerSetCollision(true);
+                            targetAnimation = "Fall"; 
+                            break; 
+                        }
                         Vector3 toLedge = Vector3.Zero;
                         if (PlayerCanLeap(ref toLedge, 3)) {
                             string climbAnimation = PlayerMatchLeapAnimation(toLedge, targetAnimation);
@@ -565,12 +569,9 @@ namespace Gamma {
                         if (PlayerCanLeap(ref toLedge, 3)) {
                             string climbAnimation = PlayerMatchLeapAnimation(toLedge, targetAnimation);
                             player.animationState.Start(climbAnimation, true);
-                        } else {
-                            targetAnimation = "Move";
                         }
-                    } else {
-                        targetAnimation = "Move";
                     }
+                    targetAnimation = "Move";
                     player.node.Velocity *= Y_FLAT;
                     break;
                 }
@@ -653,7 +654,7 @@ namespace Gamma {
                          targetAnimation = "Fall";
                     }
                     if (player.isOnGround) {
-                        if (playerForward.Dot(player.wishDirection) > 0.6f) {
+                        if (playerForward.Dot(player.wishDirection) > 0.2f) {
                             player.animationState.Start("Roll", true);
                         } else {
                             targetAnimation = "FallToIdle";

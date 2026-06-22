@@ -28,8 +28,8 @@ namespace Gamma {
         public const float MAX_PROJECTILE_LIFETIME = 10f;
         public const float TARGETTING_ANGLE = 12f;
         public const float PLAYER_LEG_LENGTH = 1f;
-        public const float PLAYER_RUN_SPEED = 8f;
-        public const float PLAYER_WALK_SPEED = 2f;
+        public const float PLAYER_RUN_SPEED = 10f;
+        public const float PLAYER_WALK_SPEED = 1f;
         public const float PLAYER_LEDGESHAPECAST_MAX_DISTANCE = 6.37f;
         public const float PLAYER_ROCKET_SPEED = 20f;
         const float PLAYER_AIR_SPEED = PLAYER_RUN_SPEED;
