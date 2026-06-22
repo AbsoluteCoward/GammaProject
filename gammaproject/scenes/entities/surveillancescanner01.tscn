@@ -49,31 +49,33 @@ shape = SubResource("SphereShape3D_xn1fg")
 [node name="SurveillanceScanner01" parent="." unique_id=1690118326 instance=ExtResource("1_ql4jv")]
 
 [node name="Skeleton3D" parent="SurveillanceScanner01" index="0" unique_id=1659388111]
-bones/0/position = Vector3(0, -0.0021570502, 0)
-bones/1/rotation = Quaternion(0, -0.56342614, 0, 0.8261665)
+bones/0/position = Vector3(0, -0.015353976, 0)
+bones/1/rotation = Quaternion(0, -0.40601513, 0, 0.91386634)
 
 [node name="Top" parent="SurveillanceScanner01/Skeleton3D" index="0" unique_id=152551031]
-transform = Transform3D(0.36510205, 0, -0.9309675, 0, 1, 0, 0.9309675, 0, 0.36510205, 0, 0.09784298, 0)
+transform = Transform3D(0.67030334, 0, -0.74208724, 0, 1, 0, 0.74208724, 0, 0.67030334, 0, 0.084646046, 0)
 
 [node name="Wings" parent="SurveillanceScanner01/Skeleton3D/Top" index="0" unique_id=1281164044]
 cast_shadow = 0
 
 [node name="Lamp" parent="SurveillanceScanner01/Skeleton3D" index="1" unique_id=404657645]
-transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.54215705, -0.010000005)
+transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.555354, -0.010000005)
 
 [node name="SpotLight3D" type="SpotLight3D" parent="SurveillanceScanner01/Skeleton3D/Lamp" index="0" unique_id=1680231869]
 transform = Transform3D(1, 0, 0, 0, 0.9623858, 0.2716868, 0, -0.2716868, 0.9623858, 0, 0.8032023, 0.50166816)
 shadow_enabled = true
-shadow_bias = 0.08
-spot_range = 80.0
-spot_angle = 66.0
+shadow_bias = 0.1
+shadow_normal_bias = 4.0
+spot_range = 54.0
+spot_attenuation = 0.6
+spot_angle = 76.0
 metadata/Type = ""
 
 [node name="Body_001" parent="SurveillanceScanner01/Skeleton3D/Lamp" index="1" unique_id=1523061582]
 cast_shadow = 0
 
 [node name="Base" parent="SurveillanceScanner01/Skeleton3D" index="2" unique_id=804744811]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0021570502, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.015353976, 0)
 
 [node name="Shell" parent="SurveillanceScanner01/Skeleton3D/Base" index="0" unique_id=963334562]
 cast_shadow = 0
