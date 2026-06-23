@@ -23,13 +23,15 @@ namespace Gamma {
         public const float DEFAULT_CAMERA_HEIGHT = DEFAULT_CAMERA_DISTANCE * 0.3f;
         public const float ALMOST_ZERO = 0.00001f;
         public const float ALMOST_ONE = 0.99999f;
-        public const float GRAVITY_STRENGTH = 9.81f;
+        public const float ONE_THIRD = 0.333333f;
+        public const float GRAVITY_STRENGTH = 9.81f * 2f;
         public const float MAX_PROJECTILE_DISTANCE = 1000f;
         public const float MAX_PROJECTILE_LIFETIME = 10f;
         public const float TARGETTING_ANGLE = 12f;
         public const float PLAYER_LEG_LENGTH = 1f;
         public const float PLAYER_RUN_SPEED = 10f;
-        public const float PLAYER_WALK_SPEED = 1f;
+        public const float PLAYER_WALK_SPEED = 2f;
+        public const float PLAYER_JUMP_STRENGTH = 8f;
         public const float PLAYER_LEDGESHAPECAST_MAX_DISTANCE = 6.37f;
         public const float PLAYER_ROCKET_SPEED = 20f;
         const float PLAYER_AIR_SPEED = PLAYER_RUN_SPEED;
@@ -40,7 +42,7 @@ namespace Gamma {
         public static readonly Vector3 GRAVITY_VECTOR = new Vector3(0, -GRAVITY_STRENGTH, 0);
         public static AudioStream metalDinkSFX = GD.Load<AudioStream>("res://assets/sound/metalslam.wav");
         public static AudioStream metalSlamSFX = GD.Load<AudioStream>("res://assets/sound/metalslam1.wav");
-        public static AudioStream footStepMetalSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");
+        public static AudioStream metalFootstepSFX = GD.Load<AudioStream>("res://assets/sound/metal-footstep.wav");
         public static AudioStream teleportSFX = GD.Load<AudioStream>("res://assets/sound/teleport.mp3");
         public static AudioStream shootSFX = GD.Load<AudioStream>("res://assets/sound/rocket-launcher-shoot.wav");
         public static AudioStream explosionSFX = GD.Load<AudioStream>("res://assets/sound/explosion02.wav");

@@ -190,6 +190,7 @@ namespace Gamma {
                 directionalLight.LightColor += new Color(1f, 0.4f, 0f);
                 directionalLight.LightEnergy += 40f;
                 directionalLight.LookAt(player.node.GlobalPosition - (inputPosition + Vector3.Up * 2), Vector3.Up);
+                directionalLight.ShadowOpacity = 0f;
                 worldEnvironment.Environment.AmbientLightColor += new Color(1f, 0.4f, 0f);
                 worldEnvironment.Environment.AmbientLightEnergy += 1f;
             }
@@ -220,6 +221,10 @@ namespace Gamma {
                 }
             }
             if (shouldFadeLight) {
+                directionalLight.Rotation = directionalLight.Rotation.Lerp(directionalLightOriginal.Rotation, LIGHT_FADE_SPEED * 8 * globalPhysicsDeltaFloat);
+                if (directionalLight.Rotation.LengthSquared() - directionalLightOriginal.Rotation.LengthSquared() < ALMOST_ZERO) {
+                    directionalLight.ShadowOpacity = Mathf.Lerp(directionalLight.ShadowOpacity, directionalLightOriginal.ShadowOpacity, LIGHT_FADE_SPEED * 4 * globalPhysicsDeltaFloat);
+                }
                 directionalLight.LightColor = directionalLight.LightColor.Lerp(directionalLightOriginal.LightColor, LIGHT_FADE_SPEED * globalPhysicsDeltaFloat);
                 directionalLight.LightEnergy = Mathf.Lerp(directionalLight.LightEnergy, directionalLightOriginal.LightEnergy, LIGHT_FADE_SPEED * 8 * globalPhysicsDeltaFloat);
                 worldEnvironment.Environment.AmbientLightColor = worldEnvironment.Environment.AmbientLightColor.Lerp(worldEnvironmentOriginal.Environment.AmbientLightColor, LIGHT_FADE_SPEED * globalPhysicsDeltaFloat);
