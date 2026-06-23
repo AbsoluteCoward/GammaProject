@@ -94,10 +94,6 @@ namespace Gamma {
             TeleportOrb orb = player.orb;
             orb.animationPlayer.Advance(globalPhysicsDeltaFloat);
             if (!orb.node.TopLevel || !orb.node.Visible) { return; }
-            if (InputIsJustPressed(ref inputState.action3)) { 
-                OrbReturn(false);
-                player.node.Velocity = orb.velocity;
-            }
             orb.timeAlive += globalPhysicsDeltaFloat;
             float currentSpeed = orb.velocity.Length();
             player.orb.model.SetBlendShapeValue(0, MathF.Max(0f, 1 - currentSpeed * 0.1f));
@@ -141,6 +137,10 @@ namespace Gamma {
             if (orb.collisionRaycast.IsColliding()) {
                 OrbReturn(false);
                 return;
+            }
+            if (InputIsJustPressed(ref inputState.action3)) { 
+                OrbReturn(false);
+                player.node.Velocity = orb.velocity;
             }
             OrbApplyDynamicBoneTransformations(currentSpeed);
             orb.positionLastFrame = newPosition;
