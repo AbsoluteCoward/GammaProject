@@ -12464,6 +12464,18 @@ scene={
 "nodes/use_node_type_suffixes": true,
 "skins/use_named_skins": true
 }
+wav={
+"compress/mode": 2,
+"edit/loop_begin": 0,
+"edit/loop_end": -1,
+"edit/loop_mode": 0,
+"edit/normalize": false,
+"edit/trim": false,
+"force/8_bit": false,
+"force/max_rate": false,
+"force/max_rate_hz": 44100,
+"force/mono": true
+}
 
 [input]
 
@@ -12548,6 +12560,7 @@ mod={
 
 common/physics_ticks_per_second=30
 3d/physics_engine="Jolt Physics"
+common/physics_interpolation=true
 
 [rendering]
 

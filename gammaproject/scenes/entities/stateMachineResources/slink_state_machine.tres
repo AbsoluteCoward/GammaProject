@@ -28,7 +28,7 @@ animation = &"FallToIdle"
 animation = &"Idle"
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_2ngu4"]
-graph_offset = Vector2(-632, 267)
+graph_offset = Vector2(-535.6497, 156.9754)
 nodes/output/position = Vector2(160, 340)
 nodes/FallToIdle/node = SubResource("AnimationNodeAnimation_ss7kx")
 nodes/FallToIdle/position = Vector2(-540, 480)
@@ -104,7 +104,7 @@ filters = ["", "Skeleton3D:Abdomen", "Skeleton3D:Base", "Skeleton3D:Chest", "Ske
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_0twc0"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_42nxq"]
-graph_offset = Vector2(-380.5315, 895.022)
+graph_offset = Vector2(-621.1102, 295.66364)
 nodes/output/position = Vector2(1320, 820)
 nodes/Walk/node = SubResource("AnimationNodeAnimation_08t41")
 nodes/Walk/position = Vector2(40, 1120)
@@ -147,6 +147,9 @@ animation = &"RunJump01"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_73kkf"]
 animation = &"RunJump02"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_kdkla"]
+animation = &"Slide"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_42nxq"]
 animation = &"TeleportShoot"
@@ -208,8 +211,13 @@ xfade_time = 0.2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_pdlmq"]
 
+[sub_resource type="Curve" id="Curve_m86vo"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 3.0, 0.0, 0, 0]
+point_count = 2
+
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_527fh"]
 xfade_time = 0.4
+xfade_curve = SubResource("Curve_m86vo")
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_cwche"]
 xfade_time = 0.2
@@ -222,6 +230,12 @@ xfade_time = 0.2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_m86vo"]
 xfade_time = 0.2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_jtdol"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_0twc0"]
+xfade_time = 0.1
 
 [resource]
 states/Climb00/node = SubResource("AnimationNodeAnimation_s4ljg")
@@ -236,7 +250,7 @@ states/End/position = Vector2(1079, 109)
 states/Fall/node = SubResource("AnimationNodeAnimation_d4qa6")
 states/Fall/position = Vector2(172, 190)
 states/FallToIdle/node = SubResource("AnimationNodeBlendTree_2ngu4")
-states/FallToIdle/position = Vector2(387, -57)
+states/FallToIdle/position = Vector2(406, 137)
 states/Fire01/node = SubResource("AnimationNodeAnimation_5ki56")
 states/Fire01/position = Vector2(172, 3)
 states/Jump/node = SubResource("AnimationNodeBlendTree_ss7kx")
@@ -251,10 +265,12 @@ states/RunJump01/node = SubResource("AnimationNodeAnimation_1yk18")
 states/RunJump01/position = Vector2(172, 274)
 states/RunJump02/node = SubResource("AnimationNodeAnimation_73kkf")
 states/RunJump02/position = Vector2(172, 225)
+states/Slide/node = SubResource("AnimationNodeAnimation_kdkla")
+states/Slide/position = Vector2(172, -94)
 states/Start/position = Vector2(-79, 44)
 states/TeleportShoot/node = SubResource("AnimationNodeAnimation_42nxq")
 states/TeleportShoot/position = Vector2(172, 324)
 states/WallGrab/node = SubResource("AnimationNodeAnimation_b4o2o")
 states/WallGrab/position = Vector2(172, 418)
-transitions = ["Start", "Move", SubResource("AnimationNodeStateMachineTransition_42nxq"), "Move", "TeleportShoot", SubResource("AnimationNodeStateMachineTransition_ss7kx"), "TeleportShoot", "Fall", SubResource("AnimationNodeStateMachineTransition_08t41"), "Jump", "Fall", SubResource("AnimationNodeStateMachineTransition_c5rqy"), "Move", "Jump", SubResource("AnimationNodeStateMachineTransition_73kkf"), "TeleportShoot", "Jump", SubResource("AnimationNodeStateMachineTransition_1ie0h"), "TeleportShoot", "OrbIdle", SubResource("AnimationNodeStateMachineTransition_5ki56"), "OrbIdle", "Move", SubResource("AnimationNodeStateMachineTransition_d4qa6"), "RunJump02", "Roll", SubResource("AnimationNodeStateMachineTransition_yr3on"), "Roll", "Move", SubResource("AnimationNodeStateMachineTransition_2ngu4"), "Move", "Fire01", SubResource("AnimationNodeStateMachineTransition_n36er"), "Fire01", "Move", SubResource("AnimationNodeStateMachineTransition_d745t"), "RunJump01", "Roll", SubResource("AnimationNodeStateMachineTransition_xe83n"), "RunJump01", "Fall", SubResource("AnimationNodeStateMachineTransition_3hm5d"), "RunJump01", "WallGrab", SubResource("AnimationNodeStateMachineTransition_tb0mf"), "WallGrab", "Fall", SubResource("AnimationNodeStateMachineTransition_y2dek"), "WallGrab", "RunJump02", SubResource("AnimationNodeStateMachineTransition_3sokb"), "Jump", "WallGrab", SubResource("AnimationNodeStateMachineTransition_dnykm"), "Move", "Fall", SubResource("AnimationNodeStateMachineTransition_n5sgd"), "FallToIdle", "Fall", SubResource("AnimationNodeStateMachineTransition_pdlmq"), "FallToIdle", "Move", SubResource("AnimationNodeStateMachineTransition_527fh"), "Climb01", "Move", SubResource("AnimationNodeStateMachineTransition_cwche"), "Move", "Climb01", SubResource("AnimationNodeStateMachineTransition_yv3je"), "Climb01", "Fall", SubResource("AnimationNodeStateMachineTransition_u2s01"), "Roll", "Fall", SubResource("AnimationNodeStateMachineTransition_m86vo")]
-graph_offset = Vector2(-234, 14)
+transitions = ["Start", "Move", SubResource("AnimationNodeStateMachineTransition_42nxq"), "Move", "TeleportShoot", SubResource("AnimationNodeStateMachineTransition_ss7kx"), "TeleportShoot", "Fall", SubResource("AnimationNodeStateMachineTransition_08t41"), "Jump", "Fall", SubResource("AnimationNodeStateMachineTransition_c5rqy"), "Move", "Jump", SubResource("AnimationNodeStateMachineTransition_73kkf"), "TeleportShoot", "Jump", SubResource("AnimationNodeStateMachineTransition_1ie0h"), "TeleportShoot", "OrbIdle", SubResource("AnimationNodeStateMachineTransition_5ki56"), "OrbIdle", "Move", SubResource("AnimationNodeStateMachineTransition_d4qa6"), "RunJump02", "Roll", SubResource("AnimationNodeStateMachineTransition_yr3on"), "Roll", "Move", SubResource("AnimationNodeStateMachineTransition_2ngu4"), "Move", "Fire01", SubResource("AnimationNodeStateMachineTransition_n36er"), "Fire01", "Move", SubResource("AnimationNodeStateMachineTransition_d745t"), "RunJump01", "Roll", SubResource("AnimationNodeStateMachineTransition_xe83n"), "RunJump01", "Fall", SubResource("AnimationNodeStateMachineTransition_3hm5d"), "RunJump01", "WallGrab", SubResource("AnimationNodeStateMachineTransition_tb0mf"), "WallGrab", "Fall", SubResource("AnimationNodeStateMachineTransition_y2dek"), "WallGrab", "RunJump02", SubResource("AnimationNodeStateMachineTransition_3sokb"), "Jump", "WallGrab", SubResource("AnimationNodeStateMachineTransition_dnykm"), "Move", "Fall", SubResource("AnimationNodeStateMachineTransition_n5sgd"), "FallToIdle", "Fall", SubResource("AnimationNodeStateMachineTransition_pdlmq"), "FallToIdle", "Move", SubResource("AnimationNodeStateMachineTransition_527fh"), "Climb01", "Move", SubResource("AnimationNodeStateMachineTransition_cwche"), "Move", "Climb01", SubResource("AnimationNodeStateMachineTransition_yv3je"), "Climb01", "Fall", SubResource("AnimationNodeStateMachineTransition_u2s01"), "Roll", "Fall", SubResource("AnimationNodeStateMachineTransition_m86vo"), "Move", "Slide", SubResource("AnimationNodeStateMachineTransition_jtdol"), "Slide", "Move", SubResource("AnimationNodeStateMachineTransition_0twc0")]
+graph_offset = Vector2(-250, 12)

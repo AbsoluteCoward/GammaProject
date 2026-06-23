@@ -26,7 +26,6 @@ environment = ExtResource("1_h5kha")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=555029377]
 transform = Transform3D(1, 0, 0, 0, 0.9659259, 0.25881907, 0, -0.25881907, 0.9659258, 0, 0, 0)
-light_energy = 0.0
 shadow_enabled = true
 directional_shadow_mode = 0
 sky_mode = 1
@@ -174,7 +173,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 45)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 45)
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("17_jk2w6")]
-transform = Transform3D(-2.1855739e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855739e-07, 3, 7.299999, 18)
+transform = Transform3D(-2.1855739e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855739e-07, 18, 0.29999924, 63)
 
 [node name="PlayerCamera" parent="Entities" unique_id=29831598 instance=ExtResource("18_blhdk")]
 transform = Transform3D(1, -1.0619696e-07, 1.3889986e-07, 0, 0.79441464, 0.6073758, -1.7484555e-07, -0.6073758, 0.79441464, 2.7999992, 10.4183, 21.606949)
