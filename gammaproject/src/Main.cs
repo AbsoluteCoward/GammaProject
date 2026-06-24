@@ -34,9 +34,11 @@ namespace Gamma {
         public const float PLAYER_JUMP_STRENGTH = 8f;
         public const float PLAYER_LEDGESHAPECAST_MAX_DISTANCE = 6.37f;
         public const float PLAYER_ROCKET_SPEED = 20f;
+        public const float SCANNER_AVOIDANCE_RANGE = 2f;
         const float PLAYER_AIR_SPEED = PLAYER_RUN_SPEED;
         public static readonly Color NULL_COLOR = new Color(0f, 0f, 0f, 0f);
         public static readonly Color FULL_COLOR = new Color(1f, 1f, 1f, 1f);
+        public static readonly Color EXPLOSION_COLOR = new Color(1f, 0.4f, 0f);
         public static readonly Vector3 Y_FLAT = new Vector3(1, 0, 1);
         public static readonly Vector3 XZ_FLAT = new Vector3(0, 1, 0);
         public static readonly Vector3 GRAVITY_VECTOR = new Vector3(0, -GRAVITY_STRENGTH, 0);
@@ -143,11 +145,12 @@ namespace Gamma {
             videoPlayer.node = uiNode.GetNode<VideoStreamPlayer>("VideoStreamPlayer");
             InitializeLoadingScreen(uiNode.GetNode<Control>("LoadingScreen"));
             globalWorld3D = entitiesNode.GetChild<Node3D>(0).GetWorld3D();
-            //currentCamera = GetViewport().GetCamera3D().Current ? GetViewport().GetCamera3D() : null;
+            currentCamera = GetViewport().GetCamera3D().Current ? GetViewport().GetCamera3D() : null;
+            GD.Print(GetViewport().GetCamera3D().Name);
             int typelessEntityCount = 0;
             for (int i = 0; i < entitiesNode.GetChildCount(); i++) {
                 Node3D child = entitiesNode.GetChild<Node3D>(i);
-                if (child.HasMeta("Type") == false) {
+                if (!child.HasMeta("Type")) {
                     GD.PrintErr("Entity " + child.Name + " has no type metadata.");
                     typelessEntityCount++;
                     continue;
@@ -242,7 +245,7 @@ namespace Gamma {
             globalPhysicsDelta = delta;
             globalPhysicsDeltaFloat = (float)globalPhysicsDelta;
             UpdateInputState();
-            if (sceneState.isSceneLoaded == false) { 
+            if (!sceneState.isSceneLoaded) {
                 InitializeScene();
                 return;
             }

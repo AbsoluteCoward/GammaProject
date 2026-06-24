@@ -90,7 +90,8 @@ namespace Gamma {
             playerCamera.node.Fov = 64;
             playerCamera.node.Far = cameraFarSetting;
             playerCamera.targetAngle = Mathf.Round(inputCamera.Rotation.Y / 90f) * 90f;
-            if (currentCamera == null) {
+            if (currentCamera == null || !currentCamera.Current) {
+                GD.Print("Setting player camera as current camera");
                 currentCamera = inputCamera;
                 inputCamera.Current = true;
             }
@@ -535,7 +536,25 @@ namespace Gamma {
                         player.node.Velocity = rootVelocity;
                         break;
                     } else {
-                        PlayerSetCollision(true); 
+                        player.node.Velocity *= Y_FLAT;
+                        PlayerSetCollision(true);
+                    }
+                    bool isAnimationComplete = currentPlaybackPosition >= animationLength;
+                    if (!isAnimationComplete) {
+                        if (InputIsJustPressed(ref inputState.action3)) {
+                            Vector3 toLedge = Vector3.Zero;
+                            if (PlayerCanLeap(ref toLedge, 6)) {
+                                string climbAnimation = PlayerMatchLeapAnimation(toLedge, targetAnimation);
+                                player.animationState.Start(climbAnimation, true);
+                            } else { 
+                                RotateTowards(player.wishDirection, player.node, 1f); 
+                                player.node.Velocity = Vector3.Up + (player.wishDirection * PLAYER_RUN_SPEED); 
+                                player.animationState.Start("RunJump01", true); 
+                                targetAnimation = "RunJump01"; 
+                            }
+                            PlayerSetCollision(true);
+                        }
+                        break;
                     }
                     const float MAX_DISTANCE_TO_GROUND = PLAYER_LEG_LENGTH;
                     if (distanceToGround > MAX_DISTANCE_TO_GROUND) {
@@ -557,23 +576,6 @@ namespace Gamma {
                         break;
                     } else {
                         player.node.GlobalPosition = new Vector3(player.node.GlobalPosition.X, player.groundRay.GetCollisionPoint().Y, player.node.GlobalPosition.Z);
-                    }
-                    bool isAnimationComplete = currentPlaybackPosition >= animationLength;
-                    if (!isAnimationComplete) {
-                        if (InputIsJustPressed(ref inputState.action3)) {
-                            Vector3 toLedge = Vector3.Zero;
-                            if (PlayerCanLeap(ref toLedge, 6)) {
-                                string climbAnimation = PlayerMatchLeapAnimation(toLedge, targetAnimation);
-                                player.animationState.Start(climbAnimation, true);
-                            } else { 
-                                RotateTowards(player.wishDirection, player.node, 1f); 
-                                player.node.Velocity = Vector3.Up + (player.wishDirection * PLAYER_RUN_SPEED); 
-                                player.animationState.Start("RunJump01", true); 
-                                targetAnimation = "RunJump01"; 
-                            }
-                            PlayerSetCollision(true);
-                        }
-                        break;
                     }
                     if (InputIsPressed(ref inputState.action3)) {
                         Vector3 toLedge = Vector3.Zero;

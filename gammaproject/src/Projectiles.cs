@@ -187,11 +187,11 @@ namespace Gamma {
             explosions[index] = explosion;
             PlaySound3D(explosionSFX, inputPosition, 0.5f, 0.8f + GD.Randf() * 0.4f, true);
             if (directionalLight != null) {
-                directionalLight.LightColor += new Color(1f, 0.4f, 0f);
+                directionalLight.LightColor += EXPLOSION_COLOR;
                 directionalLight.LightEnergy += 40f;
                 directionalLight.LookAt(player.node.GlobalPosition - (inputPosition + Vector3.Up * 2), Vector3.Up);
                 directionalLight.ShadowOpacity = 0f;
-                worldEnvironment.Environment.AmbientLightColor += new Color(1f, 0.4f, 0f);
+                worldEnvironment.Environment.AmbientLightColor += EXPLOSION_COLOR;
                 worldEnvironment.Environment.AmbientLightEnergy += 1f;
             }
         }
