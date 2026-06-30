@@ -49,7 +49,10 @@ spot_range = 20.0
 
 [node name="Geometry" type="Node" parent="." unique_id=1112735005]
 
-[node name="playtest-new" parent="Geometry" unique_id=1279327924 instance=ExtResource("2_o1fdq")]
+[node name="playtest-new" parent="Geometry" unique_id=1650415443 instance=ExtResource("2_o1fdq")]
+
+[node name="playtest_007" parent="Geometry/playtest-new" index="8" unique_id=423097595]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -28.877998)
 
 [node name="Entities" type="Node" parent="." unique_id=1339097609]
 

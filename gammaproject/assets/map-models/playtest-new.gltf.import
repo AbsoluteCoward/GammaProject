@@ -41,6 +41,11 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "materials": {
+"IMG_FLR_4PXTILE.png": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://assets/materials/MAT_FLR_4PXLTILE.tres",
+"use_external/path": "uid://bll8imo8dfx66"
+},
 "IMG_NA_MISSINGTEXTURE.png": {
 "use_external/enabled": true,
 "use_external/fallback_path": "res://assets/materials/MAT_NA_MISSINGTEXTURE.tres",
