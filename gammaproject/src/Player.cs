@@ -5,7 +5,7 @@ namespace Gamma {
         public struct Player {
             public TeleportOrb orb;
             public CharacterBody3D node;
-            public MeshInstance3D rocketIndicator;
+            public Node3D targetIndicator;
             public Area3D detectionArea;
             public Node3D model;
             public Node3D gunBarrel;
@@ -45,8 +45,8 @@ namespace Gamma {
         public void PlayerInitialize(CharacterBody3D inputPlayerNode) {
             player.node = inputPlayerNode;
             player.model = player.node.GetNode<Node3D>("Slink");
-            player.rocketIndicator = player.node.GetNode<MeshInstance3D>("RocketIndicator");
-            player.rocketIndicator.TopLevel = true;
+            player.targetIndicator = player.node.GetNode<Node3D>("TargetIndicator");
+            player.targetIndicator.TopLevel = true;
             player.detectionArea = player.node.GetNode<Area3D>("DetectionArea");
             player.gunBarrel = player.node.GetNode<Node3D>("Slink/Skeleton3D/GunBone/GunBarrel");
             player.animationPlayer = inputPlayerNode.GetNode<AnimationPlayer>("Slink/AnimationPlayer");
@@ -113,7 +113,7 @@ namespace Gamma {
             playerCamera.rotationLerpSpeed = 0.1f;
             GD.Print("Player Camera Initialized");
         }
-        public void Shoot(int inputRocketCount) {
+        public void PlayerShoot(int inputRocketCount) {
             GD.Print("Shooting " + inputRocketCount + " rockets");
             bool didEverHaveTarget = player.currentTargetIndex < player.targetCount;
             int previousTarget = player.currentTargetIndex;
@@ -124,6 +124,18 @@ namespace Gamma {
                 bool hasTarget = player.currentTargetIndex < player.targetCount;
                 PlaySoundUI(shootSFX, 0.1f, globalSlightPitchVaration, false);
                 Vector3 shootDirection = -player.node.GlobalTransform.Basis.Z;
+                if (!hasTarget) {
+                    Node3D maybeTarget = PlayerTargetIndicatorUpdate();
+                    if (maybeTarget != null) {
+                        player.targets[player.currentTargetIndex] = maybeTarget;
+                        hasTarget = true;
+                        didEverHaveTarget = true;
+                        player.targets[player.currentTargetIndex] = maybeTarget; 
+                        GD.Print("Found target");
+                    } else {
+                        GD.Print("Couldn't find target");
+                    }
+                }
                 if (!hasTarget && i != 0) {
                     Vector3 right = player.node.GlobalTransform.Basis.X.Normalized();
                     float offset = (float)GD.Randfn(0, 0.4f);
@@ -231,8 +243,42 @@ namespace Gamma {
             player.node.CollisionLayer = (uint)(inputEnabled ? 1 : 0);
             player.node.CollisionMask = (uint)(inputEnabled ? 1 : 0);
         }
-        public void PlayerRocketIndicatorUpdate(bool inputShouldShow, Vector3 inputDirection) {
-            player.rocketIndicator.Visible = inputShouldShow;
+        public Node3D PlayerTargetIndicatorUpdate() {
+            player.node.GetNode<Sprite3D>("TargetIndicator/Sprite3D").Frame = (player.node.GetNode<Sprite3D>("TargetIndicator/Sprite3D").Frame + 1) % 24;
+            CharacterBody3D indicatorTarget = null;
+            float best = float.MaxValue;
+            Godot.Collections.Array<Node3D> bodies = player.detectionArea.GetOverlappingBodies();
+            if (bodies.Count > 0) {
+                for (int i = 0; i < bodies.Count; i++) {
+                    Node3D potentialTarget = bodies[i];
+                    if (!(potentialTarget.GetType() == typeof(CharacterBody3D))) { continue; }
+                    if ((string)potentialTarget.GetMeta("Type") != "EnemyGeneric") { continue; }
+                    RaycastWorldHitInfo potentialTargetHitInfo;
+                    bool hitSomething = RaycastWorld(globalWorld3D, player.node, player.node.GlobalPosition + Vector3.Up, potentialTarget.GlobalPosition + Vector3.Up, out potentialTargetHitInfo);
+                    if (!hitSomething || potentialTargetHitInfo.Collider != potentialTarget) { continue; }
+                    CharacterBody3D enemy = (CharacterBody3D)potentialTarget;
+                    Vector3 toEnemy = enemy.GlobalPosition - player.node.GlobalPosition;
+                    float distance = toEnemy.Length();
+                    float angleToPlayer = Mathf.Acos(Mathf.Clamp((-player.node.GlobalTransform.Basis.Z).Dot(toEnemy.Normalized()), -1f, 1f));
+                    float angleToCamera = Mathf.Acos(Mathf.Clamp(-currentCamera.GlobalTransform.Basis.Z.Dot(toEnemy.Normalized()), -1f, 1f));
+                    float score = distance + angleToPlayer * 10f;
+                    if (score < best) {
+                        best = score;
+                        indicatorTarget = enemy;
+                    }
+                }
+            }
+            if (!(indicatorTarget == null)) {
+                player.targetIndicator.Visible = true;
+                player.targetIndicator.GlobalPosition = player.targetIndicator.GlobalPosition.Lerp(indicatorTarget.GlobalPosition, 0.1f);
+                return indicatorTarget;
+            } else {
+                player.targetIndicator.Visible = false;
+                return null;
+            }
+        }
+        public void PlayerRocketIndicatorManualCurveUpdate(bool inputShouldShow, Vector3 inputDirection) {
+            player.targetIndicator.Visible = inputShouldShow;
             Vector3 velocity = inputDirection * PLAYER_ROCKET_SPEED;
             Vector3 position = player.gunBarrel.GlobalPosition;
             Vector3 end = player.gunBarrel.GlobalPosition;
@@ -256,12 +302,13 @@ namespace Gamma {
                     end = hit.Position;
                     curveHit = true;
                 } else {
-                    player.rocketIndicator.Visible = false;
+                    player.targetIndicator.Visible = false;
                 }
             }
-            player.rocketIndicator.GlobalPosition = end;
+            player.targetIndicator.GlobalPosition = end;
         }
         public void PlayerUpdate() {
+            PlayerTargetIndicatorUpdate();
             AnimationNodeStateMachine stateMachine = (AnimationNodeStateMachine)player.animationTree.TreeRoot;
             string previousAnimationName = player.animationState.GetCurrentNode();
             float previousPlaybackPosition = player.animationPlaybackBlocks[0].previousPlaybackPosition;
@@ -337,9 +384,9 @@ namespace Gamma {
                     bool isShooting = 
                         (bool)player.animationTree.Get("parameters/Move/FireWalkOneShot/active") &&
                         (float)player.animationTree.Get("parameters/Move/FireWalk/current_position") < 0.36f;
-                    bool shouldGunBlend = !isShooting && (Input.IsActionPressed("attack") || player.targetCount > 0);
-                    float gunBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/GunBlend/blend_amount"), shouldGunBlend ? 1f : 0f, 0.1f);
-                    player.animationTree.Set("parameters/Move/GunBlend/blend_amount", gunBlendAmount);
+                    //bool shouldGunBlend = !isShooting && (Input.IsActionPressed("attack") || player.targetCount > 0);
+                    //float gunBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/GunBlend/blend_amount"), shouldGunBlend ? 1f : 0f, 0.1f);
+                    //player.animationTree.Set("parameters/Move/GunBlend/blend_amount", gunBlendAmount);
                     bool shouldWalkBlend = Input.IsActionPressed("mod") || (hasMovementInput && isShooting);
                     const float WALK_MIN = 1f;
                     const float WALK_MAX = 1.5f;
@@ -371,42 +418,51 @@ namespace Gamma {
                         targetAnimation = "TeleportShoot";
                     }
                     if (Input.IsActionJustPressed("attack")) {
-                        for (int i = 0; i < player.targets.Length; i++) { player.targets[i] = null; }
-                        player.targetCount = 0;
-                        player.currentTargetIndex = 0;
-                    }
-                    if (!isShooting && (Input.IsActionJustReleased("attack") || (player.targetCount > 0 && !Input.IsActionPressed("attack")))) {
-                        player.animationTree.Set("parameters/Move/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
-                        gunBlendAmount = 0f;
-                    }
-                    if (gunBlendAmount == 1) {
-                        for (int i = 0; i < enemyCount; i++) {
-                            Node3D potentialTarget = enemies[i].node;
-                            bool isTargetInvalid = potentialTarget == player.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D);
-                            if (isTargetInvalid) { continue; }
-                            Vector3 toTarget = potentialTarget.GlobalPosition - player.gunBarrel.GlobalPosition;
-                            Vector3 toTargetFlat = (toTarget * Y_FLAT).Normalized();
-                            float dotProduct = playerForward.Dot(toTargetFlat);
-                            float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
-                            float angleInDegrees = Mathf.RadToDeg(angleToTarget);
-                            if (angleInDegrees > TARGETTING_ANGLE) { continue; }
-                            bool alreadyTargeted = false;
-                            for (int j = 0; j < player.targetCount; j++) {
-                                if (player.targets[j] == potentialTarget) {
-                                    alreadyTargeted = true;
-                                    break;
-                                }
-                            }
-                            RaycastWorldHitInfo potentialTargetHitInfo;
-                            bool hitSomething = RaycastWorld(globalWorld3D, player.node, player.node.GlobalPosition + Vector3.Up, potentialTarget.GlobalPosition + Vector3.Up, out potentialTargetHitInfo);
-                            if (hitSomething && potentialTargetHitInfo.Collider != potentialTarget) { continue; }
-                            if (!alreadyTargeted && player.targetCount < player.targets.Length) {
-                                player.targets[player.targetCount] = potentialTarget;
-                                targetReticles[player.targetCount].node.Visible = true;
-                                player.targetCount++;
-                            }
+                        Node3D potentialTarget = PlayerTargetIndicatorUpdate();
+                        bool isTargetValid = 
+                            potentialTarget != null &&
+                            potentialTarget != player.node && 
+                            potentialTarget.GetType() != typeof(AudioStreamPlayer3D);
+                        if (isTargetValid) {
+                            player.targets[0] = potentialTarget;
+                            player.targetCount = 1;
                         }
                     }
+                    if (player.targetCount > 0) {
+                        targetAnimation = "Slide";
+                    }
+                    // if (!isShooting && (Input.IsActionJustReleased("attack") || (player.targetCount > 0 && !Input.IsActionPressed("attack")))) {
+                    //     player.animationTree.Set("parameters/Move/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
+                    //     gunBlendAmount = 0f;
+                    // }
+                    // if (gunBlendAmount == 1) {
+                    //     for (int i = 0; i < enemyCount; i++) {
+                    //         Node3D potentialTarget = enemies[i].node;
+                    //         bool isTargetInvalid = potentialTarget == player.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D);
+                    //         if (isTargetInvalid) { continue; }
+                    //         Vector3 toTarget = potentialTarget.GlobalPosition - player.gunBarrel.GlobalPosition;
+                    //         Vector3 toTargetFlat = (toTarget * Y_FLAT).Normalized();
+                    //         float dotProduct = playerForward.Dot(toTargetFlat);
+                    //         float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
+                    //         float angleInDegrees = Mathf.RadToDeg(angleToTarget);
+                    //         if (angleInDegrees > TARGETTING_ANGLE) { continue; }
+                    //         bool alreadyTargeted = false;
+                    //         for (int j = 0; j < player.targetCount; j++) {
+                    //             if (player.targets[j] == potentialTarget) {
+                    //                 alreadyTargeted = true;
+                    //                 break;
+                    //             }
+                    //         }
+                    //         RaycastWorldHitInfo potentialTargetHitInfo;
+                    //         bool hitSomething = RaycastWorld(globalWorld3D, player.node, player.node.GlobalPosition + Vector3.Up, potentialTarget.GlobalPosition + Vector3.Up, out potentialTargetHitInfo);
+                    //         if (hitSomething && potentialTargetHitInfo.Collider != potentialTarget) { continue; }
+                    //         if (!alreadyTargeted && player.targetCount < player.targets.Length) {
+                    //             player.targets[player.targetCount] = potentialTarget;
+                    //             targetReticles[player.targetCount].node.Visible = true;
+                    //             player.targetCount++;
+                    //         }
+                    //     }
+                    // }
                     if (!player.isOnGround) { 
                         if (InputIsPressed(ref inputState.action3)) {
                             targetAnimation = "RunJump01";
@@ -462,7 +518,7 @@ namespace Gamma {
                     }
                     int fireWalkBlockIndex = GetPlaybackBlockIndex("FireWalk");
                     if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[fireWalkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[fireWalkBlockIndex].currentPlaybackPosition, 0.1f) && (float)player.animationTree.Get("parameters/Move/FireWalk/current_position") > 0.0f) {
-                        Shoot(1);
+                        PlayerShoot(1);
                     }
                     turnAnticipationTargetAngle = Mathf.Clamp(turnAnticipationTargetAngle, -0.8f, 0.8f);
                     player.turnAnticipation = Mathf.Lerp(player.turnAnticipation, turnAnticipationTargetAngle, 0.2f);
@@ -470,7 +526,7 @@ namespace Gamma {
                     RotateTowards(movementDirection, player.node, turnSpeed);
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     float chestTwist = runBlendAmount > 0.5f ? 1.5f : 1f;
-                    float chestRoll = runBlendAmount > 0.5f ? 0.8f : 0.15f;
+                    float chestRoll = runBlendAmount > 0.5f ? 1.5f : 0.15f;
                     float headTwist = 0.5f;
                     PlayerApplyDynamicBoneTransformations(chestTwist, chestRoll, headTwist);
                     break;
@@ -481,8 +537,9 @@ namespace Gamma {
                         targetAnimation = "Move";
                     }
                     if (HasCrossedPlaybackPosition(previousPlaybackPosition, currentPlaybackPosition, 0.66f)) {
-                        Shoot(16);
+                        PlayerShoot(1);
                     }
+                    player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
                     player.node.Velocity = new Vector3(rootVelocity.X, player.node.Velocity.Y, rootVelocity.Z);
                     break;
                 }
@@ -696,6 +753,7 @@ namespace Gamma {
                         player.node.Velocity = velocityLength <= PLAYER_RUN_SPEED ? 
                             playerForward * PLAYER_RUN_SPEED : 
                             player.node.Velocity;
+                        player.node.Velocity += Vector3.Up * PLAYER_JUMP_STRENGTH/2f;
                         break;
                     }
                     if (player.isOnGround) {
@@ -715,13 +773,24 @@ namespace Gamma {
                     RotateTowards(targetDirection, player.node, landingTimeStamp);
                     if (currentPlaybackPosition < shootingTimeStamp && InputIsJustPressed(ref inputState.attack)) {
                         RotateTowards(targetDirection, player.node, 1);
-                        Shoot(1);
+                        PlayerShoot(1);
                     }
                     if (HasCrossedPlaybackPosition(previousPlaybackPosition, currentPlaybackPosition, shootingTimeStamp)) {
-                        if (player.isOnGround) {  
-                            Shoot(1);
+                        if (player.isOnGround) {
+                            PlayerShoot(1);
                         } else {
                             player.animationState.Start("Fall", true);
+                        }
+                    }
+                    if (currentPlaybackPosition > shootingTimeStamp && InputIsJustPressed(ref inputState.attack)) {
+                        Node3D potentialTarget = PlayerTargetIndicatorUpdate();
+                        bool isTargetValid = 
+                            potentialTarget != null &&
+                            potentialTarget != player.node && 
+                            potentialTarget.GetType() != typeof(AudioStreamPlayer3D);
+                        if (isTargetValid) {
+                            player.targets[0] = potentialTarget;
+                            player.targetCount = 1;
                         }
                     }
                     if (currentPlaybackPosition >= standingTimeStamp && velocityLengthFlat <= PLAYER_RUN_SPEED/2) {
@@ -772,10 +841,9 @@ namespace Gamma {
                         PlaySoundUI(metalFootstepSFX, 0.4f, globalSlightPitchVaration, true);
                     }
                     int FallToIdleBlockIndex = GetPlaybackBlockIndex("FallToIdle");
-                    if (player.animationPlaybackBlocks[FallToIdleBlockIndex].currentPlaybackPosition > 0.4f) {
-                        if (hasMovementInput) {
-                            targetAnimation = "Move";
-                        }
+                    if (hasMovementInput) {
+                        targetAnimation = "Move";
+                        RotateTowards(player.wishDirection, player.node, 0.1f);
                     }
                     if (player.animationPlaybackBlocks[FallToIdleBlockIndex].currentPlaybackPosition >= (float)player.animationTree.Get("parameters/FallToIdle/FallToIdle/current_length")) {
                         targetAnimation = "Move";
@@ -884,35 +952,7 @@ namespace Gamma {
                 }
             }
             //PlayerRocketIndicatorUpdate(shouldShowRocketIndicator, playerForward + player.node.GlobalTransform.Basis.Y.Normalized() * 0.2f);
-            CharacterBody3D target = null;
-            float best = float.MaxValue;
-            Godot.Collections.Array<Node3D> bodies = player.detectionArea.GetOverlappingBodies();
-            if (bodies.Count > 0) {
-                for (int i = 0; i < bodies.Count; i++) {
-                    Node3D potentialTarget = bodies[i];
-                    if (!(potentialTarget.GetType() == typeof(CharacterBody3D))) { continue; }
-                    if ((string)potentialTarget.GetMeta("Type") != "EnemyGeneric") { continue; }
-                    RaycastWorldHitInfo potentialTargetHitInfo;
-                    bool hitSomething = RaycastWorld(globalWorld3D, player.node, player.node.GlobalPosition + Vector3.Up, potentialTarget.GlobalPosition + Vector3.Up, out potentialTargetHitInfo);
-                    if (!hitSomething || potentialTargetHitInfo.Collider != potentialTarget) { continue; }
-                    CharacterBody3D enemy = (CharacterBody3D)potentialTarget;
-                    Vector3 toEnemy = enemy.GlobalPosition - player.node.GlobalPosition;
-                    float distance = toEnemy.Length();
-                    float angleToPlayer = Mathf.Acos(Mathf.Clamp(playerForward.Dot(toEnemy.Normalized()), -1f, 1f));
-                    float angleToCamera = Mathf.Acos(Mathf.Clamp(-currentCamera.GlobalTransform.Basis.Z.Dot(toEnemy.Normalized()), -1f, 1f));
-                    float score = distance + angleToPlayer * 10f;
-                    if (score < best) {
-                        best = score;
-                        target = enemy;
-                    }
-                }
-            }
-            if (!(target == null)) {
-                player.rocketIndicator.Visible = true;
-                player.rocketIndicator.GlobalPosition = target.GlobalPosition;
-            } else {
-                player.rocketIndicator.Visible = false;
-            }
+            PlayerTargetIndicatorUpdate();
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }

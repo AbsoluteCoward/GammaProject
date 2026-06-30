@@ -123,7 +123,7 @@ namespace Gamma {
                 const float AVOIDANCE_STRENGTH = 1f;
                 scanner.node.Velocity += averageAreaNormal.Normalized() * AVOIDANCE_STRENGTH;
             }
-            const float SCANNER_SPEED = 1f;
+            const float SCANNER_SPEED = 2f;
             const float MAX_SPEED = 20f;
             scanner.node.Velocity += toTarget * SCANNER_SPEED;
             scanner.node.Velocity *= 0.9f;

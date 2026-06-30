@@ -145,7 +145,7 @@ namespace Gamma {
             videoPlayer.node = uiNode.GetNode<VideoStreamPlayer>("VideoStreamPlayer");
             InitializeLoadingScreen(uiNode.GetNode<Control>("LoadingScreen"));
             globalWorld3D = entitiesNode.GetChild<Node3D>(0).GetWorld3D();
-            currentCamera = GetViewport().GetCamera3D().Current ? GetViewport().GetCamera3D() : null;
+            //currentCamera = GetViewport().GetCamera3D().Current ? GetViewport().GetCamera3D() : null;
             GD.Print(GetViewport().GetCamera3D().Name);
             int typelessEntityCount = 0;
             for (int i = 0; i < entitiesNode.GetChildCount(); i++) {
@@ -223,7 +223,7 @@ namespace Gamma {
                     "Entity types must be defined using the 'Type' metadata field on each local root node of the entity."
                 );
             }
-            TargetReticlesInitialize();
+            //TargetReticlesInitialize();
             DialogueBoxInitialize(uiNode.GetNode<Control>("DialogueBox"));
             SubtitlesInitialize(uiNode.GetNode<VBoxContainer>("SubtitleBox"));
             RewardsInitialize(DEFAULT_MISCELLANEOUS_SIZE);
@@ -281,7 +281,7 @@ namespace Gamma {
             RewardsUpdate();
             SubtitlesUpdate();
             UpdateExplosions();
-            TargetReticlesUpdate();
+            //TargetReticlesUpdate();
             TrailUpdate(trails, 0.1f);
             if (prisonSpotlight.node != null) { PrisonSpotlightUpdate(ref prisonSpotlight); }
             ResetInputState();
