@@ -90,11 +90,6 @@ namespace Gamma {
             playerCamera.node.Fov = 64;
             playerCamera.node.Far = cameraFarSetting;
             playerCamera.targetAngle = Mathf.Round(inputCamera.Rotation.Y / 90f) * 90f;
-            if (currentCamera == null || !currentCamera.Current) {
-                GD.Print("Setting player camera as current camera");
-                currentCamera = inputCamera;
-                inputCamera.Current = true;
-            }
             bool sceneHasFog = worldEnvironment.Environment.FogEnabled;
             if (sceneHasFog) {
                 playerCamera.node.Far = worldEnvironment.Environment.FogDepthEnd > cameraFarSetting ?

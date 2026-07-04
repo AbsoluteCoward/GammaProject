@@ -235,10 +235,10 @@ namespace Gamma {
                             PlayerCameraInitialize((Camera3D)child);
                             break;
                         }
-                        currentCamera = (Camera3D)child;
                         break;
                 }
             }
+            currentCamera = GetViewport().GetCamera3D();
             //TargetReticlesInitialize();
             DialogueBoxInitialize(uiNode.GetNode<Control>("DialogueBox"));
             SubtitlesInitialize(uiNode.GetNode<VBoxContainer>("SubtitleBox"));
