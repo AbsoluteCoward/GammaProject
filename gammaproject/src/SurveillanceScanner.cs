@@ -90,15 +90,16 @@ namespace Gamma {
                     }
                 }
             }
-            Vector3 toTarget = (scanner.targetPosition - scanner.node.GlobalPosition).Normalized();
+            Vector3 directionToTarget = (scanner.targetPosition - scanner.node.GlobalPosition).Normalized();
+            Vector3 toTarget = scanner.targetPosition - scanner.node.GlobalPosition;
             //TODO: this only makes it move away from the average normal of the whole body
             Vector3 averageAreaNormal = Vector3.Zero;
             int areaHitCount = 0;
             const float SCANNER_COLLISION_RADIUS = 0.3f;
-            if (toTarget.LengthSquared() > ALMOST_ZERO) {
-                Vector3 temp = Mathf.Abs(toTarget.Y) > ALMOST_ONE ? Vector3.Forward : Vector3.Up;
-                Vector3 right = temp.Cross(toTarget).Normalized();
-                Vector3 up = toTarget.Cross(right).Normalized();
+            if (directionToTarget.LengthSquared() > ALMOST_ZERO) {
+                Vector3 temp = Mathf.Abs(directionToTarget.Y) > ALMOST_ONE ? Vector3.Forward : Vector3.Up;
+                Vector3 right = temp.Cross(directionToTarget).Normalized();
+                Vector3 up = directionToTarget.Cross(right).Normalized();
                 Vector3[] offsets = new Vector3[] {
                     right * SCANNER_COLLISION_RADIUS,
                     -right * SCANNER_COLLISION_RADIUS,
@@ -110,7 +111,7 @@ namespace Gamma {
                 };
                 for (int i = 0; i < offsets.Length; i++) {
                     Vector3 rayStart = scanner.node.GlobalPosition + offsets[i];
-                    Vector3 rayEnd = rayStart + toTarget * SCANNER_AVOIDANCE_RANGE;
+                    Vector3 rayEnd = rayStart + directionToTarget * SCANNER_AVOIDANCE_RANGE;
                     if (RaycastWorld(globalWorld3D, scanner.node, scanner.node.GlobalPosition, rayEnd, out hit)) {
                         if (hit.Collider == scanner.target) { continue; }
                         averageAreaNormal += hit.Normal;
@@ -123,13 +124,14 @@ namespace Gamma {
                 const float AVOIDANCE_STRENGTH = 1f;
                 scanner.node.Velocity += averageAreaNormal.Normalized() * AVOIDANCE_STRENGTH;
             }
-            const float SCANNER_SPEED = 2f;
+            const float SCANNER_SPEED_FACTOR = 8F;
+            float scannerSpeed = SCANNER_SPEED_FACTOR * toTarget.Length() * globalPhysicsDeltaFloat;
             const float MAX_SPEED = 20f;
-            scanner.node.Velocity += toTarget * SCANNER_SPEED;
+            scanner.node.Velocity += directionToTarget * scannerSpeed;
             scanner.node.Velocity *= 0.9f;
             if (scanner.node.IsOnWall()) {
                 scanner.node.Velocity = scanner.node.Velocity.Bounce(scanner.node.GetWallNormal());
-                scanner.node.Velocity += scanner.node.GetWallNormal() * 5f;
+                scanner.node.Velocity += scanner.node.GetWallNormal() * SCANNER_SPEED_FACTOR;
             }
             if (scanner.node.Velocity.LengthSquared() > MAX_SPEED * MAX_SPEED) {
                 scanner.node.Velocity = scanner.node.Velocity.Normalized() * MAX_SPEED;
@@ -143,15 +145,15 @@ namespace Gamma {
                 Vector3 forward = -localToTarget.Normalized(); 
                 Vector3 absoluteUp = Vector3.Up;
                 if (Mathf.Abs(forward.Dot(absoluteUp)) > 0.99f) {
-                    absoluteUp = Vector3.Forward; 
+                    absoluteUp = Vector3.Forward;
                 }
                 Vector3 right = absoluteUp.Cross(forward).Normalized();
                 Vector3 up = forward.Cross(right).Normalized();
                 Basis targetBasis = new Basis(right, up, forward);
                 Quaternion current = lampPose.Basis.GetRotationQuaternion();
                 Quaternion target = targetBasis.GetRotationQuaternion();
-                const float rotationSpeed = 2f;
-                lampPose.Basis = new Basis(current.Slerp(target, rotationSpeed * globalPhysicsDeltaFloat));
+                const float ROTATION_SPEED = 2f;
+                lampPose.Basis = new Basis(current.Slerp(target, ROTATION_SPEED * globalPhysicsDeltaFloat));
                 scanner.skeleton.SetBoneGlobalPose(SurveillanceScanner.lampBoneIndex, lampPose);
             }
             surveillanceScanners[0] = scanner;
