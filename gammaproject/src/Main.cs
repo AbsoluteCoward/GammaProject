@@ -145,11 +145,9 @@ namespace Gamma {
             videoPlayer.node = uiNode.GetNode<VideoStreamPlayer>("VideoStreamPlayer");
             InitializeLoadingScreen(uiNode.GetNode<Control>("LoadingScreen"));
             globalWorld3D = entitiesNode.GetChild<Node3D>(0).GetWorld3D();
-            //currentCamera = GetViewport().GetCamera3D().Current ? GetViewport().GetCamera3D() : null;
-            GD.Print(GetViewport().GetCamera3D().Name);
             int typelessEntityCount = 0;
             for (int i = 0; i < entitiesNode.GetChildCount(); i++) {
-                Node3D child = entitiesNode.GetChild<Node3D>(i);
+                Node child = entitiesNode.GetChild<Node3D>(i);
                 if (!child.HasMeta("Type")) {
                     GD.PrintErr("Entity " + child.Name + " has no type metadata.");
                     typelessEntityCount++;
@@ -166,9 +164,6 @@ namespace Gamma {
                         break;
                     case "Player":
                         PlayerInitialize((CharacterBody3D)child);
-                        break;
-                    case "PlayerCamera":
-                        PlayerCameraInitialize((Camera3D)child);
                         break;
                     case "SurveillanceScanner01":
                         SurveillanceScannerInitialize((CharacterBody3D)child);
@@ -191,7 +186,7 @@ namespace Gamma {
                         break;
                     case "PrisonSpotlight":
                         prisonSpotlight = new PrisonSpotLight();
-                        prisonSpotlight.node = child;
+                        prisonSpotlight.node = (Node3D)child;
                         prisonSpotlight.speed = 0.5f;
                         break;
                     case "VideoTest":
@@ -222,6 +217,27 @@ namespace Gamma {
                     $"There were {typelessEntityCount} typeless entities in the scene.\n" +
                     "Entity types must be defined using the 'Type' metadata field on each local root node of the entity."
                 );
+            }
+            for (int i = 0; i < environmentNode.GetChildCount(); i++) {
+                Node child = environmentNode.GetChild(i);
+                Type childType = child.GetType();
+                GD.Print("Environment child: " + child.Name + " (Type: " + childType + ")");
+                switch (child) {
+                    case DirectionalLight3D light:
+                        GD.Print("DirectionalLight3D: " + light.Name);
+                        break;
+                    case WorldEnvironment env:
+                        GD.Print("WorldEnvironment: " + env.Name);
+                        break;
+                    case Camera3D camera:
+                        bool isPlayerCamera = camera.HasMeta("Type") && (string)camera.GetMeta("Type") == "PlayerCamera";
+                        if (isPlayerCamera) {
+                            PlayerCameraInitialize((Camera3D)child);
+                            break;
+                        }
+                        currentCamera = (Camera3D)child;
+                        break;
+                }
             }
             //TargetReticlesInitialize();
             DialogueBoxInitialize(uiNode.GetNode<Control>("DialogueBox"));
