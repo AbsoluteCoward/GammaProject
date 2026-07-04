@@ -44,11 +44,11 @@ light_energy = 10.0
 shadow_enabled = true
 spot_range = 20.0
 
-[node name="PlayerCamera" parent="Environment" unique_id=855044570 instance=ExtResource("18_blhdk")]
-transform = Transform3D(1, -8.266921e-08, 1.571942e-07, -2.9802322e-08, 0.79441464, 0.60737586, -1.7508864e-07, -0.6073758, 0.7944147, 2.7999992, 10.418299, 21.606949)
-
 [node name="Camera3D" type="Camera3D" parent="Environment" unique_id=121825853]
 transform = Transform3D(-0.0061754715, 0.7575628, -0.65273315, 0.0061754715, 0.652762, 0.7575379, 0.99996185, 0.00064721936, -0.008709421, -23.826447, 14.039677, 21.755718)
+
+[node name="PlayerCamera" parent="Environment" unique_id=855044570 instance=ExtResource("18_blhdk")]
+transform = Transform3D(1, -8.266921e-08, 1.571942e-07, -2.9802322e-08, 0.79441464, 0.60737586, -1.7508864e-07, -0.6073758, 0.7944147, 2.7999992, 10.418299, 21.606949)
 
 [node name="Geometry" type="Node" parent="." unique_id=1112735005]
 
