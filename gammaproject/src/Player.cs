@@ -26,6 +26,7 @@ namespace Gamma {
             public int maxTargetCount;
             public int currentTargetIndex;
             public bool isOnGround;
+            public bool hasShotDuringThisAnimation;
             public static float maxDistance = 1000f;
             public static int chestBoneIndex;
             public static int headBoneIndex;
@@ -68,9 +69,12 @@ namespace Gamma {
             player.targets = new Node3D[DEFAULT_PLAYER_MAX_TARGET_COUNT];
             player.animationPlaybackBlocks = new PlaybackPositionData[DEFAULT_MISCELLANEOUS_SIZE/2];
             player.wishDirection = Vector3.Zero;
+            player.turnAnticipation = 0f;
             player.targetCount = 0;
             player.maxTargetCount = DEFAULT_PLAYER_MAX_TARGET_COUNT;
-            player.turnAnticipation = 0f;
+            player.currentTargetIndex = 0;
+            player.isOnGround = false;
+            player.hasShotDuringThisAnimation = false;
             for (int i = 0; i < player.animationPlaybackBlocks.Length; i++) {
                 player.animationPlaybackBlocks[i].previousPlaybackPosition = 0f;
                 player.animationPlaybackBlocks[i].currentPlaybackPosition = 0f;
@@ -109,6 +113,7 @@ namespace Gamma {
             GD.Print("Player Camera Initialized");
         }
         public void PlayerShoot(int inputRocketCount) {
+            player.hasShotDuringThisAnimation = true;
             GD.Print("Shooting " + inputRocketCount + " rockets");
             bool didEverHaveTarget = player.currentTargetIndex < player.targetCount;
             int previousTarget = player.currentTargetIndex;
@@ -175,6 +180,9 @@ namespace Gamma {
             Transform3D headPose = player.skeleton.GetBoneGlobalPose(Player.headBoneIndex);
             headPose.Basis = headPose.Basis * new Basis(headTwist);
             player.skeleton.SetBoneGlobalPose(Player.headBoneIndex, headPose);
+        }
+        public void PlayerChangeAnimation(string newAnimation, bool changeImmediately) {
+            
         }
         public bool PlayerCanLeap(ref Vector3 outHitPosition, float maxDistance) {
             if (!player.ledgeShapeCast.IsColliding()) { return false; }
@@ -421,6 +429,8 @@ namespace Gamma {
                         if (isTargetValid) {
                             player.targets[0] = potentialTarget;
                             player.targetCount = 1;
+                        } else {
+                            targetAnimation = "Slide";
                         }
                     }
                     if (player.targetCount > 0) {
@@ -485,9 +495,6 @@ namespace Gamma {
                             targetAnimation = "Jump";
                             player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
                         }
-                    }
-                    if (Input.IsActionJustPressed("debug")) {
-                        targetAnimation = "Slide";
                     }
                     if (player.node.IsOnWall() && (walkBlendAmount > 0.8f || runBlendAmount > 0.8f)) {
                         Vector3 toLedge = Vector3.Zero;
@@ -763,18 +770,25 @@ namespace Gamma {
                     const float standingTimeStamp = 0.8f;
                     const float shootingTimeStamp = standingTimeStamp;
                     Vector3 targetDirection = player.targets[0] == null ?
-                        wishDirectionOrForward : 
+                        wishDirectionOrForward :
                         (player.targets[0].GlobalPosition - player.node.GlobalPosition).Normalized();
-                    RotateTowards(targetDirection, player.node, landingTimeStamp);
-                    if (currentPlaybackPosition < shootingTimeStamp && InputIsJustPressed(ref inputState.attack)) {
-                        RotateTowards(targetDirection, player.node, 1);
-                        PlayerShoot(1);
+                    float rotationSpeed = player.targets[0] == null ? 0.1f : 0.33f;
+                    RotateTowards(targetDirection, player.node, rotationSpeed);
+                    if (InputIsJustPressed(ref inputState.attack)) {
+                        if (!player.hasShotDuringThisAnimation) {
+                            RotateTowards(targetDirection, player.node, 1);
+                            PlayerShoot(1);
+                            player.hasShotDuringThisAnimation = true;
+                        } else {
+                            targetAnimation = "Fire01";
+                        }
                     }
                     if (HasCrossedPlaybackPosition(previousPlaybackPosition, currentPlaybackPosition, shootingTimeStamp)) {
-                        if (player.isOnGround) {
-                            PlayerShoot(1);
-                        } else {
+                        if (!player.isOnGround) {
                             player.animationState.Start("Fall", true);
+                            player.hasShotDuringThisAnimation = false;
+                        } else if (!player.hasShotDuringThisAnimation) {
+                            PlayerShoot(1);
                         }
                     }
                     if (currentPlaybackPosition > shootingTimeStamp && InputIsJustPressed(ref inputState.attack)) {
@@ -903,6 +917,7 @@ namespace Gamma {
             bool shouldChangeAnimation = player.animationState.GetCurrentNode() != targetAnimation;
             if (shouldChangeAnimation && !isInTransition) {
                 GD.Print("changing animation to " + targetAnimation + " from " + player.animationState.GetCurrentNode());
+                player.hasShotDuringThisAnimation = false;
                 for (int i = 0; i < player.animationPlaybackBlocks.Length; i++) {
                     player.animationPlaybackBlocks[i].currentPlaybackPosition = 0f;
                 }
