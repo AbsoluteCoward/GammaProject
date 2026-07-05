@@ -179,7 +179,7 @@ namespace Gamma {
             explosion.node.GlobalPosition = inputPosition;
             explosion.fireParticles.Emitting = true;
             RaycastWorldHitInfo hit;
-            if (RaycastWorld(globalWorld3D, player.node, inputPosition, inputPosition + Vector3.Down * 10, out hit)) {
+            if (RaycastWorldEx(globalWorld3D, player.node, inputPosition, inputPosition + Vector3.Down * 10, out hit)) {
                 explosion.smokeParticles.GlobalPosition = hit.Position;
             }
             explosion.smokeParticles.Emitting = true;

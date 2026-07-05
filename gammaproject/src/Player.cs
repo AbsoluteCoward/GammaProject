@@ -206,7 +206,7 @@ namespace Gamma {
                     break;
             }
             RaycastWorldHitInfo findLedge = new RaycastWorldHitInfo();
-            if (RaycastWorld(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
+            if (RaycastWorldEx(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
                 outHitPosition = findLedge.Position;
                 return true;
             }
@@ -257,7 +257,7 @@ namespace Gamma {
                     if (!(potentialTarget.GetType() == typeof(CharacterBody3D))) { continue; }
                     if ((string)potentialTarget.GetMeta("Type") != "EnemyGeneric") { continue; }
                     RaycastWorldHitInfo potentialTargetHitInfo;
-                    bool hitSomething = RaycastWorld(globalWorld3D, player.node, player.node.GlobalPosition + Vector3.Up, potentialTarget.GlobalPosition + Vector3.Up, out potentialTargetHitInfo);
+                    bool hitSomething = RaycastWorldEx(globalWorld3D, player.node, player.node.GlobalPosition + Vector3.Up, potentialTarget.GlobalPosition + Vector3.Up, out potentialTargetHitInfo);
                     if (!hitSomething || potentialTargetHitInfo.Collider != potentialTarget) { continue; }
                     CharacterBody3D enemy = (CharacterBody3D)potentialTarget;
                     Vector3 toEnemy = enemy.GlobalPosition - player.node.GlobalPosition;
@@ -291,7 +291,7 @@ namespace Gamma {
                 Vector3 next = position + velocity * time;
                 velocity += GRAVITY_VECTOR * time;
                 RaycastWorldHitInfo hit;
-                if (RaycastWorld(globalWorld3D, player.node, position, next, out hit)) {
+                if (RaycastWorldEx(globalWorld3D, player.node, position, next, out hit)) {
                     end = hit.Position;
                     curveHit = true;
                     break;
@@ -301,7 +301,7 @@ namespace Gamma {
             }
             if (!curveHit) {
                 RaycastWorldHitInfo hit;
-                if (RaycastWorld(globalWorld3D, player.node, position, end + Vector3.Down * 500, out hit)) {
+                if (RaycastWorldEx(globalWorld3D, player.node, position, end + Vector3.Down * 500, out hit)) {
                     end = hit.Position;
                     curveHit = true;
                 } else {
@@ -787,7 +787,7 @@ namespace Gamma {
                         if (!player.isOnGround) {
                             player.animationState.Start("Fall", true);
                             player.hasShotDuringThisAnimation = false;
-                        } else if (!player.hasShotDuringThisAnimation) {
+                        } else if (!player.hasShotDuringThisAnimation && player.targets[0] != null) {
                             PlayerShoot(1);
                         }
                     }
