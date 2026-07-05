@@ -100,11 +100,39 @@ namespace Gamma {
         public float globalProcessDeltaFloat;
         public double globalPhysicsDelta;
         public double globalProcessDelta;
-        public static bool RaycastWorld(World3D relativeWorld, CollisionObject3D exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
+        public RaycastWorldHitInfo globalHitInfo;
+        public CollisionObject3D[] globalRayCastExceptions = new CollisionObject3D[DEFAULT_MISCELLANEOUS_SIZE];
+        public bool RaycastWorld(Vector3 inputStart, Vector3 inputEnd) {
+            if (RaycastWorldExNew(globalWorld3D, 1, ref globalRayCastExceptions, inputStart, inputEnd, out globalHitInfo)) {
+                return true;
+            }
+            return false;
+        }
+        public static bool RaycastWorldEx(World3D relativeWorld, CollisionObject3D exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
             hitInfo = new RaycastWorldHitInfo();
             var rayResult = relativeWorld.DirectSpaceState.IntersectRay(
                 PhysicsRayQueryParameters3D.Create(start, end, 1, new Godot.Collections.Array<Rid> { exceptions.GetRid() })
             );
+            if (rayResult.Count <= 0) { return false; }
+            hitInfo.RawResult = rayResult;
+            hitInfo.Position = (Vector3)rayResult["position"];
+            hitInfo.Normal = (Vector3)rayResult["normal"];
+            hitInfo.Collider = (Node3D)rayResult["collider"];
+            return true;
+        }
+        public static bool RaycastWorldExNew(World3D relativeWorld, int layerMask, ref CollisionObject3D[] exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
+            hitInfo = new RaycastWorldHitInfo();
+            Godot.Collections.Array<Rid> excludeRIDs = new Godot.Collections.Array<Rid>();
+            for (int i = 0; i < exceptions.Length; i++) {
+                if (exceptions[i] == null) { continue; }
+                excludeRIDs.Add(exceptions[i].GetRid());
+            }
+            var rayResult = relativeWorld.DirectSpaceState.IntersectRay(
+                PhysicsRayQueryParameters3D.Create(start, end, (uint)layerMask, excludeRIDs)
+            );
+            if (exceptions.Length > 0) {
+                Array.Clear(exceptions);
+            }
             if (rayResult.Count <= 0) { return false; }
             hitInfo.RawResult = rayResult;
             hitInfo.Position = (Vector3)rayResult["position"];
