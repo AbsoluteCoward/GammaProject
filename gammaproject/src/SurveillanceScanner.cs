@@ -42,14 +42,14 @@ namespace Gamma {
             Vector3 scannerForward = -scanner.node.Transform.Basis.Z.Normalized();
             float scannerVelocityLength = scanner.node.Velocity.Length();
             Vector3 toPlayerFlat = (player.node.GlobalPosition - scanner.node.GlobalPosition) * Y_FLAT;
-            RaycastWorldHitInfo hit;
             if (scanner.target == null) {
                 float dotProduct = scannerForward.Dot(toPlayerFlat);
                 float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
                 float angleInDegrees = Mathf.RadToDeg(angleToTarget);
                 if (angleInDegrees > 66f) { return; }
-                bool hitSomething = RaycastWorldEx(globalWorld3D, scanner.node, scanner.node.GlobalPosition, player.node.GlobalPosition + Vector3.Up, out hit);
-                if (hitSomething && hit.Collider != player.node) { return; }
+                //bool hitSomething = RaycastWorldEx(globalWorld3D, scanner.node, scanner.node.GlobalPosition, player.node.GlobalPosition + Vector3.Up, out hit);
+                bool hitSomething = RayCast(scanner.node.GlobalPosition, player.node.GlobalPosition + Vector3.Up, Mask2(LAYER_PLAYERS, LAYER_WORLD_STATIC));
+                if (hitSomething && globalHitInfo.Collider != player.node) { return; }
                 scanner.target = player.node;
             }
             Vector3 targetCenter = scanner.target.GlobalPosition + Vector3.Up * 1.5f;
@@ -60,7 +60,7 @@ namespace Gamma {
             Vector3 newPosition;
             globalRayCastExceptions[1] = scanner.node;
             globalRayCastExceptions[2] = scanner.target;
-            if (RaycastWorldExNew(globalWorld3D, 1, ref globalRayCastExceptions, targetCenter, targetCenter + targetOffset, out globalHitInfo)) {
+            if (RayCastEx(globalWorld3D, 1, ref globalRayCastExceptions, targetCenter, targetCenter + targetOffset, out globalHitInfo)) {
                 newPosition = globalHitInfo.Position + globalHitInfo.Normal;
             } else {
                 newPosition = targetCenter + targetOffset;
@@ -68,8 +68,8 @@ namespace Gamma {
             scanner.targetPosition = newPosition;
             bool canSeeTargetPosition = !RaycastWorldEx(globalWorld3D, scanner.node, scanner.node.GlobalPosition, scanner.targetPosition, out _);
             bool canSeeTargetNode = 
-                RaycastWorldEx(globalWorld3D, scanner.node, scanner.node.GlobalPosition, targetCenter, out hit) && 
-                hit.Collider == scanner.target;
+                RayCast(scanner.node.GlobalPosition, targetCenter, Mask(LAYER_WORLD_STATIC)) &&
+                globalHitInfo.Collider == scanner.target;
             if (!canSeeTargetPosition && canSeeTargetNode) {
                 scanner.targetPosition = targetCenter;
                 GD.Print("Can't see target position");
@@ -84,15 +84,15 @@ namespace Gamma {
                     );
                     Vector3 rayEnd = scanner.node.GlobalPosition + randomDirection * randomRange;
                     Vector3 searchPosition;
-                    if (RaycastWorldEx(globalWorld3D, scanner.node, scanner.node.GlobalPosition, rayEnd, out hit)) {
-                        searchPosition = hit.Position;
+                    if (RayCast(scanner.node.GlobalPosition, rayEnd, Mask(LAYER_WORLD_STATIC))) {
+                        searchPosition = globalHitInfo.Position;
                     } else {
                         searchPosition = rayEnd;
                     }
-                    bool canSearchPositionSeeTargetPosition = !RaycastWorldEx(globalWorld3D, scanner.node, searchPosition, scanner.targetPosition, out _);
+                    bool canSearchPositionSeeTargetPosition = !RayCast(searchPosition, scanner.targetPosition, Mask(LAYER_WORLD_STATIC));
                     bool canSearchPositionSeeTargetNode = 
-                        RaycastWorldEx(globalWorld3D, scanner.node, searchPosition, targetCenter, out hit) &&
-                        hit.Collider == scanner.target;
+                        RayCast(searchPosition, targetCenter, Mask(LAYER_WORLD_STATIC)) &&
+                        globalHitInfo.Collider == scanner.target;
                     if (canSearchPositionSeeTargetNode || canSearchPositionSeeTargetPosition) {
                         scanner.targetPosition = searchPosition;
                         break;
@@ -121,9 +121,9 @@ namespace Gamma {
                 for (int i = 0; i < offsets.Length; i++) {
                     Vector3 rayStart = scanner.node.GlobalPosition + offsets[i];
                     Vector3 rayEnd = rayStart + directionToTarget * SCANNER_AVOIDANCE_RANGE;
-                    if (RaycastWorldEx(globalWorld3D, scanner.node, scanner.node.GlobalPosition, rayEnd, out hit)) {
-                        if (hit.Collider == scanner.target) { continue; }
-                        averageAreaNormal += hit.Normal;
+                    if (RayCast(rayStart, rayEnd, Mask(LAYER_WORLD_STATIC))) {
+                        if (globalHitInfo.Collider == scanner.target) { continue; }
+                        averageAreaNormal += globalHitInfo.Normal;
                         areaHitCount++;
                     }
                 }

@@ -8,6 +8,14 @@ namespace Gamma {
             public Node3D Collider;
             public Godot.Collections.Dictionary RawResult;
         }
+        public const int LAYER_WORLD_STATIC = 1;
+        public const int LAYER_WORLD_DYNAMIC = 2;
+        public const int LAYER_PROPS = 4;
+        public const int LAYER_PLAYERS = 8;
+        public const int LAYER_ENEMIES = 16;
+        public const int LAYER_PROJECTILES = 32;
+        public const int LAYER_TRIGGERS = 64;
+        public const int LAYER_VIEWBLOCK = 128;
         public const int AUDIO_POOL_SIZE = 8;
         public const int ARRAY_GROWTH_FACTOR = 2;
         public const int DEFAULT_PLAYER_MAX_TARGET_COUNT = 16;
@@ -102,25 +110,15 @@ namespace Gamma {
         public double globalProcessDelta;
         public RaycastWorldHitInfo globalHitInfo;
         public CollisionObject3D[] globalRayCastExceptions = new CollisionObject3D[DEFAULT_MISCELLANEOUS_SIZE];
-        public bool RaycastWorld(Vector3 inputStart, Vector3 inputEnd) {
-            if (RaycastWorldExNew(globalWorld3D, 1, ref globalRayCastExceptions, inputStart, inputEnd, out globalHitInfo)) {
+        public static int Mask(int layer) { return (int)(1u << (layer - 1)); }
+        public static int Mask2(int layer1, int layer2) { return (int)((1u << (layer1 - 1)) | (1u << (layer2 - 1))); }
+        public bool RayCast(Vector3 inputStart, Vector3 inputEnd, int inputLayerMask) {
+            if (RayCastEx(globalWorld3D, inputLayerMask, ref globalRayCastExceptions, inputStart, inputEnd, out globalHitInfo)) {
                 return true;
             }
             return false;
         }
-        public static bool RaycastWorldEx(World3D relativeWorld, CollisionObject3D exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
-            hitInfo = new RaycastWorldHitInfo();
-            var rayResult = relativeWorld.DirectSpaceState.IntersectRay(
-                PhysicsRayQueryParameters3D.Create(start, end, 1, new Godot.Collections.Array<Rid> { exceptions.GetRid() })
-            );
-            if (rayResult.Count <= 0) { return false; }
-            hitInfo.RawResult = rayResult;
-            hitInfo.Position = (Vector3)rayResult["position"];
-            hitInfo.Normal = (Vector3)rayResult["normal"];
-            hitInfo.Collider = (Node3D)rayResult["collider"];
-            return true;
-        }
-        public static bool RaycastWorldExNew(World3D relativeWorld, int layerMask, ref CollisionObject3D[] exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
+        public static bool RayCastEx(World3D relativeWorld, int layerMask, ref CollisionObject3D[] exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
             hitInfo = new RaycastWorldHitInfo();
             Godot.Collections.Array<Rid> excludeRIDs = new Godot.Collections.Array<Rid>();
             for (int i = 0; i < exceptions.Length; i++) {
@@ -133,6 +131,18 @@ namespace Gamma {
             if (exceptions.Length > 0) {
                 Array.Clear(exceptions);
             }
+            if (rayResult.Count <= 0) { return false; }
+            hitInfo.RawResult = rayResult;
+            hitInfo.Position = (Vector3)rayResult["position"];
+            hitInfo.Normal = (Vector3)rayResult["normal"];
+            hitInfo.Collider = (Node3D)rayResult["collider"];
+            return true;
+        }
+        public static bool RaycastWorldEx(World3D relativeWorld, CollisionObject3D exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
+            hitInfo = new RaycastWorldHitInfo();
+            var rayResult = relativeWorld.DirectSpaceState.IntersectRay(
+                PhysicsRayQueryParameters3D.Create(start, end, 1, new Godot.Collections.Array<Rid> { exceptions.GetRid() })
+            );
             if (rayResult.Count <= 0) { return false; }
             hitInfo.RawResult = rayResult;
             hitInfo.Position = (Vector3)rayResult["position"];

@@ -205,9 +205,8 @@ namespace Gamma {
                     }
                     break;
             }
-            RaycastWorldHitInfo findLedge = new RaycastWorldHitInfo();
-            if (RaycastWorldEx(globalWorld3D, player.node, rayStart, rayEnd, out findLedge)) {
-                outHitPosition = findLedge.Position;
+            if (RayCast(rayStart, rayEnd, Mask(LAYER_WORLD_STATIC))){
+                outHitPosition = globalHitInfo.Position; 
                 return true;
             }
             return false;
@@ -253,13 +252,9 @@ namespace Gamma {
             Godot.Collections.Array<Node3D> bodies = player.detectionArea.GetOverlappingBodies();
             if (bodies.Count > 0) {
                 for (int i = 0; i < bodies.Count; i++) {
-                    Node3D potentialTarget = bodies[i];
-                    if (!(potentialTarget.GetType() == typeof(CharacterBody3D))) { continue; }
-                    if ((string)potentialTarget.GetMeta("Type") != "EnemyGeneric") { continue; }
-                    RaycastWorldHitInfo potentialTargetHitInfo;
-                    bool hitSomething = RaycastWorldEx(globalWorld3D, player.node, player.node.GlobalPosition + Vector3.Up, potentialTarget.GlobalPosition + Vector3.Up, out potentialTargetHitInfo);
-                    if (!hitSomething || potentialTargetHitInfo.Collider != potentialTarget) { continue; }
-                    CharacterBody3D enemy = (CharacterBody3D)potentialTarget;
+                    CharacterBody3D enemy = (CharacterBody3D)bodies[i];
+                    bool hitSomething = RayCast(player.node.GlobalPosition + Vector3.Up, enemy.GlobalPosition + Vector3.Up, Mask(LAYER_WORLD_STATIC));
+                    if (hitSomething) { continue; }
                     Vector3 toEnemy = enemy.GlobalPosition - player.node.GlobalPosition;
                     float distance = toEnemy.Length();
                     float angleToPlayer = Mathf.Acos(Mathf.Clamp((-player.node.GlobalTransform.Basis.Z).Dot(toEnemy.Normalized()), -1f, 1f));
@@ -290,9 +285,8 @@ namespace Gamma {
             for (int i = 0; i < 24; i++) {
                 Vector3 next = position + velocity * time;
                 velocity += GRAVITY_VECTOR * time;
-                RaycastWorldHitInfo hit;
-                if (RaycastWorldEx(globalWorld3D, player.node, position, next, out hit)) {
-                    end = hit.Position;
+                if (RayCast(position, next, Mask(LAYER_WORLD_STATIC))) {
+                    end = globalHitInfo.Position;
                     curveHit = true;
                     break;
                 }
@@ -300,9 +294,8 @@ namespace Gamma {
                 position = next;
             }
             if (!curveHit) {
-                RaycastWorldHitInfo hit;
-                if (RaycastWorldEx(globalWorld3D, player.node, position, end + Vector3.Down * 500, out hit)) {
-                    end = hit.Position;
+                if (RayCast(position, end + Vector3.Down * 500, Mask(LAYER_WORLD_STATIC))) {
+                    end = globalHitInfo.Position;
                     curveHit = true;
                 } else {
                     player.targetIndicator.Visible = false;
