@@ -12556,6 +12556,17 @@ mod={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="World_Static"
+3d_physics/layer_2="World_Dynamic"
+3d_physics/layer_3="Props"
+3d_physics/layer_4="Player"
+3d_physics/layer_5="Enemies"
+3d_physics/layer_6="Projectiles"
+3d_physics/layer_7="Triggers"
+3d_physics/layer_8="View_Block"
+
 [physics]
 
 common/physics_ticks_per_second=30
