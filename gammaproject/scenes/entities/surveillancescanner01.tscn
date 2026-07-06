@@ -37,6 +37,8 @@ states/BlendTree/position = Vector2(397, 100)
 transitions = ["Start", "BlendTree", SubResource("AnimationNodeStateMachineTransition_oe36g")]
 
 [node name="SurveillanceScanner01" type="CharacterBody3D" unique_id=1505433102]
+collision_layer = 0
+collision_mask = 3
 motion_mode = 1
 metadata/Type = "SurveillanceScanner01"
 
@@ -51,17 +53,17 @@ shape = SubResource("SphereShape3D_xn1fg")
 [node name="SurveillanceScanner01" parent="." unique_id=1690118326 instance=ExtResource("1_ql4jv")]
 
 [node name="Skeleton3D" parent="SurveillanceScanner01" index="0" unique_id=1659388111]
-bones/0/position = Vector3(0, -0.029878745, 0)
-bones/1/rotation = Quaternion(0, -0.18123585, 0, 0.9834397)
+bones/0/position = Vector3(0, -0.039844792, 0)
+bones/1/rotation = Quaternion(0, -0.2942146, 0, 0.95573944)
 
 [node name="Top" parent="SurveillanceScanner01/Skeleton3D" index="0" unique_id=152551031]
-transform = Transform3D(0.93430716, 0, -0.35646906, 0, 1, 0, 0.35646906, 0, 0.93430716, 0, 0.07012128, 0)
+transform = Transform3D(0.82687557, 0, -0.56238496, 0, 1, 0, 0.56238496, 0, 0.82687557, 0, 0.06015523, 0)
 
 [node name="Wings" parent="SurveillanceScanner01/Skeleton3D/Top" index="0" unique_id=1281164044]
 cast_shadow = 0
 
 [node name="Lamp" parent="SurveillanceScanner01/Skeleton3D" index="1" unique_id=404657645]
-transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.56987876, -0.010000005)
+transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.57984483, -0.010000005)
 
 [node name="Body_001" parent="SurveillanceScanner01/Skeleton3D/Lamp" index="0" unique_id=1523061582]
 cast_shadow = 0
@@ -81,7 +83,7 @@ spot_angle = 76.0
 metadata/Type = ""
 
 [node name="Base" parent="SurveillanceScanner01/Skeleton3D" index="2" unique_id=804744811]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.029878745, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.039844792, 0)
 
 [node name="Shell" parent="SurveillanceScanner01/Skeleton3D/Base" index="0" unique_id=963334562]
 cast_shadow = 0

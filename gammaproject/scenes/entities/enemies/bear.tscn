@@ -36,18 +36,20 @@ transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition
 graph_offset = Vector2(-175, 30)
 
 [node name="Bear" type="CharacterBody3D" unique_id=2039105678]
+collision_layer = 16
+collision_mask = 3
 metadata/Type = "EnemyGeneric"
 
 [node name="Bear" parent="." unique_id=486475696 instance=ExtResource("1_enwdy")]
 
-[node name="Skeleton3D" parent="Bear" index="0" unique_id=915919291]
+[node name="Skeleton3D" parent="Bear" index="0" unique_id=371918200]
 bones/1/position = Vector3(-5.960464e-08, -0.3058672, 0.16994053)
 bones/1/rotation = Quaternion(-1.35525795e-08, 0.6564286, 0.7543882, -8.225868e-08)
 bones/2/rotation = Quaternion(0.47630358, -1.4136973e-08, 2.0388628e-08, 0.879281)
 bones/3/rotation = Quaternion(0.35713425, 8.032006e-10, 5.184314e-08, 0.93405306)
-bones/4/rotation = Quaternion(0.37178853, 1.0792808e-09, 5.5814343e-08, 0.92831755)
-bones/5/position = Vector3(-0.00094217603, 0.40904826, 0.1635231)
-bones/5/rotation = Quaternion(-0.07708723, -0.031069674, -0.0054441295, 0.9965253)
+bones/4/rotation = Quaternion(0.36558282, 3.249699e-10, 5.330477e-08, 0.93077886)
+bones/5/position = Vector3(-0.00076651975, 0.41000637, 0.16341755)
+bones/5/rotation = Quaternion(-0.118920885, -0.021194581, -0.0037138348, 0.9926706)
 bones/9/rotation = Quaternion(0.57056093, 0.13791104, 0.076402456, 0.8059799)
 bones/10/rotation = Quaternion(-0.2135752, -0.032794457, -0.13816898, 0.96655035)
 bones/11/rotation = Quaternion(-0.013859317, 0.045326766, -0.007392167, 0.9988488)
