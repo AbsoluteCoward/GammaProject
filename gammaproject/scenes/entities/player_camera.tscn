@@ -5,9 +5,3 @@ transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0)
 doppler_tracking = 2
 size = 4.0
 metadata/Type = "PlayerCamera"
-
-[node name="RayCast3D" type="RayCast3D" parent="." unique_id=2135687998]
-transform = Transform3D(1, 0, 0, 0, 0.83528, 0.549825, 0, -0.549825, 0.83528, 0, 0, 0)
-collision_mask = 3
-debug_shape_custom_color = Color(0, 0, 0, 0)
-debug_shape_thickness = 1

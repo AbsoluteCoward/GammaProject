@@ -35,7 +35,6 @@ namespace Gamma {
         public struct PlayerCamera {
             public Vector3 targetPosition;
             public Camera3D node;
-            public RayCast3D WallRayCast;
             public float offsetDistance;
             public float offsetHeight;
             public float targetAngle;
@@ -85,10 +84,6 @@ namespace Gamma {
         }
         public void PlayerCameraInitialize(Camera3D inputCamera) {
             playerCamera.node = inputCamera;
-            playerCamera.WallRayCast = inputCamera.GetChild<RayCast3D>(0);
-            playerCamera.WallRayCast.TopLevel = true;
-            playerCamera.WallRayCast.AddException(player.node);
-            playerCamera.WallRayCast.CollisionMask = 1;
             playerCamera.offsetDistance = DEFAULT_CAMERA_DISTANCE;
             playerCamera.offsetHeight = DEFAULT_CAMERA_HEIGHT;
             playerCamera.node.Fov = 64;
@@ -99,15 +94,14 @@ namespace Gamma {
                 playerCamera.node.Far = worldEnvironment.Environment.FogDepthEnd > cameraFarSetting ?
                     worldEnvironment.Environment.FogDepthEnd :
                     cameraFarSetting;
-            } else {
-                worldEnvironment.Environment.FogEnabled = true;
-                worldEnvironment.Environment.FogLightColor = Colors.Black;
-                worldEnvironment.Environment.FogMode = Godot.Environment.FogModeEnum.Depth;
-                worldEnvironment.Environment.FogDepthBegin = cameraFarSetting * 0.8f;
-                worldEnvironment.Environment.FogDepthEnd = cameraFarSetting;
-            }
-            GD.Print("Fog begin" + worldEnvironment.Environment.FogDepthBegin);
-            GD.Print("Fog end" + worldEnvironment.Environment.FogDepthEnd);
+            } 
+            // else {
+            //     worldEnvironment.Environment.FogEnabled = true;
+            //     worldEnvironment.Environment.FogLightColor = Colors.Black;
+            //     worldEnvironment.Environment.FogMode = Godot.Environment.FogModeEnum.Depth;
+            //     worldEnvironment.Environment.FogDepthBegin = cameraFarSetting * 0.8f;
+            //     worldEnvironment.Environment.FogDepthEnd = cameraFarSetting;
+            // }
             playerCamera.maxLerpDistance = 200f;
             playerCamera.rotationLerpSpeed = 0.1f;
             GD.Print("Player Camera Initialized");
@@ -929,7 +923,6 @@ namespace Gamma {
                     PlayerTeleportTo(Vector3.Zero, playerCamera);
                 }
             }
-            //PlayerRocketIndicatorUpdate(shouldShowRocketIndicator, playerForward + player.node.GlobalTransform.Basis.Y.Normalized() * 0.2f);
             PlayerTargetIndicatorUpdate();
         }
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
@@ -939,30 +932,36 @@ namespace Gamma {
                 float x = Input.GetActionStrength("cameraLeft") - Input.GetActionStrength("cameraRight");
                 inputCamera.targetAngle += x * 90f;
             }
-            float targetHeight = 
+            globalRayCastExceptions[0] = player.node;
+            bool isOnGroundHit = RayCast(
+                player.node.GlobalPosition + Vector3.Up,
+                player.node.GlobalPosition + Vector3.Down * 500f,
+                Mask(LAYER_WORLD_STATIC)
+            );
+            float targetHeight =
                 DEFAULT_CAMERA_HEIGHT +
-                (player.groundRay.IsColliding() ?
-                    Mathf.Max(0f, player.node.GlobalPosition.Y - player.groundRay.GetCollisionPoint().Y) * 0.5f :
+                (isOnGroundHit ?
+                    Mathf.Max(0f, player.node.GlobalPosition.Y - globalHitInfo.Position.Y) * 0.5f :
                     8f
                 );
             inputCamera.offsetHeight = Mathf.Lerp(inputCamera.offsetHeight, targetHeight, 0.1f);
-            Vector3 medianPosition = inputCamera.WallRayCast.GlobalPosition.Lerp(player.orb.node.GlobalPosition + cameraForward * Y_FLAT * 4f, 0.1f);
+
             inputCamera.targetAngle = Mathf.PosMod(inputCamera.targetAngle, 360f);
             float angleDifference = Mathf.PosMod(inputCamera.targetAngle - inputCamera.angle + 180f, 360f) - 180f;
             inputCamera.angle += angleDifference * inputCamera.rotationLerpSpeed;
             float cameraAngleRadians = Mathf.DegToRad(inputCamera.angle);
             Vector3 offsetDirection = new Vector3(Mathf.Sin(cameraAngleRadians), 0, Mathf.Cos(cameraAngleRadians));
-            float breathe = Mathf.Sin(sceneState.timeSinceSceneLoad * 0.8f) * 0.04f;
-            inputCamera.WallRayCast.TargetPosition = inputCamera.WallRayCast.ToLocal(
+            Vector3 anchor = inputCamera.targetPosition.Lerp(player.orb.node.GlobalPosition, 0.3f);
+            Vector3 medianPosition = anchor.Lerp(player.orb.node.GlobalPosition + cameraForward * Y_FLAT * 4f, 0.1f);
+            Vector3 desiredCameraPosition =
                 medianPosition +
-                (offsetDirection * (inputCamera.offsetDistance)) +
-                new Vector3(0, inputCamera.offsetHeight + breathe, 0)
-            );
-            inputCamera.WallRayCast.GlobalPosition =
-                inputCamera.WallRayCast.GlobalPosition.Lerp(player.orb.node.GlobalPosition, 0.3f);
-            inputCamera.node.GlobalPosition = inputCamera.WallRayCast.IsColliding() ?
-                inputCamera.WallRayCast.GetCollisionPoint() + inputCamera.WallRayCast.GetCollisionNormal() * 0.1f :
-                inputCamera.WallRayCast.ToGlobal(inputCamera.WallRayCast.TargetPosition);
+                (offsetDirection * inputCamera.offsetDistance) +
+                new Vector3(0, inputCamera.offsetHeight, 0);
+            globalRayCastExceptions[0] = player.node;
+            bool wallHit = RayCast(anchor, desiredCameraPosition, Mask(LAYER_WORLD_STATIC));
+            inputCamera.node.GlobalPosition = wallHit ?
+                globalHitInfo.Position + globalHitInfo.Normal * 0.1f :
+                desiredCameraPosition;
             inputCamera.targetPosition = medianPosition;
             inputCamera.node.LookAt(inputCamera.targetPosition);
             float speed = player.node.Velocity.LengthSquared();
