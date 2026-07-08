@@ -54,9 +54,6 @@ transform = Transform3D(-0.0061754724, 0.75756276, -0.6527331, 0.0061754296, 0.6
 
 [node name="playtest-new" parent="Geometry" unique_id=1650415443 instance=ExtResource("2_o1fdq")]
 
-[node name="playtest_007" parent="Geometry/playtest-new" index="8" unique_id=1507526749]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -28.877998)
-
 [node name="Entities" type="Node" parent="." unique_id=1339097609]
 
 [node name="Moe" parent="Entities" unique_id=2039105678 instance=ExtResource("16_tqp7r")]
@@ -183,7 +180,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 45)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 45)
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("17_jk2w6")]
-transform = Transform3D(-2.1855739e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855739e-07, -9, 0.29999924, 18)
+transform = Transform3D(-2.1855739e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855739e-07, -15, 0.29999924, 20)
 
 [node name="DungeonExit" parent="Entities" unique_id=340140118 instance=ExtResource("19_vl47o")]
 transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -23, 0, -30.2)
@@ -221,7 +218,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 7, 12)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 7, 11)
 
 [node name="SurveillanceScanner01" parent="Entities" unique_id=1505433102 instance=ExtResource("28_5pdgu")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.8999996, 1, 21.2)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -9.1, 4, 30.2)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("29_wawa3")]
 
