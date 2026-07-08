@@ -138,18 +138,6 @@ namespace Gamma {
             hitInfo.Collider = (Node3D)rayResult["collider"];
             return true;
         }
-        public static bool RaycastWorldEx(World3D relativeWorld, CollisionObject3D exceptions, Vector3 start, Vector3 end, out RaycastWorldHitInfo hitInfo) {
-            hitInfo = new RaycastWorldHitInfo();
-            var rayResult = relativeWorld.DirectSpaceState.IntersectRay(
-                PhysicsRayQueryParameters3D.Create(start, end, 1, new Godot.Collections.Array<Rid> { exceptions.GetRid() })
-            );
-            if (rayResult.Count <= 0) { return false; }
-            hitInfo.RawResult = rayResult;
-            hitInfo.Position = (Vector3)rayResult["position"];
-            hitInfo.Normal = (Vector3)rayResult["normal"];
-            hitInfo.Collider = (Node3D)rayResult["collider"];
-            return true;
-        }
         public void RotateTowards(Vector3 lookDirection, Node3D inputNode, float rotationSpeed) {
             if (lookDirection.LengthSquared() <= ALMOST_ZERO) { return; }
             float targetRotation = (float)Math.Atan2(-lookDirection.X, -lookDirection.Z);

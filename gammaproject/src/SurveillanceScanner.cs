@@ -66,7 +66,7 @@ namespace Gamma {
                 newPosition = targetCenter + targetOffset;
             }
             scanner.targetPosition = newPosition;
-            bool canSeeTargetPosition = !RaycastWorldEx(globalWorld3D, scanner.node, scanner.node.GlobalPosition, scanner.targetPosition, out _);
+            bool canSeeTargetPosition = !RayCast(scanner.node.GlobalPosition, scanner.targetPosition, Mask(LAYER_WORLD_STATIC));
             bool canSeeTargetNode = 
                 RayCast(scanner.node.GlobalPosition, targetCenter, Mask(LAYER_WORLD_STATIC)) &&
                 globalHitInfo.Collider == scanner.target;
