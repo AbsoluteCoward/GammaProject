@@ -47,7 +47,6 @@ namespace Gamma {
                 float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
                 float angleInDegrees = Mathf.RadToDeg(angleToTarget);
                 if (angleInDegrees > 66f) { return; }
-                //bool hitSomething = RaycastWorldEx(globalWorld3D, scanner.node, scanner.node.GlobalPosition, player.node.GlobalPosition + Vector3.Up, out hit);
                 bool hitSomething = RayCast(scanner.node.GlobalPosition, player.node.GlobalPosition + Vector3.Up, Mask2(LAYER_PLAYERS, LAYER_WORLD_STATIC));
                 if (hitSomething && globalHitInfo.Collider != player.node) { return; }
                 scanner.target = player.node;

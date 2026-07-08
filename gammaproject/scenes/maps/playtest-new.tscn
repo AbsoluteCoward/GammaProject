@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cd3em778ci2yg"]
 
-[ext_resource type="Environment" uid="uid://cnvi1r66250oo" path="res://assets/godot-resources/worldenvironment_default.res" id="1_h5kha"]
+[ext_resource type="Environment" uid="uid://duve65vd8qvjk" path="res://assets/godot-resources/worldenvironment_fullbright.res" id="1_o1fdq"]
 [ext_resource type="PackedScene" uid="uid://b7uhdl4hex0l0" path="res://assets/map-models/playtest-new.gltf" id="2_o1fdq"]
 [ext_resource type="PackedScene" uid="uid://b2pnfis3dskio" path="res://scenes/entities/enemies/moe.tscn" id="16_tqp7r"]
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="17_jk2w6"]
@@ -22,7 +22,7 @@
 [node name="Environment" type="Node" parent="." unique_id=1488914038]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=1760429321]
-environment = ExtResource("1_h5kha")
+environment = ExtResource("1_o1fdq")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=555029377]
 transform = Transform3D(1, 0, 0, 0, 0.9659259, 0.25881907, 0, -0.25881907, 0.9659258, 0, 0, 0)
