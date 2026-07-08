@@ -429,38 +429,6 @@ namespace Gamma {
                     if (player.targetCount > 0) {
                         targetAnimation = "Slide";
                     }
-                    // if (!isShooting && (Input.IsActionJustReleased("attack") || (player.targetCount > 0 && !Input.IsActionPressed("attack")))) {
-                    //     player.animationTree.Set("parameters/Move/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Fire);
-                    //     gunBlendAmount = 0f;
-                    // }
-                    // if (gunBlendAmount == 1) {
-                    //     for (int i = 0; i < enemyCount; i++) {
-                    //         Node3D potentialTarget = enemies[i].node;
-                    //         bool isTargetInvalid = potentialTarget == player.node || potentialTarget.GetType() == typeof(AudioStreamPlayer3D);
-                    //         if (isTargetInvalid) { continue; }
-                    //         Vector3 toTarget = potentialTarget.GlobalPosition - player.gunBarrel.GlobalPosition;
-                    //         Vector3 toTargetFlat = (toTarget * Y_FLAT).Normalized();
-                    //         float dotProduct = playerForward.Dot(toTargetFlat);
-                    //         float angleToTarget = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
-                    //         float angleInDegrees = Mathf.RadToDeg(angleToTarget);
-                    //         if (angleInDegrees > TARGETTING_ANGLE) { continue; }
-                    //         bool alreadyTargeted = false;
-                    //         for (int j = 0; j < player.targetCount; j++) {
-                    //             if (player.targets[j] == potentialTarget) {
-                    //                 alreadyTargeted = true;
-                    //                 break;
-                    //             }
-                    //         }
-                    //         RaycastWorldHitInfo potentialTargetHitInfo;
-                    //         bool hitSomething = RaycastWorld(globalWorld3D, player.node, player.node.GlobalPosition + Vector3.Up, potentialTarget.GlobalPosition + Vector3.Up, out potentialTargetHitInfo);
-                    //         if (hitSomething && potentialTargetHitInfo.Collider != potentialTarget) { continue; }
-                    //         if (!alreadyTargeted && player.targetCount < player.targets.Length) {
-                    //             player.targets[player.targetCount] = potentialTarget;
-                    //             targetReticles[player.targetCount].node.Visible = true;
-                    //             player.targetCount++;
-                    //         }
-                    //     }
-                    // }
                     if (!player.isOnGround) { 
                         if (InputIsPressed(ref inputState.action3)) {
                             targetAnimation = "RunJump01";
@@ -489,7 +457,7 @@ namespace Gamma {
                             player.animationTree.Set("parameters/Jump/JumpSeek/seek_request", 0.0f);
                         }
                     }
-                    if (player.node.IsOnWall() && (walkBlendAmount > 0.8f || runBlendAmount > 0.8f)) {
+                    if (player.node.IsOnWall() && (walkBlendAmount > 0.8f || runBlendAmount > 0.8f) && InputIsPressed(ref inputState.action3)) {
                         Vector3 toLedge = Vector3.Zero;
                         if (PlayerCanLeap(ref toLedge, 1)) {
                             string climbAnimation = PlayerMatchLeapAnimation(toLedge, targetAnimation);
@@ -720,7 +688,14 @@ namespace Gamma {
                          targetAnimation = "Fall";
                     }
                     if (player.isOnGround) {
-                        if (playerForward.Dot(player.wishDirection) > 0.2f) {
+                        if (InputIsPressed(ref inputState.action3)) {
+                            Vector3 toLedge = Vector3.Zero;
+                            if (PlayerCanLeap(ref toLedge, 0)) {
+                                targetAnimation = PlayerMatchLeapAnimation(toLedge, currentAnimation);
+                                break;
+                            }
+                        }
+                    if (playerForward.Dot(player.wishDirection) > 0.2f) {
                             player.animationState.Start("Roll", true);
                         } else {
                             targetAnimation = "FallToIdle";
