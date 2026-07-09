@@ -46,13 +46,13 @@ metadata/Type = "EnemyGeneric"
 [node name="Skeleton3D" parent="Moe" index="0" unique_id=686373578]
 bones/1/position = Vector3(-1.2309307e-15, 2.5689325e-22, 0.17326345)
 bones/1/rotation = Quaternion(0.912614, -4.7255874e-08, -1.137812e-07, 0.40882242)
-bones/2/rotation = Quaternion(-0.33102775, 0.01308327, 0.03175001, 0.94299597)
-bones/3/rotation = Quaternion(-0.39645126, -0.011924388, 0.032203194, 0.9174134)
-bones/4/rotation = Quaternion(-0.38810596, -0.031501554, 0.013670564, 0.92097485)
+bones/2/rotation = Quaternion(-0.33026588, 0.028944135, 0.070240505, 0.94082576)
+bones/3/rotation = Quaternion(-0.3955388, -0.026380332, 0.07124305, 0.9153019)
+bones/4/rotation = Quaternion(-0.38721275, -0.06969094, 0.030243289, 0.91885525)
 bones/6/rotation = Quaternion(-0.11311423, 0.13545205, 0.9607346, 0.21411915)
-bones/7/rotation = Quaternion(-0.8003196, -0.18244176, -0.36739653, 0.43729115)
+bones/7/rotation = Quaternion(-0.78033745, -0.23137286, -0.36402687, 0.4527965)
 bones/8/rotation = Quaternion(0.113114506, 0.13545196, 0.9607346, -0.2141191)
-bones/9/rotation = Quaternion(-0.8003196, 0.18244164, 0.3673965, 0.43729088)
+bones/9/rotation = Quaternion(-0.7803375, 0.23137265, 0.36402678, 0.45279637)
 
 [node name="CollisionCylinder" type="CollisionShape3D" parent="." unique_id=1604721726]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3375001, 0)

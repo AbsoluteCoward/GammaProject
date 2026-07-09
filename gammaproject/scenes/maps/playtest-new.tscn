@@ -212,7 +212,7 @@ metadata/LevelPath = "res://scenes/maps/level4.tscn"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -16)
 
 [node name="Crab01" parent="Entities" unique_id=140299591 instance=ExtResource("26_wqtii")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 7, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 7, 23)
 
 [node name="Bear" parent="Entities" unique_id=1186200802 instance=ExtResource("27_u270h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 7, 11)
