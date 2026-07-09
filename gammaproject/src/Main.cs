@@ -110,8 +110,6 @@ namespace Gamma {
         public double globalProcessDelta;
         public RaycastWorldHitInfo globalHitInfo;
         public CollisionObject3D[] globalRayCastExceptions = new CollisionObject3D[DEFAULT_MISCELLANEOUS_SIZE];
-        public static int Mask(int layer) { return (int)(1u << (layer - 1)); }
-        public static int Mask2(int layer1, int layer2) { return (int)((1u << (layer1 - 1)) | (1u << (layer2 - 1))); }
         public bool RayCast(Vector3 inputStart, Vector3 inputEnd, int inputLayerMask) {
             if (RayCastEx(globalWorld3D, inputLayerMask, ref globalRayCastExceptions, inputStart, inputEnd, out globalHitInfo)) {
                 return true;

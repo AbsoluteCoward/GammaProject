@@ -199,7 +199,7 @@ namespace Gamma {
                     }
                     break;
             }
-            if (RayCast(rayStart, rayEnd, Mask(LAYER_WORLD_STATIC))){
+            if (RayCast(rayStart, rayEnd, LAYER_WORLD_STATIC)){
                 outHitPosition = globalHitInfo.Position; 
                 return true;
             }
@@ -247,7 +247,7 @@ namespace Gamma {
             if (bodies.Count > 0) {
                 for (int i = 0; i < bodies.Count; i++) {
                     CharacterBody3D enemy = (CharacterBody3D)bodies[i];
-                    bool hitSomething = RayCast(player.node.GlobalPosition + Vector3.Up, enemy.GlobalPosition + Vector3.Up, Mask(LAYER_WORLD_STATIC));
+                    bool hitSomething = RayCast(player.node.GlobalPosition + Vector3.Up, enemy.GlobalPosition + Vector3.Up, LAYER_WORLD_STATIC);
                     if (hitSomething) { continue; }
                     Vector3 toEnemy = enemy.GlobalPosition - player.node.GlobalPosition;
                     float distance = toEnemy.Length();
@@ -279,7 +279,7 @@ namespace Gamma {
             for (int i = 0; i < 24; i++) {
                 Vector3 next = position + velocity * time;
                 velocity += GRAVITY_VECTOR * time;
-                if (RayCast(position, next, Mask(LAYER_WORLD_STATIC))) {
+                if (RayCast(position, next, LAYER_WORLD_STATIC)) {
                     end = globalHitInfo.Position;
                     curveHit = true;
                     break;
@@ -288,7 +288,7 @@ namespace Gamma {
                 position = next;
             }
             if (!curveHit) {
-                if (RayCast(position, end + Vector3.Down * 500, Mask(LAYER_WORLD_STATIC))) {
+                if (RayCast(position, end + Vector3.Down * 500, LAYER_WORLD_STATIC)) {
                     end = globalHitInfo.Position;
                     curveHit = true;
                 } else {
@@ -936,7 +936,7 @@ namespace Gamma {
             bool isOnGroundHit = RayCast(
                 player.node.GlobalPosition + Vector3.Up,
                 player.node.GlobalPosition + Vector3.Down * 500f,
-                Mask(LAYER_WORLD_STATIC)
+                LAYER_WORLD_STATIC
             );
             float targetHeight =
                 DEFAULT_CAMERA_HEIGHT +
@@ -958,7 +958,7 @@ namespace Gamma {
                 (offsetDirection * inputCamera.offsetDistance) +
                 new Vector3(0, inputCamera.offsetHeight, 0);
             globalRayCastExceptions[0] = player.node;
-            bool wallHit = RayCast(anchor, desiredCameraPosition, Mask(LAYER_WORLD_STATIC));
+            bool wallHit = RayCast(anchor, desiredCameraPosition, LAYER_WORLD_STATIC);
             inputCamera.node.GlobalPosition = wallHit ?
                 globalHitInfo.Position + globalHitInfo.Normal * 0.1f :
                 desiredCameraPosition;

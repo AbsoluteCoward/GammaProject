@@ -5,7 +5,6 @@ namespace Gamma {
         public struct Projectile {
             public Node3D node;
             public Node3D targetNode;
-            public RayCast3D collisionRaycast;
             public Vector3 positionLastFrame;
             public float speed;
             public float timeAlive;
@@ -55,16 +54,11 @@ namespace Gamma {
                     break;
                 }
             }
-            rocket.collisionRaycast = (RayCast3D)rocket.node.GetChild(0);
             rocket.targetNode = inputTarget;
             rocket.positionLastFrame = inputStartPosition;
             rocket.speed = inputSpeed;
             rocket.timeAlive = 0f;
             rocket.node.LookAtFromPosition(inputStartPosition, inputStartPosition + inputDirection, Vector3.Up);
-            rocket.collisionRaycast.TopLevel = true;
-            rocket.collisionRaycast.GlobalPosition = inputStartPosition;
-            rocket.collisionRaycast.TargetPosition = inputDirection.Normalized();
-            rocket.collisionRaycast.ForceRaycastUpdate();
             projectiles[index] = rocket;
         }
         public bool isProjectileTooFar(Vector3 inputPosition) {
@@ -118,17 +112,16 @@ namespace Gamma {
                     currentDirection = -rocket.node.GlobalTransform.Basis.Z;
                 }
                 Vector3 newPosition = rocket.node.GlobalPosition + currentDirection * rocket.speed * globalPhysicsDeltaFloat;
-                rocket.node.TopLevel = true;
+                bool didCollide = RayCast(rocket.positionLastFrame, newPosition, LAYER_ENEMIES | LAYER_WORLD_STATIC);
+                bool tooFar = isProjectileTooFar(rocket.node.GlobalPosition);
+                bool tooOld = rocket.timeAlive > MAX_PROJECTILE_LIFETIME;
                 rocket.node.GlobalPosition = newPosition;
-                rocket.collisionRaycast.GlobalPosition = rocket.positionLastFrame != Vector3.Zero
-                    ? rocket.positionLastFrame
-                    : rocket.node.GlobalPosition;
-                rocket.collisionRaycast.TargetPosition = rocket.collisionRaycast.ToLocal(newPosition);
-                rocket.collisionRaycast.TargetPosition *= 2f;
-                rocket.collisionRaycast.ForceRaycastUpdate();
-                rocket.positionLastFrame = rocket.node.GlobalPosition;
+                rocket.positionLastFrame = newPosition;
                 rocket.timeAlive += globalPhysicsDeltaFloat;
-                if (rocket.collisionRaycast.IsColliding() || isProjectileTooFar(rocket.node.GlobalPosition) || rocket.timeAlive > MAX_PROJECTILE_LIFETIME) {
+                if (didCollide || tooFar || tooOld) {
+                    if (didCollide) { GD.Print("Projectile collided"); }
+                    if (tooFar) { GD.Print("Projectile is too far"); }
+                    if (tooOld) { GD.Print("Projectile is too old"); }
                     SpawnExplosion(rocket.node.GlobalPosition, Mathf.Min(GD.Randf(), 0.3f));
                     if (rocket.node.GetParent() == entitiesNode) { entitiesNode.RemoveChild(rocket.node); }
                     rocket.node.QueueFree();
@@ -178,7 +171,7 @@ namespace Gamma {
             );
             explosion.node.GlobalPosition = inputPosition;
             explosion.fireParticles.Emitting = true;
-            if (RayCast(inputPosition, inputPosition + Vector3.Down * 10, Mask(LAYER_WORLD_STATIC))) {
+            if (RayCast(inputPosition, inputPosition + Vector3.Down * 10, LAYER_WORLD_STATIC)) {
                 explosion.smokeParticles.GlobalPosition = globalHitInfo.Position;
             }
             explosion.smokeParticles.Emitting = true;
