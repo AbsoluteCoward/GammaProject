@@ -347,7 +347,7 @@ namespace Gamma {
                 float.MaxValue;
             bool shouldSnapToGround = distanceToGround <= PLAYER_LEG_LENGTH * 1.5f;
             bool isRayCollidingAtPlayerFeet = distanceToGround <= PLAYER_LEG_LENGTH;
-            player.isOnGround = (player.node.IsOnFloor() || shouldSnapToGround) && player.node.Velocity.Y <= 0f;
+            player.isOnGround = (shouldSnapToGround) && player.node.Velocity.Y <= 0f;
             Vector3 TargetPosition = new Vector3(player.node.GlobalPosition.X, player.groundRay.GetCollisionPoint().Y, player.node.GlobalPosition.Z);
             if (player.isOnGround && player.node.CollisionMask > 0) {
                 player.node.GlobalPosition = player.node.GlobalPosition.Lerp(TargetPosition, 0.1f + (player.node.Velocity.Length() * globalPhysicsDeltaFloat));
@@ -945,10 +945,12 @@ namespace Gamma {
                     8f
                 );
             inputCamera.offsetHeight = Mathf.Lerp(inputCamera.offsetHeight, targetHeight, 0.1f);
-
             inputCamera.targetAngle = Mathf.PosMod(inputCamera.targetAngle, 360f);
             float angleDifference = Mathf.PosMod(inputCamera.targetAngle - inputCamera.angle + 180f, 360f) - 180f;
             inputCamera.angle += angleDifference * inputCamera.rotationLerpSpeed;
+            if (Mathf.Abs(inputCamera.targetAngle - inputCamera.angle) < ALMOST_ZERO) {
+                inputCamera.angle = inputCamera.targetAngle;
+            }
             float cameraAngleRadians = Mathf.DegToRad(inputCamera.angle);
             Vector3 offsetDirection = new Vector3(Mathf.Sin(cameraAngleRadians), 0, Mathf.Cos(cameraAngleRadians));
             Vector3 anchor = inputCamera.targetPosition.Lerp(player.orb.node.GlobalPosition, 0.3f);
