@@ -331,6 +331,10 @@ namespace Gamma {
             player.wishDirection = (-currentCameraForward * inputDirection.Y + currentCameraRight * inputDirection.X) * Y_FLAT;
             Vector3 wishDirectionOrVelocity = player.wishDirection.Length() > ALMOST_ZERO ? player.wishDirection : player.node.Velocity.Normalized();
             Vector3 wishDirectionOrForward = player.wishDirection.Length() > ALMOST_ZERO ? player.wishDirection : playerForward;
+            bool hasTarget = player.targets[0] != null;
+            Vector3 directionToTarget = hasTarget ?
+                (player.targets[0].GlobalPosition - player.node.GlobalPosition).Normalized() :
+                playerForward;
             bool hasMovementInput = player.wishDirection.Length() > ALMOST_ZERO;
             Vector3 movementDirection = !hasMovementInput ? playerForward : player.wishDirection;
             float turnAnticipationTargetAngle = Mathf.Atan2(playerForward.Cross(movementDirection).Y, playerForward.Dot(movementDirection));
@@ -348,9 +352,9 @@ namespace Gamma {
             bool shouldSnapToGround = distanceToGround <= PLAYER_LEG_LENGTH * 1.5f;
             bool isRayCollidingAtPlayerFeet = distanceToGround <= PLAYER_LEG_LENGTH;
             player.isOnGround = (shouldSnapToGround) && player.node.Velocity.Y <= 0f;
-            Vector3 TargetPosition = new Vector3(player.node.GlobalPosition.X, player.groundRay.GetCollisionPoint().Y, player.node.GlobalPosition.Z);
+            Vector3 collisionPointPosition = new Vector3(player.node.GlobalPosition.X, player.groundRay.GetCollisionPoint().Y, player.node.GlobalPosition.Z);
             if (player.isOnGround && player.node.CollisionMask > 0) {
-                player.node.GlobalPosition = player.node.GlobalPosition.Lerp(TargetPosition, 0.1f + (player.node.Velocity.Length() * globalPhysicsDeltaFloat));
+                player.node.GlobalPosition = player.node.GlobalPosition.Lerp(collisionPointPosition, 0.1f + (player.node.Velocity.Length() * globalPhysicsDeltaFloat));
             }
             Vector3 rootPosition = player.animationTree.GetRootMotionPosition();
             Vector3 rootVelocity = player.node.Transform.Basis * rootPosition / globalPhysicsDeltaFloat;
@@ -489,11 +493,18 @@ namespace Gamma {
                     break;
                 }
                 case "Fire01": {
-                    if (!isAnimationSameAsPrevious) { break; }
+                    if (!isAnimationSameAsPrevious) { 
+                        RotateTowards(directionToTarget, player.node, 1f);
+                        break; 
+                    }
                     if (currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Fire01/current_length")) {
                         targetAnimation = "Move";
+                    } else {
+                        GD.Print("Rotating");
+                        RotateTowards(directionToTarget, player.node, 0.2f);
                     }
-                    if (HasCrossedPlaybackPosition(previousPlaybackPosition, currentPlaybackPosition, 0.66f)) {
+                    const float shootingTimeStamp = 0.66f;
+                    if (HasCrossedPlaybackPosition(previousPlaybackPosition, currentPlaybackPosition, shootingTimeStamp)) {
                         PlayerShoot(1);
                     }
                     player.node.Velocity += GRAVITY_VECTOR * globalPhysicsDeltaFloat;
@@ -731,19 +742,29 @@ namespace Gamma {
                     const float landingTimeStamp = 0.33f;
                     const float standingTimeStamp = 0.8f;
                     const float shootingTimeStamp = standingTimeStamp;
-                    Vector3 targetDirection = player.targets[0] == null ?
-                        wishDirectionOrForward :
-                        (player.targets[0].GlobalPosition - player.node.GlobalPosition).Normalized();
                     float rotationSpeed = player.targets[0] == null ? 0.1f : 0.33f;
-                    RotateTowards(targetDirection, player.node, rotationSpeed);
+                    RotateTowards(directionToTarget, player.node, rotationSpeed);
                     if (InputIsJustPressed(ref inputState.attack)) {
                         if (!player.hasShotDuringThisAnimation) {
-                            RotateTowards(targetDirection, player.node, 1);
+                            RotateTowards(directionToTarget, player.node, 1);
                             PlayerShoot(1);
                             player.hasShotDuringThisAnimation = true;
                         } else {
-                            targetAnimation = "Fire01";
+                            Node3D potentialTarget = PlayerTargetIndicatorUpdate();
+                            bool isTargetValid = 
+                                potentialTarget != null &&
+                                potentialTarget != player.node && 
+                                potentialTarget.GetType() != typeof(AudioStreamPlayer3D);
+                            if (isTargetValid) {
+                                player.targets[0] = potentialTarget;
+                                player.targetCount = 1;
+                            } else {
+                                targetAnimation = "Fire01";
+                            }
                         }
+                    }
+                    if (player.targetCount > 0 && player.hasShotDuringThisAnimation) {
+                        targetAnimation = "Fire01";
                     }
                     if (HasCrossedPlaybackPosition(previousPlaybackPosition, currentPlaybackPosition, shootingTimeStamp)) {
                         if (!player.isOnGround) {
@@ -928,9 +949,17 @@ namespace Gamma {
         public void PlayerCameraUpdate(ref PlayerCamera inputCamera) {
             if (inputCamera.node == null) { return; }
             Vector3 cameraForward = -inputCamera.node.GlobalTransform.Basis.Z.Normalized();
+            float isTurningThreshold = 30f;
+            bool isTurning = 
+                Mathf.Abs(inputCamera.targetAngle - inputCamera.angle) > isTurningThreshold;
+            GD.Print(Mathf.Abs(inputCamera.targetAngle - inputCamera.angle));
             if (Input.IsActionJustPressed("cameraRight") || Input.IsActionJustPressed("cameraLeft")) {
-                float x = Input.GetActionStrength("cameraLeft") - Input.GetActionStrength("cameraRight");
-                inputCamera.targetAngle += x * 90f;
+                float x = Input.GetActionStrength("cameraRight") -Input.GetActionStrength("cameraLeft");
+                if (isTurning) { 
+                    inputCamera.angle = inputCamera.targetAngle;
+                } else {
+                    inputCamera.targetAngle += x * 90f; 
+                }
             }
             globalRayCastExceptions[0] = player.node;
             bool isOnGroundHit = RayCast(
@@ -953,18 +982,17 @@ namespace Gamma {
             }
             float cameraAngleRadians = Mathf.DegToRad(inputCamera.angle);
             Vector3 offsetDirection = new Vector3(Mathf.Sin(cameraAngleRadians), 0, Mathf.Cos(cameraAngleRadians));
-            Vector3 anchor = inputCamera.targetPosition.Lerp(player.orb.node.GlobalPosition, 0.3f);
-            Vector3 medianPosition = anchor.Lerp(player.orb.node.GlobalPosition + cameraForward * Y_FLAT * 4f, 0.1f);
+            Vector3 pivot = inputCamera.targetPosition.Lerp(player.orb.node.GlobalPosition, 0.3f);
             Vector3 desiredCameraPosition =
-                medianPosition +
+                pivot +
                 (offsetDirection * inputCamera.offsetDistance) +
                 new Vector3(0, inputCamera.offsetHeight, 0);
             globalRayCastExceptions[0] = player.node;
-            bool wallHit = RayCast(anchor, desiredCameraPosition, LAYER_WORLD_STATIC);
+            bool wallHit = RayCast(pivot, desiredCameraPosition, LAYER_WORLD_STATIC);
             inputCamera.node.GlobalPosition = wallHit ?
                 globalHitInfo.Position + globalHitInfo.Normal * 0.1f :
                 desiredCameraPosition;
-            inputCamera.targetPosition = medianPosition;
+            inputCamera.targetPosition = pivot;
             inputCamera.node.LookAt(inputCamera.targetPosition);
             float speed = player.node.Velocity.LengthSquared();
             inputCamera.node.Fov = Mathf.Lerp(inputCamera.node.Fov, 70 + Mathf.Min(speed * 0.2f, 30f), 0.02f);
