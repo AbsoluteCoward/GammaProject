@@ -41,6 +41,7 @@ namespace Gamma {
             public float angle;
             public float maxLerpDistance;
             public float rotationLerpSpeed;
+            public float shakeAmount;
         }
         public void PlayerInitialize(CharacterBody3D inputPlayerNode) {
             player.node = inputPlayerNode;
@@ -104,6 +105,7 @@ namespace Gamma {
             // }
             playerCamera.maxLerpDistance = 200f;
             playerCamera.rotationLerpSpeed = 0.1f;
+            playerCamera.shakeAmount = 0.0f;
             GD.Print("Player Camera Initialized");
         }
         public void PlayerShoot(int inputRocketCount) {
@@ -297,6 +299,9 @@ namespace Gamma {
             }
             player.targetIndicator.GlobalPosition = end;
         }
+        public void PlayerShakeCamera(float amount) {
+            playerCamera.shakeAmount = amount;
+        }
         public void PlayerUpdate() {
             PlayerTargetIndicatorUpdate();
             AnimationNodeStateMachine stateMachine = (AnimationNodeStateMachine)player.animationTree.TreeRoot;
@@ -476,6 +481,11 @@ namespace Gamma {
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[runBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[runBlockIndex].currentPlaybackPosition, 0.68f)
                     ) {
                         PlaySoundUI(metalFootstepSFX, 0.2f * runBlendAmount, globalSlightPitchVaration, true);
+                        if (hyper) {
+                            float strength = 0.3f;
+                            PlaySoundUI(rumbleSFX, strength, globalSlightPitchVaration, false);
+                            PlayerShakeCamera(strength);
+                        }
                     }
                     int fireWalkBlockIndex = GetPlaybackBlockIndex("FireWalk");
                     if (HasCrossedPlaybackPosition(player.animationPlaybackBlocks[fireWalkBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[fireWalkBlockIndex].currentPlaybackPosition, 0.1f) && (float)player.animationTree.Get("parameters/Move/FireWalk/current_position") > 0.0f) {
@@ -690,7 +700,7 @@ namespace Gamma {
                         RotateTowards(-player.node.GetSlideCollision(0).GetNormal(), player.node, 1);
                     }
                     if (currentPlaybackPosition >= (float)player.animationTree.Get("parameters/RunJump01/current_length")) {
-                         targetAnimation = "Fall";
+                        targetAnimation = "Fall";
                     }
                     if (player.isOnGround) {
                         if (InputIsPressed(ref inputState.action3)) {
@@ -702,6 +712,9 @@ namespace Gamma {
                         }
                     if (playerForward.Dot(player.wishDirection) > 0.2f) {
                             player.animationState.Start("Roll", true);
+                            float strength = 0.5f;   
+                            PlayerShakeCamera(strength);
+                            PlaySoundUI(rumbleSFX, strength * 0.5f, globalSlightPitchVaration, false);
                         } else {
                             targetAnimation = "FallToIdle";
                         }
@@ -905,12 +918,13 @@ namespace Gamma {
                     player.animationPlaybackBlocks[i].currentPlaybackPosition = 0f;
                 }
                 switch (targetAnimation) {
-                    case "Move":
+                    case "Move": {
                         if (!hasMovementInput) { 
                             player.animationTree.Set("parameters/Move/RunBlend/blend_amount", 0.0f);
                         }
                         break;
-                    case "FallToIdle":
+                    }
+                    case "FallToIdle": {
                         float impactSpeed = -player.node.Velocity.Y;
                         float animationScale = Mathf.Clamp(impactSpeed / 12.0f, 0.5f, 2.0f);
                         float animationSpeed = Mathf.Clamp(2.0f - (impactSpeed / 10.0f), 0.5f, 2f);
@@ -918,12 +932,16 @@ namespace Gamma {
                         player.animationTree.Set("parameters/FallToIdle/FallToIdleTimeSeek/seek_request", 0.0f);
                         player.animationTree.Set("parameters/FallToIdle/FallToIdleBlend/blend_amount", animationScale);
                         player.animationTree.Set("parameters/FallToIdle/FallToIdleTimeScale/scale", animationSpeed);
+                        PlayerShakeCamera(impactSpeed * 0.05f);
+                        PlaySoundUI(rumbleSFX, impactSpeed * 0.05f * 0.5f, globalSlightPitchVaration, false);
                         break;
+                    }
                 }
                 switch (player.animationState.GetCurrentNode()) {
-                    case "Move":
+                    case "Move": {
                         if (!player.orb.node.TopLevel) { player.orb.node.Visible = false; }
                         break;
+                    }
                 }
                 player.animationState.Travel(targetAnimation);
                 player.currentAnimationName = targetAnimation;
@@ -950,16 +968,15 @@ namespace Gamma {
             if (inputCamera.node == null) { return; }
             Vector3 cameraForward = -inputCamera.node.GlobalTransform.Basis.Z.Normalized();
             float isTurningThreshold = 30f;
-            bool isTurning = 
-                Mathf.Abs(inputCamera.targetAngle - inputCamera.angle) > isTurningThreshold;
-            GD.Print(Mathf.Abs(inputCamera.targetAngle - inputCamera.angle));
+            bool isTurning = Mathf.Abs(inputCamera.targetAngle - inputCamera.angle) > isTurningThreshold;
             if (Input.IsActionJustPressed("cameraRight") || Input.IsActionJustPressed("cameraLeft")) {
                 float x = Input.GetActionStrength("cameraRight") -Input.GetActionStrength("cameraLeft");
-                if (isTurning) { 
-                    inputCamera.angle = inputCamera.targetAngle;
-                } else {
-                    inputCamera.targetAngle += x * 90f; 
-                }
+                // if (isTurning) { 
+                //     inputCamera.angle = inputCamera.targetAngle;
+                // } else {
+                //     inputCamera.targetAngle += x * 90f; 
+                // }
+                inputCamera.targetAngle += x * 90f; 
             }
             globalRayCastExceptions[0] = player.node;
             bool isOnGroundHit = RayCast(
@@ -994,6 +1011,19 @@ namespace Gamma {
                 desiredCameraPosition;
             inputCamera.targetPosition = pivot;
             inputCamera.node.LookAt(inputCamera.targetPosition);
+            if (inputCamera.shakeAmount > 0f) {
+                Vector3 shakeOffset = new Vector3(
+                    (float)GD.RandRange(-inputCamera.shakeAmount, inputCamera.shakeAmount),
+                    (float)GD.RandRange(-inputCamera.shakeAmount, inputCamera.shakeAmount),
+                    (float)GD.RandRange(-inputCamera.shakeAmount, inputCamera.shakeAmount)
+                ) * inputCamera.shakeAmount;
+                inputCamera.node.GlobalPosition += shakeOffset;
+                float shakePitch = Mathf.DegToRad((float)GD.RandRange(-inputCamera.shakeAmount, inputCamera.shakeAmount) * inputCamera.shakeAmount);
+                inputCamera.node.RotateObjectLocal(Vector3.Right, shakePitch);
+            }
+            if (inputCamera.shakeAmount > 0f) {
+                inputCamera.shakeAmount = Mathf.Lerp(inputCamera.shakeAmount, 0f, globalPhysicsDeltaFloat);
+            }
             float speed = player.node.Velocity.LengthSquared();
             inputCamera.node.Fov = Mathf.Lerp(inputCamera.node.Fov, 70 + Mathf.Min(speed * 0.2f, 30f), 0.02f);
         }

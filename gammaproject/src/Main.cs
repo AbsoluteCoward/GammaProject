@@ -58,6 +58,7 @@ namespace Gamma {
         public static AudioStream explosionSFX = GD.Load<AudioStream>("res://assets/sound/explosion02.wav");
         public static AudioStream sloshSFX = GD.Load<AudioStream>("res://assets/sound/slosh.wav");
         public static AudioStream rollSFX = GD.Load<AudioStream>("res://assets/sound/thud.ogg");
+        public static AudioStream rumbleSFX = GD.Load<AudioStream>("res://assets/sound/subsonic-rumble2.wav");
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public PackedScene explosionScene = GD.Load<PackedScene>("res://scenes/entities/explosion.tscn");
