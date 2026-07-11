@@ -211,13 +211,8 @@ xfade_time = 0.2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_pdlmq"]
 
-[sub_resource type="Curve" id="Curve_m86vo"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 3.0, 0.0, 0, 0]
-point_count = 2
-
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_527fh"]
 xfade_time = 1.0
-xfade_curve = SubResource("Curve_m86vo")
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_cwche"]
 xfade_time = 0.2
