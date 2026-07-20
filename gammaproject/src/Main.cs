@@ -32,8 +32,12 @@ namespace Gamma {
         public const float ALMOST_ZERO = 0.00001f;
         public const float ALMOST_ONE = 0.99999f;
         public const float ONE_THIRD = 0.333333f;
+        
+        public const float COSINE_DEGREES_45 = 0.7071f;
+        public const float COSINE_DEGREES_30 = 0.866f;
+        public const float COSINE_DEGREES_90 = 1f;
         public const float GRAVITY_STRENGTH = 9.81f * 2f;
-        public const float MAX_PROJECTILE_DISTANCE = 1000f;
+        public const float MAX_ENTITY_DISTANCE = 1000f;
         public const float MAX_PROJECTILE_LIFETIME = 10f;
         public const float TARGETTING_ANGLE = 12f;
         public const float PLAYER_LEG_LENGTH = 1f;
@@ -43,7 +47,7 @@ namespace Gamma {
         public const float PLAYER_LEDGESHAPECAST_MAX_DISTANCE = 6.37f;
         public const float PLAYER_ROCKET_SPEED = 20f;
         public const float SCANNER_AVOIDANCE_RANGE = 2f;
-        const float PLAYER_AIR_SPEED = PLAYER_RUN_SPEED;
+        public const float PLAYER_AIR_SPEED = PLAYER_RUN_SPEED;
         public static readonly Color NULL_COLOR = new Color(0f, 0f, 0f, 0f);
         public static readonly Color FULL_COLOR = new Color(1f, 1f, 1f, 1f);
         public static readonly Color EXPLOSION_COLOR = new Color(1f, 0.4f, 0f);

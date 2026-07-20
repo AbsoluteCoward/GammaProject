@@ -63,10 +63,10 @@ namespace Gamma {
         }
         public bool isProjectileTooFar(Vector3 inputPosition) {
             return
-                inputPosition.X > MAX_PROJECTILE_DISTANCE ||
-                inputPosition.X < -MAX_PROJECTILE_DISTANCE ||
-                inputPosition.Z > MAX_PROJECTILE_DISTANCE ||
-                inputPosition.Z < -MAX_PROJECTILE_DISTANCE;
+                inputPosition.X > MAX_ENTITY_DISTANCE ||
+                inputPosition.X < -MAX_ENTITY_DISTANCE ||
+                inputPosition.Z > MAX_ENTITY_DISTANCE ||
+                inputPosition.Z < -MAX_ENTITY_DISTANCE;
         }
         public void ProjectilesUpdate() {
             for (int i = 0; i < projectiles.Length; i++) {
