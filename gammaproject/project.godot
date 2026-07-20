@@ -35,8 +35,8 @@ settings/stdout/verbose_stdout=true
 
 [display]
 
-window/size/viewport_width=320
-window/size/viewport_height=240
+window/size/viewport_width=1366
+window/size/viewport_height=768
 window/size/extend_to_title=true
 window/size/sharp_corners=true
 window/size/window_width_override=1366

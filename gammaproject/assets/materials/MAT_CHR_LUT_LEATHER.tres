@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bmt70fejh2r23"]
+
+[ext_resource type="Texture2D" uid="uid://2w1f8i07k06l" path="res://assets/textures/CHR_LUT_LEATHER.jpg" id="1_04yim"]
+
+[resource]
+albedo_texture = ExtResource("1_04yim")
+metallic_specular = 0.0
+stencil_flags = 2
+stencil_outline_thickness = 0.02
