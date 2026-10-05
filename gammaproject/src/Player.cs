@@ -170,8 +170,8 @@ namespace Gamma {
             if (player.skeleton == null) { return; }
             float chestRotation = player.turnAnticipation * 0.6f;
             Transform3D chestPose = player.skeleton.GetBoneGlobalPose(Player.chestBoneIndex);
-            Vector3 chestYawAxis = player.skeleton.GetBoneGlobalRest(Player.chestBoneIndex).Basis.Y;
-            Vector3 chestRollAxis = player.skeleton.GetBoneGlobalRest(Player.chestBoneIndex).Basis.Z;
+            Vector3 chestYawAxis = player.skeleton.GetBoneGlobalRest(Player.chestBoneIndex).Basis.Y.Normalized();
+            Vector3 chestRollAxis = player.skeleton.GetBoneGlobalRest(Player.chestBoneIndex).Basis.Z.Normalized();
             Quaternion chestTwist = new Quaternion(chestYawAxis, chestRotation * inputChestTwist);
             Quaternion chestRoll = new Quaternion(chestRollAxis, chestRotation * inputChestRoll);
             chestPose.Basis = chestPose.Basis * new Basis(chestTwist * chestRoll);
