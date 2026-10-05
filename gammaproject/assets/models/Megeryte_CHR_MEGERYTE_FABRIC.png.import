@@ -1,0 +1,44 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://dvgy8ifoohroj"
+path.s3tc="res://.godot/imported/Megeryte_CHR_MEGERYTE_FABRIC.png-56ad4ffc3be5241b91ce35e1ce0d3667.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "8a9b4d608ffce0a8a1acce05e5f0fc94"
+}
+
+[deps]
+
+source_file="res://assets/models/Megeryte_CHR_MEGERYTE_FABRIC.png"
+dest_files=["res://.godot/imported/Megeryte_CHR_MEGERYTE_FABRIC.png-56ad4ffc3be5241b91ce35e1ce0d3667.s3tc.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/uastc_level=4
+compress/rdo_quality_loss=0.0
+compress/hdr_compression=2
+compress/normal_map=2
+compress/channel_pack=1
+mipmaps/generate=true
+mipmaps/limit=3
+roughness/mode=0
+roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=true
+process/hdr_clamp_exposure=true
+process/size_limit=1024
+detect_3d/compress_to=0

@@ -1671,8 +1671,8 @@
 		},
 		{
 			"mimeType":"image/jpeg",
-			"name":"CHR_LUT_LEATHER",
-			"uri":"../textures/CHR_LUT_LEATHER.jpg"
+			"name":"CHR_SLINK_REDVELVET",
+			"uri":"../textures/CHR_SLINK_REDVELVET.jpg"
 		},
 		{
 			"mimeType":"image/jpeg",
