@@ -8,6 +8,34 @@ using System.Linq;
 
 namespace Gamma {
     public partial class Main : Node {
+        private struct PerformanceFrame {
+            public float Fps;
+            public int DrawCalls;
+            public float VideoMem;
+            public float TexMem;
+            public int Nodes;
+            public int Primitives;
+            public float GcMemory;
+        }
+        /// <summary>
+        /// Returns an organized string giving us performance metrics
+        /// </summary>
+        public string GetPerformanceMetrics() {
+            double fps = Performance.GetMonitor(Performance.Monitor.TimeFps);
+            double drawCalls = Performance.GetMonitor(Performance.Monitor.RenderTotalDrawCallsInFrame);
+            double videoMem = Performance.GetMonitor(Performance.Monitor.RenderVideoMemUsed) / 1024.0 / 1024.0;
+            double texMem = Performance.GetMonitor(Performance.Monitor.RenderTextureMemUsed) / 1024.0 / 1024.0;
+            double nodes = Performance.GetMonitor(Performance.Monitor.ObjectNodeCount);
+            double primitives = Performance.GetMonitor(Performance.Monitor.RenderTotalPrimitivesInFrame);
+            double gcMemory = GC.GetTotalMemory(false) / 1024.0 / 1024.0;
+            return $"FPS: {fps:F1}\nDraw Calls: {drawCalls:F0}\nVideo Mem: {videoMem:F1} MB\nTexture Mem: {texMem:F1} MB\nNodes: {nodes:F0}\nPrimitives: {primitives:F0}\nGC Memory: {gcMemory:F1} MB";
+        }
+        /// <summary>
+        /// Returns everything as much as we possibly can
+        /// </summary>
+        public string GetPerformanceMetricsVerbose() {
+            return "TODO - implement verbose performance metrics";
+        }
         /// <summary>
         /// Turns off or on shadows for a given node and its children.
         /// </summary>

@@ -54,7 +54,7 @@ namespace Gamma {
             player.targetIndicator = player.node.GetNode<Node3D>("TargetIndicator");
             player.targetIndicator.TopLevel = true;
             player.detectionArea = player.node.GetNode<Area3D>("DetectionArea");
-            player.gunBarrel = player.node.GetNode<Node3D>("Slink/Skeleton3D/GunBone/GunBarrel");
+            player.gunBarrel = player.node.GetNode<Node3D>("Slink/Skeleton3D/HandBone/GunBarrel");
             player.animationPlayer = inputPlayerNode.GetNode<AnimationPlayer>("Slink/AnimationPlayer");
             player.animationTree = inputPlayerNode.GetNode<AnimationTree>("AnimationTree");
             player.animationTree.CallbackModeProcess = AnimationMixer.AnimationCallbackModeProcess.Manual;
@@ -313,7 +313,7 @@ namespace Gamma {
             player.targetIndicator.GlobalPosition = end;
         }
         public void PlayerShakeCamera(float amount) {
-            playerCamera.shakeAmount = amount;
+            playerCamera.shakeAmount = 0;
         }
         public void PlayerUpdate() {
             PlayerTargetIndicatorUpdate();
@@ -392,8 +392,7 @@ namespace Gamma {
                         player.animationTree.Set("parameters/Move/FireWalkOneShot/request", (int)AnimationNodeOneShot.OneShotRequest.Abort);
                         break;
                     }
-                    bool hyper = Input.IsActionPressed("action3");
-                    float isHyper = hyper ? 1.3f : 1f;
+                    float isHyper = Input.IsActionPressed("action3") ? 1.3f : 1f;
                     bool isShooting = 
                         (bool)player.animationTree.Get("parameters/Move/FireWalkOneShot/active") &&
                         (float)player.animationTree.Get("parameters/Move/FireWalk/current_position") < 0.36f;
@@ -404,20 +403,26 @@ namespace Gamma {
                     const float WALK_MIN = 1f;
                     const float WALK_MAX = 1.5f;
                     const float WALK_CAP_LERP_SPEED = 0.1f;
-                    float walkCap = 
-                        Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/WalkTimeScale/scale"), Input.IsActionPressed("action3") ? WALK_MAX : WALK_MIN, WALK_CAP_LERP_SPEED);
+                    float walkCap = Mathf.MoveToward(
+                        (float)player.animationTree.Get("parameters/Move/WalkTimeScale/scale"), 
+                        Input.IsActionPressed("action3") ? WALK_MAX : WALK_MIN, 
+                        WALK_CAP_LERP_SPEED
+                    );
                     player.animationTree.Set("parameters/Move/WalkTimeScale/scale", walkCap);
-                    float walkBlendAmount = 
-                        Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/WalkBlend/blend_amount"), shouldWalkBlend ? 1 : 0f, 0.1f);
+                    float walkBlendAmount = Mathf.MoveToward(
+                        (float)player.animationTree.Get("parameters/Move/WalkBlend/blend_amount"), 
+                        shouldWalkBlend ? 1 : 0f, 
+                        0.1f
+                    );
                     player.animationTree.Set("parameters/Move/WalkBlend/blend_amount", walkBlendAmount);
-                    bool shouldRunBlend = hasMovementInput && !isShooting;
+                    bool shouldRunBlend = hasMovementInput && !isShooting && !shouldWalkBlend;
                     player.animationTree.Set("parameters/Move/RunTimeScale/scale", isHyper);
                     float runBlendAmount = 
                         Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/RunBlend/blend_amount"), shouldRunBlend ? isHyper : 0f, 0.1f);
                     player.animationTree.Set("parameters/Move/RunBlend/blend_amount", runBlendAmount);
-                    bool shouldTeleportBlend = Input.IsActionPressed("action2");
-                    float teleportBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/TeleportStartupBlend/blend_amount"), shouldTeleportBlend ? 1f : 0f, 0.1f);
-                    player.animationTree.Set("parameters/Move/TeleportStartupBlend/blend_amount", teleportBlendAmount);
+                    bool shouldOrbBlend = Input.IsActionPressed("action2");
+                    float orbBlendAmount = Mathf.MoveToward((float)player.animationTree.Get("parameters/Move/TeleportStartupBlend/blend_amount"), shouldOrbBlend ? 1f : 0f, 0.1f);
+                    player.animationTree.Set("parameters/Move/TeleportStartupBlend/blend_amount", orbBlendAmount);
                     if ((float)player.animationTree.Get("parameters/Move/TeleportStartupBlend/blend_amount") <= ALMOST_ZERO && (float)player.animationTree.Get("parameters/Move/TeleportStartup/current_position") > 0.0f) {
                         player.animationTree.Set("parameters/Move/TeleportStartupSeek/seek_request", 0.0f);
                     }
@@ -426,8 +431,8 @@ namespace Gamma {
                     } else {
                         player.orb.node.Visible = true;
                     }
-                    bool shouldFireLeviathan = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Move/TeleportStartup/current_position") > 0.8f;
-                    if (shouldFireLeviathan) {
+                    bool shouldOrbShoot = Input.IsActionJustReleased("action2") && (float)player.animationTree.Get("parameters/Move/TeleportStartup/current_position") > 0.8f;
+                    if (shouldOrbShoot) {
                         PlayerChangeAnimation("TeleportShoot");
                     }
                     if (Input.IsActionJustPressed("attack")) {
@@ -502,7 +507,7 @@ namespace Gamma {
                         HasCrossedPlaybackPosition(player.animationPlaybackBlocks[runBlockIndex].previousPlaybackPosition, player.animationPlaybackBlocks[runBlockIndex].currentPlaybackPosition, 0.68f)
                     ) {
                         PlaySoundUI(metalFootstepSFX, 0.2f * runBlendAmount, globalSlightPitchVaration, true);
-                        if (hyper) {
+                        if (isHyper > 1f) {
                             float strength = 0.2f;
                             PlaySoundUI(rumbleSFX, strength * 0.1f, globalSlightPitchVaration, false);
                             PlayerShakeCamera(strength);
@@ -531,7 +536,6 @@ namespace Gamma {
                     if (currentPlaybackPosition >= (float)player.animationTree.Get("parameters/Fire01/current_length")) {
                         PlayerChangeAnimation("Move");
                     } else {
-                        GD.Print("Rotating");
                         RotateTowards(directionToTarget, player.node, 0.2f);
                     }
                     const float shootingTimeStamp = 0.66f;
@@ -862,6 +866,14 @@ namespace Gamma {
                     break;
                 }
                 case "Fall": {
+                    bool isBodyOnGround = player.node.IsOnWall() && player.node.GetWallNormal().Y > 0.9f;
+                    bool isFeetOnGround = player.isOnGround;
+                    bool isOnlyBodyOnGround = isBodyOnGround && !isFeetOnGround;
+                    if (isOnlyBodyOnGround ) {
+                        GD.Print("Only body is on the ground");
+                        GD.Print(player.node.Velocity);
+                        player.node.Velocity += playerForward;
+                    }
                     if (player.isOnGround) {
                         if ((player.node.Velocity * Y_FLAT).Length() > 6f) {
                             PlayerChangeAnimationEx("Roll", true, false);
@@ -955,7 +967,7 @@ namespace Gamma {
                 }
                 switch (player.targetAnimation.name) {
                     case "Move": {
-                        if (!hasMovementInput) { 
+                        if (!hasMovementInput) {
                             player.animationTree.Set("parameters/Move/RunBlend/blend_amount", 0.0f);
                         }
                         break;
@@ -1017,18 +1029,19 @@ namespace Gamma {
                 // } else {
                 //     inputCamera.targetAngle += x * 90f; 
                 // }
-                inputCamera.targetAngle += x * 90f; 
+                inputCamera.targetAngle -= x * 90f; 
             }
             globalRayCastExceptions[0] = player.node;
-            bool isOnGroundHit = RayCast(
+            bool canSeeGround = RayCast(
                 player.node.GlobalPosition + Vector3.Up,
                 player.node.GlobalPosition + Vector3.Down * 500f,
                 LAYER_WORLD_STATIC
             );
+            float distanceToGround = canSeeGround ? player.node.GlobalPosition.Y - globalHitInfo.Position.Y : 0f;
             float targetHeight =
                 DEFAULT_CAMERA_HEIGHT +
-                (isOnGroundHit ?
-                    Mathf.Max(0f, player.node.GlobalPosition.Y - globalHitInfo.Position.Y) * 0.5f :
+                (canSeeGround ?
+                    Mathf.Clamp(distanceToGround * 0.5f, 0f, 10f) :
                     8f
                 );
             inputCamera.offsetHeight = Mathf.Lerp(inputCamera.offsetHeight, targetHeight, 0.1f);

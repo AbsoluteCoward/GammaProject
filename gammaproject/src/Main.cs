@@ -32,7 +32,6 @@ namespace Gamma {
         public const float ALMOST_ZERO = 0.00001f;
         public const float ALMOST_ONE = 0.99999f;
         public const float ONE_THIRD = 0.333333f;
-        
         public const float COSINE_DEGREES_45 = 0.7071f;
         public const float COSINE_DEGREES_30 = 0.866f;
         public const float COSINE_DEGREES_90 = 1f;
@@ -66,7 +65,7 @@ namespace Gamma {
         public Texture2D efxFire01 = GD.Load<Texture2D>("res://assets/textures/EFX_FIRE01.jpg");
         public PackedScene rocketScene = GD.Load<PackedScene>("res://scenes/entities/slink_rocket.tscn");
         public PackedScene explosionScene = GD.Load<PackedScene>("res://scenes/entities/explosion.tscn");
-        public PackedScene targetReticleScene = GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
+        public PackedScene targetReticleScene = null; //GD.Load<PackedScene>("res://scenes/entities/target_reticle.tscn");
         public PackedScene rewardObjectScene = GD.Load<PackedScene>("res://scenes/entities/reward.tscn");
         public Vector2 inputDirection;
         public InputState inputState = new InputState();
@@ -336,6 +335,9 @@ namespace Gamma {
             globalProcessDeltaFloat = (float)globalProcessDelta;
             UpdateInputState();
             ProcessPendingSceneChange();
+            if (Engine.GetFramesDrawn() % 60 == 0) {
+                uiNode.GetNode<Label>("PerformanceLabel").Text = GetPerformanceMetrics();
+            }
         }
     }
 }
