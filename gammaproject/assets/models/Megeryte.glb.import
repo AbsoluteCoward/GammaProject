@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cdilyh2rqxksn"
+uid="uid://b1mx28kv4c3pa"
 path="res://.godot/imported/Megeryte.glb-84aecaa6723874af6a15c31b766f881f.scn"
 
 [deps]
@@ -45,6 +45,22 @@ _subresources={
 "use_external/enabled": false,
 "use_external/fallback_path": "res://assets/materials/slink_standinleather.tres",
 "use_external/path": "uid://bkfuafbgruf8m"
+}
+},
+"meshes": {
+"Megeryte_Cube_002": {
+"generate/lightmap_uv": 2,
+"generate/lods": 0,
+"generate/shadow_meshes": 2,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": false,
+"save_to_file/fallback_path": "",
+"save_to_file/path": ""
+}
+},
+"nodes": {
+"PATH:flower": {
+"mesh_instance/cast_shadow": 0
 }
 }
 }

@@ -1,11 +1,12 @@
 [gd_scene format=3 uid="uid://cd3em778ci2yg"]
 
 [ext_resource type="Environment" uid="uid://duve65vd8qvjk" path="res://assets/godot-resources/worldenvironment_fullbright.res" id="1_o1fdq"]
-[ext_resource type="PackedScene" uid="uid://b7uhdl4hex0l0" path="res://assets/map-models/playtest-new.gltf" id="2_o1fdq"]
+[ext_resource type="PackedScene" uid="uid://b7uhdl4hex0l0" path="res://assets/models/maps/playtest-new.gltf" id="2_o1fdq"]
+[ext_resource type="PackedScene" uid="uid://bgsikhdsokmnc" path="res://assets/models/Creature01.glb" id="5_vgrb1"]
 [ext_resource type="PackedScene" uid="uid://b2pnfis3dskio" path="res://scenes/entities/enemies/moe.tscn" id="16_tqp7r"]
 [ext_resource type="PackedScene" uid="uid://chqhk5xxc56a2" path="res://assets/models/Veksas.gltf" id="17_afg3b"]
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="17_jk2w6"]
-[ext_resource type="PackedScene" uid="uid://cdilyh2rqxksn" path="res://assets/models/Megeryte.glb" id="18_8lqym"]
+[ext_resource type="PackedScene" uid="uid://b1mx28kv4c3pa" path="res://assets/models/Megeryte.glb" id="18_8lqym"]
 [ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="18_blhdk"]
 [ext_resource type="PackedScene" uid="uid://cvgp5f0d7udpo" path="res://scenes/entities/dungeon_exit.tscn" id="19_vl47o"]
 [ext_resource type="PackedScene" uid="uid://qqrivbdx01fj" path="res://scenes/entities/dungeon_entrance.tscn" id="20_ryf25"]
@@ -27,39 +28,59 @@
 environment = ExtResource("1_o1fdq")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=555029377]
-transform = Transform3D(1, 0, 0, 0, 0.9659259, 0.25881907, 0, -0.25881907, 0.9659258, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.25881904, 0, -0.25881898, 0.96592575, 0, 0, 0)
 light_energy = 0.0
-shadow_enabled = true
 directional_shadow_mode = 0
+directional_shadow_max_distance = 200.0
 sky_mode = 1
 
 [node name="SpotLight3D3" type="SpotLight3D" parent="Environment" unique_id=449831652]
 transform = Transform3D(0.9659259, 1.13133405e-08, -0.25881907, 0.25881907, -4.222196e-08, 0.9659258, 0, -1, -4.371139e-08, 40, 9.5, -16)
+visible = false
 light_color = Color(0, 1, 1, 1)
 light_energy = 16.0
 spot_range = 26.0
 spot_angle = 66.7466
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="Environment" unique_id=1592687840]
-transform = Transform3D(-0.2241439, 0.5, -0.83651626, -0.96592593, -1.4650191e-08, 0.25881913, 0.12940955, 0.8660254, 0.4829629, 2, 2, -23)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 3, 10, -20)
+visible = false
 light_energy = 10.0
 shadow_enabled = true
 spot_range = 20.0
 
 [node name="PlayerCamera" parent="Environment" unique_id=855044570 instance=ExtResource("18_blhdk")]
-transform = Transform3D(1, -8.26692e-08, 1.5719421e-07, -2.9802322e-08, 0.79441464, 0.60737586, -1.7508864e-07, -0.6073758, 0.7944147, 2.7999992, 10.418299, 21.606949)
+transform = Transform3D(1, -8.266921e-08, 1.571942e-07, -2.9802322e-08, 0.79441464, 0.60737586, -1.7508864e-07, -0.6073758, 0.7944147, 2.7999992, 10.418299, 21.606949)
 
 [node name="Camera3D" type="Camera3D" parent="Environment" unique_id=121825853]
-transform = Transform3D(-0.0061754724, 0.75756276, -0.6527331, 0.0061754296, 0.65276194, 0.75753796, 0.99996185, 0.00064724725, -0.00870939, -23.826447, 14.039677, 21.755718)
+transform = Transform3D(-0.0061754724, 0.7575628, -0.65273315, 0.0061754296, 0.652762, 0.7575379, 0.99996185, 0.00064724736, -0.00870939, -23.826447, 14.039677, 21.755718)
 
 [node name="Geometry" type="Node" parent="." unique_id=1112735005]
 
-[node name="playtest-new" parent="Geometry" unique_id=1517990705 instance=ExtResource("2_o1fdq")]
+[node name="playtest-new" parent="Geometry" unique_id=340115050 instance=ExtResource("2_o1fdq")]
 
 [node name="Entities" type="Node" parent="." unique_id=1339097609]
 
 [node name="Veksas" parent="Entities" unique_id=767988917 instance=ExtResource("17_afg3b")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0, -24)
+
+[node name="Skeleton3D" parent="Entities/Veksas" index="0" unique_id=196655493]
+bones/2/rotation = Quaternion(-0.11451251, -0.032322217, -0.0038943172, 0.9928883)
+bones/3/rotation = Quaternion(0.34942102, 0.027656116, -0.0027385082, 0.9365536)
+bones/4/rotation = Quaternion(0.6188308, 0.0025373204, -0.0034158714, 0.78551275)
+bones/6/rotation = Quaternion(-0.15424488, 0.6389741, -0.6626233, 0.3589583)
+bones/7/rotation = Quaternion(0.8234595, -0.037285782, -0.046596434, 0.5642279)
+bones/8/rotation = Quaternion(-0.33751604, -0.65567625, 0.1648263, 0.654984)
+bones/9/rotation = Quaternion(-0.10741462, 0.012026478, 0.39188278, 0.913644)
+bones/11/rotation = Quaternion(-0.093792036, -0.698242, 0.6267711, 0.33289522)
+bones/12/rotation = Quaternion(0.7511608, 0.02289301, 0.026878526, 0.6591745)
+bones/13/rotation = Quaternion(-0.2993845, 0.69579685, -0.13805923, 0.6381028)
+bones/14/rotation = Quaternion(-0.1305823, 0.0051944256, -0.32411388, 0.93694794)
+bones/15/rotation = Quaternion(0.02405444, 0.051656015, 0.99775213, -0.03526746)
+bones/23/position = Vector3(0, 1.0198779, 1.2939507)
+
+[node name="HeadBone" parent="Entities/Veksas/Skeleton3D" index="0" unique_id=1404025525]
+transform = Transform3D(-0.9999943, 0.00044405507, -0.0033332803, 0.003205721, -0.17345841, -0.9848356, -0.0010155123, -0.98484087, 0.17345615, -0.00044013222, 1.4676126, -0.03394991)
 
 [node name="Moe" parent="Entities" unique_id=2039105678 instance=ExtResource("16_tqp7r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 7, 12)
@@ -185,7 +206,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 45)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1, 45)
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("17_jk2w6")]
-transform = Transform3D(-2.1855739e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855739e-07, -15, 6.299999, -3.9)
+transform = Transform3D(-2.1855739e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855739e-07, -15, 0.29999924, 29.1)
 
 [node name="DungeonExit" parent="Entities" unique_id=340140118 instance=ExtResource("19_vl47o")]
 transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -23, 0, -30.2)
@@ -223,12 +244,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 0, 30)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 7, 11)
 
 [node name="SurveillanceScanner01" parent="Entities" unique_id=1505433102 instance=ExtResource("28_5pdgu")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -9.1, 4, 30.2)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -9.1, 4, 18.2)
+
+[node name="Megeryte" parent="Entities" unique_id=56373619 instance=ExtResource("18_8lqym")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -21, 0, -7)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("29_wawa3")]
 
-[node name="Megeryte" parent="." unique_id=880531258 instance=ExtResource("18_8lqym")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -24)
+[node name="Creature01" parent="." unique_id=1221717039 instance=ExtResource("5_vgrb1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 0, 14)
 
 [editable path="Geometry/playtest-new"]
 [editable path="Entities/Veksas"]

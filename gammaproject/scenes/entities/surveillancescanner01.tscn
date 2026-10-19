@@ -1,40 +1,12 @@
 [gd_scene format=3 uid="uid://4b3ysfnolshd"]
 
-[ext_resource type="PackedScene" uid="uid://iyo30vj4qwjf" path="res://assets/models/SurveillanceScanner01.glb" id="1_ql4jv"]
+[ext_resource type="PackedScene" uid="uid://te62eci7r73t" path="res://assets/models/Scanner.glb" id="1_xn1fg"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ql4jv"]
 radius = 0.2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_xn1fg"]
 radius = 2.0
-
-[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_ql4jv"]
-
-[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_ql4jv"]
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xn1fg"]
-animation = &"Fly"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_68tr6"]
-animation = &"Idle"
-
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_jixvi"]
-graph_offset = Vector2(-527, 20)
-nodes/Fly/node = SubResource("AnimationNodeAnimation_xn1fg")
-nodes/Fly/position = Vector2(-160, 140)
-nodes/Idle/node = SubResource("AnimationNodeAnimation_68tr6")
-nodes/Idle/position = Vector2(-160, 300)
-nodes/Add2/node = SubResource("AnimationNodeAdd2_ql4jv")
-nodes/Add2/position = Vector2(60, 140)
-node_connections = [&"output", 0, &"Add2", &"Add2", 0, &"Fly", &"Add2", 1, &"Idle"]
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_oe36g"]
-advance_mode = 2
-
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_hvfql"]
-states/BlendTree/node = SubResource("AnimationNodeBlendTree_jixvi")
-states/BlendTree/position = Vector2(397, 100)
-transitions = ["Start", "BlendTree", SubResource("AnimationNodeStateMachineTransition_oe36g")]
 
 [node name="SurveillanceScanner01" type="CharacterBody3D" unique_id=1505433102]
 collision_layer = 0
@@ -50,54 +22,12 @@ shape = SubResource("SphereShape3D_ql4jv")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1464352410]
 shape = SubResource("SphereShape3D_xn1fg")
 
-[node name="SurveillanceScanner01" parent="." unique_id=1690118326 instance=ExtResource("1_ql4jv")]
+[node name="Scanner" parent="." unique_id=567882600 instance=ExtResource("1_xn1fg")]
 
-[node name="Skeleton3D" parent="SurveillanceScanner01" index="0" unique_id=1659388111]
-bones/0/position = Vector3(0, -0.039844792, 0)
-bones/1/rotation = Quaternion(0, -0.2942146, 0, 0.95573944)
-
-[node name="Top" parent="SurveillanceScanner01/Skeleton3D" index="0" unique_id=152551031]
-transform = Transform3D(0.82687557, 0, -0.56238496, 0, 1, 0, 0.56238496, 0, 0.82687557, 0, 0.06015523, 0)
-
-[node name="Wings" parent="SurveillanceScanner01/Skeleton3D/Top" index="0" unique_id=1281164044]
+[node name="Icosphere" parent="Scanner" index="0" unique_id=575586179]
 cast_shadow = 0
 
-[node name="Lamp" parent="SurveillanceScanner01/Skeleton3D" index="1" unique_id=404657645]
-transform = Transform3D(1, 0, 0, 0, 0.99956775, -0.029399069, 0, 0.029399069, 0.99956775, 0, -0.57984483, -0.010000005)
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=1179254608]
+spot_range = 40.0
 
-[node name="Body_001" parent="SurveillanceScanner01/Skeleton3D/Lamp" index="0" unique_id=1523061582]
-cast_shadow = 0
-
-[node name="SpringArm3D" type="SpringArm3D" parent="SurveillanceScanner01/Skeleton3D/Lamp" index="1" unique_id=1704789176]
-transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, -0.06634343, 0.0019512782)
-shape = SubResource("SeparationRayShape3D_ql4jv")
-
-[node name="SpotLight3D" type="SpotLight3D" parent="SurveillanceScanner01/Skeleton3D/Lamp/SpringArm3D" unique_id=1680231869]
-transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0.005, 0.855)
-shadow_enabled = true
-shadow_bias = 0.1
-shadow_normal_bias = 4.0
-spot_range = 54.0
-spot_attenuation = 0.6
-spot_angle = 76.0
-metadata/Type = ""
-
-[node name="Base" parent="SurveillanceScanner01/Skeleton3D" index="2" unique_id=804744811]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.039844792, 0)
-
-[node name="Shell" parent="SurveillanceScanner01/Skeleton3D/Base" index="0" unique_id=963334562]
-cast_shadow = 0
-
-[node name="Body" parent="SurveillanceScanner01/Skeleton3D" index="3" unique_id=572170503]
-cast_shadow = 0
-
-[node name="String" parent="SurveillanceScanner01/Skeleton3D" index="4" unique_id=498301309]
-cast_shadow = 0
-
-[node name="AnimationTree" type="AnimationTree" parent="." unique_id=2082400159]
-root_node = NodePath("../SurveillanceScanner01")
-tree_root = SubResource("AnimationNodeStateMachine_hvfql")
-anim_player = NodePath("../SurveillanceScanner01/AnimationPlayer")
-parameters/BlendTree/Add2/add_amount = 1.0
-
-[editable path="SurveillanceScanner01"]
+[editable path="Scanner"]

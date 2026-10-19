@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://di6hwavksjrkq"]
 
-[ext_resource type="PackedScene" uid="uid://bn3ckxeeh2e5o" path="res://assets/map-models/level4.gltf" id="1_4duau"]
+[ext_resource type="PackedScene" uid="uid://ydyx6e50rhh4" path="res://assets/map-models/level4.gltf" id="1_p0euy"]
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="2_p0euy"]
 [ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="3_6mtxo"]
 [ext_resource type="PackedScene" uid="uid://qley5ny6m3l2" path="res://scenes/UI/default_ui.tscn" id="4_yknqd"]
@@ -36,30 +36,22 @@ spot_range = 12.0
 spot_attenuation = -0.34
 spot_angle = 60.0
 
+[node name="PlayerCamera" parent="Environment" unique_id=1338417485 instance=ExtResource("3_6mtxo")]
+transform = Transform3D(1, 0, 0, 0, 0.83527994, 0.549825, 0, -0.549825, 0.83527994, 1, 4, -12)
+current = true
+
 [node name="Geometry" type="Node" parent="." unique_id=1112735005]
 
-[node name="level4" parent="Geometry" unique_id=1659008284 instance=ExtResource("1_4duau")]
-
-[node name="level" parent="Geometry/level4" index="0" unique_id=1322996788]
-cast_shadow = 2
-
-[node name="level_001-col_001" parent="Geometry/level4" index="13" unique_id=1994013066]
-visible = false
-shadow_enabled = true
+[node name="level4" parent="Geometry" unique_id=1256139133 instance=ExtResource("1_p0euy")]
 
 [node name="Entities" type="Node" parent="." unique_id=1339097609]
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("2_p0euy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -39)
 
-[node name="PlayerCamera" parent="Entities" unique_id=1338417485 instance=ExtResource("3_6mtxo")]
-transform = Transform3D(1, 0, 0, 0, 0.83527994, 0.549825, 0, -0.549825, 0.83527994, 1, 4, -12)
-current = true
-
 [node name="SurveillanceScanner01" parent="Entities" unique_id=1505433102 instance=ExtResource("5_p0euy")]
 transform = Transform3D(0, 0, -1.0000001, 0, 1, 0, 1.0000001, 0, 0, -30, 8, -23)
 
 [node name="UI" parent="." unique_id=1110879225 instance=ExtResource("4_yknqd")]
 
-[editable path="Geometry/level4"]
 [editable path="UI"]

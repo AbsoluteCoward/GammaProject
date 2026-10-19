@@ -2,7 +2,7 @@
 
 [ext_resource type="Environment" uid="uid://cnvi1r66250oo" path="res://assets/godot-resources/worldenvironment_default.res" id="1_1ub4u"]
 [ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="2_1ub4u"]
-[ext_resource type="PackedScene" uid="uid://bnntj786q7jqj" path="res://assets/map-models/anvil_blender_test.gltf" id="2_qvqgy"]
+[ext_resource type="PackedScene" uid="uid://bnntj786q7jqj" path="res://assets/models/maps/anvil_blender_test.gltf" id="2_qvqgy"]
 [ext_resource type="PackedScene" uid="uid://4b3ysfnolshd" path="res://scenes/entities/surveillancescanner01.tscn" id="3_bs4cn"]
 [ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="3_qvqgy"]
 [ext_resource type="PackedScene" uid="uid://cgbfcwwskitny" path="res://scenes/entities/enemies/bear.tscn" id="4_bs4cn"]
@@ -25,7 +25,7 @@ spot_range = 10.0
 
 [node name="Geometry" type="Node" parent="." unique_id=1112735005]
 
-[node name="anvil_blender_test" parent="Geometry" unique_id=638856191 instance=ExtResource("2_qvqgy")]
+[node name="anvil_blender_test" parent="Geometry" unique_id=596363133 instance=ExtResource("2_qvqgy")]
 
 [node name="Entities" type="Node" parent="." unique_id=1339097609]
 

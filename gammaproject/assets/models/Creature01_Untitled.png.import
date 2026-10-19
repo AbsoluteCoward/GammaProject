@@ -1,0 +1,44 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://brbxmecqu4deq"
+path.s3tc="res://.godot/imported/Creature01_Untitled.png-f3c5889b011148c34ae79fe55284d3df.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "7f94aa4c24cb0b7190d84fd5fcc938fd"
+}
+
+[deps]
+
+source_file="res://assets/models/Creature01_Untitled.png"
+dest_files=["res://.godot/imported/Creature01_Untitled.png-f3c5889b011148c34ae79fe55284d3df.s3tc.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/uastc_level=4
+compress/rdo_quality_loss=0.0
+compress/hdr_compression=2
+compress/normal_map=2
+compress/channel_pack=1
+mipmaps/generate=true
+mipmaps/limit=3
+roughness/mode=0
+roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=true
+process/hdr_clamp_exposure=true
+process/size_limit=1024
+detect_3d/compress_to=0

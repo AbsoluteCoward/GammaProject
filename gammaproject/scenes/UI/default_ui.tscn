@@ -7,6 +7,10 @@
 
 [node name="UI" type="Node" unique_id=1110879225]
 
+[node name="PerformanceLabel" type="Label" parent="." unique_id=67495217]
+offset_right = 40.0
+offset_bottom = 23.0
+
 [node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=1277227144]
 process_mode = 3
 texture_filter = 1

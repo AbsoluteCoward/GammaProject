@@ -43,6 +43,7 @@ window/size/window_width_override=1366
 window/size/window_height_override=768
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
+window/stretch/scale_mode="integer"
 window/vsync/vsync_mode=0
 mouse_cursor/custom_image="uid://8043cilq0v2x"
 
@@ -12571,6 +12572,7 @@ mod={
 
 common/physics_ticks_per_second=30
 3d/physics_engine="Jolt Physics"
+common/physics_interpolation=true
 
 [rendering]
 

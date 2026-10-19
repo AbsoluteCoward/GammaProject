@@ -2,14 +2,14 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvgy8ifoohroj"
+uid="uid://bht1hkavwwpur"
 path.s3tc="res://.godot/imported/Megeryte_CHR_MEGERYTE_FABRIC.png-56ad4ffc3be5241b91ce35e1ce0d3667.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "8a9b4d608ffce0a8a1acce05e5f0fc94"
+"md5": "c1c495f02c94b9741cea90c3179d7185"
 }
 
 [deps]
@@ -40,5 +40,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=true
 process/hdr_clamp_exposure=true
-process/size_limit=1024
+process/size_limit=256
 detect_3d/compress_to=0

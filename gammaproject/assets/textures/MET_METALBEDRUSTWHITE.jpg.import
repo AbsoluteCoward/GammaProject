@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://nf4t336fo1pq"
-path.s3tc="res://.godot/imported/MET_METALBEDRUSTWHITE.jpg-336019e3d56bae4f885a5701ec8a7293.s3tc.ctex"
+uid="uid://bv1bie7238g54"
+path.s3tc="res://.godot/imported/MET_METALBEDRUSTWHITE.jpg-bb24ed6e6d657df486d1370cd50f8768.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/MET_METALBEDRUSTWHITE.jpg"
-dest_files=["res://.godot/imported/MET_METALBEDRUSTWHITE.jpg-336019e3d56bae4f885a5701ec8a7293.s3tc.ctex"]
+source_file="res://assets/Textures/MET_METALBEDRUSTWHITE.jpg"
+dest_files=["res://.godot/imported/MET_METALBEDRUSTWHITE.jpg-bb24ed6e6d657df486d1370cd50f8768.s3tc.ctex"]
 
 [params]
 
@@ -37,5 +37,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=true
 process/hdr_clamp_exposure=true
-process/size_limit=128
+process/size_limit=1024
 detect_3d/compress_to=0

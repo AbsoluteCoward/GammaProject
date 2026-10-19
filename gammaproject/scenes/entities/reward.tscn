@@ -7,6 +7,9 @@
 [node name="Vial" parent="." unique_id=769180196 instance=ExtResource("1_fhbco")]
 transform = Transform3D(1, 0, 0, 0, 0.9563048, -0.2923717, 0, 0.2923717, 0.9563048, 0, 0, 0)
 
+[node name="Cube" parent="Vial" index="0" unique_id=1253022223]
+cast_shadow = 0
+
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=1916892676]
 
 [editable path="Vial"]

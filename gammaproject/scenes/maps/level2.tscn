@@ -356,6 +356,18 @@ data = PackedVector3Array(-7.7, 1.4, -24.8127, -7.3, 4.583, -24.8127, -7.3, 1.4,
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=609131761]
 environment = SubResource("Environment_6yhfo")
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=134770070]
+transform = Transform3D(1, 0, 0, 0, 0.9659259, 0.25881904, 0, -0.258819, 0.9659259, 0, 0, 0)
+light_energy = 0.0
+shadow_enabled = true
+directional_shadow_mode = 0
+directional_shadow_max_distance = 200.0
+sky_mode = 1
+
+[node name="PlayerCamera" parent="Environment" unique_id=1744850958 instance=ExtResource("4_etjn4")]
+transform = Transform3D(1, 0, 0, 0, 0.8352799, 0.54982495, 0, -0.54982495, 0.8352799, -4.3, 4.23441, 62.5392)
+size = 27.89
+
 [node name="Geometry" type="Node" parent="." unique_id=1673933761]
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Geometry" unique_id=1795796586]
@@ -579,11 +591,7 @@ transform = Transform3D(-4.068e-08, -0.258819, 0.965926, -1.13133e-08, 0.965926,
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -11.9521, 1.3804, -24.8788)
 
 [node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("1_0dihh")]
-transform = Transform3D(1, 0, 1.06581e-14, 0, 1, 0, -1.06581e-14, 0, 1, -5.26864, 1.46221, 5.2342987)
-
-[node name="PlayerCamera" parent="Entities" unique_id=1744850958 instance=ExtResource("4_etjn4")]
-transform = Transform3D(1, 0, 0, 0, 0.83528, 0.549825, 0, -0.549825, 0.83528, -4.3, 4.23441, 62.5392)
-size = 27.89
+transform = Transform3D(1, 0, 1.06581e-14, 0, 1, 0, -1.06581e-14, 0, 1, -5.26864, 1.46221, -26.765701)
 
 [node name="ChangeLevel" parent="Entities" unique_id=148112684 instance=ExtResource("12_rtfyc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1, 60)
