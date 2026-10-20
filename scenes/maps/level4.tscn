@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://di6hwavksjrkq"]
+
+[ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="2_p0euy"]
+[ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="3_6mtxo"]
+[ext_resource type="PackedScene" uid="uid://qley5ny6m3l2" path="res://scenes/UI/default_ui.tscn" id="4_yknqd"]
+[ext_resource type="PackedScene" uid="uid://4b3ysfnolshd" path="res://scenes/entities/surveillancescanner01.tscn" id="5_p0euy"]
+
+[sub_resource type="Environment" id="Environment_4duau"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 0.8980392, 0.7058824, 1)
+ambient_light_energy = 0.01
+reflected_light_source = 1
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.61, 0.556625, 0.4575, 1)
+fog_density = 1.0
+fog_depth_begin = 40.0
+
+[node name="Level" type="Node3D" unique_id=500624464]
+
+[node name="Environment" type="Node" parent="." unique_id=1488914038]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=1760429321]
+environment = SubResource("Environment_4duau")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=815317633]
+transform = Transform3D(0.42261833, 3.096562e-08, -0.9063078, 0.9063078, -1.4439505e-08, 0.42261833, 2.2317946e-15, -1, -3.4166778e-08, 0, 4, -7)
+light_energy = 0.0
+shadow_bias = 0.3
+directional_shadow_mode = 1
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Environment" unique_id=2017551366]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 6.7000003, -7.7000003)
+spot_range = 12.0
+spot_attenuation = -0.34
+spot_angle = 60.0
+
+[node name="PlayerCamera" parent="Environment" unique_id=1338417485 instance=ExtResource("3_6mtxo")]
+transform = Transform3D(1, 0, 0, 0, 0.83527994, 0.549825, 0, -0.549825, 0.83527994, 1, 4, -12)
+current = true
+
+[node name="Geometry" type="Node" parent="." unique_id=1112735005]
+
+[node name="Entities" type="Node" parent="." unique_id=1339097609]
+
+[node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("2_p0euy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -39)
+
+[node name="SurveillanceScanner01" parent="Entities" unique_id=1505433102 instance=ExtResource("5_p0euy")]
+transform = Transform3D(0, 0, -1.0000001, 0, 1, 0, 1.0000001, 0, 0, -30, 8, -23)
+
+[node name="UI" parent="." unique_id=1110879225 instance=ExtResource("4_yknqd")]
+
+[editable path="UI"]

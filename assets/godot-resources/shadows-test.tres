@@ -1,0 +1,19 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dl6g62y8bo41t"]
+
+[ext_resource type="Shader" uid="uid://hbqh7v37q0x3" path="res://assets/godot-resources/shadows-test.gdshader" id="1_upwbh"]
+[ext_resource type="Texture2D" uid="uid://bletip36hsai1" path="res://assets/models/textures/WOD_CRATE.png" id="2_5465t"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_upwbh")
+shader_parameter/albedo_texture = ExtResource("2_5465t")
+shader_parameter/material_tint = Color(1, 1, 1, 1)
+shader_parameter/shadow_threshold = 0.5
+shader_parameter/edge_softness = 0.0
+shader_parameter/ambient_fill = 0.30000001192093
+shader_parameter/ambient_tint = Color(0.48, 0.54, 0.72, 1)
+shader_parameter/diffuse_strength = 2.0
+shader_parameter/specular_strength = 0.22
+shader_parameter/phong_exponent = 24.0
+shader_parameter/specular_color = Color(1, 1, 1, 1)
+shader_parameter/albedo_strength = 1.0

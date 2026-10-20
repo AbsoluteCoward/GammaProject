@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dt7bhqbq16lb3"]
+
+[ext_resource type="Shader" uid="uid://hbqh7v37q0x3" path="res://assets/godot-resources/shadows-test.gdshader" id="1_npunv"]
+[ext_resource type="Texture2D" uid="uid://c8c0mkqv6lgsl" path="res://assets/models/slink/Slink_CHR_SLINK_LEATHER3.png" id="2_ecke3"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_npunv")
+shader_parameter/albedo_texture = ExtResource("2_ecke3")
+shader_parameter/material_tint = Color(1, 1, 1, 1)
+shader_parameter/ambient_tint = Color(0.72, 0.78, 0.9, 1)
+shader_parameter/specular_color = Color(1, 0, 0, 1)
+shader_parameter/specular_strength = 0.010000000475
+shader_parameter/phong_exponent = 24.0

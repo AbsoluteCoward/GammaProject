@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://sfckpfiojuil"]
+
+[ext_resource type="Environment" uid="uid://duve65vd8qvjk" path="res://assets/godot-resources/worldenvironment_fullbright.res" id="1_f3o8v"]
+[ext_resource type="PackedScene" uid="uid://d212u3oup5pn5" path="res://scenes/entities/player.tscn" id="2_f3o8v"]
+[ext_resource type="PackedScene" uid="uid://cy0ns4wieuc4" path="res://scenes/entities/player_camera.tscn" id="3_1nkts"]
+[ext_resource type="PackedScene" uid="uid://bjo6ulmdetigg" path="res://assets/models/maps/lighting-test.gltf" id="3_f3o8v"]
+[ext_resource type="Material" uid="uid://dl6g62y8bo41t" path="res://assets/godot-resources/shadows-test.tres" id="4_1nkts"]
+[ext_resource type="PackedScene" uid="uid://cgbfcwwskitny" path="res://scenes/entities/enemies/bear.tscn" id="4_cyl5u"]
+[ext_resource type="PackedScene" uid="uid://dgbvqthwrtpuq" path="res://scenes/entities/enemies/crab01.tscn" id="5_sll35"]
+[ext_resource type="PackedScene" uid="uid://bkuilqriq51he" path="res://scenes/entities/change_level.tscn" id="6_nri3b"]
+[ext_resource type="PackedScene" uid="uid://qley5ny6m3l2" path="res://scenes/UI/default_ui.tscn" id="7_ehw3n"]
+
+[node name="Level" type="Node3D" unique_id=500624464]
+
+[node name="Environment" type="Node" parent="." unique_id=1488914038]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=1135418982]
+environment = ExtResource("1_f3o8v")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment" unique_id=2013765112]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.7071067, 0.7071067, 0, 3, 0)
+shadow_enabled = true
+directional_shadow_mode = 0
+directional_shadow_max_distance = 200.0
+sky_mode = 1
+
+[node name="PlayerCamera" parent="Environment" unique_id=855044570 instance=ExtResource("3_1nkts")]
+transform = Transform3D(1, -8.26692e-08, 1.5719421e-07, -2.9802322e-08, 0.79441464, 0.60737586, -1.7508864e-07, -0.6073758, 0.7944147, -24.2, 4.4182987, 21.606949)
+far = 20.0
+
+[node name="Geometry" type="Node" parent="." unique_id=1112735005]
+
+[node name="lighting-test" parent="Geometry" unique_id=398932991 instance=ExtResource("3_f3o8v")]
+
+[node name="level_002" parent="Geometry/lighting-test" index="0" unique_id=1163776940]
+surface_material_override/0 = ExtResource("4_1nkts")
+surface_material_override/1 = ExtResource("4_1nkts")
+
+[node name="Entities" type="Node" parent="." unique_id=1339097609]
+
+[node name="Player" parent="Entities" unique_id=1241279818 instance=ExtResource("2_f3o8v")]
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 3, 0.20000005, 31)
+
+[node name="PlayerCamera" parent="Entities" unique_id=29831598 instance=ExtResource("3_1nkts")]
+transform = Transform3D(-4.37114e-08, -0.549825, 0.83527994, 0, 0.83527994, 0.549825, -1, 2.4033621e-08, -3.6511256e-08, 3.7999992, 4.4182997, -5.39305)
+
+[node name="Bear118" parent="Entities" unique_id=770590102 instance=ExtResource("4_cyl5u")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -1.5, 0, 8.099998)
+
+[node name="Bear119" parent="Entities" unique_id=1248130514 instance=ExtResource("4_cyl5u")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -1.5, 0, 5.0999985)
+
+[node name="Crab01" parent="Entities" unique_id=2039105678 instance=ExtResource("5_sll35")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 3, 0)
+
+[node name="ChangeLevel" parent="Entities" unique_id=148112684 instance=ExtResource("6_nri3b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2, 5.799999)
+
+[node name="UI" parent="." unique_id=1110879225 instance=ExtResource("7_ehw3n")]
+
+[editable path="Geometry/lighting-test"]

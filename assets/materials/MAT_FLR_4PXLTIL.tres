@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://pp74jr8knvml"]
+
+[ext_resource type="Shader" uid="uid://hbqh7v37q0x3" path="res://assets/godot-resources/shadows-test.gdshader" id="1_dwimg"]
+[ext_resource type="Texture2D" uid="uid://ceetjvllat1cf" path="res://assets/textures/FLR_4PXTILE.png" id="1_tfchb"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_dwimg")
+shader_parameter/albedo_texture = ExtResource("1_tfchb")
+shader_parameter/material_tint = Color(1, 1, 1, 1)
+shader_parameter/ambient_tint = Color(0.72, 0.78, 0.9, 1)
+shader_parameter/specular_color = Color(1, 1, 1, 1)
+shader_parameter/specular_strength = 0.22
+shader_parameter/phong_exponent = 24.0
